@@ -8,9 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  * Unit test for directory input.
  */
 class DirectoryInputTest {
-    /**
-     *
-     */
+
     private static final String C_TEST_DATA_DIR = "C:\\repos\\autotransform\\src\\test\\java\\autotransform\\input\\data\\";
 
     /**
