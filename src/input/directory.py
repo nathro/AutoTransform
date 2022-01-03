@@ -34,4 +34,6 @@ class DirectoryInput(Input[DirectoryInputParams]):
     
     @classmethod
     def from_data(cls, data: Dict[str, Any]) -> DirectoryInput:
-        return cls(DirectoryInputParams(str(data["path"])))
+        path = data["path"]
+        assert isinstance(path, str)
+        return cls(DirectoryInputParams(path))

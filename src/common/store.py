@@ -1,6 +1,6 @@
 from typing import Dict, Optional
 
-from store.object import FileDataObject
+from common.object import FileDataObject
 
 class FileDataStore:
     def __init__(self):
