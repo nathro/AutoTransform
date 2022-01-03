@@ -6,7 +6,7 @@ from input.type import InputType
 
 class InputFactory:
     _getters = {
-        InputType.DIRECTORY: DirectoryInput.fromData
+        InputType.DIRECTORY: DirectoryInput.from_data
     }
     
     @staticmethod
