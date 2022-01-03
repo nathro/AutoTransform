@@ -1,15 +1,18 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from dataclasses import asdict
-from typing import Any, Dict, List, TypeVar, Generic
+from typing import Any, Dict, Optional, TypedDict
 
 from common.cachedfile import CachedFile
 from filter.type import FilterType
 
-TParams = TypeVar('TParams')
+class FilterBundle(TypedDict):
+    type: FilterType
+    params: Optional[Dict[str, Any]]
 
-class Filter(Generic[TParams], ABC):
-    def __init__(self, params: TParams):
+class Filter(ABC):
+    params: Optional[Dict[str, Any]]
+    
+    def __init__(self, params: Optional[Dict[str, Any]]):
         self.params = params
         
     @abstractmethod
@@ -25,9 +28,9 @@ class Filter(Generic[TParams], ABC):
     def from_data(cls, data: Dict[str, Any]) -> Filter:
         pass
     
-    def bundle(self) -> Dict[str, Any]:
+    def bundle(self) -> FilterBundle:
         return {
             "type": self.get_type(),
-            "params": asdict(self.params)
+            "params": self.params
         }
             

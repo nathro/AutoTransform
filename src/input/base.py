@@ -1,14 +1,17 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from dataclasses import asdict
-from typing import Any, Dict, List, TypeVar, Generic
+from typing import Any, Dict, List, Optional, TypedDict
 
 from input.type import InputType
 
-TParams = TypeVar('TParams')
+class InputBundle(TypedDict):
+    type: InputType
+    params: Optional[Dict[str, Any]]
 
-class Input(Generic[TParams], ABC):
-    def __init__(self, params: TParams):
+class Input(ABC):
+    params: Optional[Dict[str, Any]]
+    
+    def __init__(self, params: Dict[str, Any]):
         self.params = params
         
     @abstractmethod
@@ -24,9 +27,9 @@ class Input(Generic[TParams], ABC):
     def from_data(cls, data: Dict[str, Any]) -> Input:
         pass
     
-    def bundle(self) -> Dict[str, Any]:
+    def bundle(self) -> InputBundle:
         return {
             "type": self.get_type(),
-            "params": asdict(self.params)
+            "params": self.params
         }
             

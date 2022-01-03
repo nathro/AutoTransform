@@ -1,7 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any, Dict, List, TypedDict
 
 from common.cachedfile import CachedFile
 from filter.base import Filter
@@ -14,17 +14,17 @@ class Extensions(str, Enum):
     def has_value(cls, value):
         return value in cls._value2member_map_ 
 
-@dataclass
-class ExtensionFilterParams:
+class ExtensionFilterParams(TypedDict):
     extensions: List[Extensions]
 
-class ExtensionFilter(Filter[ExtensionFilterParams]):
+class ExtensionFilter(Filter):
+    params: ExtensionFilterParams
     
     def __init__(self, params: ExtensionFilterParams):
         Filter.__init__(self, params)
         
     def is_valid(self, file: CachedFile) -> bool:
-        for extension in self.params.extensions:
+        for extension in self.params["extensions"]:
             if file.path.endswith(extension):
                 return True
         return False
@@ -39,4 +39,4 @@ class ExtensionFilter(Filter[ExtensionFilterParams]):
         assert isinstance(extensions, List)
         for extension in extensions:
             assert Extensions.has_value(extension)
-        return cls(ExtensionFilterParams(extensions))
+        return cls({"extensions": extensions})
