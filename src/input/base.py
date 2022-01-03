@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, TypeVar, Generic
 
-from input.InputType import InputType
+from input.type import InputType
 
 TParams = TypeVar('TParams')
 
@@ -10,10 +10,10 @@ class Input(Generic[TParams], ABC):
         self.params = params
         
     @abstractmethod
-    def getFiles(self) -> List[str]:
+    def get_files(self) -> List[str]:
         pass
     
     @abstractmethod
-    def getType(self) -> InputType:
+    def get_type(self) -> InputType:
         pass
             

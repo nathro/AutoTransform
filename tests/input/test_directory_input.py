@@ -1,7 +1,7 @@
 import pathlib
 from typing import Dict
 
-from src.input.DirectoryInput import DirectoryInput, DirectoryInputParams
+from src.input.directory import DirectoryInput, DirectoryInputParams
 
 def test_empty_dir():
     dir: str = str(pathlib.Path(__file__).parent.resolve())

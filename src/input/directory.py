@@ -3,8 +3,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List
 
-from input.Input import Input
-from input.InputType import InputType
+from input.base import Input
+from input.type import InputType
 
 @dataclass
 class DirectoryInputParams:
@@ -16,7 +16,7 @@ class DirectoryInput(Input[DirectoryInputParams]):
         Input.__init__(self, params)
         self.files: List[str] = []
         
-    def getFiles(self) -> List[str]:
+    def get_files(self) -> List[str]:
         def populate_files(input: DirectoryInput, path: Path) -> None:
             for file in path.iterdir():
                 if file.is_file():
@@ -29,9 +29,9 @@ class DirectoryInput(Input[DirectoryInputParams]):
             populate_files(self, Path(self.params.path))
         return self.files
     
-    def getType(self) -> InputType:
+    def get_type(self) -> InputType:
         return InputType.DIRECTORY
     
     @classmethod
-    def fromData(cls, data: Dict[str, Any]) -> DirectoryInput:
+    def from_data(cls, data: Dict[str, Any]) -> DirectoryInput:
         return cls(DirectoryInputParams(str(data["path"])))

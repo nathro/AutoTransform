@@ -1,6 +1,6 @@
-from common.FileDataStore import data_store
-from input.InputFactory import InputFactory
-from input.InputType import InputType
+from store.store import data_store
+from input.factory import InputFactory
+from input.type import InputType
 
 def __main__():
     global data_store

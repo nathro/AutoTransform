@@ -1,8 +1,8 @@
 from typing import Any, Dict
 
-from input.DirectoryInput import DirectoryInput
-from input.Input import Input
-from input.InputType import InputType
+from input.directory import DirectoryInput
+from input.base import Input
+from input.type import InputType
 
 class InputFactory:
     _getters = {
