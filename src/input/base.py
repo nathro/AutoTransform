@@ -1,5 +1,7 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import List, TypeVar, Generic
+from dataclasses import asdict
+from typing import Any, Dict, List, TypeVar, Generic
 
 from input.type import InputType
 
@@ -16,4 +18,15 @@ class Input(Generic[TParams], ABC):
     @abstractmethod
     def get_type(self) -> InputType:
         pass
+    
+    @classmethod
+    @abstractmethod
+    def from_data(cls, data: Dict[str, Any]) -> Input:
+        pass
+    
+    def package(self) -> Dict[str, Any]:
+        return {
+            "type": self.get_type(),
+            "params": asdict(self.params)
+        }
             

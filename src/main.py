@@ -8,6 +8,8 @@ from input.type import InputType
 if __name__ == "__main__":
     inp = InputFactory.get(InputType.DIRECTORY, {"path": "C:/repos/autotransform/src"})
     filter = FilterFactory.get(FilterType.EXTENSION, {"extensions": [Extensions.PYTHON]})
+    filter_package = filter.package()
+    filter = FilterFactory.get(filter_package["type"], filter_package["params"])
     for file in inp.get_files():
         if filter.is_valid(file):
             print(file)
