@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List
 
+from common.cachedfile import CachedFile
 from filter.base import Filter
 from filter.type import FilterType
 
@@ -22,9 +23,9 @@ class ExtensionFilter(Filter[ExtensionFilterParams]):
     def __init__(self, params: ExtensionFilterParams):
         Filter.__init__(self, params)
         
-    def is_valid(self, file: str) -> bool:
+    def is_valid(self, file: CachedFile) -> bool:
         for extension in self.params.extensions:
-            if file.endswith(extension):
+            if file.path.endswith(extension):
                 return True
         return False
             

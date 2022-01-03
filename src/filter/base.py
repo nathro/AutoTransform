@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from dataclasses import asdict
 from typing import Any, Dict, List, TypeVar, Generic
 
+from common.cachedfile import CachedFile
 from filter.type import FilterType
 
 TParams = TypeVar('TParams')
@@ -12,7 +13,7 @@ class Filter(Generic[TParams], ABC):
         self.params = params
         
     @abstractmethod
-    def is_valid(self, file: str) -> bool:
+    def is_valid(self, file: CachedFile) -> bool:
         pass
     
     @abstractmethod
