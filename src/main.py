@@ -1,5 +1,6 @@
+from common.cachedfile import CachedFile
 from common.package import AutoTransformPackage
-from common.store import data_store
+from common.datastore import data_store
 from filter.extension import Extensions
 from filter.factory import FilterFactory
 from filter.type import FilterType
@@ -11,10 +12,10 @@ if __name__ == "__main__":
     filter = FilterFactory.get(FilterType.EXTENSION, {"extensions": [Extensions.PYTHON]})
     package = AutoTransformPackage(inp, [filter])
     json_package = package.to_json()
-    print(json_package)
     package = AutoTransformPackage.from_json(json_package)
     input = package.input
     filter = package.filters[0]
     for file in input.get_files():
-        if filter.is_valid(file):
+        f = CachedFile(file)
+        if filter.is_valid(f):
             print(file)
