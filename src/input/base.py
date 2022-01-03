@@ -24,7 +24,7 @@ class Input(Generic[TParams], ABC):
     def from_data(cls, data: Dict[str, Any]) -> Input:
         pass
     
-    def package(self) -> Dict[str, Any]:
+    def bundle(self) -> Dict[str, Any]:
         return {
             "type": self.get_type(),
             "params": asdict(self.params)
