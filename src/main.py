@@ -13,7 +13,7 @@ if __name__ == "__main__":
     filter = ExtensionFilter({"extensions": [Extensions.TEXT]})
     batcher = SingleBatcher({})
     transformer = RegexTransformer({"pattern": "test", "replacement": "foo"})
-    package = AutoTransformPackage(inp, [filter], batcher)
+    package = AutoTransformPackage(inp, [filter], batcher, transformer)
     json_package = package.to_json()
     package = AutoTransformPackage.from_json(json_package)
     input = package.input
