@@ -13,8 +13,8 @@ class Batch(TypedDict):
     metadata: BatchMetadata
 
 class BatcherBundle(TypedDict):
-    type: BatcherType
     params: Optional[Dict[str, Any]]
+    type: BatcherType
 
 class Batcher(ABC):
     params: Optional[Dict[str, Any]]
@@ -32,8 +32,8 @@ class Batcher(ABC):
     
     def bundle(self) -> BatcherBundle:
         return {
-            "type": self.get_type(),
-            "params": self.params
+            "params": self.params,
+            "type": self.get_type()
         }
     
     @classmethod

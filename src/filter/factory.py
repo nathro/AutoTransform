@@ -11,4 +11,8 @@ class FilterFactory:
     
     @staticmethod
     def get(filter: FilterBundle) -> Filter:
-        return FilterFactory._getters[filter["type"]](filter["inverted"], filter["params"])
+        if "inverted" in filter:
+            inverted = filter["inverted"]
+        else:
+            inverted = False
+        return FilterFactory._getters[filter["type"]](inverted, filter["params"])

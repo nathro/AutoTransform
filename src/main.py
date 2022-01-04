@@ -9,7 +9,7 @@ from input.directory import DirectoryInput
 
 if __name__ == "__main__":
     inp = DirectoryInput({"path": "C:/repos/autotransform/src"})
-    filter = ExtensionFilter({"extensions": [Extensions.PYTHON]}).invert()
+    filter = ExtensionFilter({"extensions": [Extensions.PYTHON]})
     batcher = SingleBatcher({})
     package = AutoTransformPackage(inp, [filter], batcher)
     json_package = package.to_json()

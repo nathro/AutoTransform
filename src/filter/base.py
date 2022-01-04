@@ -6,17 +6,17 @@ from common.cachedfile import CachedFile
 from filter.type import FilterType
 
 class FilterBundle(TypedDict):
-    type: FilterType
-    inverted: bool
+    inverted: Optional[bool]
     params: Optional[Dict[str, Any]]
+    type: FilterType
 
 class Filter(ABC):
-    params: Optional[Dict[str, Any]]
     inverted: bool
+    params: Optional[Dict[str, Any]]
     
     def __init__(self, params: Optional[Dict[str, Any]]):
-        self.params = params
         self.inverted = False
+        self.params = params
         
     @abstractmethod
     def get_type(self) -> FilterType:
@@ -35,9 +35,9 @@ class Filter(ABC):
     
     def bundle(self) -> FilterBundle:
         return {
-            "type": self.get_type(),
             "inverted": self.inverted,
-            "params": self.params
+            "params": self.params,
+            "type": self.get_type()
         }
     
     @classmethod

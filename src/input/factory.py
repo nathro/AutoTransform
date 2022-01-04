@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
 from input.directory import DirectoryInput
-from input.base import Input
+from input.base import Input, InputBundle
 from input.type import InputType
 
 class InputFactory:
@@ -10,5 +10,5 @@ class InputFactory:
     }
     
     @staticmethod
-    def get(type: InputType, data: Dict[str, Any]) -> Input:
-        return InputFactory._getters[type](data)
+    def get(input: InputBundle) -> Input:
+        return InputFactory._getters[input["type"]](input["params"])

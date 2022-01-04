@@ -15,21 +15,20 @@ class Input(ABC):
         self.params = params
         
     @abstractmethod
+    def get_type(self) -> InputType:
+        pass
+        
+    @abstractmethod
     def get_files(self) -> List[str]:
         pass
     
-    @abstractmethod
-    def get_type(self) -> InputType:
-        pass
+    def bundle(self) -> InputBundle:
+        return {
+            "params": self.params,
+            "type": self.get_type()
+        }
     
     @classmethod
     @abstractmethod
     def from_data(cls, data: Dict[str, Any]) -> Input:
         pass
-    
-    def bundle(self) -> InputBundle:
-        return {
-            "type": self.get_type(),
-            "params": self.params
-        }
-            

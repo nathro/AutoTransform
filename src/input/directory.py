@@ -15,6 +15,9 @@ class DirectoryInput(Input):
         Input.__init__(self, params)
         self.files: List[str] = []
         
+    def get_type(self) -> InputType:
+        return InputType.DIRECTORY
+        
     def get_files(self) -> List[str]:
         def populate_files(input: DirectoryInput, path: Path) -> None:
             for file in path.iterdir():
@@ -27,9 +30,6 @@ class DirectoryInput(Input):
         if not self.files:
             populate_files(self, Path(self.params["path"]))
         return self.files
-    
-    def get_type(self) -> InputType:
-        return InputType.DIRECTORY
     
     @classmethod
     def from_data(cls, data: Dict[str, Any]) -> DirectoryInput:

@@ -30,10 +30,8 @@ class AutoTransformPackage:
     @staticmethod
     def from_json(json_package: str) -> AutoTransformPackage:
         package = json.loads(json_package)
-        input = package["input"]
-        input = InputFactory.get(input["type"], input["params"])
-        filters = package["filters"]
-        filters = [FilterFactory.get(filter) for filter in filters]
+        input = InputFactory.get(package["input"])
+        filters = [FilterFactory.get(filter) for filter in package["filters"]]
         batcher = BatcherFactory.get(package["batcher"])
         
         return AutoTransformPackage(input, filters, batcher)
