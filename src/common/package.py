@@ -33,7 +33,7 @@ class AutoTransformPackage:
         input = package["input"]
         input = InputFactory.get(input["type"], input["params"])
         filters = package["filters"]
-        filters = [FilterFactory.get(filter["type"], filter["params"]) for filter in filters]
+        filters = [FilterFactory.get(filter) for filter in filters]
         batcher = package["batcher"]
         batcher = BatcherFactory.get(batcher["type"], batcher["params"])
         

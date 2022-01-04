@@ -21,19 +21,18 @@ class ExtensionFilter(Filter):
     
     def __init__(self, params: ExtensionFilterParams):
         Filter.__init__(self, params)
+    
+    def get_type(self) -> FilterType:
+        return FilterType.EXTENSION
         
-    def is_valid(self, file: CachedFile) -> bool:
+    def _is_valid(self, file: CachedFile) -> bool:
         for extension in self.params["extensions"]:
             if file.path.endswith(extension):
                 return True
         return False
-            
-    
-    def get_type(self) -> FilterType:
-        return FilterType.EXTENSION
     
     @classmethod
-    def from_data(cls, data: Dict[str, Any]) -> ExtensionFilter:
+    def _from_data(cls, data: Dict[str, Any]) -> ExtensionFilter:
         extensions = data["extensions"]
         assert isinstance(extensions, List)
         for extension in extensions:

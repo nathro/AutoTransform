@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
 from filter.extension import ExtensionFilter
-from filter.base import Filter
+from filter.base import Filter, FilterBundle
 from filter.type import FilterType
 
 class FilterFactory:
@@ -10,5 +10,5 @@ class FilterFactory:
     }
     
     @staticmethod
-    def get(type: FilterType, data: Dict[str, Any]) -> Filter:
-        return FilterFactory._getters[type](data)
+    def get(filter: FilterBundle) -> Filter:
+        return FilterFactory._getters[filter["type"]](filter["inverted"], filter["params"])
