@@ -2,27 +2,28 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, TypedDict
 
-from input.type import InputType
+from common.cachedfile import CachedFile
+from transformer.type import TransformerType
 
-class InputBundle(TypedDict):
+class TransformerBundle(TypedDict):
     params: Optional[Dict[str, Any]]
-    type: InputType
+    type: TransformerType
 
-class Input(ABC):
+class Transformer(ABC):
     params: Optional[Dict[str, Any]]
     
     def __init__(self, params: Dict[str, Any]):
         self.params = params
         
     @abstractmethod
-    def get_type(self) -> InputType:
+    def get_type(self) -> TransformerType:
         pass
         
     @abstractmethod
-    def get_files(self) -> List[str]:
+    def transform(self, file: CachedFile) -> None:
         pass
     
-    def bundle(self) -> InputBundle:
+    def bundle(self) -> TransformerBundle:
         return {
             "params": self.params,
             "type": self.get_type(),
@@ -30,5 +31,5 @@ class Input(ABC):
     
     @classmethod
     @abstractmethod
-    def from_data(cls, data: Dict[str, Any]) -> Input:
+    def from_data(cls, data: Dict[str, Any]) -> Transformer:
         pass

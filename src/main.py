@@ -6,11 +6,13 @@ from common.datastore import data_store
 from batcher.single import SingleBatcher
 from filter.extension import Extensions, ExtensionFilter
 from input.directory import DirectoryInput
+from transformer.regex import RegexTransformer
 
 if __name__ == "__main__":
     inp = DirectoryInput({"path": "C:/repos/autotransform/src"})
-    filter = ExtensionFilter({"extensions": [Extensions.PYTHON]})
+    filter = ExtensionFilter({"extensions": [Extensions.TEXT]})
     batcher = SingleBatcher({})
+    transformer = RegexTransformer({"pattern": "test", "replacement": "foo"})
     package = AutoTransformPackage(inp, [filter], batcher)
     json_package = package.to_json()
     package = AutoTransformPackage.from_json(json_package)
@@ -26,6 +28,8 @@ if __name__ == "__main__":
         if is_valid:
             valid_files.append(f)
     batches = package.batcher.batch(valid_files)
-    batches = [{"files": [valid_files[file].path for file in batch["files"]], "metadata": batch["metadata"]} for batch in batches]
-    print(json.dumps(batches, indent=4))
+    batches = [{"files": [valid_files[file] for file in batch["files"]], "metadata": batch["metadata"]} for batch in batches]
+    for batch in batches:
+        for file in batch["files"]:
+            package.transformer.transform(file)
     print(package.to_json(pretty = True))

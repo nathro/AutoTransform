@@ -9,11 +9,12 @@ class DirectoryInputParams(TypedDict):
     path: str
 
 class DirectoryInput(Input):
+    files: List[str]
     params: DirectoryInputParams
     
     def __init__(self, params: DirectoryInputParams):
         Input.__init__(self, params)
-        self.files: List[str] = []
+        self.files = []
         
     def get_type(self) -> InputType:
         return InputType.DIRECTORY

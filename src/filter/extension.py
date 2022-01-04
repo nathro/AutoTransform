@@ -8,6 +8,7 @@ from filter.type import FilterType
 
 class Extensions(str, Enum):
     PYTHON = ".py"
+    TEXT = ".txt"
     
     @classmethod
     def has_value(cls, value):
