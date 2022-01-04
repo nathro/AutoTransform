@@ -20,8 +20,10 @@ class RegexTransformer(Transformer):
         return TransformerType.REGEX
     
     def transform(self, file: CachedFile) -> None:
+        content = file.get_content()
         output = open(file.path, "w")
-        output.write(re.sub(self.params["pattern"], self.params["replacement"], file.get_content()))
+        new_content = re.sub(self.params["pattern"], self.params["replacement"], content)
+        output.write(new_content)
         output.close()
     
     @classmethod

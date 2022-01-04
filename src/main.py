@@ -12,7 +12,7 @@ if __name__ == "__main__":
     inp = DirectoryInput({"path": "C:/repos/autotransform/src"})
     filter = ExtensionFilter({"extensions": [Extensions.TEXT]})
     batcher = SingleBatcher({})
-    transformer = RegexTransformer({"pattern": "test", "replacement": "foo"})
+    transformer = RegexTransformer({"pattern": r"test", "replacement": "foo"})
     package = AutoTransformPackage(inp, [filter], batcher, transformer)
     json_package = package.to_json()
     package = AutoTransformPackage.from_json(json_package)
@@ -32,4 +32,3 @@ if __name__ == "__main__":
     for batch in batches:
         for file in batch["files"]:
             package.transformer.transform(file)
-    print(package.to_json(pretty = True))
