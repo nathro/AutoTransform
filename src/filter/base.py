@@ -37,7 +37,7 @@ class Filter(ABC):
         return {
             "inverted": self.inverted,
             "params": self.params,
-            "type": self.get_type()
+            "type": self.get_type(),
         }
     
     @classmethod

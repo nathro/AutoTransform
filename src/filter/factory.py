@@ -6,7 +6,7 @@ from filter.type import FilterType
 
 class FilterFactory:
     _getters: Dict[FilterType, Callable[[bool, Dict[str, Any]], Filter]] = {
-        FilterType.EXTENSION: ExtensionFilter.from_data
+        FilterType.EXTENSION: ExtensionFilter.from_data,
     }
     
     @staticmethod

@@ -20,7 +20,7 @@ class SingleBatcher(Batcher):
     def batch(self, files: List[CachedFile]) -> List[Batch]:
         batch: Batch = {
             "files": list(range(len(files))),
-            "metadata": {}
+            "metadata": {},
         }
         return [batch]
     

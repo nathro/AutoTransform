@@ -23,7 +23,7 @@ class AutoTransformPackage:
         package = {
             "input": self.input.bundle(),
             "filters": [filter.bundle() for filter in self.filters],
-            "batcher": self.batcher.bundle()
+            "batcher": self.batcher.bundle(),
         }
         return json.dumps(package)
     

@@ -6,7 +6,7 @@ from input.type import InputType
 
 class InputFactory:
     _getters: Dict[InputType, Callable[[Dict[str, Any]], Input]] = {
-        InputType.DIRECTORY: DirectoryInput.from_data
+        InputType.DIRECTORY: DirectoryInput.from_data,
     }
     
     @staticmethod

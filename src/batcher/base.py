@@ -33,7 +33,7 @@ class Batcher(ABC):
     def bundle(self) -> BatcherBundle:
         return {
             "params": self.params,
-            "type": self.get_type()
+            "type": self.get_type(),
         }
     
     @classmethod

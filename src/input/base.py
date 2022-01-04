@@ -25,7 +25,7 @@ class Input(ABC):
     def bundle(self) -> InputBundle:
         return {
             "params": self.params,
-            "type": self.get_type()
+            "type": self.get_type(),
         }
     
     @classmethod
