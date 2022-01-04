@@ -19,12 +19,14 @@ class AutoTransformPackage:
         self.filters = filters
         self.batcher = batcher
         
-    def to_json(self) -> str:
+    def to_json(self, pretty: bool = False) -> str:
         package = {
             "input": self.input.bundle(),
             "filters": [filter.bundle() for filter in self.filters],
             "batcher": self.batcher.bundle(),
         }
+        if pretty:
+            return json.dumps(package, indent=4)
         return json.dumps(package)
     
     @staticmethod

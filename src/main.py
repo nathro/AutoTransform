@@ -27,4 +27,5 @@ if __name__ == "__main__":
             valid_files.append(f)
     batches = package.batcher.batch(valid_files)
     batches = [{"files": [valid_files[file].path for file in batch["files"]], "metadata": batch["metadata"]} for batch in batches]
-    print(json.dumps(batches, indent=4, sort_keys=True))
+    print(json.dumps(batches, indent=4))
+    print(package.to_json(pretty = True))
