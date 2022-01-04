@@ -1,11 +1,11 @@
-from typing import Any, Dict
+from typing import Any, Callable, Dict
 
 from filter.extension import ExtensionFilter
 from filter.base import Filter, FilterBundle
 from filter.type import FilterType
 
 class FilterFactory:
-    _getters = {
+    _getters: Dict[FilterType, Callable[[bool, Dict[str, Any]], Filter]] = {
         FilterType.EXTENSION: ExtensionFilter.from_data
     }
     

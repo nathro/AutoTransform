@@ -1,11 +1,11 @@
-from typing import Any, Dict
+from typing import Any, Callable, Dict
 
 from input.directory import DirectoryInput
 from input.base import Input, InputBundle
 from input.type import InputType
 
 class InputFactory:
-    _getters = {
+    _getters: Dict[InputType, Callable[[Dict[str, Any]], Input]] = {
         InputType.DIRECTORY: DirectoryInput.from_data
     }
     
