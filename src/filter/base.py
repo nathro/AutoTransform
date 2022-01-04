@@ -51,4 +51,3 @@ class Filter(ABC):
     @abstractmethod
     def _from_data(cls, data: FilterBundle) -> Filter:
         pass
-            

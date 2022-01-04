@@ -2,8 +2,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, TypedDict
 
-from common.cachedfile import CachedFile
 from batcher.type import BatcherType
+from common.cachedfile import CachedFile
 
 class BatchMetadata(TypedDict):
     pass
@@ -23,16 +23,11 @@ class Batcher(ABC):
         self.params = params
         
     @abstractmethod
-    def batch(self, files: List[CachedFile]) -> List[Batch]:
-        pass
-    
-    @abstractmethod
     def get_type(self) -> BatcherType:
         pass
-    
-    @classmethod
+        
     @abstractmethod
-    def from_data(cls, data: Dict[str, Any]) -> Batcher:
+    def batch(self, files: List[CachedFile]) -> List[Batch]:
         pass
     
     def bundle(self) -> BatcherBundle:
@@ -40,4 +35,8 @@ class Batcher(ABC):
             "type": self.get_type(),
             "params": self.params
         }
-            
+    
+    @classmethod
+    @abstractmethod
+    def from_data(cls, data: Dict[str, Any]) -> Batcher:
+        pass   

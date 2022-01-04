@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-from batcher.base import Batcher
+from batcher.base import Batcher, BatcherBundle
 from batcher.single import SingleBatcher
 from batcher.type import BatcherType
 
@@ -10,5 +10,5 @@ class BatcherFactory:
     }
     
     @staticmethod
-    def get(type: BatcherType, data: Dict[str, Any]) -> Batcher:
-        return BatcherFactory._getters[type](data)
+    def get(batcher: BatcherBundle) -> Batcher:
+        return BatcherFactory._getters[batcher["type"]](batcher["params"])
