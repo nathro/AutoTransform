@@ -4,6 +4,7 @@ from typing import List
 
 from batcher.base import Batcher
 from batcher.factory import BatcherFactory
+from common.cachedfile import CachedFile
 from filter.base import Filter
 from filter.factory import FilterFactory
 from input.base import Input
@@ -22,6 +23,23 @@ class AutoTransformPackage:
         self.filters = filters
         self.batcher = batcher
         self.transformer = transformer
+        
+    def run(self):
+        valid_files = []
+        for file in self.input.get_files():
+            f = CachedFile(file)
+            is_valid = True
+            for filter in self.filters:
+                if not filter.is_valid(f):
+                    is_valid = False
+                    break
+            if is_valid:
+                valid_files.append(f)
+        batches = self.batcher.batch(valid_files)
+        batches = [{"files": [valid_files[file] for file in batch["files"]], "metadata": batch["metadata"]} for batch in batches]
+        for batch in batches:
+            for file in batch["files"]:
+                self.transformer.transform(file)
         
     def to_json(self, pretty: bool = False) -> str:
         package = {
