@@ -5,12 +5,9 @@ from typing import Any, Dict, List, Optional, TypedDict
 from batcher.type import BatcherType
 from common.cachedfile import CachedFile
 
-class BatchMetadata(TypedDict):
-    pass
-
 class Batch(TypedDict):
     files: List[int]
-    metadata: BatchMetadata
+    metadata: Dict[str, Any] # must be JSON encodable/decodable
 
 class BatcherBundle(TypedDict):
     params: Optional[Dict[str, Any]]
