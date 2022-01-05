@@ -11,7 +11,7 @@ from transformer.regex import RegexTransformer
 if __name__ == "__main__":
     inp = DirectoryInput({"path": "C:/repos/autotransform/src"})
     filter = ExtensionFilter({"extensions": [Extensions.TEXT]})
-    batcher = SingleBatcher({})
+    batcher = SingleBatcher({"message": ""})
     transformer = RegexTransformer({"pattern": r"test", "replacement": "foo"})
     package = AutoTransformPackage(inp, batcher, transformer, filters=[filter])
     json_package = package.to_json()

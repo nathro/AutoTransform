@@ -6,7 +6,7 @@ from batcher.type import BatcherType
 from common.cachedfile import CachedFile
 
 class SingleBatcherParams(TypedDict):
-    pass
+    message: str
 
 class SingleBatcher(Batcher):
     params: SingleBatcherParams
@@ -20,10 +20,12 @@ class SingleBatcher(Batcher):
     def batch(self, files: List[CachedFile]) -> List[Batch]:
         batch: Batch = {
             "files": list(range(len(files))),
-            "metadata": {},
+            "metadata": {"message": self.params["message"]},
         }
         return [batch]
     
     @classmethod
     def from_data(cls, data: Dict[str, Any]) -> SingleBatcher:
-        return cls({})
+        message = data["message"]
+        assert isinstance(message, str)
+        return cls({"message": message})

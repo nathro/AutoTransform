@@ -19,7 +19,7 @@ def main():
     args = parse_arguments()
     input = DirectoryInput({"path": args.directory})
     transformer = RegexTransformer({"pattern": args.pattern, "replacement": args.replacement})
-    batcher = SingleBatcher({})
+    batcher = SingleBatcher({"message": ""})
     filters = []
     extensions = args.extensions
     if isinstance(extensions, str):
