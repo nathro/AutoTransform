@@ -1,6 +1,9 @@
 from typing import Optional
 
 class CachedFile:
+    path: str
+    content: Optional[str]
+    
     def __init__(self, path: str):
         self.path = path
         self.content: Optional[str] = None

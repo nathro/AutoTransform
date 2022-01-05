@@ -8,6 +8,10 @@ from common.cachedfile import CachedFile
 class Batch(TypedDict):
     files: List[int]
     metadata: Dict[str, Any] # must be JSON encodable/decodable
+    
+class ConvertedBatch(TypedDict):
+    files: List[CachedFile]
+    metadata: Dict[str, Any] # must be JSON encodable/decodable
 
 class BatcherBundle(TypedDict):
     params: Optional[Dict[str, Any]]

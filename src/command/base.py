@@ -2,7 +2,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Optional, TypedDict
 
-from batcher.base import Batch
+from batcher.base import ConvertedBatch
 from command.type import CommandType
 
 class CommandBundle(TypedDict):
@@ -20,7 +20,7 @@ class Command(ABC):
         pass
         
     @abstractmethod
-    def run(self, batch: Batch) -> None:
+    def run(self, batch: ConvertedBatch) -> None:
         pass
     
     def bundle(self) -> CommandBundle:
