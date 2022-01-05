@@ -4,6 +4,8 @@ from typing import Any, Dict, List, TypedDict
 
 from batcher.base import Batcher
 from batcher.factory import BatcherFactory
+from command.base import Command
+from command.factory import CommandFactory
 from common.cachedfile import CachedFile
 from filter.base import Filter
 from filter.factory import FilterFactory
@@ -37,27 +39,34 @@ class PackageConfiguration:
         return cls(validation_level)
 
 class AutoTransformPackage:
-    config: PackageConfiguration
     input: Input
-    filters: List[Filter]
     batcher: Batcher
     transformer: Transformer
+    
+    filters: List[Filter]
     validators: List[Validator]
+    commands: List[Command]
+    
+    config: PackageConfiguration
     
     def __init__(
         self,
         input: Input,
-        filters: List[Filter],
         batcher: Batcher,
         transformer: Transformer,
-        validators: List[Validator],
+        filters: List[Filter] = [],
+        validators: List[Validator] = [],
+        commands: List[Command] = [],
         config: PackageConfiguration = PackageConfiguration()
     ):
         self.input = input
-        self.filters = filters
         self.batcher = batcher
         self.transformer = transformer
+        
+        self.filters = filters
         self.validators = validators
+        self.commands = commands
+        
         self.config = config
         
     def run(self):
@@ -80,16 +89,20 @@ class AutoTransformPackage:
                 validation_result = validator.validate(batch)
                 if validation_result["level"] > self.config.allowed_validation_level:
                     raise ValidationError(validation_result)
+            for command in self.commands:
+                command.run(batch)
         
     def to_json(self, pretty: bool = False) -> str:
         package = {
-            "config": self.config.bundle(),
             "input": self.input.bundle(),
-            "filters": [filter.bundle() for filter in self.filters],
             "batcher": self.batcher.bundle(),
             "transformer": self.transformer.bundle(),
-            "validators": [validator.bundle() for validator in self.validators],
             
+            "filters": [filter.bundle() for filter in self.filters],
+            "validators": [validator.bundle() for validator in self.validators],
+            "commands": [command.bundle() for command in self.commands],
+            
+            "config": self.config.bundle(),
         }
         if pretty:
             return json.dumps(package, indent=4)
@@ -98,11 +111,15 @@ class AutoTransformPackage:
     @staticmethod
     def from_json(json_package: str) -> AutoTransformPackage:
         package = json.loads(json_package)
-        config = PackageConfiguration.from_data(package["config"])
+        
         input = InputFactory.get(package["input"])
-        filters = [FilterFactory.get(filter) for filter in package["filters"]]
         batcher = BatcherFactory.get(package["batcher"])
         transformer = TransformerFactory.get(package["transformer"])
-        validators = [ValidatorFactory.get(validator) for validator in package["validators"]]
         
-        return AutoTransformPackage(input, filters, batcher, transformer, validators, config)
+        filters = [FilterFactory.get(filter) for filter in package["filters"]]
+        validators = [ValidatorFactory.get(validator) for validator in package["validators"]]
+        commands = [CommandFactory.get(command) for command in package["commands"]]
+        
+        config = PackageConfiguration.from_data(package["config"])
+        
+        return AutoTransformPackage(input, batcher, transformer, filters=filters, validators=validators, commands=commands, config=config)
