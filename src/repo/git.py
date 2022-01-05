@@ -1,24 +1,25 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from git import Repo
+from git import Repo as GitPython
 from typing import Any, Dict, Optional, TypedDict
 
 from batcher.base import ConvertedBatch
-from sourcecontrol.base import SourceControl
-from sourcecontrol.type import SourceControlType
+from repo.base import Repo
+from repo.type import RepoType
 
-class GitSourceControlParams(TypedDict):
+class GitRepoParams(TypedDict):
     path: str
     
-class GitSourceControl(SourceControl):
-    params: GitSourceControlParams
+class GitRepo(Repo):
+    params: GitRepoParams
+    repo: GitPython
     
-    def __init__(self, params: GitSourceControlParams):
-        SourceControl.__init__(self, params)
-        self.repo = Repo(self.params["path"])
+    def __init__(self, params: GitRepoParams):
+        Repo.__init__(self, params)
+        self.repo = GitPython(self.params["path"])
         
-    def get_type(self) -> SourceControlType:
-        return SourceControlType.GIT
+    def get_type(self) -> RepoType:
+        return RepoType.GIT
     
     def has_changes(self, batch: ConvertedBatch) -> bool:
         return self.repo.is_dirty(untracked_files=True)
@@ -37,7 +38,7 @@ class GitSourceControl(SourceControl):
         self.repo.git.checkout(str(prev))
     
     @classmethod
-    def from_data(cls, data: Dict[str, Any]) -> GitSourceControl:
+    def from_data(cls, data: Dict[str, Any]) -> GitRepo:
         path = data["path"]
         assert isinstance(path, str)
         return cls({"path": path})

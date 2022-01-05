@@ -1,4 +1,4 @@
 from enum import Enum
 
-class SourceControlType(str, Enum):
+class RepoType(str, Enum):
     GIT = 'git'

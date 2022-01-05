@@ -3,20 +3,20 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, Optional, TypedDict
 
 from batcher.base import Batch
-from sourcecontrol.type import SourceControlType
+from repo.type import RepoType
 
-class SourceControlBundle(TypedDict):
+class RepoBundle(TypedDict):
     params: Optional[Dict[str, Any]]
-    type: SourceControlType
+    type: RepoType
 
-class SourceControl(ABC):
+class Repo(ABC):
     params: Optional[Dict[str, Any]]
     
     def __init__(self, params: Dict[str, Any]):
         self.params = params
         
     @abstractmethod
-    def get_type(self) -> SourceControlType:
+    def get_type(self) -> RepoType:
         pass
     
     @abstractmethod
@@ -35,7 +35,7 @@ class SourceControl(ABC):
     def rewind(self, batch: Batch) -> None:
         pass
     
-    def bundle(self) -> SourceControlBundle:
+    def bundle(self) -> RepoBundle:
         return {
             "params": self.params,
             "type": self.get_type(),
@@ -43,5 +43,5 @@ class SourceControl(ABC):
     
     @classmethod
     @abstractmethod
-    def from_data(cls, data: Dict[str, Any]) -> SourceControl:
+    def from_data(cls, data: Dict[str, Any]) -> Repo:
         pass

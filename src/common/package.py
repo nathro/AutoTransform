@@ -1,6 +1,6 @@
 from __future__ import annotations
 import json
-from typing import Any, Dict, List, TypedDict
+from typing import Any, Dict, List, Optional, TypedDict
 
 from batcher.base import Batcher
 from batcher.factory import BatcherFactory
@@ -11,6 +11,8 @@ from filter.base import Filter
 from filter.factory import FilterFactory
 from input.base import Input
 from input.factory import InputFactory
+from repo.base import Repo
+from repo.factory import RepoFactory
 from transformer.base import Transformer
 from transformer.factory import TransformerFactory
 from validator.base import ValidationError, ValidationResultLevel, Validator
@@ -46,6 +48,7 @@ class AutoTransformPackage:
     filters: List[Filter]
     validators: List[Validator]
     commands: List[Command]
+    repo: Optional[Repo]
     
     config: PackageConfiguration
     
@@ -57,6 +60,7 @@ class AutoTransformPackage:
         filters: List[Filter] = [],
         validators: List[Validator] = [],
         commands: List[Command] = [],
+        repo: Optional[Repo] = None,
         config: PackageConfiguration = PackageConfiguration()
     ):
         self.input = input
@@ -66,6 +70,7 @@ class AutoTransformPackage:
         self.filters = filters
         self.validators = validators
         self.commands = commands
+        self.repo = repo
         
         self.config = config
         
@@ -82,7 +87,10 @@ class AutoTransformPackage:
                 valid_files.append(f)
         batches = self.batcher.batch(valid_files)
         batches = [{"files": [valid_files[file] for file in batch["files"]], "metadata": batch["metadata"]} for batch in batches]
+        repo = self.repo
         for batch in batches:
+            if repo != None:
+                self.repo.clean(batch)
             for file in batch["files"]:
                 self.transformer.transform(file)
             for validator in self.validators:
@@ -91,6 +99,10 @@ class AutoTransformPackage:
                     raise ValidationError(validation_result)
             for command in self.commands:
                 command.run(batch)
+            if repo != None:
+                if repo.has_changes(batch):
+                    repo.submit(batch)
+                    repo.rewind(batch)
         
     def to_json(self, pretty: bool = False) -> str:
         package = {
