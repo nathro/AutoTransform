@@ -29,7 +29,7 @@ def main():
             assert Extensions.has_value(extension)
         filters.append(ExtensionFilter({"extensions": extensions}))
     
-    package = AutoTransformPackage(input, filters, batcher, transformer)
+    package = AutoTransformPackage(input, filters, batcher, transformer, [])
     package.run()
 
 if __name__ == "__main__":
