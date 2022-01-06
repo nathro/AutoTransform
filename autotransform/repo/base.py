@@ -11,19 +11,19 @@
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional, TypedDict
+from typing import Any, Dict, Mapping, Optional, TypedDict
 
-from batcher.base import Batch
-from repo.type import RepoType
+from autotransform.batcher.base import BatchWithFiles
+from autotransform.repo.type import RepoType
 
 class RepoBundle(TypedDict):
-    params: Optional[Dict[str, Any]]
+    params: Mapping[str, Any]
     type: RepoType
 
 class Repo(ABC):
-    params: Optional[Dict[str, Any]]
+    params: Mapping[str, Any]
     
-    def __init__(self, params: Dict[str, Any]):
+    def __init__(self, params: Mapping[str, Any]):
         self.params = params
         
     @abstractmethod
@@ -31,19 +31,19 @@ class Repo(ABC):
         pass
     
     @abstractmethod
-    def has_changes(self, batch: Batch) -> bool:
+    def has_changes(self, batch: BatchWithFiles) -> bool:
         pass
         
     @abstractmethod
-    def submit(self, batch: Batch) -> None:
+    def submit(self, batch: BatchWithFiles) -> None:
         pass
     
     @abstractmethod
-    def clean(self, batch: Batch) -> None:
+    def clean(self, batch: BatchWithFiles) -> None:
         pass
     
     @abstractmethod
-    def rewind(self, batch: Batch) -> None:
+    def rewind(self, batch: BatchWithFiles) -> None:
         pass
     
     def bundle(self) -> RepoBundle:
@@ -52,7 +52,7 @@ class Repo(ABC):
             "type": self.get_type(),
         }
     
-    @classmethod
+    @staticmethod
     @abstractmethod
-    def from_data(cls, data: Dict[str, Any]) -> Repo:
+    def from_data(data: Mapping[str, Any]) -> Repo:
         pass

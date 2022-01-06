@@ -9,25 +9,27 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+from __future__ import annotations
 from configparser import ConfigParser
 from git import Repo as GitPython
 from github import Github
 import pathlib
+from typing import Any, Mapping
 
-from batcher.base import ConvertedBatch
-from repo.git import GitRepo, GitRepoParams
+from autotransform.batcher.base import BatchWithFiles
+from autotransform.repo.git import GitRepo, GitRepoParams
 
-class GitHubRepoParams(GitRepoParams):
+class GithubRepoParams(GitRepoParams):
     full_github_name: str
 
-class GitHubRepo(GitRepo):
-    params: GitHubRepoParams
+class GithubRepo(GitRepo):
+    params: GithubRepoParams
     local_repo: GitPython
     github: Github
     
-    def __init__(self, params: GitRepoParams):
+    def __init__(self, params: GithubRepoParams):
         GitRepo.__init__(self, params)
-        self.github = GitHubRepo.get_github_object()
+        self.github = GithubRepo.get_github_object()
         
     @staticmethod
     def get_github_object() -> Github:
@@ -45,7 +47,7 @@ class GitHubRepo(GitRepo):
             return Github(credentials["github_username"], credentials["github_password"], base_url=url)
         return Github(credentials["github_username"], credentials["github_password"])
     
-    def submit(self, batch: ConvertedBatch) -> None:
+    def submit(self, batch: BatchWithFiles) -> None:
         title = batch["metadata"]["title"]
         summary = batch["metadata"].get("summary", "")
         tests = batch["metadata"].get("tests", "")
@@ -65,3 +67,11 @@ class GitHubRepo(GitRepo):
             {tests}
         '''
         pr = github_repo.create_pull(title=title, body=body, base=self.active_branch.name, head=commit_branch)
+        
+    @staticmethod
+    def from_data(data: Mapping[str, Any]) -> GithubRepo:
+        path = data["path"]
+        assert isinstance(path, str)
+        full_github_name = data["full_github_name"]
+        assert isinstance(full_github_name, str)
+        return GithubRepo({"path": path, "full_github_name": full_github_name})

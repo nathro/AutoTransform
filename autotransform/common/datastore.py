@@ -11,7 +11,7 @@
 
 from typing import Dict, Optional
 
-from common.dataobject import FileDataObject
+from autotransform.common.dataobject import FileDataObject
 
 class FileDataStore:
     def __init__(self):

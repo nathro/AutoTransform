@@ -11,13 +11,13 @@
 
 from __future__ import annotations
 from git import Repo as GitPython
-from typing import Any, Dict, TypedDict
+from typing import Any, Dict, Mapping, TypedDict
 
 from git.refs.head import Head
 
-from batcher.base import BatchMetadata, ConvertedBatch
-from repo.base import Repo
-from repo.type import RepoType
+from autotransform.batcher.base import BatchMetadata, BatchWithFiles
+from autotransform.repo.base import Repo
+from autotransform.repo.type import RepoType
 
 class GitRepoParams(TypedDict):
     path: str
@@ -41,26 +41,26 @@ class GitRepo(Repo):
     def get_type(self) -> RepoType:
         return RepoType.GIT
     
-    def has_changes(self, batch: ConvertedBatch) -> bool:
+    def has_changes(self, batch: BatchWithFiles) -> bool:
         return self.local_repo.is_dirty(untracked_files=True)
         
-    def submit(self, batch: ConvertedBatch) -> None:
+    def submit(self, batch: BatchWithFiles) -> None:
         self.commit(batch["metadata"])
+    
+    def clean(self, batch: BatchWithFiles) -> None:
+        self.local_repo.git.reset('--hard')
+    
+    def rewind(self, batch: BatchWithFiles) -> None:
+        self.clean(batch)
+        self.local_repo.active_branch.checkout()
+    
+    @staticmethod
+    def from_data(data: Mapping[str, Any]) -> GitRepo:
+        path = data["path"]
+        assert isinstance(path, str)
+        return GitRepo({"path": path})
     
     def commit(self, metadata: BatchMetadata) -> None:
         self.local_repo.git.checkout("-b", GitRepo.get_branch_name(metadata["title"]))
         self.local_repo.git.add(all=True)
         self.local_repo.index.commit(metadata["title"])
-    
-    def clean(self, batch: ConvertedBatch) -> None:
-        self.local_repo.git.reset('--hard')
-    
-    def rewind(self, batch: ConvertedBatch) -> None:
-        self.clean(batch)
-        self.local_repo.active_branch.checkout()
-    
-    @classmethod
-    def from_data(cls, data: Dict[str, Any]) -> GitRepo:
-        path = data["path"]
-        assert isinstance(path, str)
-        return cls({"path": path})

@@ -11,11 +11,11 @@
 
 from __future__ import annotations
 from enum import Enum
-from typing import Any, Dict, List, TypedDict
+from typing import Any, Dict, List, Mapping, TypedDict
 
-from common.cachedfile import CachedFile
-from filter.base import Filter
-from filter.type import FilterType
+from autotransform.common.cachedfile import CachedFile
+from autotransform.filter.base import Filter
+from autotransform.filter.type import FilterType
 
 class Extensions(str, Enum):
     PYTHON = ".py"
@@ -43,10 +43,10 @@ class ExtensionFilter(Filter):
                 return True
         return False
     
-    @classmethod
-    def _from_data(cls, data: Dict[str, Any]) -> ExtensionFilter:
+    @staticmethod
+    def _from_data(data: Mapping[str, Any]) -> ExtensionFilter:
         extensions = data["extensions"]
         assert isinstance(extensions, List)
         for extension in extensions:
             assert Extensions.has_value(extension)
-        return cls({"extensions": extensions})
+        return ExtensionFilter({"extensions": extensions})

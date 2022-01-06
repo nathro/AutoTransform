@@ -9,15 +9,17 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, Mapping
 
-from repo.base import Repo, RepoBundle
-from repo.git import GitRepo
-from repo.type import RepoType
+from autotransform.repo.base import Repo, RepoBundle
+from autotransform.repo.git import GitRepo
+from autotransform.repo.github import GithubRepo
+from autotransform.repo.type import RepoType
 
 class RepoFactory:
-    _getters: Dict[RepoType, Callable[[Dict[str, Any]], Repo]] = {
+    _getters: Dict[RepoType, Callable[[Mapping[str, Any]], Repo]] = {
         RepoType.GIT: GitRepo.from_data,
+        RepoType.GITHUB: GithubRepo.from_data,
     }
     
     @staticmethod

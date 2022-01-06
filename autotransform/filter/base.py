@@ -11,21 +11,21 @@
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional, TypedDict
+from typing import Any, Mapping, Optional, TypedDict
 
-from common.cachedfile import CachedFile
-from filter.type import FilterType
+from autotransform.common.cachedfile import CachedFile
+from autotransform.filter.type import FilterType
 
 class FilterBundle(TypedDict):
     inverted: Optional[bool]
-    params: Optional[Dict[str, Any]]
+    params: Mapping[str, Any]
     type: FilterType
 
 class Filter(ABC):
     inverted: bool
-    params: Optional[Dict[str, Any]]
+    params: Mapping[str, Any]
     
-    def __init__(self, params: Optional[Dict[str, Any]]):
+    def __init__(self, params: Mapping[str, Any]):
         self.inverted = False
         self.params = params
         
@@ -52,13 +52,13 @@ class Filter(ABC):
         }
     
     @classmethod
-    def from_data(cls, inverted: bool, data: FilterBundle) -> Filter:
+    def from_data(cls, inverted: Optional[bool], data: Mapping[str, Any]) -> Filter:
         filter = cls._from_data(data)
         if inverted:
             filter.invert()
         return filter
     
-    @classmethod
+    @staticmethod
     @abstractmethod
-    def _from_data(cls, data: FilterBundle) -> Filter:
+    def _from_data(data: Mapping[str, Any]) -> Filter:
         pass

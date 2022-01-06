@@ -13,21 +13,21 @@ from __future__ import annotations
 import json
 from typing import Any, Dict, List, Optional, TypedDict
 
-from batcher.base import Batcher
-from batcher.factory import BatcherFactory
-from command.base import Command
-from command.factory import CommandFactory
-from common.cachedfile import CachedFile
-from filter.base import Filter
-from filter.factory import FilterFactory
-from input.base import Input
-from input.factory import InputFactory
-from repo.base import Repo
-from repo.factory import RepoFactory
-from transformer.base import Transformer
-from transformer.factory import TransformerFactory
-from validator.base import ValidationError, ValidationResultLevel, Validator
-from validator.factory import ValidatorFactory
+from autotransform.batcher.base import Batcher
+from autotransform.batcher.factory import BatcherFactory
+from autotransform.command.base import Command
+from autotransform.command.factory import CommandFactory
+from autotransform.common.cachedfile import CachedFile
+from autotransform.filter.base import Filter
+from autotransform.filter.factory import FilterFactory
+from autotransform.input.base import Input
+from autotransform.input.factory import InputFactory
+from autotransform.repo.base import Repo
+from autotransform.repo.factory import RepoFactory
+from autotransform.transformer.base import Transformer
+from autotransform.transformer.factory import TransformerFactory
+from autotransform.validator.base import ValidationError, ValidationResultLevel, Validator
+from autotransform.validator.factory import ValidatorFactory
 
 class PackageConfiguration:
     allowed_validation_level: ValidationResultLevel
@@ -127,6 +127,9 @@ class AutoTransformPackage:
             
             "config": self.config.bundle(),
         }
+        repo = self.repo
+        if isinstance(repo, Repo):
+            package["repo"] = repo.bundle()
         if pretty:
             return json.dumps(package, indent=4)
         return json.dumps(package)
@@ -143,6 +146,11 @@ class AutoTransformPackage:
         validators = [ValidatorFactory.get(validator) for validator in package["validators"]]
         commands = [CommandFactory.get(command) for command in package["commands"]]
         
+        if "repo" in package:
+            repo = RepoFactory.get(package["repo"])
+        else:
+            repo = None
+        
         config = PackageConfiguration.from_data(package["config"])
         
-        return AutoTransformPackage(input, batcher, transformer, filters=filters, validators=validators, commands=commands, config=config)
+        return AutoTransformPackage(input, batcher, transformer, filters=filters, validators=validators, commands=commands, repo=repo, config=config)
