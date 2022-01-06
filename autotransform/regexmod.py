@@ -56,6 +56,30 @@ def parse_arguments():
     parser.add_argument(
         "replacement", metavar="replacement", type=str, help="What you wish to replace with"
     )
+    parser.add_argument(
+        "--title",
+        metavar="title",
+        type=str,
+        required=False,
+        default="",
+        help="The full name of the github repo that a pull request should be submitted against",
+    )
+    parser.add_argument(
+        "--summary",
+        metavar="summary",
+        type=str,
+        required=False,
+        default="",
+        help="The full name of the github repo that a pull request should be submitted against",
+    )
+    parser.add_argument(
+        "--tests",
+        metavar="tests",
+        type=str,
+        required=False,
+        default="",
+        help="The full name of the github repo that a pull request should be submitted against",
+    )
     return parser.parse_args()
 
 
@@ -64,7 +88,7 @@ def main():
     inp = DirectoryInput({"path": args.directory})
     transformer = RegexTransformer({"pattern": args.pattern, "replacement": args.replacement})
     batcher = SingleBatcher(
-        {"metadata": {"title": "Just a test", "summary": "This is just a test", "tests": "This?"}}
+        {"metadata": {"title": args.title, "summary": args.summary, "tests": args.tests}}
     )
     filters = []
     extensions = args.extensions
@@ -79,8 +103,11 @@ def main():
     if isinstance(git_repo, str):
         github_repo = args.github
         if isinstance(github_repo, str):
+            print("Using Github repo: " + github_repo)
+            print("Local repo: " + git_repo)
             repo = GithubRepo({"path": git_repo, "full_github_name": github_repo})
         else:
+            print("Using git repo: " + git_repo)
             repo = GitRepo({"path": git_repo})
     else:
         repo = None
