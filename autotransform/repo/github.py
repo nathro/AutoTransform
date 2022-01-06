@@ -43,4 +43,5 @@ class GitHubRepo(GitRepo):
             TESTS
             {tests}
         '''
-        pr = github_repo.create_pull(title=title, body=body, head=GitRepo.COMMIT_BRANCH, base=GitRepo.PARENT_BRANCH)
+        branch_name = GitRepo.COMMIT_BRANCH_BASE + ":" + batch["metadata"]["title"].replace(" ", "_")
+        pr = github_repo.create_pull(title=title, body=body, head=branch_name, base=self.active_branch.name)
