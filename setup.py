@@ -1,3 +1,10 @@
+# AutoTransform
+# Large scale, component based code modification library
+#
+# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
+
 import setuptools
 
 with open("README.md", "r", encoding="utf-8") as fh:
@@ -19,19 +26,16 @@ setuptools.setup(
         "Support": "https://www.paypal.com/paypalme/nathrosoftware",
     },
     classifiers=[
-        'Development Status :: 3 - Alpha',
-        'Intended Audience :: Developers',
-        'Topic :: Software Development :: Codemod',
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",
+        "Topic :: Software Development :: Codemod",
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    keywords='codemod, automation, code change',
+    keywords="codemod, automation, code change",
     package_dir={"": "autotransform"},
     packages=setuptools.find_packages(where="autotransform"),
-    install_requires=[
-        'GitPython',
-        'PyGithub'
-    ],
+    install_requires=["GitPython", "PyGithub"],
     python_requires=">=3.10",
 )

@@ -8,9 +8,9 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Mapping, Optional
 
-from autotransform.batcher.base import Batcher
+from autotransform.batcher.base import Batcher, BatchWithFiles
 from autotransform.batcher.factory import BatcherFactory
 from autotransform.command.base import Command
 from autotransform.command.factory import CommandFactory
@@ -89,7 +89,7 @@ class AutoTransformPackage:
 
         self.config = config
 
-    def run(self):
+    def get_batches(self) -> List[BatchWithFiles]:
         valid_files = []
         for file in self.input.get_files():
             cached_file = CachedFile(file)
@@ -101,29 +101,35 @@ class AutoTransformPackage:
             if is_valid:
                 valid_files.append(cached_file)
         batches = self.batcher.batch(valid_files)
-        batches = [
+        return [
             {"files": [valid_files[file] for file in batch["files"]], "metadata": batch["metadata"]}
             for batch in batches
         ]
-        repo = self.repo
-        for batch in batches:
-            if repo is not None:
-                self.repo.clean(batch)
-            for file in batch["files"]:
-                self.transformer.transform(file)
-            for validator in self.validators:
-                validation_result = validator.validate(batch)
-                if validation_result["level"] > self.config.allowed_validation_level:
-                    raise ValidationError(validation_result)
-            for command in self.commands:
-                command.run(batch)
-            if repo is not None:
-                if repo.has_changes(batch):
-                    repo.submit(batch)
-                    repo.rewind(batch)
 
-    def to_json(self, pretty: bool = False) -> str:
-        package = {
+    def execute_batch(self, batch: BatchWithFiles) -> None:
+        repo = self.repo
+        if repo is not None:
+            repo.clean(batch)
+        for file in batch["files"]:
+            self.transformer.transform(file)
+        for validator in self.validators:
+            validation_result = validator.validate(batch)
+            if validation_result["level"] > self.config.allowed_validation_level:
+                raise ValidationError(validation_result)
+        for command in self.commands:
+            command.run(batch)
+        if repo is not None:
+            if repo.has_changes(batch):
+                repo.submit(batch)
+                repo.rewind(batch)
+
+    def run(self):
+        batches = self.get_batches()
+        for batch in batches:
+            self.execute_batch(batch)
+
+    def bundle(self) -> Dict[str, Any]:
+        bundle = {
             "input": self.input.bundle(),
             "batcher": self.batcher.bundle(),
             "transformer": self.transformer.bundle(),
@@ -134,29 +140,35 @@ class AutoTransformPackage:
         }
         repo = self.repo
         if isinstance(repo, Repo):
-            package["repo"] = repo.bundle()
+            bundle["repo"] = repo.bundle()
+        return bundle
+
+    def to_json(self, pretty: bool = False) -> str:
+        bundle = self.bundle()
         if pretty:
-            return json.dumps(package, indent=4)
-        return json.dumps(package)
+            return json.dumps(bundle, indent=4)
+        return json.dumps(bundle)
 
     @staticmethod
-    def from_json(json_package: str) -> AutoTransformPackage:
-        package = json.loads(json_package)
+    def from_json(json_bundle: str) -> AutoTransformPackage:
+        return AutoTransformPackage.from_bundle(json.loads(json_bundle))
 
-        inp = InputFactory.get(package["input"])
-        batcher = BatcherFactory.get(package["batcher"])
-        transformer = TransformerFactory.get(package["transformer"])
+    @staticmethod
+    def from_bundle(bundle: Mapping[str, Any]) -> AutoTransformPackage:
+        inp = InputFactory.get(bundle["input"])
+        batcher = BatcherFactory.get(bundle["batcher"])
+        transformer = TransformerFactory.get(bundle["transformer"])
 
-        filters = [FilterFactory.get(filter) for filter in package["filters"]]
-        validators = [ValidatorFactory.get(validator) for validator in package["validators"]]
-        commands = [CommandFactory.get(command) for command in package["commands"]]
+        filters = [FilterFactory.get(filter) for filter in bundle["filters"]]
+        validators = [ValidatorFactory.get(validator) for validator in bundle["validators"]]
+        commands = [CommandFactory.get(command) for command in bundle["commands"]]
 
-        if "repo" in package:
-            repo = RepoFactory.get(package["repo"])
+        if "repo" in bundle:
+            repo = RepoFactory.get(bundle["repo"])
         else:
             repo = None
 
-        config = PackageConfiguration.from_data(package["config"])
+        config = PackageConfiguration.from_data(bundle["config"])
 
         return AutoTransformPackage(
             inp,

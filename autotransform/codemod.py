@@ -6,12 +6,15 @@
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
 import argparse
+import time
 
 from autotransform.batcher.single import SingleBatcher
 from autotransform.common.package import AutoTransformPackage
+from autotransform.common.runner import Runner
 from autotransform.filter.extension import ExtensionFilter, Extensions
 from autotransform.input.directory import DirectoryInput
 from autotransform.transformer.regex import RegexTransformer
+from autotransform.worker.local import LocalWorker
 
 
 def parse_arguments():
@@ -56,7 +59,13 @@ def main():
         filters.append(ExtensionFilter({"extensions": extensions}))
 
     package = AutoTransformPackage(inp, batcher, transformer, filters=filters)
-    package.run()
+    runner = Runner(package, LocalWorker)
+    start_time = time.time()
+    runner.start()
+    timeout = 30
+    while not runner.is_finished() and time.time() <= start_time + timeout:
+        time.sleep(1)
+    runner.kill()
 
 
 if __name__ == "__main__":

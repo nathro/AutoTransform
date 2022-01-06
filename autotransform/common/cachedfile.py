@@ -5,22 +5,26 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-from typing import Optional
+from typing import Dict
+
+FILE_CACHE: Dict[str, str] = {}
 
 
 class CachedFile:
     # pylint: disable=too-few-public-methods
 
     path: str
-    content: Optional[str]
 
     def __init__(self, path: str):
         self.path = path
-        self.content: Optional[str] = None
 
     def get_content(self) -> str:
-        if self.content is None:
+        if self.path not in FILE_CACHE:
             # pylint: disable=unspecified-encoding
             with open(self.path, "r") as file:
-                self.content = file.read()
-        return self.content
+                FILE_CACHE[self.path] = file.read()
+        return FILE_CACHE[self.path]
+
+    def __del__(self):
+        if self.path in FILE_CACHE:
+            del FILE_CACHE[self.path]
