@@ -5,7 +5,7 @@ from batcher.single import SingleBatcher
 from common.package import AutoTransformPackage
 from filter.extension import ExtensionFilter, Extensions
 from input.directory import DirectoryInput
-from repo.git import GitRepo
+from repo.github import GitHubRepo
 from transformer.regex import RegexTransformer
 
 def parse_arguments():
@@ -21,7 +21,7 @@ def main():
     input = DirectoryInput({"path": args.directory})
     transformer = RegexTransformer({"pattern": args.pattern, "replacement": args.replacement})
     batcher = SingleBatcher({"metadata": {"title": "Just a test", "summary": "This is just a test", "tests": "This?"}})
-    repo = GitRepo({"path": "C:/repos/autotransform"})
+    repo = GitHubRepo({"path": "C:/repos/autotransform", "full_github_name": "nathro/AutoTransform"})
     filters = []
     extensions = args.extensions
     if isinstance(extensions, str):

@@ -4,7 +4,7 @@ from typing import Any, Dict, TypedDict
 
 from git.refs.head import Head
 
-from batcher.base import ConvertedBatch
+from batcher.base import BatchMetadata, ConvertedBatch
 from repo.base import Repo
 from repo.type import RepoType
 
@@ -34,12 +34,12 @@ class GitRepo(Repo):
         return self.local_repo.is_dirty(untracked_files=True)
         
     def submit(self, batch: ConvertedBatch) -> None:
-        self.commit(batch)
+        self.commit(batch["metadata"])
     
-    def commit(self, batch: ConvertedBatch) -> None:
-        self.local_repo.git.checkout("-b", GitRepo.get_branch_name(batch["metadata"]["title"]))
+    def commit(self, metadata: BatchMetadata) -> None:
+        self.local_repo.git.checkout("-b", GitRepo.get_branch_name(metadata["title"]))
         self.local_repo.git.add(all=True)
-        self.local_repo.index.commit(batch["metadata"]["title"])
+        self.local_repo.index.commit(metadata["title"])
     
     def clean(self, batch: ConvertedBatch) -> None:
         self.local_repo.git.reset('--hard')
