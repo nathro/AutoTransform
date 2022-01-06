@@ -9,6 +9,8 @@ from typing import Optional
 
 
 class CachedFile:
+    # pylint: disable=too-few-public-methods
+
     path: str
     content: Optional[str]
 
@@ -19,7 +21,6 @@ class CachedFile:
     def get_content(self) -> str:
         if self.content is None:
             # pylint: disable=unspecified-encoding
-            file = open(self.path, "r")
-            self.content = file.read()
-            file.close()
+            with open(self.path, "r") as file:
+                self.content = file.read()
         return self.content

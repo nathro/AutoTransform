@@ -52,6 +52,8 @@ class PackageConfiguration:
 
 
 class AutoTransformPackage:
+    # pylint: disable=too-many-instance-attributes
+
     input: Input
     batcher: Batcher
     transformer: Transformer
@@ -74,6 +76,8 @@ class AutoTransformPackage:
         repo: Optional[Repo] = None,
         config: PackageConfiguration = PackageConfiguration(),
     ):
+        # pylint: disable=too-many-arguments
+
         self.input = inp
         self.batcher = batcher
         self.transformer = transformer

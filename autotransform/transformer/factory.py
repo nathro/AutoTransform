@@ -13,6 +13,8 @@ from autotransform.transformer.type import TransformerType
 
 
 class TransformerFactory:
+    # pylint: disable=too-few-public-methods
+
     _getters: Dict[TransformerType, Callable[[Mapping[str, Any]], Transformer]] = {
         TransformerType.REGEX: RegexTransformer.from_data,
     }

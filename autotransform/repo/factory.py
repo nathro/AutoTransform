@@ -14,6 +14,8 @@ from autotransform.repo.type import RepoType
 
 
 class RepoFactory:
+    # pylint: disable=too-few-public-methods
+
     _getters: Dict[RepoType, Callable[[Mapping[str, Any]], Repo]] = {
         RepoType.GIT: GitRepo.from_data,
         RepoType.GITHUB: GithubRepo.from_data,

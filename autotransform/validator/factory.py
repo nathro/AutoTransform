@@ -12,6 +12,8 @@ from autotransform.validator.type import ValidatorType
 
 
 class ValidatorFactory:
+    # pylint: disable=too-few-public-methods
+
     _getters: Dict[ValidatorType, Callable[[Mapping[str, Any]], Validator]] = {}
 
     @staticmethod

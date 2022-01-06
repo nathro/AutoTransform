@@ -25,9 +25,13 @@ class AutoTransformSchema(ABC):
         pass
 
     def get_filters(self) -> List[Filter]:
+        # pylint: disable=no-self-use
+
         return []
 
     def get_batcher(self) -> Batcher:
+        # pylint: disable=no-self-use
+
         return SingleBatcher({"metadata": {"title": "", "summary": None, "tests": None}})
 
     @abstractmethod
@@ -35,15 +39,23 @@ class AutoTransformSchema(ABC):
         pass
 
     def get_validators(self) -> List[Validator]:
+        # pylint: disable=no-self-use
+
         return []
 
     def get_commands(self) -> List[Command]:
+        # pylint: disable=no-self-use
+
         return []
 
     def get_repo(self) -> Optional[Repo]:
+        # pylint: disable=no-self-use
+
         return None
 
     def get_config(self) -> PackageConfiguration:
+        # pylint: disable=no-self-use
+
         return PackageConfiguration()
 
     def get_package(self):
@@ -60,6 +72,6 @@ class AutoTransformSchema(ABC):
 
     def dump_to_file(self, path: str):
         # pylint: disable=unspecified-encoding
-        file = open(path, "w")
-        file.write(self.get_package().to_json(pretty=True))
-        file.close()
+
+        with open(path, "w") as file:
+            file.write(self.get_package().to_json(pretty=True))

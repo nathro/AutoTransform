@@ -32,10 +32,9 @@ class RegexTransformer(Transformer):
     def transform(self, file: CachedFile) -> None:
         # pylint: disable=unspecified-encoding
         content = file.get_content()
-        output = open(file.path, "w")
-        new_content = re.sub(self.params["pattern"], self.params["replacement"], content)
-        output.write(new_content)
-        output.close()
+        with open(file.path, "w") as output:
+            new_content = re.sub(self.params["pattern"], self.params["replacement"], content)
+            output.write(new_content)
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> RegexTransformer:

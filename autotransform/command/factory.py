@@ -12,6 +12,8 @@ from autotransform.command.type import CommandType
 
 
 class CommandFactory:
+    # pylint: disable=too-few-public-methods
+
     _getters: Dict[CommandType, Callable[[Mapping[str, Any]], Command]] = {}
 
     @staticmethod

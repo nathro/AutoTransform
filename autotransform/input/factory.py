@@ -13,6 +13,8 @@ from autotransform.input.type import InputType
 
 
 class InputFactory:
+    # pylint: disable=too-few-public-methods
+
     _getters: Dict[InputType, Callable[[Mapping[str, Any]], Input]] = {
         InputType.DIRECTORY: DirectoryInput.from_data,
     }

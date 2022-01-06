@@ -12,6 +12,8 @@ from autotransform.schema.name import SchemaName
 
 
 class SchemaFactory:
+    # pylint: disable=too-few-public-methods
+
     _schemas: Dict[SchemaName, AutoTransformSchema] = {}
 
     @staticmethod

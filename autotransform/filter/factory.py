@@ -13,6 +13,8 @@ from autotransform.filter.type import FilterType
 
 
 class FilterFactory:
+    # pylint: disable=too-few-public-methods
+
     _getters: Dict[FilterType, Callable[[bool, Mapping[str, Any]], Filter]] = {
         FilterType.EXTENSION: ExtensionFilter.from_data,
     }

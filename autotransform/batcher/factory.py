@@ -13,6 +13,8 @@ from autotransform.batcher.type import BatcherType
 
 
 class BatcherFactory:
+    # pylint: disable=too-few-public-methods
+
     _getters: Dict[BatcherType, Callable[[Mapping[str, Any]], Batcher]] = {
         BatcherType.SINGLE: SingleBatcher.from_data,
     }
