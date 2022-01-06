@@ -9,14 +9,14 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, Mapping
 
-from batcher.base import Batcher, BatcherBundle
-from batcher.single import SingleBatcher
-from batcher.type import BatcherType
+from autotransform.batcher.base import Batcher, BatcherBundle
+from autotransform.batcher.single import SingleBatcher
+from autotransform.batcher.type import BatcherType
 
 class BatcherFactory:
-    _getters: Dict[BatcherType, Callable[[Dict[str, Any]], Batcher]] = {
+    _getters: Dict[BatcherType, Callable[[Mapping[str, Any]], Batcher]] = {
         BatcherType.SINGLE: SingleBatcher.from_data,
     }
     

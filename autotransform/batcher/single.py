@@ -10,13 +10,13 @@
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
 from __future__ import annotations
-from typing import Any, Dict, List, TypedDict
+from typing import Any, Dict, List, Mapping
 
-from batcher.base import Batch, Batcher, BatchMetadata
-from batcher.type import BatcherType
-from common.cachedfile import CachedFile
+from autotransform.batcher.base import Batch, Batcher, BatchMetadata, BatcherParams
+from autotransform.batcher.type import BatcherType
+from autotransform.common.cachedfile import CachedFile
 
-class SingleBatcherParams(TypedDict):
+class SingleBatcherParams(BatcherParams):
     metadata: BatchMetadata
 
 class SingleBatcher(Batcher):
@@ -35,13 +35,22 @@ class SingleBatcher(Batcher):
         }
         return [batch]
     
-    @classmethod
-    def from_data(cls, data: Dict[str, Any]) -> SingleBatcher:
+    @staticmethod
+    def from_data(data: Mapping[str, Any]) -> SingleBatcher:
         metadata = data["metadata"]
         assert isinstance(metadata, Dict)
-        assert isinstance(metadata["title"], str)
-        if "summary" in metadata and metadata["tests"] != None:
-            assert isinstance(metadata["summary"], str)
-        if "tests" in metadata and metadata["tests"] != None:
-            assert isinstance(metadata["tests"], str)
-        return cls({"metadata": metadata})
+        title = metadata["title"]
+        assert isinstance(title, str)
+        summary = metadata["summary"]
+        assert isinstance(summary, str)
+        tests = metadata["tests"]
+        assert isinstance(tests, str)
+        return SingleBatcher(
+            {
+                "metadata": {
+                    "title": title,
+                    "summary": summary,
+                    "tests": tests,
+                }
+            }
+        )

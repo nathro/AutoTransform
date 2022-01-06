@@ -14,13 +14,13 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, Generic, List, Mapping, Optional, TypeVar, TypedDict
 
 from autotransform.input.type import InputType
+    
+class InputParams(TypedDict):
+    pass
 
 class InputBundle(TypedDict):
     params: InputParams
     type: InputType
-    
-class InputParams(TypedDict):
-    pass
 
 T = TypeVar("T", bound=InputParams)
 

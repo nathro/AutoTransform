@@ -11,10 +11,10 @@
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Generic, List, Mapping, Optional, TypeVar, TypedDict
 
-from batcher.type import BatcherType
-from common.cachedfile import CachedFile
+from autotransform.batcher.type import BatcherType
+from autotransform.common.cachedfile import CachedFile
 
 class BatchMetadata(TypedDict):
     title: str
@@ -25,18 +25,23 @@ class Batch(TypedDict):
     files: List[int]
     metadata: BatchMetadata
     
-class ConvertedBatch(TypedDict):
+class BatchWithFiles(TypedDict):
     files: List[CachedFile]
     metadata: BatchMetadata
+    
+class BatcherParams(TypedDict):
+    pass
 
 class BatcherBundle(TypedDict):
-    params: Optional[Dict[str, Any]]
+    params: BatcherParams
     type: BatcherType
 
-class Batcher(ABC):
-    params: Optional[Dict[str, Any]]
+T = TypeVar("T", bound=BatcherParams)
+
+class Batcher(Generic[T], ABC):
+    params: T
     
-    def __init__(self, params: Optional[Dict[str, Any]]):
+    def __init__(self, params: T):
         self.params = params
         
     @abstractmethod
@@ -53,7 +58,7 @@ class Batcher(ABC):
             "type": self.get_type(),
         }
     
-    @classmethod
+    @staticmethod
     @abstractmethod
-    def from_data(cls, data: Dict[str, Any]) -> Batcher:
+    def from_data(data: Mapping[str, Any]) -> Batcher:
         pass   

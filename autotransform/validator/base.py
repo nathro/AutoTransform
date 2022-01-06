@@ -14,7 +14,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Any, Dict, List, Optional, TypedDict
 
-from batcher.base import ConvertedBatch
+from batcher.base import BatchWithFiles
 from validator.type import ValidatorType
 
 class ValidationResultLevel(str, Enum):
@@ -60,7 +60,7 @@ class Validator(ABC):
         pass
         
     @abstractmethod
-    def validate(self, batch: ConvertedBatch) -> ValidationResult:
+    def validate(self, batch: BatchWithFiles) -> ValidationResult:
         pass
     
     def bundle(self) -> ValidatorBundle:
