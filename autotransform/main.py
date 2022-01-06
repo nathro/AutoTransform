@@ -1,28 +1,24 @@
-#    _____          __       ___________                              _____                     
-#   /  _  \  __ ___/  |_  ___\__    ___/___________    ____   _______/ ____\___________  _____  
-#  /  /_\  \|  |  \   __\/  _ \|    |  \_  __ \__  \  /    \ /  ___/\   __\/  _ \_  __ \/     \ 
-# /    |    \  |  /|  | (  <_> )    |   |  | \// __ \|   |  \\___ \  |  | (  <_> )  | \/  Y Y  \
-# \____|__  /____/ |__|  \____/|____|   |__|  (____  /___|  /____  > |__|  \____/|__|  |__|_|  /
-#         \/                                       \/     \/     \/                          \/ 
-
+# AutoTransform
+# Large scale, component based code modification library
+#
 # Licensed under the MIT License <http://opensource.org/licenses/MIT
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
 from autotransform.batcher.single import SingleBatcher
-from autotransform.common.cachedfile import CachedFile
 from autotransform.common.package import AutoTransformPackage
-from autotransform.common.datastore import data_store
-from autotransform.filter.extension import Extensions, ExtensionFilter
+from autotransform.filter.extension import ExtensionFilter, Extensions
 from autotransform.input.directory import DirectoryInput
 from autotransform.transformer.regex import RegexTransformer
 
 if __name__ == "__main__":
     inp = DirectoryInput({"path": "C:/repos/autotransform/src"})
-    filter = ExtensionFilter({"extensions": [Extensions.TEXT]})
-    batcher = SingleBatcher({"metadata": {"title": "Just a test", "summary": "This is just a test", "tests": "This?"}})
+    f = ExtensionFilter({"extensions": [Extensions.TEXT]})
+    batcher = SingleBatcher(
+        {"metadata": {"title": "Just a test", "summary": "This is just a test", "tests": "This?"}}
+    )
     transformer = RegexTransformer({"pattern": r"test", "replacement": "foo"})
-    package = AutoTransformPackage(inp, batcher, transformer, filters=[filter])
+    package = AutoTransformPackage(inp, batcher, transformer, filters=[f])
     json_package = package.to_json()
     package = AutoTransformPackage.from_json(json_package)
     package.run()

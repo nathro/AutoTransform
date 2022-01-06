@@ -1,47 +1,46 @@
-#    _____          __       ___________                              _____                     
-#   /  _  \  __ ___/  |_  ___\__    ___/___________    ____   _______/ ____\___________  _____  
-#  /  /_\  \|  |  \   __\/  _ \|    |  \_  __ \__  \  /    \ /  ___/\   __\/  _ \_  __ \/     \ 
-# /    |    \  |  /|  | (  <_> )    |   |  | \// __ \|   |  \\___ \  |  | (  <_> )  | \/  Y Y  \
-# \____|__  /____/ |__|  \____/|____|   |__|  (____  /___|  /____  > |__|  \____/|__|  |__|_|  /
-#         \/                                       \/     \/     \/                          \/ 
-
+# AutoTransform
+# Large scale, component based code modification library
+#
 # Licensed under the MIT License <http://opensource.org/licenses/MIT
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
 from __future__ import annotations
+
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, TypedDict
+from typing import Any, List, Mapping, TypedDict
 
 from autotransform.input.base import Input
 from autotransform.input.type import InputType
 
+
 class DirectoryInputParams(TypedDict):
     path: str
 
+
 class DirectoryInput(Input):
     files: List[str]
-    
+
     def __init__(self, params: DirectoryInputParams):
         Input.__init__(self, params)
         self.files = []
-        
+
     def get_type(self) -> InputType:
         return InputType.DIRECTORY
-        
-    def get_files(self) -> List[str]:
-        def populate_files(input: DirectoryInput, path: Path) -> None:
-            for file in path.iterdir():
-                if file.is_file():
-                    file_name: str = str(file.absolute().resolve())
-                    input.files.append(file_name)
-                else:
-                    populate_files(input, file)
 
+    def populate_files(self, path: Path) -> None:
+        for file in path.iterdir():
+            if file.is_file():
+                file_name: str = str(file.absolute().resolve())
+                self.files.append(file_name)
+            else:
+                self.populate_files(file)
+
+    def get_files(self) -> List[str]:
         if not self.files:
-            populate_files(self, Path(self.params["path"]))
+            self.populate_files(Path(self.params["path"]))
         return self.files
-    
+
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> DirectoryInput:
         path = data["path"]
