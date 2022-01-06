@@ -14,13 +14,14 @@ class GitRepoParams(TypedDict):
 class GitRepo(Repo):
     params: GitRepoParams
     local_repo: GitPython
+    active_branch: Head
     
-    PARENT_BRANCH: str = "AUTO_TRANSFORM_PARENT"
-    COMMIT_BRANCH: str = "AUTO_TRANSFORM_CHILD"
+    COMMIT_BRANCH_BASE: str = "AUTO_TRANSFORM_COMMIT"
     
     def __init__(self, params: GitRepoParams):
         Repo.__init__(self, params)
         self.local_repo = GitPython(self.params["path"])
+        self.active_branch = self.local_repo.active_branch
         
     def get_type(self) -> RepoType:
         return RepoType.GIT
@@ -32,29 +33,16 @@ class GitRepo(Repo):
         self.commit(batch)
         
     def commit(self, batch: ConvertedBatch) -> None:
-        self.local_repo.create_head(GitRepo.PARENT_BRANCH)
+        self.local_repo.git.checkout("-b " + GitRepo.COMMIT_BRANCH_BASE + ": " + batch["metadata"]["title"])
         self.local_repo.git.add(all=True)
         self.local_repo.index.commit(batch["metadata"]["title"])
-        self.local_repo.create_head(GitRepo.COMMIT_BRANCH)
     
     def clean(self, batch: ConvertedBatch) -> None:
         self.local_repo.git.reset('--hard')
     
     def rewind(self, batch: ConvertedBatch) -> None:
         self.clean(batch)
-        heads = self.local_repo.heads
-        parent = None
-        commit = None
-        for head in heads:
-            if head.name == GitRepo.PARENT_BRANCH:
-                parent = head
-            elif head.name == GitRepo.COMMIT_BRANCH:
-                commit = head
-        assert isinstance(parent, Head)
-        assert isinstance(commit, Head)
-        parent.checkout()
-        self.local_repo.delete_head(commit, force=True)
-        self.local_repo.delete_head(parent, force=True)
+        self.local_repo.active_branch.checkout()
     
     @classmethod
     def from_data(cls, data: Dict[str, Any]) -> GitRepo:
