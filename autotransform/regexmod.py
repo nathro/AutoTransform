@@ -8,11 +8,14 @@
 import argparse
 import time
 
+from repo.git import GitRepo
+
 from autotransform.batcher.single import SingleBatcher
 from autotransform.common.package import AutoTransformPackage
 from autotransform.common.runner import Runner
 from autotransform.filter.extension import ExtensionFilter, Extensions
 from autotransform.input.directory import DirectoryInput
+from autotransform.repo.github import GithubRepo
 from autotransform.transformer.regex import RegexTransformer
 from autotransform.worker.local import LocalWorker
 
@@ -34,6 +37,20 @@ def parse_arguments():
         type=str,
         required=True,
         help="The directory to search within within for files to modify",
+    )
+    parser.add_argument(
+        "--git",
+        metavar="git",
+        type=str,
+        required=False,
+        help="The absolute path to a git repo containing the directory that should be commited to",
+    )
+    parser.add_argument(
+        "--github",
+        metavar="github",
+        type=str,
+        required=False,
+        help="The full name of the github repo that a pull request should be submitted against",
     )
     parser.add_argument("pattern", metavar="pattern", type=str, help="The pattern to be replaced")
     parser.add_argument(
@@ -58,7 +75,16 @@ def main():
             assert Extensions.has_value(extension)
         filters.append(ExtensionFilter({"extensions": extensions}))
 
-    package = AutoTransformPackage(inp, batcher, transformer, filters=filters)
+    git_repo = args.git
+    if isinstance(git_repo, str):
+        github_repo = args.github
+        if isinstance(github_repo, str):
+            repo = GithubRepo({"path": git_repo, "full_github_name": github_repo})
+        else:
+            repo = GitRepo({"path": git_repo})
+    else:
+        repo = None
+    package = AutoTransformPackage(inp, batcher, transformer, filters=filters, repo=repo)
     runner = Runner(package, LocalWorker)
     start_time = time.time()
     runner.start()
