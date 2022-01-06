@@ -11,18 +11,23 @@
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, Generic, List, Mapping, Optional, TypeVar, TypedDict
 
-from input.type import InputType
+from ..input.type import InputType
 
 class InputBundle(TypedDict):
-    params: Optional[Dict[str, Any]]
+    params: InputParams
     type: InputType
-
-class Input(ABC):
-    params: Optional[Dict[str, Any]]
     
-    def __init__(self, params: Dict[str, Any]):
+class InputParams(TypedDict):
+    pass
+
+T = TypeVar("T", bound=InputParams)
+
+class Input(Generic[T], ABC):
+    params: T
+    
+    def __init__(self, params: T):
         self.params = params
         
     @abstractmethod
@@ -39,7 +44,7 @@ class Input(ABC):
             "type": self.get_type(),
         }
     
-    @classmethod
+    @staticmethod
     @abstractmethod
-    def from_data(cls, data: Dict[str, Any]) -> Input:
+    def from_data(data: Mapping[str, Any]) -> Input:
         pass

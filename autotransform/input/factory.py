@@ -9,14 +9,14 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, Mapping
 
-from input.directory import DirectoryInput
-from input.base import Input, InputBundle
-from input.type import InputType
+from ..input.directory import DirectoryInput
+from ..input.base import Input, InputBundle
+from ..input.type import InputType
 
 class InputFactory:
-    _getters: Dict[InputType, Callable[[Dict[str, Any]], Input]] = {
+    _getters: Dict[InputType, Callable[[Mapping[str, Any]], Input]] = {
         InputType.DIRECTORY: DirectoryInput.from_data,
     }
     

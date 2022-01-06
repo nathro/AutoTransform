@@ -11,17 +11,16 @@
 
 from __future__ import annotations
 from pathlib import Path
-from typing import Any, Dict, List, TypedDict
+from typing import Any, Dict, List, Mapping
 
-from input.base import Input
-from input.type import InputType
+from ..input.base import Input, InputParams
+from ..input.type import InputType
 
-class DirectoryInputParams(TypedDict):
+class DirectoryInputParams(InputParams):
     path: str
 
-class DirectoryInput(Input):
+class DirectoryInput(Input[DirectoryInputParams]):
     files: List[str]
-    params: DirectoryInputParams
     
     def __init__(self, params: DirectoryInputParams):
         Input.__init__(self, params)
@@ -43,8 +42,8 @@ class DirectoryInput(Input):
             populate_files(self, Path(self.params["path"]))
         return self.files
     
-    @classmethod
-    def from_data(cls, data: Dict[str, Any]) -> DirectoryInput:
+    @staticmethod
+    def from_data(data: Mapping[str, Any]) -> DirectoryInput:
         path = data["path"]
         assert isinstance(path, str)
-        return cls({"path": path})
+        return DirectoryInput({"path": path})
