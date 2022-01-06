@@ -12,15 +12,15 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
 
-from batcher.base import Batcher
-from batcher.single import SingleBatcher
-from command.base import Command
-from common.package import AutoTransformPackage, PackageConfiguration
-from filter.base import Filter
-from input.base import Input
-from repo.base import Repo
-from transformer.base import Transformer
-from validator.base import Validator
+from autotransform.batcher.base import Batcher
+from autotransform.batcher.single import SingleBatcher
+from autotransform.command.base import Command
+from autotransform.common.package import AutoTransformPackage, PackageConfiguration
+from autotransform.filter.base import Filter
+from autotransform.input.base import Input
+from autotransform.repo.base import Repo
+from autotransform.transformer.base import Transformer
+from autotransform.validator.base import Validator
 
 class AutoTransformSchema(ABC):
     
@@ -32,7 +32,7 @@ class AutoTransformSchema(ABC):
         return []
     
     def get_batcher(self) -> Batcher:
-        return SingleBatcher({"message": ""})
+        return SingleBatcher({"metadata": {"title": "", "summary": None, "tests": None}})
     
     @abstractmethod
     def get_transformer(self) -> Transformer:

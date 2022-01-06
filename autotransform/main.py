@@ -9,13 +9,13 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-from batcher.single import SingleBatcher
-from common.cachedfile import CachedFile
-from common.package import AutoTransformPackage
-from common.datastore import data_store
-from filter.extension import Extensions, ExtensionFilter
-from input.directory import DirectoryInput
-from transformer.regex import RegexTransformer
+from autotransform.batcher.single import SingleBatcher
+from autotransform.common.cachedfile import CachedFile
+from autotransform.common.package import AutoTransformPackage
+from autotransform.common.datastore import data_store
+from autotransform.filter.extension import Extensions, ExtensionFilter
+from autotransform.input.directory import DirectoryInput
+from autotransform.transformer.regex import RegexTransformer
 
 if __name__ == "__main__":
     inp = DirectoryInput({"path": "C:/repos/autotransform/src"})
@@ -25,19 +25,4 @@ if __name__ == "__main__":
     package = AutoTransformPackage(inp, batcher, transformer, filters=[filter])
     json_package = package.to_json()
     package = AutoTransformPackage.from_json(json_package)
-    input = package.input
-    valid_files = []
-    for file in input.get_files():
-        f = CachedFile(file)
-        is_valid = True
-        for filter in package.filters:
-            if not filter.is_valid(f):
-                is_valid = False
-                break
-        if is_valid:
-            valid_files.append(f)
-    batches = package.batcher.batch(valid_files)
-    batches = [{"files": [valid_files[file] for file in batch["files"]], "metadata": batch["metadata"]} for batch in batches]
-    for batch in batches:
-        for file in batch["files"]:
-            package.transformer.transform(file)
+    package.run()

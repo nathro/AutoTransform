@@ -11,19 +11,19 @@
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Mapping, TypedDict
 
-from common.cachedfile import CachedFile
-from transformer.type import TransformerType
+from autotransform.common.cachedfile import CachedFile
+from autotransform.transformer.type import TransformerType
 
 class TransformerBundle(TypedDict):
-    params: Optional[Dict[str, Any]]
+    params: Mapping[str, Any]
     type: TransformerType
 
 class Transformer(ABC):
-    params: Optional[Dict[str, Any]]
+    params: Mapping[str, Any]
     
-    def __init__(self, params: Dict[str, Any]):
+    def __init__(self, params: Mapping[str, Any]):
         self.params = params
         
     @abstractmethod
@@ -40,7 +40,7 @@ class Transformer(ABC):
             "type": self.get_type(),
         }
     
-    @classmethod
+    @staticmethod
     @abstractmethod
-    def from_data(cls, data: Dict[str, Any]) -> Transformer:
+    def from_data(data: Mapping[str, Any]) -> Transformer:
         pass

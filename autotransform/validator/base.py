@@ -12,10 +12,10 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Any, Dict, List, Optional, TypedDict
+from typing import Any, Dict, List, Mapping, Optional, TypedDict
 
-from batcher.base import BatchWithFiles
-from validator.type import ValidatorType
+from autotransform.batcher.base import BatchWithFiles
+from autotransform.validator.type import ValidatorType
 
 class ValidationResultLevel(str, Enum):
     NONE = 0
@@ -46,11 +46,11 @@ class ValidationError(Exception):
         return f"[{level}][{validator}]: {self.message}"
 
 class ValidatorBundle(TypedDict):
-    params: Optional[Dict[str, Any]]
+    params: Mapping[str, Any]
     type: ValidatorType
 
 class Validator(ABC):
-    params: Optional[Dict[str, Any]]
+    params: Mapping[str, Any]
     
     def __init__(self, params: Dict[str, Any]):
         self.params = params
@@ -69,7 +69,7 @@ class Validator(ABC):
             "type": self.get_type(),
         }
     
-    @classmethod
+    @staticmethod
     @abstractmethod
-    def from_data(cls, data: Dict[str, Any]) -> Validator:
+    def from_data(data: Mapping[str, Any]) -> Validator:
         pass

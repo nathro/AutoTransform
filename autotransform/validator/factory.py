@@ -9,13 +9,13 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, Mapping
 
-from validator.base import Validator, ValidatorBundle
-from validator.type import ValidatorType
+from autotransform.validator.base import Validator, ValidatorBundle
+from autotransform.validator.type import ValidatorType
 
 class ValidatorFactory:
-    _getters: Dict[ValidatorType, Callable[[Dict[str, Any]], Validator]] = {
+    _getters: Dict[ValidatorType, Callable[[Mapping[str, Any]], Validator]] = {
     }
     
     @staticmethod

@@ -11,11 +11,11 @@
 
 from __future__ import annotations
 import re
-from typing import Any, Dict, List, TypedDict
+from typing import Any, Mapping, TypedDict
 
-from common.cachedfile import CachedFile
-from transformer.base import Transformer
-from transformer.type import TransformerType
+from autotransform.common.cachedfile import CachedFile
+from autotransform.transformer.base import Transformer
+from autotransform.transformer.type import TransformerType
 
 class RegexTransformerParams(TypedDict):
     pattern: str
@@ -37,10 +37,10 @@ class RegexTransformer(Transformer):
         output.write(new_content)
         output.close()
     
-    @classmethod
-    def from_data(cls, data: Dict[str, Any]) -> RegexTransformer:
+    @staticmethod
+    def from_data(data: Mapping[str, Any]) -> RegexTransformer:
         pattern = data["pattern"]
         assert isinstance(pattern, str)
         replacement = data["replacement"]
         assert isinstance(replacement, str)
-        return cls({"pattern": pattern, "replacement": replacement})
+        return RegexTransformer({"pattern": pattern, "replacement": replacement})

@@ -15,13 +15,14 @@ from typing import List
 from autotransform.input.directory import DirectoryInput
 
 def test_empty_dir():
-    dir: str = str(pathlib.Path(__file__).parent.resolve())
+    dir: str = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
     input: DirectoryInput = DirectoryInput({"path": dir + "/data/directory_input_test_empty_dir"})
     assert not input.get_files()
     
 def test_non_empty_dir():
-    dir: str = str(pathlib.Path(__file__).parent.resolve())
+    dir: str = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
     input: DirectoryInput = DirectoryInput({"path": dir + "/data/directory_input_test_non_empty_dir"})
     files: List[str] = input.get_files()
-    assert (dir + "\\data\\directory_input_test_non_empty_dir\\test.txt") in files
+    files = [file.replace("\\", "/") for file in files]
+    assert (dir + "/data/directory_input_test_non_empty_dir/test.txt") in files
     

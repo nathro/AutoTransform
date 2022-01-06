@@ -10,14 +10,12 @@
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
 import argparse
-from typing import List
 
-from batcher.single import SingleBatcher
-from common.package import AutoTransformPackage
-from filter.extension import ExtensionFilter, Extensions
-from input.directory import DirectoryInput
-from repo.github import GitHubRepo
-from transformer.regex import RegexTransformer
+from autotransform.batcher.single import SingleBatcher
+from autotransform.common.package import AutoTransformPackage
+from autotransform.filter.extension import ExtensionFilter, Extensions
+from autotransform.input.directory import DirectoryInput
+from autotransform.transformer.regex import RegexTransformer
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Runs simple regex based codemods")
