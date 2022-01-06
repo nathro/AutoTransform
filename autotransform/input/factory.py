@@ -11,9 +11,9 @@
 
 from typing import Any, Callable, Dict, Mapping
 
-from ..input.directory import DirectoryInput
-from ..input.base import Input, InputBundle
-from ..input.type import InputType
+from autotransform.input.directory import DirectoryInput
+from autotransform.input.base import Input, InputBundle
+from autotransform.input.type import InputType
 
 class InputFactory:
     _getters: Dict[InputType, Callable[[Mapping[str, Any]], Input]] = {

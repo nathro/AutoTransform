@@ -13,7 +13,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Generic, List, Mapping, Optional, TypeVar, TypedDict
 
-from ..input.type import InputType
+from autotransform.input.type import InputType
 
 class InputBundle(TypedDict):
     params: InputParams

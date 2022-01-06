@@ -13,8 +13,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict, List, Mapping
 
-from ..input.base import Input, InputParams
-from ..input.type import InputType
+from autotransform.input.base import Input, InputParams
+from autotransform.input.type import InputType
 
 class DirectoryInputParams(InputParams):
     path: str

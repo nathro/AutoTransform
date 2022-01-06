@@ -32,7 +32,6 @@ def main():
     input = DirectoryInput({"path": args.directory})
     transformer = RegexTransformer({"pattern": args.pattern, "replacement": args.replacement})
     batcher = SingleBatcher({"metadata": {"title": "Just a test", "summary": "This is just a test", "tests": "This?"}})
-    repo = GitHubRepo({"path": "C:/repos/autotransform", "full_github_name": "nathro/AutoTransform"})
     filters = []
     extensions = args.extensions
     if isinstance(extensions, str):
@@ -42,7 +41,7 @@ def main():
             assert Extensions.has_value(extension)
         filters.append(ExtensionFilter({"extensions": extensions}))
     
-    package = AutoTransformPackage(input, batcher, transformer, filters=filters, repo=repo)
+    package = AutoTransformPackage(input, batcher, transformer, filters=filters)
     package.run()
 
 if __name__ == "__main__":
