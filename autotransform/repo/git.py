@@ -53,8 +53,8 @@ class GitRepo(Repo):
         assert isinstance(parent, Head)
         assert isinstance(commit, Head)
         parent.checkout()
-        self.local_repo.delete_head(parent)
-        self.local_repo.delete_head(commit)
+        self.local_repo.delete_head(commit, force=True)
+        self.local_repo.delete_head(parent, force=True)
     
     @classmethod
     def from_data(cls, data: Dict[str, Any]) -> GitRepo:
