@@ -19,7 +19,7 @@ def main():
     args = parse_arguments()
     input = DirectoryInput({"path": args.directory})
     transformer = RegexTransformer({"pattern": args.pattern, "replacement": args.replacement})
-    batcher = SingleBatcher({"message": ""})
+    batcher = SingleBatcher({"title": "Just a test", "summary": "This is just a test", "tests": "This?"})
     filters = []
     extensions = args.extensions
     if isinstance(extensions, str):

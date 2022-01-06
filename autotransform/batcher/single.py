@@ -1,12 +1,12 @@
 from __future__ import annotations
 from typing import Any, Dict, List, TypedDict
 
-from batcher.base import Batch, Batcher
+from batcher.base import Batch, Batcher, BatchMetadata
 from batcher.type import BatcherType
 from common.cachedfile import CachedFile
 
 class SingleBatcherParams(TypedDict):
-    message: str
+    metadata: BatchMetadata
 
 class SingleBatcher(Batcher):
     params: SingleBatcherParams
@@ -20,12 +20,17 @@ class SingleBatcher(Batcher):
     def batch(self, files: List[CachedFile]) -> List[Batch]:
         batch: Batch = {
             "files": list(range(len(files))),
-            "metadata": {"message": self.params["message"]},
+            "metadata": self.params["metadata"],
         }
         return [batch]
     
     @classmethod
     def from_data(cls, data: Dict[str, Any]) -> SingleBatcher:
-        message = data["message"]
-        assert isinstance(message, str)
-        return cls({"message": message})
+        metadata = data["metadata"]
+        assert isinstance(metadata, Dict)
+        assert isinstance(metadata["title"], str)
+        if "summary" in metadata and metadata["tests"] != None:
+            assert isinstance(metadata["summary"], str)
+        if "tests" in metadata and metadata["tests"] != None:
+            assert isinstance(metadata["tests"], str)
+        return cls({"metadata": metadata})
