@@ -9,13 +9,13 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, Mapping
 
-from command.base import Command, CommandBundle
-from command.type import CommandType
+from autotransform.command.base import Command, CommandBundle
+from autotransform.command.type import CommandType
 
 class CommandFactory:
-    _getters: Dict[CommandType, Callable[[Dict[str, Any]], Command]] = {
+    _getters: Dict[CommandType, Callable[[Mapping[str, Any]], Command]] = {
     }
     
     @staticmethod

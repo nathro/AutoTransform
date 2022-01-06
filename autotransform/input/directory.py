@@ -11,15 +11,15 @@
 
 from __future__ import annotations
 from pathlib import Path
-from typing import Any, Dict, List, Mapping
+from typing import Any, Dict, List, Mapping, TypedDict
 
-from autotransform.input.base import Input, InputParams
+from autotransform.input.base import Input
 from autotransform.input.type import InputType
 
-class DirectoryInputParams(InputParams):
+class DirectoryInputParams(TypedDict):
     path: str
 
-class DirectoryInput(Input[DirectoryInputParams]):
+class DirectoryInput(Input):
     files: List[str]
     
     def __init__(self, params: DirectoryInputParams):

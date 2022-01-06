@@ -11,7 +11,7 @@
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Any, Generic, List, Mapping, Optional, TypeVar, TypedDict
+from typing import Any, List, Mapping, Optional, TypedDict
 
 from autotransform.batcher.type import BatcherType
 from autotransform.common.cachedfile import CachedFile
@@ -28,20 +28,15 @@ class Batch(TypedDict):
 class BatchWithFiles(TypedDict):
     files: List[CachedFile]
     metadata: BatchMetadata
-    
-class BatcherParams(TypedDict):
-    pass
 
 class BatcherBundle(TypedDict):
-    params: BatcherParams
+    params: Mapping[str, Any]
     type: BatcherType
 
-T = TypeVar("T", bound=BatcherParams)
-
-class Batcher(Generic[T], ABC):
-    params: T
+class Batcher(ABC):
+    params: Mapping[str, Any]
     
-    def __init__(self, params: T):
+    def __init__(self, params: Mapping[str, Any]):
         self.params = params
         
     @abstractmethod

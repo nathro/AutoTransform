@@ -11,23 +11,18 @@
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Generic, List, Mapping, Optional, TypeVar, TypedDict
+from typing import Any, List, Mapping, TypedDict
 
 from autotransform.input.type import InputType
-    
-class InputParams(TypedDict):
-    pass
 
 class InputBundle(TypedDict):
-    params: InputParams
+    params: Mapping[str, Any]
     type: InputType
 
-T = TypeVar("T", bound=InputParams)
-
-class Input(Generic[T], ABC):
-    params: T
+class Input(ABC):
+    params: Mapping[str, Any]
     
-    def __init__(self, params: T):
+    def __init__(self, params: Mapping[str, Any]):
         self.params = params
         
     @abstractmethod

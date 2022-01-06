@@ -11,19 +11,19 @@
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional, TypedDict
+from typing import Any, Mapping, TypedDict
 
-from batcher.base import BatchWithFiles
-from command.type import CommandType
+from autotransform.batcher.base import BatchWithFiles
+from autotransform.command.type import CommandType
 
 class CommandBundle(TypedDict):
-    params: Optional[Dict[str, Any]]
+    params: Mapping[str, Any]
     type: CommandType
 
 class Command(ABC):
-    params: Optional[Dict[str, Any]]
+    params: Mapping[str, Any]
     
-    def __init__(self, params: Dict[str, Any]):
+    def __init__(self, params: Mapping[str, Any]):
         self.params = params
         
     @abstractmethod
@@ -40,7 +40,7 @@ class Command(ABC):
             "type": self.get_type(),
         }
     
-    @classmethod
+    @staticmethod
     @abstractmethod
-    def from_data(cls, data: Dict[str, Any]) -> Command:
+    def from_data(data: Mapping[str, Any]) -> Command:
         pass
