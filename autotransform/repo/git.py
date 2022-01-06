@@ -20,7 +20,7 @@ class GitRepo(Repo):
     
     @staticmethod
     def get_branch_name(title: str) -> str:
-        return GitRepo.COMMIT_BRANCH_BASE + "-" + title.replace(" ", "_")
+        return GitRepo.COMMIT_BRANCH_BASE + "__" + title.replace(" ", "_")
     
     def __init__(self, params: GitRepoParams):
         Repo.__init__(self, params)
