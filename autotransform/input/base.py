@@ -2,7 +2,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, TypedDict
 
-from input.type import InputType
+from inputsource.type import InputType
 
 class InputBundle(TypedDict):
     params: Optional[Dict[str, Any]]

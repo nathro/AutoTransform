@@ -9,8 +9,8 @@ from command.factory import CommandFactory
 from common.cachedfile import CachedFile
 from filter.base import Filter
 from filter.factory import FilterFactory
-from input.base import Input
-from input.factory import InputFactory
+from inputsource.base import Input
+from inputsource.factory import InputFactory
 from repo.base import Repo
 from repo.factory import RepoFactory
 from transformer.base import Transformer
@@ -41,7 +41,7 @@ class PackageConfiguration:
         return cls(validation_level)
 
 class AutoTransformPackage:
-    input: Input
+    inputsource: Input
     batcher: Batcher
     transformer: Transformer
     
@@ -54,7 +54,7 @@ class AutoTransformPackage:
     
     def __init__(
         self,
-        input: Input,
+        inputsource: Input,
         batcher: Batcher,
         transformer: Transformer,
         filters: List[Filter] = [],
@@ -63,7 +63,7 @@ class AutoTransformPackage:
         repo: Optional[Repo] = None,
         config: PackageConfiguration = PackageConfiguration()
     ):
-        self.input = input
+        self.inputsource = inputsource
         self.batcher = batcher
         self.transformer = transformer
         
@@ -76,7 +76,7 @@ class AutoTransformPackage:
         
     def run(self):
         valid_files = []
-        for file in self.input.get_files():
+        for file in self.inputsource.get_files():
             f = CachedFile(file)
             is_valid = True
             for filter in self.filters:
@@ -106,7 +106,7 @@ class AutoTransformPackage:
         
     def to_json(self, pretty: bool = False) -> str:
         package = {
-            "input": self.input.bundle(),
+            "inputsource": self.inputsource.bundle(),
             "batcher": self.batcher.bundle(),
             "transformer": self.transformer.bundle(),
             
@@ -124,7 +124,7 @@ class AutoTransformPackage:
     def from_json(json_package: str) -> AutoTransformPackage:
         package = json.loads(json_package)
         
-        input = InputFactory.get(package["input"])
+        inputsource = InputFactory.get(package["inputsource"])
         batcher = BatcherFactory.get(package["batcher"])
         transformer = TransformerFactory.get(package["transformer"])
         
@@ -134,4 +134,4 @@ class AutoTransformPackage:
         
         config = PackageConfiguration.from_data(package["config"])
         
-        return AutoTransformPackage(input, batcher, transformer, filters=filters, validators=validators, commands=commands, config=config)
+        return AutoTransformPackage(inputsource, batcher, transformer, filters=filters, validators=validators, commands=commands, config=config)

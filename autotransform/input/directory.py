@@ -2,8 +2,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict, List, TypedDict
 
-from input.base import Input
-from input.type import InputType
+from inputsource.base import Input
+from inputsource.type import InputType
 
 class DirectoryInputParams(TypedDict):
     path: str
@@ -20,13 +20,13 @@ class DirectoryInput(Input):
         return InputType.DIRECTORY
         
     def get_files(self) -> List[str]:
-        def populate_files(input: DirectoryInput, path: Path) -> None:
+        def populate_files(inputsource: DirectoryInput, path: Path) -> None:
             for file in path.iterdir():
                 if file.is_file():
                     file_name: str = str(file.absolute().resolve())
-                    input.files.append(file_name)
+                    inputsource.files.append(file_name)
                 else:
-                    populate_files(input, file)
+                    populate_files(inputsource, file)
 
         if not self.files:
             populate_files(self, Path(self.params["path"]))

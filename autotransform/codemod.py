@@ -4,7 +4,7 @@ from typing import List
 from batcher.single import SingleBatcher
 from common.package import AutoTransformPackage
 from filter.extension import ExtensionFilter, Extensions
-from input.directory import DirectoryInput
+from inputsource.directory import DirectoryInput
 from repo.github import GitHubRepo
 from transformer.regex import RegexTransformer
 
@@ -18,7 +18,7 @@ def parse_arguments():
 
 def main():
     args = parse_arguments()
-    input = DirectoryInput({"path": args.directory})
+    inputsource = DirectoryInput({"path": args.directory})
     transformer = RegexTransformer({"pattern": args.pattern, "replacement": args.replacement})
     batcher = SingleBatcher({"metadata": {"title": "Just a test", "summary": "This is just a test", "tests": "This?"}})
     repo = GitHubRepo({"path": "C:/repos/autotransform", "full_github_name": "nathro/AutoTransform"})
@@ -31,7 +31,7 @@ def main():
             assert Extensions.has_value(extension)
         filters.append(ExtensionFilter({"extensions": extensions}))
     
-    package = AutoTransformPackage(input, batcher, transformer, filters=filters, repo=repo)
+    package = AutoTransformPackage(inputsource, batcher, transformer, filters=filters, repo=repo)
     package.run()
 
 if __name__ == "__main__":

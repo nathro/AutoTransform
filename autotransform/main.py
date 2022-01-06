@@ -5,7 +5,7 @@ from common.cachedfile import CachedFile
 from common.package import AutoTransformPackage
 from common.datastore import data_store
 from filter.extension import Extensions, ExtensionFilter
-from input.directory import DirectoryInput
+from inputsource.directory import DirectoryInput
 from transformer.regex import RegexTransformer
 
 if __name__ == "__main__":
@@ -16,9 +16,9 @@ if __name__ == "__main__":
     package = AutoTransformPackage(inp, batcher, transformer, filters=[filter])
     json_package = package.to_json()
     package = AutoTransformPackage.from_json(json_package)
-    input = package.input
+    inputsource = package.inputsource
     valid_files = []
-    for file in input.get_files():
+    for file in inputsource.get_files():
         f = CachedFile(file)
         is_valid = True
         for filter in package.filters:
