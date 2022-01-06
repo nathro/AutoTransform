@@ -20,7 +20,7 @@ class GitRepo(Repo):
     
     @staticmethod
     def get_branch_name(title: str) -> str:
-        return GitRepo.COMMIT_BRANCH_BASE + "__" + title.replace(" ", "_")
+        return GitRepo.COMMIT_BRANCH_BASE + "_" + title.replace(" ", "_")
     
     def __init__(self, params: GitRepoParams):
         Repo.__init__(self, params)
@@ -37,7 +37,7 @@ class GitRepo(Repo):
         self.commit(batch)
     
     def commit(self, batch: ConvertedBatch) -> None:
-        self.local_repo.git.checkout("-b " + GitRepo.get_branch_name(batch["metadata"]["title"]))
+        self.local_repo.git.checkout("-b", GitRepo.get_branch_name(batch["metadata"]["title"]))
         self.local_repo.git.add(all=True)
         self.local_repo.index.commit(batch["metadata"]["title"])
     
