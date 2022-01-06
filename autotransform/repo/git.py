@@ -18,6 +18,10 @@ class GitRepo(Repo):
     
     COMMIT_BRANCH_BASE: str = "AUTO_TRANSFORM_COMMIT"
     
+    @staticmethod
+    def get_branch_name(title: str) -> str:
+        return GitRepo.COMMIT_BRANCH_BASE + "-" + title.replace(" ", "_")
+    
     def __init__(self, params: GitRepoParams):
         Repo.__init__(self, params)
         self.local_repo = GitPython(self.params["path"])
@@ -31,10 +35,9 @@ class GitRepo(Repo):
         
     def submit(self, batch: ConvertedBatch) -> None:
         self.commit(batch)
-        
+    
     def commit(self, batch: ConvertedBatch) -> None:
-        branch_name = GitRepo.COMMIT_BRANCH_BASE + ":" + batch["metadata"]["title"].replace(" ", "_")
-        self.local_repo.git.checkout("-b " + branch_name)
+        self.local_repo.git.checkout("-b " + GitRepo.get_branch_name(batch["metadata"]["title"]))
         self.local_repo.git.add(all=True)
         self.local_repo.index.commit(batch["metadata"]["title"])
     
