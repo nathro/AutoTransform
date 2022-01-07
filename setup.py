@@ -12,7 +12,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="AutoTransform",
-    version="0.0.3",
+    version="0.0.4",
     author="Nathan Rockenbach",
     author_email="nathro.software@gmail.com",
     description="A component based tool for designing automated code modification",
@@ -40,8 +40,8 @@ setuptools.setup(
     python_requires=">=3.10",
     entry_points={
         "console_scripts": [
-            "regexmod = autotransform.regexmod",
-            "atmanager = autotransform.manager",
+            "regexmod = autotransform.regexmod:main",
+            "atmanager = autotransform.manager:main",
         ]
     },
 )
