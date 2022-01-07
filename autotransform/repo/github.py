@@ -16,6 +16,7 @@ from github import Github
 
 from autotransform.batcher.base import BatchWithFiles
 from autotransform.repo.git import GitRepo, GitRepoParams
+from autotransform.repo.type import RepoType
 
 
 class GithubRepoParams(GitRepoParams):
@@ -30,6 +31,9 @@ class GithubRepo(GitRepo):
     def __init__(self, params: GithubRepoParams):
         GitRepo.__init__(self, params)
         self.github = GithubRepo.get_github_object()
+
+    def get_type(self) -> RepoType:
+        return RepoType.GITHUB
 
     @staticmethod
     def get_github_object() -> Github:
