@@ -7,7 +7,7 @@
 
 import argparse
 import sys
-from time import time
+import time
 
 from autotransform.common.package import AutoTransformPackage
 from autotransform.common.runner import Runner
@@ -86,7 +86,7 @@ def main():
 
     worker_type = WorkerFactory.get(args.worker)
     runner = Runner(package, worker_type)
-    start_time = time()
+    start_time = time.time()
     runner.start()
     while not runner.is_finished() and time.time() <= start_time + args.timeout:
         time.sleep(1)
