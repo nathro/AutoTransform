@@ -12,15 +12,14 @@ from autotransform.worker.runnable import RunnableWorker
 from autotransform.worker.type import WorkerType
 
 
-def parse_arguments():
+def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Runs an autotransform package")
     parser.add_argument(
         "-w",
         "--worker",
         metavar="worker",
         type=str,
-        required=False,
-        default=WorkerType.LOCAL,
+        required=True,
         help="The name of the worker type to use",
     )
     args, _ = parser.parse_known_args()

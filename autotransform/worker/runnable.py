@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import sys
 from abc import abstractmethod
-from argparse import Namespace
+from argparse import ArgumentParser, Namespace
 from subprocess import Popen
 from typing import List
 
@@ -20,8 +20,21 @@ from autotransform.worker.type import WorkerType
 class RunnableWorker(Worker):
     @staticmethod
     @abstractmethod
-    def parse_arguments() -> Namespace:
+    def _parse_arguments(parser: ArgumentParser) -> Namespace:
         pass
+
+    @classmethod
+    def parse_arguments(cls) -> Namespace:
+        parser = ArgumentParser(description="A local worker running a batch")
+        parser.add_argument(
+            "-w",
+            "--worker",
+            metavar="worker",
+            type=str,
+            required=False,
+            help="The name of the worker type to use",
+        )
+        return cls._parse_arguments(parser)
 
     @staticmethod
     @abstractmethod

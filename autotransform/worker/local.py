@@ -61,16 +61,14 @@ class LocalWorker(RunnableWorker):
             proc.kill()
 
     @staticmethod
-    def parse_arguments() -> Namespace:
-        parser = ArgumentParser(description="A local worker running a batch")
+    def _parse_arguments(parser: ArgumentParser) -> Namespace:
         parser.add_argument(
             "data_file",
             metavar="data_file",
             type=str,
             help="The file containing a JSON encoded batch",
         )
-        args, _ = parser.parse_known_args()
-        return args
+        return parser.parse_args()
 
     @staticmethod
     def main(args: Namespace) -> None:

@@ -15,7 +15,7 @@ from autotransform.schema.factory import SchemaFactory
 from autotransform.worker.factory import WorkerFactory
 
 
-def parse_arguments():
+def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Runs an autotransform package")
     parser.add_argument(
         "-f",
@@ -56,7 +56,6 @@ def parse_arguments():
         metavar="worker",
         type=str,
         required=False,
-        default="local",
         help="The name of the worker type to use",
     )
     return parser.parse_args()

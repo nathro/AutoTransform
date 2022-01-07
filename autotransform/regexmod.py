@@ -20,7 +20,7 @@ from autotransform.transformer.regex import RegexTransformer
 from autotransform.worker.local import LocalWorker
 
 
-def parse_arguments():
+def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Runs simple regex based codemods")
     parser.add_argument(
         "-e",
