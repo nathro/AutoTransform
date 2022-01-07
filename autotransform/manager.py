@@ -57,7 +57,7 @@ def parse_arguments():
         metavar="worker",
         type=str,
         required=False,
-        default=WorkerType.LOCAL,
+        default="local",
         help="The name of the worker type to use",
     )
     return parser.parse_args()
@@ -86,7 +86,7 @@ def main():
 
     worker_type = WorkerFactory.get(args.worker)
     runner = Runner(package, worker_type)
-    start_time = time.time()
+    start_time = time()
     runner.start()
     while not runner.is_finished() and time.time() <= start_time + args.timeout:
         time.sleep(1)
