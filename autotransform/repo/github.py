@@ -7,14 +7,13 @@
 
 from __future__ import annotations
 
-import pathlib
-from configparser import ConfigParser
 from typing import Any, Mapping
 
 from git import Repo as GitPython
 from github import Github
 
 from autotransform.batcher.base import BatchWithFiles
+from autotransform.config import fetcher as Config
 from autotransform.repo.git import GitRepo, GitRepoParams
 from autotransform.repo.type import RepoType
 
@@ -37,24 +36,15 @@ class GithubRepo(GitRepo):
 
     @staticmethod
     def get_github_object() -> Github:
-        config_path: str = (
-            str(pathlib.Path(__file__).parent.parent.resolve()).replace("\\", "/")
-            + "/data/config.ini"
-        )
-        config = ConfigParser()
-        config.read(config_path)
-        credentials = config["CREDENTIALS"]
-        url = credentials.get("github_base_url", None)
-        token = credentials.get("github_token", None)
+        url = Config.get_github_base_url()
+        token = Config.get_github_token()
         if token is not None:
             if url is not None:
                 return Github(token, base_url=url)
             return Github(token)
         if url is not None:
-            return Github(
-                credentials["github_username"], credentials["github_password"], base_url=url
-            )
-        return Github(credentials["github_username"], credentials["github_password"])
+            return Github(Config.get_github_username(), Config.get_github_password(), base_url=url)
+        return Github(Config.get_github_username(), Config.get_github_password())
 
     def submit(self, batch: BatchWithFiles) -> None:
         title = batch["metadata"]["title"]
