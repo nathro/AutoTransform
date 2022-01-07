@@ -10,7 +10,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, List, Mapping, TypedDict
 
-from autotransform.input.type import InputType
+from autotransform.inputsource.type import InputType
 
 
 class InputBundle(TypedDict):

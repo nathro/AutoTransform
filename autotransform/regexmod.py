@@ -14,7 +14,7 @@ from autotransform.batcher.single import SingleBatcher
 from autotransform.common.package import AutoTransformPackage
 from autotransform.common.runner import Runner
 from autotransform.filter.extension import ExtensionFilter, Extensions
-from autotransform.input.directory import DirectoryInput
+from autotransform.inputsource.directory import DirectoryInput
 from autotransform.repo.github import GithubRepo
 from autotransform.transformer.regex import RegexTransformer
 from autotransform.worker.local import LocalWorker

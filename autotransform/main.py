@@ -8,7 +8,7 @@
 from autotransform.batcher.single import SingleBatcher
 from autotransform.common.package import AutoTransformPackage
 from autotransform.filter.extension import ExtensionFilter, Extensions
-from autotransform.input.directory import DirectoryInput
+from autotransform.inputsource.directory import DirectoryInput
 from autotransform.transformer.regex import RegexTransformer
 
 if __name__ == "__main__":
