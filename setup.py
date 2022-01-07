@@ -12,7 +12,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="AutoTransform",
-    version="0.0.4",
+    version="0.0.6",
     author="Nathan Rockenbach",
     author_email="nathro.software@gmail.com",
     description="A component based tool for designing automated code modification",
@@ -34,8 +34,8 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     keywords="codemod, automation, code change",
-    package_dir={"": "autotransform"},
-    packages=setuptools.find_packages(where="autotransform"),
+    package_dir={"": "."},
+    packages=setuptools.find_packages(),
     install_requires=["GitPython", "PyGithub"],
     python_requires=">=3.10",
     entry_points={
