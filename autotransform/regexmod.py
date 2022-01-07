@@ -39,14 +39,14 @@ def parse_arguments() -> argparse.Namespace:
     )
     parser.add_argument(
         "--git",
-        metavar="git",
+        metavar="git_repo_path",
         type=str,
         required=False,
-        help="The absolute path to a git repo containing the directory that should be commited to",
+        help="The absolute path to a git repo containing the directory",
     )
     parser.add_argument(
         "--github",
-        metavar="github",
+        metavar="repo_name",
         type=str,
         required=False,
         help="The full name of the github repo that a pull request should be submitted against",
@@ -61,7 +61,7 @@ def parse_arguments() -> argparse.Namespace:
         type=str,
         required=False,
         default="",
-        help="The full name of the github repo that a pull request should be submitted against",
+        help="The message for any git commit and the title of any github pull request",
     )
     parser.add_argument(
         "--summary",
@@ -69,7 +69,7 @@ def parse_arguments() -> argparse.Namespace:
         type=str,
         required=False,
         default="",
-        help="The full name of the github repo that a pull request should be submitted against",
+        help="The summary to include in the pull request when using github",
     )
     parser.add_argument(
         "--tests",
@@ -77,7 +77,7 @@ def parse_arguments() -> argparse.Namespace:
         type=str,
         required=False,
         default="",
-        help="The full name of the github repo that a pull request should be submitted against",
+        help="The text of a tests section of a pull request body",
     )
     return parser.parse_args()
 
@@ -94,8 +94,6 @@ def main():
     if isinstance(extensions, str):
         extensions = extensions.split(",")
         extensions = ["." + extension for extension in extensions]
-        for extension in extensions:
-            assert Extensions.has_value(extension)
         filters.append(ExtensionFilter({"extensions": extensions}))
 
     git_repo = args.git

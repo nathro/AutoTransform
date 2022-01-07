@@ -40,7 +40,8 @@ class ExtensionFilter(Filter):
 
     def _is_valid(self, file: CachedFile) -> bool:
         for extension in self.params["extensions"]:
-            if file.path.endswith(extension):
+            file_name = file.path.replace("\\", "/").split("/")[-1]
+            if file_name.endswith(extension) and file_name != extension:
                 return True
         return False
 

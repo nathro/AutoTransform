@@ -12,7 +12,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="AutoTransform",
-    version="0.0.9",
+    version="0.1.0",
     author="Nathan Rockenbach",
     author_email="nathro.software@gmail.com",
     description="A component based tool for designing automated code modification",
