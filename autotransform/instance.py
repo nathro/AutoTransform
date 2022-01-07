@@ -9,7 +9,6 @@ import argparse
 
 from autotransform.worker.factory import WorkerFactory
 from autotransform.worker.runnable import RunnableWorker
-from autotransform.worker.type import WorkerType
 
 
 def parse_arguments() -> argparse.Namespace:
