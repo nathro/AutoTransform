@@ -13,6 +13,7 @@ from autotransform.common.package import AutoTransformPackage
 from autotransform.common.runner import Runner
 from autotransform.schema.factory import SchemaFactory
 from autotransform.worker.factory import WorkerFactory
+from autotransform.worker.type import WorkerType
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -82,7 +83,10 @@ def main():
         print("Must provide either a schema name or a file containing the package")
         sys.exit(1)
 
-    worker_type = WorkerFactory.get(args.worker)
+    worker = args.worker
+    if worker is None:
+        worker = WorkerType.LOCAL
+    worker_type = WorkerFactory.get(worker)
     runner = Runner(package, worker_type)
     start_time = time.time()
     runner.start()
