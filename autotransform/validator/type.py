@@ -5,12 +5,18 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+"""The Validator type enum"""
+
 from enum import Enum
 
 
 class ValidatorType(str, Enum):
-    pass
+    """A simple enum for 1:1 Validator to type mapping.
 
-    # Section reserved for custom types to reduce merge conflicts
+    Note:
+        Custom types should be placed in the CUSTOM TYPES section.
+        This will reduce merge conflicts when merging in upstream changes.
+    """
+
     # BEGIN CUSTOM TYPES
     # END CUSTOM TYPES

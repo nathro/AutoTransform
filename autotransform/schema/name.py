@@ -5,12 +5,18 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+"""The SchemaBuilder name enum"""
+
 from enum import Enum
 
 
 class SchemaBuilderName(str, Enum):
-    pass
+    """A simple enum for 1:1 SchemaBuilder to name mapping.
 
-    # Section reserved for custom names to reduce merge conflicts
+    Note:
+        Custom names should be placed in the CUSTOM NAMES section.
+        This will reduce merge conflicts when merging in upstream changes.
+    """
+
     # BEGIN CUSTOM NAMES
     # END CUSTOM NAMES

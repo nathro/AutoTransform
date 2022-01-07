@@ -5,13 +5,21 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+"""The Repo type enum"""
+
 from enum import Enum
 
 
 class RepoType(str, Enum):
+    """A simple enum for 1:1 Repo to type mapping.
+
+    Note:
+        Custom types should be placed in the CUSTOM TYPES section.
+        This will reduce merge conflicts when merging in upstream changes.
+    """
+
     GIT = "git"
     GITHUB = "github"
 
-    # Section reserved for custom types to reduce merge conflicts
     # BEGIN CUSTOM TYPES
     # END CUSTOM TYPES
