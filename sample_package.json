@@ -1,0 +1,48 @@
+{
+    "input": {
+        "params": {
+            "path": "C:/repos/autotransform"
+        },
+        "type": "directory"
+    },
+    "batcher": {
+        "params": {
+            "metadata": {
+                "title": "test",
+                "summary": "",
+                "tests": ""
+            }
+        },
+        "type": "single"
+    },
+    "transformer": {
+        "params": {
+            "pattern": "input",
+            "replacement": "inputsource"
+        },
+        "type": "regex"
+    },
+    "filters": [
+        {
+            "inverted": false,
+            "params": {
+                "extensions": [
+                    ".py"
+                ]
+            },
+            "type": "extension"
+        }
+    ],
+    "validators": [],
+    "commands": [],
+    "config": {
+        "allowed_validation_level": 0
+    },
+    "repo": {
+        "params": {
+            "path": "C:/repos/autotransform",
+            "full_github_name": "nathro/AutoTransform"
+        },
+        "type": "github"
+    }
+}

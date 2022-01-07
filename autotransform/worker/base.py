@@ -8,7 +8,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Sequence
 
 from autotransform.batcher.base import BatchWithFiles
 from autotransform.common.package import AutoTransformPackage
@@ -27,7 +27,7 @@ class Worker(ABC):
     @abstractmethod
     def spawn_from_batches(
         package: AutoTransformPackage, batches: List[BatchWithFiles]
-    ) -> List[Worker]:
+    ) -> Sequence[Worker]:
         pass
 
     def kill(self) -> None:

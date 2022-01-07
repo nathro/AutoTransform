@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-from typing import List, Optional, Type
+from typing import List, Optional, Sequence, Type
 
 from autotransform.batcher.base import BatchWithFiles
 from autotransform.common.package import AutoTransformPackage
@@ -17,7 +17,7 @@ from autotransform.worker.base import Worker
 class Runner:
     package: AutoTransformPackage
     worker_type: Type[Worker]
-    workers: Optional[List[Worker]]
+    workers: Optional[Sequence[Worker]]
 
     def __init__(self, package: AutoTransformPackage, worker_type: Type[Worker]):
         self.worker_type = worker_type

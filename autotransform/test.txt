@@ -1,7 +1,0 @@
-THIS IS A TEST
-test
-testtest
-foo
-fof
-bars
-stars
