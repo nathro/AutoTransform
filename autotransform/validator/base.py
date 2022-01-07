@@ -11,7 +11,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Any, Dict, Mapping, Optional, TypedDict
 
-from autotransform.batcher.base import BatchWithFiles
+from autotransform.batcher.base import Batch
 from autotransform.validator.type import ValidatorType
 
 
@@ -69,7 +69,7 @@ class Validator(ABC):
         pass
 
     @abstractmethod
-    def validate(self, batch: BatchWithFiles) -> ValidationResult:
+    def validate(self, batch: Batch) -> ValidationResult:
         pass
 
     def bundle(self) -> ValidatorBundle:

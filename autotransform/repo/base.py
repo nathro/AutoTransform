@@ -10,7 +10,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Mapping, TypedDict
 
-from autotransform.batcher.base import BatchWithFiles
+from autotransform.batcher.base import Batch
 from autotransform.repo.type import RepoType
 
 
@@ -30,19 +30,19 @@ class Repo(ABC):
         pass
 
     @abstractmethod
-    def has_changes(self, batch: BatchWithFiles) -> bool:
+    def has_changes(self, batch: Batch) -> bool:
         pass
 
     @abstractmethod
-    def submit(self, batch: BatchWithFiles) -> None:
+    def submit(self, batch: Batch) -> None:
         pass
 
     @abstractmethod
-    def clean(self, batch: BatchWithFiles) -> None:
+    def clean(self, batch: Batch) -> None:
         pass
 
     @abstractmethod
-    def rewind(self, batch: BatchWithFiles) -> None:
+    def rewind(self, batch: Batch) -> None:
         pass
 
     def bundle(self) -> RepoBundle:

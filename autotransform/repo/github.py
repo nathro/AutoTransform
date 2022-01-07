@@ -12,7 +12,7 @@ from typing import Any, Mapping
 from git import Repo as GitPython
 from github import Github
 
-from autotransform.batcher.base import BatchWithFiles
+from autotransform.batcher.base import Batch
 from autotransform.config import fetcher as Config
 from autotransform.repo.git import GitRepo, GitRepoParams
 from autotransform.repo.type import RepoType
@@ -46,7 +46,7 @@ class GithubRepo(GitRepo):
             return Github(Config.get_github_username(), Config.get_github_password(), base_url=url)
         return Github(Config.get_github_username(), Config.get_github_password())
 
-    def submit(self, batch: BatchWithFiles) -> None:
+    def submit(self, batch: Batch) -> None:
         title = batch["metadata"]["title"]
         summary = batch["metadata"].get("summary", "")
         tests = batch["metadata"].get("tests", "")

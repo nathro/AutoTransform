@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 from typing import Any, Dict, List, Mapping, Optional
 
-from autotransform.batcher.base import Batcher, BatchWithFiles
+from autotransform.batcher.base import Batch, Batcher
 from autotransform.batcher.factory import BatcherFactory
 from autotransform.command.base import Command
 from autotransform.command.factory import CommandFactory
@@ -66,7 +66,7 @@ class AutoTransformSchema:
 
         self.config = config
 
-    def get_batches(self) -> List[BatchWithFiles]:
+    def get_batches(self) -> List[Batch]:
         valid_files = []
         for file in self.input.get_files():
             cached_file = CachedFile(file)
@@ -77,13 +77,9 @@ class AutoTransformSchema:
                     break
             if is_valid:
                 valid_files.append(cached_file)
-        batches = self.batcher.batch(valid_files)
-        return [
-            {"files": [valid_files[file] for file in batch["files"]], "metadata": batch["metadata"]}
-            for batch in batches
-        ]
+        return self.batcher.batch(valid_files)
 
-    def execute_batch(self, batch: BatchWithFiles) -> None:
+    def execute_batch(self, batch: Batch) -> None:
         repo = self.repo
         if repo is not None:
             repo.clean(batch)

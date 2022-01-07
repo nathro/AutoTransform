@@ -12,7 +12,7 @@ from typing import Any, Mapping, TypedDict
 from git import Repo as GitPython
 from git.refs.head import Head
 
-from autotransform.batcher.base import BatchMetadata, BatchWithFiles
+from autotransform.batcher.base import Batch, BatchMetadata
 from autotransform.repo.base import Repo
 from autotransform.repo.type import RepoType
 
@@ -40,16 +40,16 @@ class GitRepo(Repo):
     def get_type(self) -> RepoType:
         return RepoType.GIT
 
-    def has_changes(self, batch: BatchWithFiles) -> bool:
+    def has_changes(self, batch: Batch) -> bool:
         return self.local_repo.is_dirty(untracked_files=True)
 
-    def submit(self, batch: BatchWithFiles) -> None:
+    def submit(self, batch: Batch) -> None:
         self.commit(batch["metadata"])
 
-    def clean(self, batch: BatchWithFiles) -> None:
+    def clean(self, batch: Batch) -> None:
         self.local_repo.git.reset("--hard")
 
-    def rewind(self, batch: BatchWithFiles) -> None:
+    def rewind(self, batch: Batch) -> None:
         self.clean(batch)
         self.local_repo.active_branch.checkout()
 

@@ -10,7 +10,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Mapping, TypedDict
 
-from autotransform.batcher.base import BatchWithFiles
+from autotransform.batcher.base import Batch
 from autotransform.command.type import CommandType
 
 
@@ -30,7 +30,7 @@ class Command(ABC):
         pass
 
     @abstractmethod
-    def run(self, batch: BatchWithFiles) -> None:
+    def run(self, batch: Batch) -> None:
         pass
 
     def bundle(self) -> CommandBundle:

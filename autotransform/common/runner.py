@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import List, Optional, Sequence, Type
 
-from autotransform.batcher.base import BatchWithFiles
+from autotransform.batcher.base import Batch
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.worker.base import Worker
 
@@ -24,7 +24,7 @@ class Runner:
         self.schema = schema
         self.workers = None
 
-    def _spawn_workers(self, batches: List[BatchWithFiles]) -> None:
+    def _spawn_workers(self, batches: List[Batch]) -> None:
         assert self.workers is None
         workers = self.worker_type.spawn_from_batches(self.schema, batches)
         for worker in workers:

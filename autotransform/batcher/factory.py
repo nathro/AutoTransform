@@ -5,6 +5,13 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+"""A simple factory for producing Batchers from type and param information
+Imports for custom Batchers should be in the custom imports section.
+This will reduce merge conflicts when merging in upstream changes.
+Note:
+    Do not auto organize imports when using custom imports to avoid merge conflicts
+"""
+
 from typing import Any, Callable, Dict, Mapping
 
 from autotransform.batcher.base import Batcher, BatcherBundle
@@ -17,6 +24,15 @@ from autotransform.batcher.type import BatcherType
 
 
 class BatcherFactory:
+    """The factory class
+
+    Attributes:
+        _getters (Dict[BatcherType, Callable[[Mapping[str, Any]], Batcher]]): A mapping
+            from batcher type to that batcher's from_data function. Custom components
+            should have their getters placed in the custom getters section.
+            This will reduce merge conflicts when merging in upstream changes.
+    """
+
     # pylint: disable=too-few-public-methods
 
     _getters: Dict[BatcherType, Callable[[Mapping[str, Any]], Batcher]] = {
@@ -28,4 +44,12 @@ class BatcherFactory:
 
     @staticmethod
     def get(bundle: BatcherBundle) -> Batcher:
+        """Simple get method using the _getters attribute
+
+        Args:
+            bundle (BatcherBundle): The decoded bundle from which to produce a Batcher instance
+
+        Returns:
+            Batcher: The Batcher instance of the decoded bundle
+        """
         return BatcherFactory._getters[bundle["type"]](bundle["params"])

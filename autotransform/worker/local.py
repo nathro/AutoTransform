@@ -12,7 +12,7 @@ from argparse import ArgumentParser, Namespace
 from subprocess import Popen
 from typing import List, Optional, Sequence
 
-from autotransform.batcher.base import BatchWithFiles
+from autotransform.batcher.base import Batch
 from autotransform.common.cachedfile import CachedFile
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.worker.runnable import RunnableWorker
@@ -39,7 +39,7 @@ class LocalWorker(RunnableWorker):
 
     @staticmethod
     def spawn_from_batches(
-        schema: AutoTransformSchema, batches: List[BatchWithFiles]
+        schema: AutoTransformSchema, batches: List[Batch]
     ) -> Sequence[RunnableWorker]:
         # pylint: disable=consider-using-with
 
@@ -76,7 +76,7 @@ class LocalWorker(RunnableWorker):
             data = json.loads(data_file.read())
             schema = AutoTransformSchema.from_bundle(data["schema"])
             encoded_batches = data["batches"]
-            batches: List[BatchWithFiles] = [
+            batches: List[Batch] = [
                 {
                     "files": [CachedFile(path) for path in batch["files"]],
                     "metadata": batch["metadata"],
