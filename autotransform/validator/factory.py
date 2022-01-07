@@ -8,7 +8,7 @@
 """A simple factory for producing Validators from type and param information
 
 Note:
-    Imports for custom Validators should be in the custom imports section.
+    Imports for custom Validators should be in the CUSTOM IMPORTS section.
     This will reduce merge conflicts when merging in upstream changes.
     Do not auto organize imports when using custom imports to avoid merge conflicts
 """
@@ -18,7 +18,6 @@ from typing import Any, Callable, Dict, Mapping
 from autotransform.validator.base import Validator, ValidatorBundle
 from autotransform.validator.type import ValidatorType
 
-# Section reserved for custom imports to reduce merge conflicts
 # BEGIN CUSTOM IMPORTS
 # END CUSTOM IMPORTS
 
@@ -31,14 +30,13 @@ class ValidatorFactory:
             from ValidatorType to that validators's from_data function.
 
     Note:
-        Custom components should have their getters placed in the custom validators section.
+        Custom validators should have their getters placed in the CUSTOM VALIDATORS section.
         This will reduce merge conflicts when merging in upstream changes.
     """
 
     # pylint: disable=too-few-public-methods
 
     _getters: Dict[ValidatorType, Callable[[Mapping[str, Any]], Validator]] = {
-        # Section reserved for custom getters to reduce merge conflicts
         # BEGIN CUSTOM VALIDATORS
         # END CUSTOM VALIDATORS
     }

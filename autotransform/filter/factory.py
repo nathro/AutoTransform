@@ -8,7 +8,7 @@
 """A simple factory for producing Filters from type and param information
 
 Note:
-    Imports for custom Filters should be in the custom imports section.
+    Imports for custom Filters should be in the CUSTOM IMPORTS section.
     This will reduce merge conflicts when merging in upstream changes.
     Do not auto organize imports when using custom imports to avoid merge conflicts
 """
@@ -19,7 +19,6 @@ from autotransform.filter.base import Filter, FilterBundle
 from autotransform.filter.extension import ExtensionFilter
 from autotransform.filter.type import FilterType
 
-# Section reserved for custom imports to reduce merge conflicts
 # BEGIN CUSTOM IMPORTS
 # END CUSTOM IMPORTS
 
@@ -32,7 +31,7 @@ class FilterFactory:
             from FilterType to that filters's from_data function.
 
     Note:
-        Custom components should have their getters placed in the custom filters section.
+        Custom filters should have their getters placed in the CUSTOM FILTERS section.
         This will reduce merge conflicts when merging in upstream changes.
     """
 
@@ -40,7 +39,6 @@ class FilterFactory:
 
     _getters: Dict[FilterType, Callable[[bool, Mapping[str, Any]], Filter]] = {
         FilterType.EXTENSION: ExtensionFilter.from_data,
-        # Section reserved for custom getters to reduce merge conflicts
         # BEGIN CUSTOM FILTERS
         # END CUSTOM FILTERS
     }

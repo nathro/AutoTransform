@@ -8,7 +8,7 @@
 """A simple factory for producing Repos from type and param information
 
 Note:
-    Imports for custom Repos should be in the custom imports section.
+    Imports for custom Repos should be in the CUSTOM IMPORTS section.
     This will reduce merge conflicts when merging in upstream changes.
     Do not auto organize imports when using custom imports to avoid merge conflicts
 """
@@ -20,7 +20,6 @@ from autotransform.repo.git import GitRepo
 from autotransform.repo.github import GithubRepo
 from autotransform.repo.type import RepoType
 
-# Section reserved for custom imports to reduce merge conflicts
 # BEGIN CUSTOM IMPORTS
 # END CUSTOM IMPORTS
 
@@ -33,7 +32,7 @@ class RepoFactory:
             from RepoType to that repos's from_data function.
 
     Note:
-        Custom components should have their getters placed in the custom repos section.
+        Custom repos should have their getters placed in the CUSTOM REPOS section.
         This will reduce merge conflicts when merging in upstream changes.
     """
 
@@ -42,7 +41,6 @@ class RepoFactory:
     _getters: Dict[RepoType, Callable[[Mapping[str, Any]], Repo]] = {
         RepoType.GIT: GitRepo.from_data,
         RepoType.GITHUB: GithubRepo.from_data,
-        # Section reserved for custom getters to reduce merge conflicts
         # BEGIN CUSTOM REPOS
         # END CUSTOM REPOS
     }

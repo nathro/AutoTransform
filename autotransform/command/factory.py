@@ -8,7 +8,7 @@
 """A simple factory for producing Commands from type and param information
 
 Note:
-    Imports for custom Commands should be in the custom imports section.
+    Imports for custom Commands should be in the CUSTOM IMPORTS section.
     This will reduce merge conflicts when merging in upstream changes.
     Do not auto organize imports when using custom imports to avoid merge conflicts
 """
@@ -18,7 +18,6 @@ from typing import Any, Callable, Dict, Mapping
 from autotransform.command.base import Command, CommandBundle
 from autotransform.command.type import CommandType
 
-# Section reserved for custom imports to reduce merge conflicts
 # BEGIN CUSTOM IMPORTS
 # END CUSTOM IMPORTS
 
@@ -31,14 +30,13 @@ class CommandFactory:
             from CommandType to that commands's from_data function.
 
     Note:
-        Custom components should have their getters placed in the custom commands section.
+        Custom commands should have their getters placed in the CUSTOM COMMANDS section.
         This will reduce merge conflicts when merging in upstream changes.
     """
 
     # pylint: disable=too-few-public-methods
 
     _getters: Dict[CommandType, Callable[[Mapping[str, Any]], Command]] = {
-        # Section reserved for custom getters to reduce merge conflicts
         # BEGIN CUSTOM COMMANDS
         # END CUSTOM COMMANDS
     }

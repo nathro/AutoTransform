@@ -8,7 +8,7 @@
 """A simple factory for producing SchemaBuilders from their name
 
 Note:
-    Imports for custom SchemaBuilders should be in the custom imports section.
+    Imports for custom SchemaBuilders should be in the CUSTOM IMPORTS section.
     This will reduce merge conflicts when merging in upstream changes.
     Do not auto organize imports when using custom imports to avoid merge conflicts
 """
@@ -18,7 +18,6 @@ from typing import Dict, Type
 from autotransform.schema.builder import SchemaBuilder
 from autotransform.schema.name import SchemaBuilderName
 
-# Section reserved for custom imports to reduce merge conflicts
 # BEGIN CUSTOM IMPORTS
 # END CUSTOM IMPORTS
 
@@ -31,16 +30,15 @@ class SchemaBuilderFactory:
             the associated class
 
     Note:
-        Custom builders should have their getters placed in the custom builders section.
+        Custom builders should have their getters placed in the CUSTOM BUILDERS section.
         This will reduce merge conflicts when merging in upstream changes.
     """
 
     # pylint: disable=too-few-public-methods
 
     _map: Dict[SchemaBuilderName, Type[SchemaBuilder]] = {
-        # Section reserved for custom schemas to reduce merge conflicts
-        # BEGIN CUSTOM BUILDER
-        # END CUSTOM BUILDER
+        # BEGIN CUSTOM BUILDERS
+        # END CUSTOM BUILDERS
     }
 
     @staticmethod

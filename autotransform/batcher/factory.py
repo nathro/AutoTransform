@@ -8,7 +8,7 @@
 """A simple factory for producing Batchers from type and param information
 
 Note:
-    Imports for custom Batchers should be in the custom imports section.
+    Imports for custom Batchers should be in the CUSTOM IMPORTS section.
     This will reduce merge conflicts when merging in upstream changes.
     Do not auto organize imports when using custom imports to avoid merge conflicts
 """
@@ -19,7 +19,6 @@ from autotransform.batcher.base import Batcher, BatcherBundle
 from autotransform.batcher.single import SingleBatcher
 from autotransform.batcher.type import BatcherType
 
-# Section reserved for custom imports to reduce merge conflicts
 # BEGIN CUSTOM IMPORTS
 # END CUSTOM IMPORTS
 
@@ -32,7 +31,7 @@ class BatcherFactory:
             from BatcherType to that batchers's from_data function.
 
     Note:
-        Custom components should have their getters placed in the custom batchers section.
+        Custom batchers should have their getters placed in the CUSTOM BATCHERS section.
         This will reduce merge conflicts when merging in upstream changes.
     """
 
@@ -40,7 +39,6 @@ class BatcherFactory:
 
     _getters: Dict[BatcherType, Callable[[Mapping[str, Any]], Batcher]] = {
         BatcherType.SINGLE: SingleBatcher.from_data,
-        # Section reserved for custom getters to reduce merge conflicts
         # BEGIN CUSTOM BATCHER
         # END CUSTOM BATCHER
     }

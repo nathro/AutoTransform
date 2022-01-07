@@ -8,7 +8,7 @@
 """A simple factory for producing Inputs from type and param information
 
 Note:
-    Imports for custom Inputs should be in the custom imports section.
+    Imports for custom Inputs should be in the CUSTOM IMPORTS section.
     This will reduce merge conflicts when merging in upstream changes.
     Do not auto organize imports when using custom imports to avoid merge conflicts
 """
@@ -19,7 +19,6 @@ from autotransform.input.base import Input, InputBundle
 from autotransform.input.directory import DirectoryInput
 from autotransform.input.type import InputType
 
-# Section reserved for custom imports to reduce merge conflicts
 # BEGIN CUSTOM IMPORTS
 # END CUSTOM IMPORTS
 
@@ -32,7 +31,7 @@ class InputFactory:
             from InputType to that inputs's from_data function.
 
     Note:
-        Custom components should have their getters placed in the custom inputs section.
+        Custom inputs should have their getters placed in the CUSTOM INPUTS section.
         This will reduce merge conflicts when merging in upstream changes.
     """
 
@@ -40,7 +39,6 @@ class InputFactory:
 
     _getters: Dict[InputType, Callable[[Mapping[str, Any]], Input]] = {
         InputType.DIRECTORY: DirectoryInput.from_data,
-        # Section reserved for custom getters to reduce merge conflicts
         # BEGIN CUSTOM INPUTS
         # END CUSTOM INPUTS
     }

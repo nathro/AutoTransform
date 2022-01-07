@@ -8,7 +8,7 @@
 """A simple factory for producing Transformers from type and param information
 
 Note:
-    Imports for custom Transformers should be in the custom imports section.
+    Imports for custom Transformers should be in the CUSTOM IMPORTS section.
     This will reduce merge conflicts when merging in upstream changes.
     Do not auto organize imports when using custom imports to avoid merge conflicts
 """
@@ -19,7 +19,6 @@ from autotransform.transformer.base import Transformer, TransformerBundle
 from autotransform.transformer.regex import RegexTransformer
 from autotransform.transformer.type import TransformerType
 
-# Section reserved for custom imports to reduce merge conflicts
 # BEGIN CUSTOM IMPORTS
 # END CUSTOM IMPORTS
 
@@ -32,7 +31,7 @@ class TransformerFactory:
             from TransformerType to that transformers's from_data function.
 
     Note:
-        Custom components should have their getters placed in the custom transformers section.
+        Custom transformers should have their getters placed in the CUSTOM TRANSFORMERS section.
         This will reduce merge conflicts when merging in upstream changes.
     """
 
@@ -40,7 +39,6 @@ class TransformerFactory:
 
     _getters: Dict[TransformerType, Callable[[Mapping[str, Any]], Transformer]] = {
         TransformerType.REGEX: RegexTransformer.from_data,
-        # Section reserved for custom getters to reduce merge conflicts
         # BEGIN CUSTOM TRANSFORMERS
         # END CUSTOM TRANSFORMERS
     }

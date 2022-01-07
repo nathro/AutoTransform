@@ -8,7 +8,7 @@
 """A simple factory for producing Workers from their name
 
 Note:
-    Imports for custom Workers should be in the custom imports section.
+    Imports for custom Workers should be in the CUSTOM IMPORTS section.
     This will reduce merge conflicts when merging in upstream changes.
     Do not auto organize imports when using custom imports to avoid merge conflicts
 """
@@ -19,7 +19,6 @@ from autotransform.worker.base import Worker
 from autotransform.worker.local import LocalWorker
 from autotransform.worker.type import WorkerType
 
-# Section reserved for custom imports to reduce merge conflicts
 # BEGIN CUSTOM IMPORTS
 # END CUSTOM IMPORTS
 
@@ -31,7 +30,7 @@ class WorkerFactory:
         _map (Dict[WorkerType, Type[Worker]]): A mapping from WorkerType to the associated class
 
     Note:
-        Custom workers should have their getters placed in the custom workers section.
+        Custom workers should have their getters placed in the CUSTOM WORKERS section.
         This will reduce merge conflicts when merging in upstream changes.
     """
 
@@ -39,7 +38,6 @@ class WorkerFactory:
 
     _map: Dict[WorkerType, Type[Worker]] = {
         WorkerType.LOCAL: LocalWorker,
-        # Section reserved for custom workers to reduce merge conflicts
         # BEGIN CUSTOM WORKERS
         # END CUSTOM WORKERS
     }
