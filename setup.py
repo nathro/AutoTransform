@@ -22,13 +22,13 @@ setuptools.setup(
     project_urls={
         "Bug Tracker": "https://github.com/nathro/AutoTransform/issues",
         "Source": "https://github.com/nathro/AutoTransform/",
-        "Say Thanks": "https://saythanks.io/to/nathro.software",
+        "Say Thanks!": "https://saythanks.io/to/nathro.software",
         "Support": "https://www.paypal.com/paypalme/nathrosoftware",
+        "Stream": "https://www.twitch.tv/AllSublime",
     },
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
-        "Topic :: Software Development :: Codemod",
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
