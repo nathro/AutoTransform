@@ -8,13 +8,16 @@
 from typing import Dict, Type
 
 from autotransform.worker.base import Worker
+from autotransform.worker.local import LocalWorker
 from autotransform.worker.type import WorkerType
 
 
 class WorkerFactory:
     # pylint: disable=too-few-public-methods
 
-    _map: Dict[WorkerType, Type[Worker]]
+    _map: Dict[WorkerType, Type[Worker]] = {
+        WorkerType.LOCAL: LocalWorker,
+    }
 
     @staticmethod
     def get(worker_type: WorkerType) -> Type[Worker]:
