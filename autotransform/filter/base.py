@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+"""The base class and associated classes for Filter components."""
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
@@ -15,35 +17,81 @@ from autotransform.filter.type import FilterType
 
 
 class FilterBundle(TypedDict):
+    """A bundled version of the Filter object used for JSON encoding"""
+
     inverted: Optional[bool]
     params: Mapping[str, Any]
     type: FilterType
 
 
 class Filter(ABC):
+    """The base for Filter components.
+
+    Attributes:
+        params (Mapping[str, Any]): The paramaters that control operation of the Filter.
+            Should be defined using a TypedDict in subclasses
+        inverted (bool): Whether to invert the results of the filter
+    """
+
     inverted: bool
     params: Mapping[str, Any]
 
     def __init__(self, params: Mapping[str, Any]):
+        """A simple constructor
+
+        Args:
+            params (Mapping[str, Any]): The paramaters used to set up the Filter
+        """
         self.inverted = False
         self.params = params
 
     @abstractmethod
     def get_type(self) -> FilterType:
-        pass
+        """Used to map Filter components 1:1 with an enum, allowing construction from JSON
+
+        Returns:
+            FilterType: The unique type associated with this Filter
+        """
 
     def invert(self) -> Filter:
+        """Inverts the results that the filter will provide
+
+        Returns:
+            Filter: The Filter after setting the inversion
+        """
         self.inverted = not self.inverted
         return self
 
     def is_valid(self, file: CachedFile) -> bool:
+        """Check whether a file is valid based on the filter and handle inversion
+
+        Args:
+            file (CachedFile): The file to check
+
+        Returns:
+            bool: Returns True if the file should be included
+        """
         return self.inverted != self._is_valid(file)
 
     @abstractmethod
     def _is_valid(self, file: CachedFile) -> bool:
-        pass
+        """Check whether a file is valid based on the filter. Does not handle inversion.
+
+        Args:
+            file (CachedFile): The file to check
+
+        Returns:
+            bool: Returns True if the file should be included
+        """
 
     def bundle(self) -> FilterBundle:
+        """Generates a JSON encodable bundle.
+        If a component's params are not JSON encodable this method should be overridden to provide
+        an encodable version.
+
+        Returns:
+            FilterBundle: The encodable bundle
+        """
         return {
             "inverted": self.inverted,
             "params": self.params,
@@ -52,6 +100,17 @@ class Filter(ABC):
 
     @classmethod
     def from_data(cls, inverted: Optional[bool], data: Mapping[str, Any]) -> Filter:
+        """Produces an instance of the component from decoded params. Implementations should
+        assert that the data provided matches expected types and is valid. Handles the inversion
+        capabilities of the Filter.
+
+        Args:
+            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
+            inverted (Optional[bool]): Whether the filter was inverted before encoding
+
+        Returns:
+            Filter: An instance of the Filter
+        """
         unbundled_filter = cls._from_data(data)
         if inverted:
             unbundled_filter.invert()
@@ -60,4 +119,12 @@ class Filter(ABC):
     @staticmethod
     @abstractmethod
     def _from_data(data: Mapping[str, Any]) -> Filter:
-        pass
+        """Produces an instance of the component from decoded params. Implementations should
+        assert that the data provided matches expected types and is valid.
+
+        Args:
+            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
+
+        Returns:
+            Filter: An instance of the Filter
+        """

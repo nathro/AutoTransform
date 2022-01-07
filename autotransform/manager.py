@@ -78,7 +78,7 @@ def main():
             with open(file, "r") as schema_file:
                 schema = AutoTransformSchema.from_json(schema_file.read())
     elif builder is not None:
-        schema = SchemaBuilderFactory.get(builder)
+        schema = SchemaBuilderFactory.get(builder).build()
     else:
         print("Must provide either a builder name or a file containing the schema as JSON")
         sys.exit(1)
