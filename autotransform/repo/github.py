@@ -38,7 +38,8 @@ class GithubRepo(GitRepo):
     @staticmethod
     def get_github_object() -> Github:
         config_path: str = (
-            str(pathlib.Path(__file__).parent.parent.parent.resolve()) + "\\config.ini"
+            str(pathlib.Path(__file__).parent.parent.resolve()).replace("\\", "/")
+            + "/data/config.ini"
         )
         config = ConfigParser()
         config.read(config_path)

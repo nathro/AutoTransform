@@ -12,7 +12,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="AutoTransform",
-    version="0.0.6",
+    version="0.0.9",
     author="Nathan Rockenbach",
     author_email="nathro.software@gmail.com",
     description="A component based tool for designing automated code modification",
@@ -44,4 +44,5 @@ setuptools.setup(
             "atmanager = autotransform.manager:main",
         ]
     },
+    package_data={"": ["data/sample_config.ini", "data/packages/sample_package.json"]},
 )
