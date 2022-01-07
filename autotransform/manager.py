@@ -13,7 +13,6 @@ from autotransform.common.package import AutoTransformPackage
 from autotransform.common.runner import Runner
 from autotransform.schema.factory import SchemaFactory
 from autotransform.worker.factory import WorkerFactory
-from autotransform.worker.type import WorkerType
 
 
 def parse_arguments():
