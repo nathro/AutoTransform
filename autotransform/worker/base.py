@@ -11,7 +11,7 @@ from abc import ABC, abstractmethod
 from typing import List, Sequence
 
 from autotransform.batcher.base import BatchWithFiles
-from autotransform.common.package import AutoTransformPackage
+from autotransform.schema.schema import AutoTransformSchema
 
 
 class Worker(ABC):
@@ -26,7 +26,7 @@ class Worker(ABC):
     @staticmethod
     @abstractmethod
     def spawn_from_batches(
-        package: AutoTransformPackage, batches: List[BatchWithFiles]
+        schema: AutoTransformSchema, batches: List[BatchWithFiles]
     ) -> Sequence[Worker]:
         pass
 

@@ -21,37 +21,14 @@ from autotransform.input.base import Input
 from autotransform.input.factory import InputFactory
 from autotransform.repo.base import Repo
 from autotransform.repo.factory import RepoFactory
+from autotransform.schema.config import Config
 from autotransform.transformer.base import Transformer
 from autotransform.transformer.factory import TransformerFactory
-from autotransform.validator.base import ValidationError, ValidationResultLevel, Validator
+from autotransform.validator.base import ValidationError, Validator
 from autotransform.validator.factory import ValidatorFactory
 
 
-class PackageConfiguration:
-    allowed_validation_level: ValidationResultLevel
-
-    def __init__(
-        self, allowed_validation_level: ValidationResultLevel = ValidationResultLevel.NONE
-    ):
-        self.allowed_validation_level = allowed_validation_level
-
-    def bundle(self):
-        return {
-            "allowed_validation_level": self.allowed_validation_level,
-        }
-
-    @classmethod
-    def from_data(cls, data: Dict[str, Any]) -> PackageConfiguration:
-        if "allowed_validation_level" in data:
-            validation_level = data["allowed_validation_level"]
-            if not ValidationResultLevel.has_value(validation_level):
-                validation_level = ValidationResultLevel.from_name(validation_level)
-        else:
-            validation_level = ValidationResultLevel.NONE
-        return cls(validation_level)
-
-
-class AutoTransformPackage:
+class AutoTransformSchema:
     # pylint: disable=too-many-instance-attributes
 
     input: Input
@@ -63,7 +40,7 @@ class AutoTransformPackage:
     commands: List[Command]
     repo: Optional[Repo]
 
-    config: PackageConfiguration
+    config: Config
 
     def __init__(
         self,
@@ -74,7 +51,7 @@ class AutoTransformPackage:
         validators: List[Validator] = None,
         commands: List[Command] = None,
         repo: Optional[Repo] = None,
-        config: PackageConfiguration = PackageConfiguration(),
+        config: Config = Config(),
     ):
         # pylint: disable=too-many-arguments
 
@@ -150,11 +127,11 @@ class AutoTransformPackage:
         return json.dumps(bundle)
 
     @staticmethod
-    def from_json(json_bundle: str) -> AutoTransformPackage:
-        return AutoTransformPackage.from_bundle(json.loads(json_bundle))
+    def from_json(json_bundle: str) -> AutoTransformSchema:
+        return AutoTransformSchema.from_bundle(json.loads(json_bundle))
 
     @staticmethod
-    def from_bundle(bundle: Mapping[str, Any]) -> AutoTransformPackage:
+    def from_bundle(bundle: Mapping[str, Any]) -> AutoTransformSchema:
         inp = InputFactory.get(bundle["input"])
         batcher = BatcherFactory.get(bundle["batcher"])
         transformer = TransformerFactory.get(bundle["transformer"])
@@ -168,9 +145,9 @@ class AutoTransformPackage:
         else:
             repo = None
 
-        config = PackageConfiguration.from_data(bundle["config"])
+        config = Config.from_data(bundle["config"])
 
-        return AutoTransformPackage(
+        return AutoTransformSchema(
             inp,
             batcher,
             transformer,

@@ -7,23 +7,23 @@
 
 from typing import Dict
 
-from autotransform.schema.base import AutoTransformSchema
-from autotransform.schema.name import SchemaName
+from autotransform.schema.builder import SchemaBuilder
+from autotransform.schema.name import SchemaBuilderName
 
 # Section reserved for custom imports to reduce merge conflicts
 # BEGIN CUSTOM IMPORTS
 # END CUSTOM IMPORTS
 
 
-class SchemaFactory:
+class SchemaBuilderFactory:
     # pylint: disable=too-few-public-methods
 
-    _schemas: Dict[SchemaName, AutoTransformSchema] = {
+    _schemas: Dict[SchemaBuilderName, SchemaBuilder] = {
         # Section reserved for custom schemas to reduce merge conflicts
         # BEGIN CUSTOM SCHEMA
         # END CUSTOM SCHEMA
     }
 
     @staticmethod
-    def get(schema: SchemaName) -> AutoTransformSchema:
-        return SchemaFactory._schemas[schema]
+    def get(schema: SchemaBuilderName) -> SchemaBuilder:
+        return SchemaBuilderFactory._schemas[schema]

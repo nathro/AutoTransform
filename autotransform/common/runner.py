@@ -10,29 +10,29 @@ from __future__ import annotations
 from typing import List, Optional, Sequence, Type
 
 from autotransform.batcher.base import BatchWithFiles
-from autotransform.common.package import AutoTransformPackage
+from autotransform.schema.schema import AutoTransformSchema
 from autotransform.worker.base import Worker
 
 
 class Runner:
-    package: AutoTransformPackage
+    schema: AutoTransformSchema
     worker_type: Type[Worker]
     workers: Optional[Sequence[Worker]]
 
-    def __init__(self, package: AutoTransformPackage, worker_type: Type[Worker]):
+    def __init__(self, schema: AutoTransformSchema, worker_type: Type[Worker]):
         self.worker_type = worker_type
-        self.package = package
+        self.schema = schema
         self.workers = None
 
     def _spawn_workers(self, batches: List[BatchWithFiles]) -> None:
         assert self.workers is None
-        workers = self.worker_type.spawn_from_batches(self.package, batches)
+        workers = self.worker_type.spawn_from_batches(self.schema, batches)
         for worker in workers:
             worker.start()
         self.workers = workers
 
     def start(self) -> Runner:
-        batches = self.package.get_batches()
+        batches = self.schema.get_batches()
         self._spawn_workers(batches)
         return self
 

@@ -9,12 +9,12 @@ import argparse
 import time
 
 from autotransform.batcher.single import SingleBatcher
-from autotransform.common.package import AutoTransformPackage
 from autotransform.common.runner import Runner
 from autotransform.filter.extension import ExtensionFilter
 from autotransform.input.directory import DirectoryInput
 from autotransform.repo.git import GitRepo
 from autotransform.repo.github import GithubRepo
+from autotransform.schema.schema import AutoTransformSchema
 from autotransform.transformer.regex import RegexTransformer
 from autotransform.worker.local import LocalWorker
 
@@ -108,8 +108,8 @@ def main():
             repo = GitRepo({"path": git_repo})
     else:
         repo = None
-    package = AutoTransformPackage(inp, batcher, transformer, filters=filters, repo=repo)
-    runner = Runner(package, LocalWorker)
+    schema = AutoTransformSchema(inp, batcher, transformer, filters=filters, repo=repo)
+    runner = Runner(schema, LocalWorker)
     start_time = time.time()
     runner.start()
     timeout = 30

@@ -8,7 +8,7 @@
 from enum import Enum
 
 
-class SchemaName(str, Enum):
+class SchemaBuilderName(str, Enum):
     pass
 
     # Section reserved for custom names to reduce merge conflicts

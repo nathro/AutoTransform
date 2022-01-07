@@ -11,15 +11,16 @@ from typing import List, Optional
 from autotransform.batcher.base import Batcher
 from autotransform.batcher.single import SingleBatcher
 from autotransform.command.base import Command
-from autotransform.common.package import AutoTransformPackage, PackageConfiguration
 from autotransform.filter.base import Filter
 from autotransform.input.base import Input
 from autotransform.repo.base import Repo
+from autotransform.schema.config import Config
+from autotransform.schema.schema import AutoTransformSchema
 from autotransform.transformer.base import Transformer
 from autotransform.validator.base import Validator
 
 
-class AutoTransformSchema(ABC):
+class SchemaBuilder(ABC):
     @abstractmethod
     def get_input(self) -> Input:
         pass
@@ -53,13 +54,13 @@ class AutoTransformSchema(ABC):
 
         return None
 
-    def get_config(self) -> PackageConfiguration:
+    def get_config(self) -> Config:
         # pylint: disable=no-self-use
 
-        return PackageConfiguration()
+        return Config()
 
-    def get_package(self):
-        return AutoTransformPackage(
+    def get_schema(self):
+        return AutoTransformSchema(
             self.get_input(),
             self.get_batcher(),
             self.get_batcher(),
@@ -74,4 +75,4 @@ class AutoTransformSchema(ABC):
         # pylint: disable=unspecified-encoding
 
         with open(path, "w") as file:
-            file.write(self.get_package().to_json(pretty=True))
+            file.write(self.get_schema().to_json(pretty=True))
