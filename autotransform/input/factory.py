@@ -7,9 +7,9 @@
 
 from typing import Any, Callable, Dict, Mapping
 
-from autotransform.input.base import Input, InputBundle
-from autotransform.input.directory import DirectoryInput
-from autotransform.input.type import InputType
+from autotransform.inputsource.base import Input, InputBundle
+from autotransform.inputsource.directory import DirectoryInput
+from autotransform.inputsource.type import InputType
 
 
 class InputFactory:

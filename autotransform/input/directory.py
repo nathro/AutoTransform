@@ -10,8 +10,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, List, Mapping, TypedDict
 
-from autotransform.input.base import Input
-from autotransform.input.type import InputType
+from autotransform.inputsource.base import Input
+from autotransform.inputsource.type import InputType
 
 
 class DirectoryInputParams(TypedDict):

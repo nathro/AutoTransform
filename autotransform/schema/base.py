@@ -13,7 +13,7 @@ from autotransform.batcher.single import SingleBatcher
 from autotransform.command.base import Command
 from autotransform.common.package import AutoTransformPackage, PackageConfiguration
 from autotransform.filter.base import Filter
-from autotransform.input.base import Input
+from autotransform.inputsource.base import Input
 from autotransform.repo.base import Repo
 from autotransform.transformer.base import Transformer
 from autotransform.validator.base import Validator
@@ -21,7 +21,7 @@ from autotransform.validator.base import Validator
 
 class AutoTransformSchema(ABC):
     @abstractmethod
-    def get_input(self) -> Input:
+    def get_inputsource(self) -> Input:
         pass
 
     def get_filters(self) -> List[Filter]:
@@ -60,7 +60,7 @@ class AutoTransformSchema(ABC):
 
     def get_package(self):
         return AutoTransformPackage(
-            self.get_input(),
+            self.get_inputsource(),
             self.get_batcher(),
             self.get_batcher(),
             filters=self.get_filters(),

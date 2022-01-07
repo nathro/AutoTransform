@@ -17,8 +17,8 @@ from autotransform.command.factory import CommandFactory
 from autotransform.common.cachedfile import CachedFile
 from autotransform.filter.base import Filter
 from autotransform.filter.factory import FilterFactory
-from autotransform.input.base import Input
-from autotransform.input.factory import InputFactory
+from autotransform.inputsource.base import Input
+from autotransform.inputsource.factory import InputFactory
 from autotransform.repo.base import Repo
 from autotransform.repo.factory import RepoFactory
 from autotransform.transformer.base import Transformer
@@ -54,7 +54,7 @@ class PackageConfiguration:
 class AutoTransformPackage:
     # pylint: disable=too-many-instance-attributes
 
-    input: Input
+    inputsource: Input
     batcher: Batcher
     transformer: Transformer
 
@@ -78,7 +78,7 @@ class AutoTransformPackage:
     ):
         # pylint: disable=too-many-arguments
 
-        self.input = inp
+        self.inputsource = inp
         self.batcher = batcher
         self.transformer = transformer
 
@@ -91,7 +91,7 @@ class AutoTransformPackage:
 
     def get_batches(self) -> List[BatchWithFiles]:
         valid_files = []
-        for file in self.input.get_files():
+        for file in self.inputsource.get_files():
             cached_file = CachedFile(file)
             is_valid = True
             for cur_filter in self.filters:
@@ -130,7 +130,7 @@ class AutoTransformPackage:
 
     def bundle(self) -> Dict[str, Any]:
         bundle = {
-            "input": self.input.bundle(),
+            "inputsource": self.inputsource.bundle(),
             "batcher": self.batcher.bundle(),
             "transformer": self.transformer.bundle(),
             "filters": [filter.bundle() for filter in self.filters],
@@ -155,7 +155,7 @@ class AutoTransformPackage:
 
     @staticmethod
     def from_bundle(bundle: Mapping[str, Any]) -> AutoTransformPackage:
-        inp = InputFactory.get(bundle["input"])
+        inp = InputFactory.get(bundle["inputsource"])
         batcher = BatcherFactory.get(bundle["batcher"])
         transformer = TransformerFactory.get(bundle["transformer"])
 
