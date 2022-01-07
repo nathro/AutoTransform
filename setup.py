@@ -11,7 +11,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="autotransform",
+    name="AutoTransform",
     version="0.0.1",
     author="Nathan Rockenbach",
     author_email="nathro.software@gmail.com",
