@@ -6,9 +6,10 @@
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
 """A simple factory for producing Batchers from type and param information
-Imports for custom Batchers should be in the custom imports section.
-This will reduce merge conflicts when merging in upstream changes.
+
 Note:
+    Imports for custom Batchers should be in the custom imports section.
+    This will reduce merge conflicts when merging in upstream changes.
     Do not auto organize imports when using custom imports to avoid merge conflicts
 """
 
@@ -28,9 +29,11 @@ class BatcherFactory:
 
     Attributes:
         _getters (Dict[BatcherType, Callable[[Mapping[str, Any]], Batcher]]): A mapping
-            from batcher type to that batcher's from_data function. Custom components
-            should have their getters placed in the custom getters section.
-            This will reduce merge conflicts when merging in upstream changes.
+            from BatcherType to that batchers's from_data function.
+
+    Note:
+        Custom components should have their getters placed in the custom batchers section.
+        This will reduce merge conflicts when merging in upstream changes.
     """
 
     # pylint: disable=too-few-public-methods
@@ -38,8 +41,8 @@ class BatcherFactory:
     _getters: Dict[BatcherType, Callable[[Mapping[str, Any]], Batcher]] = {
         BatcherType.SINGLE: SingleBatcher.from_data,
         # Section reserved for custom getters to reduce merge conflicts
-        # BEGIN CUSTOM GETTERS
-        # END CUSTOM GETTERS
+        # BEGIN CUSTOM BATCHER
+        # END CUSTOM BATCHER
     }
 
     @staticmethod

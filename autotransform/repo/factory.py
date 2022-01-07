@@ -5,6 +5,14 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+"""A simple factory for producing Repos from type and param information
+
+Note:
+    Imports for custom Repos should be in the custom imports section.
+    This will reduce merge conflicts when merging in upstream changes.
+    Do not auto organize imports when using custom imports to avoid merge conflicts
+"""
+
 from typing import Any, Callable, Dict, Mapping
 
 from autotransform.repo.base import Repo, RepoBundle
@@ -18,16 +26,35 @@ from autotransform.repo.type import RepoType
 
 
 class RepoFactory:
+    """The factory class
+
+    Attributes:
+        _getters (Dict[RepoType, Callable[[Mapping[str, Any]], Repo]]): A mapping
+            from RepoType to that repos's from_data function.
+
+    Note:
+        Custom components should have their getters placed in the custom repos section.
+        This will reduce merge conflicts when merging in upstream changes.
+    """
+
     # pylint: disable=too-few-public-methods
 
     _getters: Dict[RepoType, Callable[[Mapping[str, Any]], Repo]] = {
         RepoType.GIT: GitRepo.from_data,
         RepoType.GITHUB: GithubRepo.from_data,
         # Section reserved for custom getters to reduce merge conflicts
-        # BEGIN CUSTOM GETTERS
-        # END CUSTOM GETTERS
+        # BEGIN CUSTOM REPOS
+        # END CUSTOM REPOS
     }
 
     @staticmethod
-    def get(repo: RepoBundle) -> Repo:
-        return RepoFactory._getters[repo["type"]](repo["params"])
+    def get(bundle: RepoBundle) -> Repo:
+        """Simple get method using the _getters attribute
+
+        Args:
+            bundle (RepoBundle): The decoded bundle from which to produce a Repo instance
+
+        Returns:
+            Repo: The Repo instance of the decoded bundle
+        """
+        return RepoFactory._getters[bundle["type"]](bundle["params"])
