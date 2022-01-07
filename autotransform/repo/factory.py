@@ -12,6 +12,10 @@ from autotransform.repo.git import GitRepo
 from autotransform.repo.github import GithubRepo
 from autotransform.repo.type import RepoType
 
+# Section reserved for custom imports to reduce merge conflicts
+# BEGIN CUSTOM IMPORTS
+# END CUSTOM IMPORTS
+
 
 class RepoFactory:
     # pylint: disable=too-few-public-methods
@@ -19,6 +23,9 @@ class RepoFactory:
     _getters: Dict[RepoType, Callable[[Mapping[str, Any]], Repo]] = {
         RepoType.GIT: GitRepo.from_data,
         RepoType.GITHUB: GithubRepo.from_data,
+        # Section reserved for custom getters to reduce merge conflicts
+        # BEGIN CUSTOM GETTERS
+        # END CUSTOM GETTERS
     }
 
     @staticmethod

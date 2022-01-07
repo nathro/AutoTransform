@@ -11,12 +11,19 @@ from autotransform.worker.base import Worker
 from autotransform.worker.local import LocalWorker
 from autotransform.worker.type import WorkerType
 
+# Section reserved for custom imports to reduce merge conflicts
+# BEGIN CUSTOM IMPORTS
+# END CUSTOM IMPORTS
+
 
 class WorkerFactory:
     # pylint: disable=too-few-public-methods
 
     _map: Dict[WorkerType, Type[Worker]] = {
         WorkerType.LOCAL: LocalWorker,
+        # Section reserved for custom workers to reduce merge conflicts
+        # BEGIN CUSTOM WORKERS
+        # END CUSTOM WORKERS
     }
 
     @staticmethod

@@ -10,3 +10,7 @@ from enum import Enum
 
 class FilterType(str, Enum):
     EXTENSION = "extension"
+
+    # Section reserved for custom types to reduce merge conflicts
+    # BEGIN CUSTOM TYPES
+    # END CUSTOM TYPES

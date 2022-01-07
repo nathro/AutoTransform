@@ -10,3 +10,7 @@ from enum import Enum
 
 class WorkerType(str, Enum):
     LOCAL = "local"
+
+    # Section reserved for custom types to reduce merge conflicts
+    # BEGIN CUSTOM TYPES
+    # END CUSTOM TYPES

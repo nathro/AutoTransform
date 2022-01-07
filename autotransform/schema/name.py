@@ -10,3 +10,7 @@ from enum import Enum
 
 class SchemaName(str, Enum):
     pass
+
+    # Section reserved for custom names to reduce merge conflicts
+    # BEGIN CUSTOM NAMES
+    # END CUSTOM NAMES

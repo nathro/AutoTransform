@@ -11,12 +11,19 @@ from autotransform.input.base import Input, InputBundle
 from autotransform.input.directory import DirectoryInput
 from autotransform.input.type import InputType
 
+# Section reserved for custom imports to reduce merge conflicts
+# BEGIN CUSTOM IMPORTS
+# END CUSTOM IMPORTS
+
 
 class InputFactory:
     # pylint: disable=too-few-public-methods
 
     _getters: Dict[InputType, Callable[[Mapping[str, Any]], Input]] = {
         InputType.DIRECTORY: DirectoryInput.from_data,
+        # Section reserved for custom getters to reduce merge conflicts
+        # BEGIN CUSTOM GETTERS
+        # END CUSTOM GETTERS
     }
 
     @staticmethod

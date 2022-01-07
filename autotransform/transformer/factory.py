@@ -11,12 +11,19 @@ from autotransform.transformer.base import Transformer, TransformerBundle
 from autotransform.transformer.regex import RegexTransformer
 from autotransform.transformer.type import TransformerType
 
+# Section reserved for custom imports to reduce merge conflicts
+# BEGIN CUSTOM IMPORTS
+# END CUSTOM IMPORTS
+
 
 class TransformerFactory:
     # pylint: disable=too-few-public-methods
 
     _getters: Dict[TransformerType, Callable[[Mapping[str, Any]], Transformer]] = {
         TransformerType.REGEX: RegexTransformer.from_data,
+        # Section reserved for custom getters to reduce merge conflicts
+        # BEGIN CUSTOM GETTERS
+        # END CUSTOM GETTERS
     }
 
     @staticmethod

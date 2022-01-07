@@ -11,3 +11,7 @@ from enum import Enum
 class RepoType(str, Enum):
     GIT = "git"
     GITHUB = "github"
+
+    # Section reserved for custom types to reduce merge conflicts
+    # BEGIN CUSTOM TYPES
+    # END CUSTOM TYPES

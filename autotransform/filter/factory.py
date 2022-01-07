@@ -11,12 +11,19 @@ from autotransform.filter.base import Filter, FilterBundle
 from autotransform.filter.extension import ExtensionFilter
 from autotransform.filter.type import FilterType
 
+# Section reserved for custom imports to reduce merge conflicts
+# BEGIN CUSTOM IMPORTS
+# END CUSTOM IMPORTS
+
 
 class FilterFactory:
     # pylint: disable=too-few-public-methods
 
     _getters: Dict[FilterType, Callable[[bool, Mapping[str, Any]], Filter]] = {
         FilterType.EXTENSION: ExtensionFilter.from_data,
+        # Section reserved for custom getters to reduce merge conflicts
+        # BEGIN CUSTOM GETTERS
+        # END CUSTOM GETTERS
     }
 
     @staticmethod
