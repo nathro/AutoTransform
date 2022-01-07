@@ -23,7 +23,8 @@ def parse_arguments():
         default=WorkerType.LOCAL,
         help="The name of the worker type to use",
     )
-    return parser.parse_args()
+    args, _ = parser.parse_known_args()
+    return args
 
 
 def main():

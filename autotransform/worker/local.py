@@ -69,7 +69,8 @@ class LocalWorker(RunnableWorker):
             type=str,
             help="The file containing a JSON encoded batch",
         )
-        return parser.parse_args()
+        args, _ = parser.parse_known_args()
+        return args
 
     @staticmethod
     def main(args: Namespace) -> None:
