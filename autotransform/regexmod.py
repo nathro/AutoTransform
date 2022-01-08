@@ -93,7 +93,9 @@ def main():
     extensions = args.extensions
     if isinstance(extensions, str):
         extensions = extensions.split(",")
-        extensions = ["." + extension for extension in extensions]
+        extensions = [
+            extension if extension.startswith(".") else "." + extension for extension in extensions
+        ]
         filters.append(ExtensionFilter({"extensions": extensions}))
 
     git_repo = args.git
