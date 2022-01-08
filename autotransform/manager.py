@@ -5,6 +5,10 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+"""A script for triggering a Schema run from a JSON encoded Schema or a
+Schema provided by a SchemaBuilder.
+"""
+
 import argparse
 import sys
 import time
@@ -17,6 +21,11 @@ from autotransform.worker.type import WorkerType
 
 
 def parse_arguments() -> argparse.Namespace:
+    """Parses the script arguments. Run with -h to see all arguments.
+
+    Returns:
+        argparse.Namespace: The arguments for the run
+    """
     parser = argparse.ArgumentParser(description="Runs an autotransform schema")
     parser.add_argument(
         "-f",
@@ -63,7 +72,10 @@ def parse_arguments() -> argparse.Namespace:
 
 
 def main():
+    """A full run of AutoTransform from the provided Schema."""
+
     # pylint: disable=unspecified-encoding
+
     args = parse_arguments()
     builder = args.builder
     file = args.file

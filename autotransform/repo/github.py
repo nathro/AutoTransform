@@ -11,7 +11,6 @@ from __future__ import annotations
 
 from typing import Any, Mapping
 
-from git import Repo as GitPython
 from github import Github
 
 from autotransform.batcher.base import Batch

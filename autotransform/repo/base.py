@@ -81,8 +81,8 @@ class Repo(ABC):
     @abstractmethod
     def rewind(self, batch: Batch) -> None:
         """Rewind the repo to a pre-submit state to prepare for executing another Batch. This
-        should NOT delete any submissions (i.e. commits should stay present). Only called after a submit
-        has been done.
+        should NOT delete any submissions (i.e. commits should stay present). Only called after a
+        submit has been done.
 
         Args:
             batch (Batch): The Batch for which changes were submitted

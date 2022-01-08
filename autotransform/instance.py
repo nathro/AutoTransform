@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+"""A script for running instances of RunnableWorker on a machine."""
+
 import argparse
 
 from autotransform.worker.factory import WorkerFactory
@@ -12,6 +14,12 @@ from autotransform.worker.runnable import RunnableWorker
 
 
 def parse_arguments() -> argparse.Namespace:
+    """Parses the script arguments. These should not be directly interacted with by an end user,
+    they should be handled by the RunnableWorker object.
+
+    Returns:
+        argparse.Namespace: The arguments for the run
+    """
     parser = argparse.ArgumentParser(description="Runs an autotransform package")
     parser.add_argument(
         "-w",
@@ -26,6 +34,7 @@ def parse_arguments() -> argparse.Namespace:
 
 
 def main():
+    """Runs the Worker."""
     args = parse_arguments()
     worker_type = WorkerFactory.get(args.worker)
     assert issubclass(worker_type, RunnableWorker)

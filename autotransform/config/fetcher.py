@@ -12,6 +12,8 @@ from typing import Optional
 
 
 class ConfigFetcher(ABC):
+    """An object representing the API needed for config fetching."""
+
     @abstractmethod
     def get_github_token(self) -> Optional[str]:
         """Fetch the github token from configuration

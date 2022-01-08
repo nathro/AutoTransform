@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+"""A simple script for running regex based transformations from the command line."""
+
 import argparse
 import time
 
@@ -20,6 +22,11 @@ from autotransform.worker.local import LocalWorker
 
 
 def parse_arguments() -> argparse.Namespace:
+    """Parses the script arguments. Run with -h to see all arguments.
+
+    Returns:
+        argparse.Namespace: The arguments for the regexmod
+    """
     parser = argparse.ArgumentParser(description="Runs simple regex based codemods")
     parser.add_argument(
         "-e",
@@ -83,6 +90,7 @@ def parse_arguments() -> argparse.Namespace:
 
 
 def main():
+    """Run the regex based transformation."""
     args = parse_arguments()
     inp = DirectoryInput({"path": args.directory})
     transformer = RegexTransformer({"pattern": args.pattern, "replacement": args.replacement})

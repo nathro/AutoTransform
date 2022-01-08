@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+"""An object supplying the default configuration fetching."""
+
 import pathlib
 from configparser import ConfigParser
 from typing import Optional
@@ -14,6 +16,7 @@ from autotransform.config.fetcher import ConfigFetcher
 
 class DefaultConfigFetcher(ConfigFetcher):
     """The default configuration fetcher that pulls from the config file.
+    See the sample config in /data/sample_config.ini
 
     Attributes:
         config (ConfigParser): The parser created from the config file

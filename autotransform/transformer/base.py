@@ -52,8 +52,8 @@ class Transformer(ABC):
     @abstractmethod
     def transform(self, file: CachedFile) -> None:
         """Execute a transformation against the provided file. Additional files may be modified
-        based on these changes (i.e. as part of a rename) and should be done as part of this transform
-        rather than using separate calls to transform.
+        based on these changes (i.e. as part of a rename) and should be done as part of this
+        transform rather than using separate calls to transform.
 
         Args:
             file (CachedFile): The file that will be transformed
