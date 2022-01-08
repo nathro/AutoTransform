@@ -3,7 +3,11 @@
 #
 # Licensed under the MIT License <http://opensource.org/licenses/MIT
 # SPDX-License-Identifier: MIT
-# Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
+# Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>\
+
+"""The heart of AutoTransform, AutoTransformSchemas represent all information
+required to fully execute a change.
+"""
 
 from __future__ import annotations
 
@@ -29,6 +33,24 @@ from autotransform.validator.factory import ValidatorFactory
 
 
 class AutoTransformSchema:
+    """The heart of AutoTransform, pulls together all components required to execute
+    a transformation.
+
+    Attributes:
+        input (Input): The Input which gets eligible files
+        batcher (Batcher): The Batcher which batches eligible filtered Files
+            in to logical groups
+        transformer (Transformer): The Transformer which actually modifies files
+        filters (List[Filter]): A list of Filters to apply to eligible files
+        validators (List[Validator]): A list of Validators to ensure the changes
+            did not break anything
+        commands (List[Command]): A list of Commands that run post-processing on
+            the changes
+        repo (Optional[Repo]): A Repo to control submission of changes to version
+            control or code review systems
+        config (Config): Any configuration needed by the schema so that it can run
+    """
+
     # pylint: disable=too-many-instance-attributes
 
     input: Input
@@ -51,8 +73,24 @@ class AutoTransformSchema:
         validators: List[Validator] = None,
         commands: List[Command] = None,
         repo: Optional[Repo] = None,
-        config: Config = Config(),
+        config: Config = None,
     ):
+        """A simple constructor
+
+        Args:
+            inp (Input): The Schema's Input
+            batcher (Batcher): The Schema's Batcher
+            transformer (Transformer): The Schema's Transformer
+            filters (List[Filter], optional): The Schema's Filters. Defaults to None which is
+                converted in to an empty list.
+            validators (List[Validator], optional): The Schema's Validators. Defaults to None which
+                is converted in to an empty list.
+            commands (List[Command], optional): The Schema's Commands. Defaults to None which is
+                converted in to an empty list.
+            repo (Optional[Repo], optional): The Schema's Repo. Defaults to None.
+            config (Config, optional): The Schema's Config. Defaults to None which is converted
+                in to a default configuration.
+        """
         # pylint: disable=too-many-arguments
 
         self.input = inp
@@ -64,9 +102,14 @@ class AutoTransformSchema:
         self.commands = commands if isinstance(commands, List) else []
         self.repo = repo
 
-        self.config = config
+        self.config = config if isinstance(config, Config) else Config()
 
     def get_batches(self) -> List[Batch]:
+        """Runs the Input to get eligible files, filters them, then batches them.
+
+        Returns:
+            List[Batch]: The Batches for the change
+        """
         valid_files = []
         for file in self.input.get_files():
             cached_file = CachedFile(file)
@@ -80,6 +123,16 @@ class AutoTransformSchema:
         return self.batcher.batch(valid_files)
 
     def execute_batch(self, batch: Batch) -> None:
+        """Executes changes for a batch, including setting up the Repo, running the Transformer,
+        checking all Validators, running Commands, submitting changes if present, and rewinding
+        the Repo if changes are submitted.
+
+        Args:
+            batch (Batch): The Batch to execute
+
+        Raises:
+            ValidationError: If one of the Schema's Validators fails raises an exception
+        """
         repo = self.repo
         if repo is not None:
             repo.clean(batch)
@@ -97,11 +150,17 @@ class AutoTransformSchema:
                 repo.rewind(batch)
 
     def run(self):
+        """Fully run a given Schema including getting and executing all Batches."""
         batches = self.get_batches()
         for batch in batches:
             self.execute_batch(batch)
 
     def bundle(self) -> Dict[str, Any]:
+        """Bundles the Schema in to a format that can be JSON encoded
+
+        Returns:
+            Dict[str, Any]: The bundled data of the Schema
+        """
         bundle = {
             "input": self.input.bundle(),
             "batcher": self.batcher.bundle(),
@@ -117,6 +176,14 @@ class AutoTransformSchema:
         return bundle
 
     def to_json(self, pretty: bool = False) -> str:
+        """Converts the Schema in to JSON that can be passed and stored.
+
+        Args:
+            pretty (bool, optional): Forces the JSON to be human readable. Defaults to False.
+
+        Returns:
+            str: The JSON representing the Schema
+        """
         bundle = self.bundle()
         if pretty:
             return json.dumps(bundle, indent=4)
@@ -124,10 +191,26 @@ class AutoTransformSchema:
 
     @staticmethod
     def from_json(json_bundle: str) -> AutoTransformSchema:
+        """Produces a Schema from supplied JSON
+
+        Args:
+            json_bundle (str): A JSON encoded bundle representing a Schema
+
+        Returns:
+            AutoTransformSchema: The Schema represented by the JSON
+        """
         return AutoTransformSchema.from_bundle(json.loads(json_bundle))
 
     @staticmethod
     def from_bundle(bundle: Mapping[str, Any]) -> AutoTransformSchema:
+        """Takes a bundle of information from a source like JSON and produces the associated Schema
+
+        Args:
+            bundle (Mapping[str, Any]): The bundle representing the Schema
+
+        Returns:
+            AutoTransformSchema: The Schema represented by the bundle
+        """
         inp = InputFactory.get(bundle["input"])
         batcher = BatcherFactory.get(bundle["batcher"])
         transformer = TransformerFactory.get(bundle["transformer"])
@@ -141,7 +224,10 @@ class AutoTransformSchema:
         else:
             repo = None
 
-        config = Config.from_data(bundle["config"])
+        if "config" in bundle:
+            config = Config.from_data(bundle["config"])
+        else:
+            config = Config()
 
         return AutoTransformSchema(
             inp,
