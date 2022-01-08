@@ -32,6 +32,24 @@ class CachedFile:
         """
         self.path = path
 
+    @staticmethod
+    def _read(path: str) -> str:
+        """A simple private method to read the content of a file. Used as a hook for testing
+        purposes.
+
+        Args:
+            path (str): The path to read from
+
+        Returns:
+            str: The content of the file
+        """
+
+        # pylint: disable=unspecified-encoding
+
+        with open(path, "r") as file:
+            content = file.read()
+        return content
+
     def get_content(self) -> str:
         """Gets the file contents from the cache if present. If not present, it will read the
         file contents and cache it.
@@ -40,10 +58,35 @@ class CachedFile:
             str: The contents of the file
         """
         if self.path not in FILE_CACHE:
-            # pylint: disable=unspecified-encoding
-            with open(self.path, "r") as file:
-                FILE_CACHE[self.path] = file.read()
+            FILE_CACHE[self.path] = self._read(self.path)
         return FILE_CACHE[self.path]
+
+    @staticmethod
+    def _write(path: str, content: str) -> None:
+        """A simple private method to write new content to a file. Used as a hook for testing
+        purposes.
+
+        Args:
+            path (str): The path of the file to write
+            content (str): The content to write to the file
+        """
+
+        # pylint: disable=unspecified-encoding
+
+        with open(path, "w") as output:
+            output.write(content)
+
+    def write_content(self, new_content: str) -> None:
+        """Updates the content of a cached file, including writing the file.
+
+        Args:
+            new_content (str): The content to put in the file
+        """
+
+        # pylint: disable=unspecified-encoding
+
+        self._write(self.path, new_content)
+        FILE_CACHE[self.path] = new_content
 
     def __del__(self):
         if self.path in FILE_CACHE:

@@ -52,9 +52,8 @@ class RegexTransformer(Transformer):
         # pylint: disable=unspecified-encoding
 
         content = file.get_content()
-        with open(file.path, "w") as output:
-            new_content = re.sub(self.params["pattern"], self.params["replacement"], content)
-            output.write(new_content)
+        new_content = re.sub(self.params["pattern"], self.params["replacement"], content)
+        file.write_content(new_content)
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> RegexTransformer:
