@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+"""The implementation for the RegexTransformer."""
+
 from __future__ import annotations
 
 import re
@@ -16,21 +18,39 @@ from autotransform.transformer.type import TransformerType
 
 
 class RegexTransformerParams(TypedDict):
+    """The param type for a RegexTransformer."""
+
     pattern: str
     replacement: str
 
 
 class RegexTransformer(Transformer):
+    """A Transformer that makes regex based changes, replacing instances of the provided
+    pattern with the provided replacement. Useful for simple transformations.
+
+    Attributes:
+        params (RegexTransformerParams): Contains the pattern and replacement
+    """
+
     params: RegexTransformerParams
 
-    def __init__(self, params: RegexTransformerParams):
-        Transformer.__init__(self, params)
-
     def get_type(self) -> TransformerType:
+        """Used to map Transformer components 1:1 with an enum, allowing construction from JSON.
+
+        Returns:
+            TransformerType: The unique type associated with this Transformer
+        """
         return TransformerType.REGEX
 
     def transform(self, file: CachedFile) -> None:
+        """Replaces all instances of pattern in the file with the replacement string.
+
+        Args:
+            file (CachedFile): The file that will be transformed
+        """
+
         # pylint: disable=unspecified-encoding
+
         content = file.get_content()
         with open(file.path, "w") as output:
             new_content = re.sub(self.params["pattern"], self.params["replacement"], content)
@@ -38,6 +58,14 @@ class RegexTransformer(Transformer):
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> RegexTransformer:
+        """Produces a RegexTransformer from the provided data.
+
+        Args:
+            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
+
+        Returns:
+            RegexTransformer: An instance of the RegexTransformer
+        """
         pattern = data["pattern"]
         assert isinstance(pattern, str)
         replacement = data["replacement"]

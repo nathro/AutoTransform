@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""The implementation for the single batcher"""
+"""The implementation for the single Batcher."""
 
 from __future__ import annotations
 
@@ -17,13 +17,13 @@ from autotransform.common.cachedfile import CachedFile
 
 
 class SingleBatcherParams(TypedDict):
-    """The param type for a SingleBatcher"""
+    """The param type for a SingleBatcher."""
 
     metadata: BatchMetadata
 
 
 class SingleBatcher(Batcher):
-    """A batcher which puts all inputs together in to a single Batch
+    """A batcher which puts all inputs together in to a single Batch.
 
     Attributes:
         params (SingleBatcherParams): Contains the metadata to associate with the Batch
@@ -32,10 +32,10 @@ class SingleBatcher(Batcher):
     params: SingleBatcherParams
 
     def get_type(self) -> BatcherType:
-        """Used to map Batcher components 1:1 with an enum, allowing construction from JSON
+        """Used to map Batcher components 1:1 with an enum, allowing construction from JSON.
 
         Returns:
-            BatcherType: The unique type associated with this batcher
+            BatcherType: The unique type associated with this Batcher
         """
         return BatcherType.SINGLE
 
@@ -58,7 +58,7 @@ class SingleBatcher(Batcher):
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> SingleBatcher:
         """Takes in decoded param data and produces a SingleBatcher component after
-        validating the data
+        validating the data.
 
         Args:
             data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
