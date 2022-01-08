@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""Tests for the DirectoryInput component"""
+"""Tests for the DirectoryInput component."""
 
 import pathlib
 from typing import List
@@ -14,14 +14,14 @@ from autotransform.input.directory import DirectoryInput
 
 
 def assert_directory_content(directory: str, expected_files: List[str]):
-    """Helper function that handles the logic of actually testing given inputs and expected results
+    """Helper function that handles the logic of actually testing given inputs and expected results.
 
     Args:
         directory (str): The directory within the tests data to search
         expected_files (List[str]): The relative paths of all expected results
     """
-    file_dir = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
-    test_data_path = file_dir + "/data/directory_input_test/"
+    parent_dir = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
+    test_data_path = parent_dir + "/data/directory_input_test/"
     dir_to_check = test_data_path + directory
 
     inp: DirectoryInput = DirectoryInput({"path": dir_to_check})
