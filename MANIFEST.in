@@ -1,4 +1,4 @@
 include LICENSE, README.md, pyproject.toml
-include CHANGELOG.md CONTRIBUTING.md CUSTOM_DEPLOYMENT.md
+include CHANGELOG.md CONTRIBUTING.md CUSTOM_DEPLOYMENT.md MAINTAINER_INFO.md
 include autotransform/data/sample_config.ini
 include autotransform/data/packages/sample_package.json
