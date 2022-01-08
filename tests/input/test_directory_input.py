@@ -26,9 +26,22 @@ def assert_directory_content(directory: str, expected_files: List[str]):
 
     inp: DirectoryInput = DirectoryInput({"path": dir_to_check})
     files = [file.replace("\\", "/") for file in inp.get_files()]
-    assert len(files) == len(expected_files)
+    missing_files = []
     for file in expected_files:
-        assert dir_to_check + "/" + file in files
+        if dir_to_check + "/" + file not in files:
+            missing_files.append(file)
+    assert not missing_files, "The following files were expected but not found: " + ", ".join(
+        missing_files
+    )
+
+    extra_files = []
+    for file in files:
+        stripped_file = file.removeprefix(dir_to_check + "/")
+        if stripped_file not in expected_files:
+            extra_files.append(stripped_file)
+    assert not extra_files, "The following files were found but not expected: " + ", ".join(
+        extra_files
+    )
 
 
 def test_empty_dir():
