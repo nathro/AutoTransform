@@ -25,7 +25,8 @@ class LocalWorker(RunnableWorker):
     """A Worker that is run locally by the Runner and merely executes the batches in a subprocess.
 
     Attributes:
-        data_file (str): The path to a temp file containing the information required to run the Worker
+        data_file (str): The path to a temp file containing the information required to run the
+            Worker
         proc (Optional[Popen]): A handle of the subprocess the Worker spawned to execute it's work
     """
 
@@ -36,7 +37,8 @@ class LocalWorker(RunnableWorker):
         """A simple constructor
 
         Args:
-            data_file (str): The path to a temp file containing the information required to run the Worker
+            data_file (str): The path to a temp file containing the information required to run the
+                Worker
         """
         RunnableWorker.__init__(self)
         self.data_file = data_file
@@ -116,7 +118,7 @@ class LocalWorker(RunnableWorker):
         """Runs the local version of the Worker
 
         Args:
-            args (Namespace): The arguments needed to run the Worker
+            args (Namespace): The arguments required to run the Worker
         """
         with open(args.data_file, "r", encoding="utf8") as data_file:
             data = json.loads(data_file.read())

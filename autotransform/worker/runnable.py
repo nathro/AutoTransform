@@ -20,7 +20,9 @@ from autotransform.worker.type import WorkerType
 
 
 class RunnableWorker(Worker):
-    """The base for all Workers that leverage the autotransform.instance script for process spawning."""
+    """The base for all Workers that leverage the autotransform.instance script for process
+    spawning.
+    """
 
     @staticmethod
     @abstractmethod
@@ -28,7 +30,8 @@ class RunnableWorker(Worker):
         """Parse all arguments needed by the worker and return them as a Namespace.
 
         Args:
-            parser (ArgumentParser): A parser which already has arguments of the instance script added
+            parser (ArgumentParser): A parser which already has arguments of the instance script
+                added
 
         Returns:
             Namespace: The arguments for the Worker
@@ -36,7 +39,8 @@ class RunnableWorker(Worker):
 
     @classmethod
     def parse_arguments(cls) -> Namespace:
-        """Adds all arguments used by the instance script before allowing the Worker to add further arguments.
+        """Adds all arguments used by the instance script before allowing the Worker to add
+        further arguments.
 
         Returns:
             Namespace: The arguments for the Worker
