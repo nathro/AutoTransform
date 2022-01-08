@@ -16,7 +16,7 @@ class DefaultConfigFetcher(ConfigFetcher):
     """The default configuration fetcher that pulls from the config file.
 
     Attributes:
-        config ([ConfigParser]): The parser created from the config file
+        config (ConfigParser): The parser created from the config file
     """
 
     CONFIG_LOCATION: str = "/data/config.ini"

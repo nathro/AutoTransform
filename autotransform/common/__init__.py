@@ -4,3 +4,5 @@
 # Licensed under the MIT License <http://opensource.org/licenses/MIT
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
+
+"""A package containing common classes and utilities that are not part of Schemas"""
