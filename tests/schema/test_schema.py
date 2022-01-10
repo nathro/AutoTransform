@@ -40,59 +40,59 @@ ALL_FILES = ["allowed", "not_allowed"]
 EXPECTED_METADATA = BatchMetadata({"title": "", "summary": "", "tests": ""})
 
 
-def mock_input(mocked_input) -> None:
+def mock_input(mocked_get_files) -> None:
     """Sets up the input mock."""
-    mocked_input.return_value = ALL_FILES
+    mocked_get_files.return_value = ALL_FILES
 
 
-def mock_filter(mocked_filter) -> None:
+def mock_filter(mocked_is_valid) -> None:
     """Sets up the filter mock."""
 
     def mock_is_valid(file: CachedFile) -> bool:
         return file.path in ALLOWED_FILES
 
-    mocked_filter.side_effect = mock_is_valid
+    mocked_is_valid.side_effect = mock_is_valid
 
 
-def mock_batcher(mocked_batcher) -> None:
+def mock_batcher(mocked_batch) -> None:
     """Sets up the batcher mock"""
 
     def batch(files: List[CachedFile]) -> List[Batch]:
         return [{"files": files, "metadata": EXPECTED_METADATA}]
 
-    mocked_batcher.side_effect = batch
+    mocked_batch.side_effect = batch
 
 
 # patches are in reverse order
-@patch.object(ExtensionFilter, "_is_valid")
 @patch.object(SingleBatcher, "batch")
+@patch.object(ExtensionFilter, "_is_valid")
 @patch.object(DirectoryInput, "get_files")
 def test_get_batches(
-    get_files,
-    batcher,
-    filter_is_valid,
+    mocked_get_files,
+    mocked_is_valid,
+    mocked_batch,
 ):
     """Checks that get_batches properly calls and uses components."""
     # Set up mocks
-    mock_input(get_files)
-    mock_filter(filter_is_valid)
-    mock_batcher(batcher)
+    mock_input(mocked_get_files)
+    mock_filter(mocked_is_valid)
+    mock_batcher(mocked_batch)
 
     # Run test
     schema = get_sample_schema()
     actual_batch = schema.get_batches()[0]
 
     # Check input called
-    get_files.assert_called_once()
+    mocked_get_files.assert_called_once()
 
     # Check filter called
-    assert filter_is_valid.call_count == 2
-    filtered_paths = [mock_call.args[0].path for mock_call in filter_is_valid.call_args_list]
+    assert mocked_is_valid.call_count == 2
+    filtered_paths = [mock_call.args[0].path for mock_call in mocked_is_valid.call_args_list]
     assert filtered_paths == ALL_FILES
 
     # Check batcher called
-    batcher.assert_called_once()
-    batched_paths = [file.path for file in batcher.call_args.args[0]]
+    mocked_batch.assert_called_once()
+    batched_paths = [file.path for file in mocked_batch.call_args.args[0]]
     assert batched_paths == ALLOWED_FILES
 
     # Check end result
