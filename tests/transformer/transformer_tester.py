@@ -47,7 +47,7 @@ class TransformerTester:
         mock_file = mock.create_autospec(CachedFile)
         mock_file.get_content.return_value = input_content
         self.transformer.transform(mock_file)
-        mock_file.write_content.assert_called_with(output_content)
+        mock_file.write_content.assert_called_once_with(output_content)
 
     def update(self):
         """Updates the expected output of a Transformer by running it and writing the results to
