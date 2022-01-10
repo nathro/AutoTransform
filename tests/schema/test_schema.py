@@ -7,6 +7,8 @@
 
 """Tests AutoTransformSchema"""
 
+# pylint: disable=too-many-arguments
+
 import pathlib
 from typing import List
 
@@ -55,12 +57,44 @@ def mock_filter(mocked_is_valid) -> None:
 
 
 def mock_batcher(mocked_batch) -> None:
-    """Sets up the batcher mock"""
+    """Sets up the batcher mock."""
 
     def batch(files: List[CachedFile]) -> List[Batch]:
         return [{"files": files, "metadata": EXPECTED_METADATA}]
 
     mocked_batch.side_effect = batch
+
+
+def mock_transformer(mocked_transform) -> None:
+    """Sets up the transformer mock."""
+
+    def transform(_: CachedFile) -> None:
+        pass
+
+    mocked_transform.side_effect = transform
+
+
+def mock_repo(
+    mocked_clean, mocked_has_changes, mocked_submit, mocked_rewind, should_have_changes: bool
+) -> None:
+    """Sets up the repo mock."""
+
+    def clean(_: Batch) -> None:
+        pass
+
+    mocked_clean.side_effect = clean
+
+    mocked_has_changes.return_value = should_have_changes
+
+    def submit(_: Batch) -> None:
+        pass
+
+    mocked_submit.side_effect = submit
+
+    def rewind(_: Batch) -> None:
+        pass
+
+    mocked_rewind.side_effect = rewind
 
 
 # patches are in reverse order
@@ -98,6 +132,118 @@ def test_get_batches(
     # Check end result
     assert [file.path for file in actual_batch["files"]] == ALLOWED_FILES
     assert actual_batch["metadata"] == EXPECTED_METADATA
+
+
+# patches are in reverse order
+@patch.object(GithubRepo, "rewind")
+@patch.object(GithubRepo, "submit")
+@patch.object(GithubRepo, "has_changes")
+@patch.object(GithubRepo, "clean")
+@patch.object(RegexTransformer, "transform")
+@patch.object(SingleBatcher, "batch")
+@patch.object(ExtensionFilter, "_is_valid")
+@patch.object(DirectoryInput, "get_files")
+def test_run_with_changes(
+    mocked_get_files,
+    mocked_is_valid,
+    mocked_batch,
+    mocked_transform,
+    mocked_clean,
+    mocked_has_changes,
+    mocked_submit,
+    mocked_rewind,
+):
+    """Checks that get_batches properly calls and uses components."""
+    # Set up mocks
+    mock_input(mocked_get_files)
+    mock_filter(mocked_is_valid)
+    mock_batcher(mocked_batch)
+    mock_transformer(mocked_transform)
+    mock_repo(mocked_clean, mocked_has_changes, mocked_submit, mocked_rewind, True)
+
+    # Run test
+    schema = get_sample_schema()
+    schema.run()
+
+    # Check input called
+    mocked_get_files.assert_called_once()
+
+    # Check filter called
+    assert mocked_is_valid.call_count == 2
+    filtered_paths = [mock_call.args[0].path for mock_call in mocked_is_valid.call_args_list]
+    assert filtered_paths == ALL_FILES
+
+    # Check batcher called
+    mocked_batch.assert_called_once()
+    batched_paths = [file.path for file in mocked_batch.call_args.args[0]]
+    assert batched_paths == ALLOWED_FILES
+
+    # Check transformer called
+    mocked_transform.assert_called_once()
+    transformed_path = mocked_transform.call_args.args[0].path
+    assert [transformed_path] == ALLOWED_FILES
+
+    # Check repo calls
+    mocked_clean.assert_called_once()
+    mocked_has_changes.assert_called_once()
+    mocked_submit.assert_called_once()
+    mocked_rewind.assert_called_once()
+
+
+# patches are in reverse order
+@patch.object(GithubRepo, "rewind")
+@patch.object(GithubRepo, "submit")
+@patch.object(GithubRepo, "has_changes")
+@patch.object(GithubRepo, "clean")
+@patch.object(RegexTransformer, "transform")
+@patch.object(SingleBatcher, "batch")
+@patch.object(ExtensionFilter, "_is_valid")
+@patch.object(DirectoryInput, "get_files")
+def test_run_with_no_changes(
+    mocked_get_files,
+    mocked_is_valid,
+    mocked_batch,
+    mocked_transform,
+    mocked_clean,
+    mocked_has_changes,
+    mocked_submit,
+    mocked_rewind,
+):
+    """Checks that get_batches properly calls and uses components."""
+    # Set up mocks
+    mock_input(mocked_get_files)
+    mock_filter(mocked_is_valid)
+    mock_batcher(mocked_batch)
+    mock_transformer(mocked_transform)
+    mock_repo(mocked_clean, mocked_has_changes, mocked_submit, mocked_rewind, False)
+
+    # Run test
+    schema = get_sample_schema()
+    schema.run()
+
+    # Check input called
+    mocked_get_files.assert_called_once()
+
+    # Check filter called
+    assert mocked_is_valid.call_count == 2
+    filtered_paths = [mock_call.args[0].path for mock_call in mocked_is_valid.call_args_list]
+    assert filtered_paths == ALL_FILES
+
+    # Check batcher called
+    mocked_batch.assert_called_once()
+    batched_paths = [file.path for file in mocked_batch.call_args.args[0]]
+    assert batched_paths == ALLOWED_FILES
+
+    # Check transformer called
+    mocked_transform.assert_called_once()
+    transformed_path = mocked_transform.call_args.args[0].path
+    assert [transformed_path] == ALLOWED_FILES
+
+    # Check repo calls
+    mocked_clean.assert_called_once()
+    mocked_has_changes.assert_called_once()
+    assert mocked_submit.call_count == 0
+    assert mocked_rewind.call_count == 0
 
 
 def test_json_encoding():
