@@ -18,14 +18,14 @@ If an upgrade package is associated with a change, include information for downl
 Steps to release AutoTransform
  - Checkout the current master from Github
  - Ensure source in good shape
-   - `python -m mypy autotransform`
-   - `python -m pytest tests/`
-   - `python -m pylint --enable=W0611,R0201,R0902,R0903,R0913,R1732 --disable=R0801`
+   - `py -m mypy autotransform`
+   - `py -m pytest tests/`
+   - `py -m pylint autotransform --enable=W0611,R0201,R0902,R0903,R0913,R1732 --disable=R0801`
  - Validate changelog accurate and add summary
  - Bump version in setup.py, update version in changelog for release
  - Commit version bump with message Release-&lt;version&gt;
- - `python -m build`
- - `python -m twine upload --repository pypi dist/AutoTransform-<version>*`
+ - `py -m build`
+ - `py -m twine upload --repository pypi dist/AutoTransform-<version>*`
  - Update release branch to point to master
  - Push changes upstream
  - Add new release and tag to Github repo (tag should be "Release-&lt;version&gt;")

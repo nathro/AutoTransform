@@ -31,7 +31,7 @@ setuptools.setup(
         "Stream": "https://www.twitch.tv/AllSublime",
     },
     classifiers=[
-        "Development Status :: 3 - Beta",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
