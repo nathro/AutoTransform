@@ -2,6 +2,17 @@
 
 AutoTransform is a structured, schema based approach to large scale code modification. It provides a structure for designing and implementing these types of modifications using common components that can be utilized to accelerate development.
 
+### Example Use Cases
+
+Here is a short, non-exhaustive list of potential use cases.
+
+ - **Library owners**: Updates to libraries might break existing uses due to changes in API. As part of these updates, you can release transformations that will bring existing uses in line with your updates
+ - **Language developers**: Much like libraries, changes to languages can release new features or functionality with improved performance characteristics. Transformations can be developed to ease adoption of these new features.
+ - **Codebase Maintainance**: Maintaining large codebases can be cumbersome, setting up automated transformations for things like lint/format/style issues can allow easier, automated maintainance of your codebase.
+ - **Deprecation**: Deprecating existing things (such as experimental features) can be done safely and automatically through setting up transformations.
+
+Any time someone is writing repetitive code, AutoTransform can help. It can be your most productive developer!
+
 ### Installing
 
 > **⚠ WARNING:** AutoTransform requires Python 3.10
