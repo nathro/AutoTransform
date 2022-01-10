@@ -12,7 +12,7 @@ from typing import List
 
 from mock import patch
 
-from autotransform.batcher.base import Batch
+from autotransform.batcher.base import Batch, BatchMetadata
 from autotransform.batcher.single import SingleBatcher
 from autotransform.common.cachedfile import CachedFile
 from autotransform.filter.extension import ExtensionFilter, Extensions
@@ -35,6 +35,34 @@ def get_sample_schema() -> AutoTransformSchema:
     )
 
 
+ALLOWED_FILES = ["allowed"]
+ALL_FILES = ["allowed", "not_allowed"]
+EXPECTED_METADATA = BatchMetadata({"title": "", "summary": "", "tests": ""})
+
+
+def mock_input(mocked_input) -> None:
+    """Sets up the input mock."""
+    mocked_input.return_value = ALL_FILES
+
+
+def mock_filter(mocked_filter) -> None:
+    """Sets up the filter mock."""
+
+    def mock_is_valid(file: CachedFile) -> bool:
+        return file.path in ALLOWED_FILES
+
+    mocked_filter.side_effect = mock_is_valid
+
+
+def mock_batcher(mocked_batcher) -> None:
+    """Sets up the batcher mock"""
+
+    def batch(files: List[CachedFile]) -> List[Batch]:
+        return [{"files": files, "metadata": EXPECTED_METADATA}]
+
+    mocked_batcher.side_effect = batch
+
+
 # patches are in reverse order
 @patch.object(ExtensionFilter, "_is_valid")
 @patch.object(SingleBatcher, "batch")
@@ -45,29 +73,10 @@ def test_get_batches(
     filter_is_valid,
 ):
     """Checks that get_batches properly calls and uses components."""
-    # Mock Input
-    allowed_files = ["allowed"]
-    not_allowed_files = ["not_allowed"]
-    all_files = []
-    for file in allowed_files:
-        all_files.append(file)
-    for file in not_allowed_files:
-        all_files.append(file)
-    get_files.return_value = all_files
-
-    # Mock Filtering
-    def mock_is_valid(file: CachedFile) -> bool:
-        return file.path in allowed_files
-
-    filter_is_valid.side_effect = mock_is_valid
-
-    # Mock Batching
-    expected_metadata = {"title": "", "summary": "", "tests": ""}
-
-    def batch(files: List[CachedFile]) -> List[Batch]:
-        return [{"files": files, "metadata": expected_metadata}]
-
-    batcher.side_effect = batch
+    # Set up mocks
+    mock_input(get_files)
+    mock_filter(filter_is_valid)
+    mock_batcher(batcher)
 
     # Run test
     schema = get_sample_schema()
@@ -79,16 +88,16 @@ def test_get_batches(
     # Check filter called
     assert filter_is_valid.call_count == 2
     filtered_paths = [mock_call.args[0].path for mock_call in filter_is_valid.call_args_list]
-    assert filtered_paths == all_files
+    assert filtered_paths == ALL_FILES
 
     # Check batcher called
     batcher.assert_called_once()
     batched_paths = [file.path for file in batcher.call_args.args[0]]
-    assert batched_paths == allowed_files
+    assert batched_paths == ALLOWED_FILES
 
     # Check end result
-    assert [file.path for file in actual_batch["files"]] == allowed_files
-    assert actual_batch["metadata"] == expected_metadata
+    assert [file.path for file in actual_batch["files"]] == ALLOWED_FILES
+    assert actual_batch["metadata"] == EXPECTED_METADATA
 
 
 def test_json_encoding():
