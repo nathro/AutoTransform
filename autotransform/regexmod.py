@@ -11,7 +11,7 @@ import argparse
 import time
 
 from autotransform.batcher.single import SingleBatcher
-from autotransform.common.runner import Runner
+from autotransform.coordinator import Coordinator
 from autotransform.filter.extension import ExtensionFilter
 from autotransform.input.directory import DirectoryInput
 from autotransform.repo.git import GitRepo
@@ -119,7 +119,7 @@ def main():
     else:
         repo = None
     schema = AutoTransformSchema(inp, batcher, transformer, filters=filters, repo=repo)
-    runner = Runner(schema, LocalWorker)
+    runner = Coordinator(schema, LocalWorker)
     start_time = time.time()
     runner.start()
     timeout = 30

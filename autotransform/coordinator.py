@@ -16,13 +16,13 @@ from autotransform.schema.schema import AutoTransformSchema
 from autotransform.worker.base import Worker
 
 
-class Runner:
+class Coordinator:
     """An object to run a schema and execute changes using Workers.
 
     Attributes:
         schema (AutoTransformSchema): The Schema that will be run
         worker_type (Type[Worker]): The class of the Worker objects that will be used
-        workers (Optional[Sequence[Worker]]): The spawned workers once the Runner has
+        workers (Optional[Sequence[Worker]]): The spawned workers once the Coordinator has
             been started
     """
 
@@ -53,11 +53,11 @@ class Runner:
             worker.start()
         self.workers = workers
 
-    def start(self) -> Runner:
+    def start(self) -> Coordinator:
         """Gets all Batches from the schema, spawns and starts the workers.
 
         Returns:
-            Runner: The same instance of the Runner (used for chaining)
+            Coordinator: The same instance of the Coordinator (used for chaining)
         """
         batches = self.schema.get_batches()
         self._spawn_workers(batches)
