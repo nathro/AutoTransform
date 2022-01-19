@@ -10,18 +10,19 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, List, Mapping, Optional, TypedDict
+from typing import Any, List, Mapping, TypedDict
 
 from autotransform.batcher.type import BatcherType
 from autotransform.common.cachedfile import CachedFile
 
 
 class BatchMetadata(TypedDict):
-    """An object containing the metadata associated with a batch."""
+    """An object containing the metadata associated with a batch. May
+    include other fields as desired by Batcher and Repo/Transformer/etc.
+    All fields should be JSON encodable.
+    """
 
     title: str
-    summary: Optional[str]
-    tests: Optional[str]
 
 
 class Batch(TypedDict):
