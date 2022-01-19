@@ -17,11 +17,11 @@ from typing import List, Optional, Sequence
 from autotransform.batcher.base import Batch
 from autotransform.common.cachedfile import CachedFile
 from autotransform.schema.schema import AutoTransformSchema
-from autotransform.worker.runnable import RunnableWorker
+from autotransform.worker.process import ProcessWorker
 from autotransform.worker.type import WorkerType
 
 
-class LocalWorker(RunnableWorker):
+class LocalWorker(ProcessWorker):
     """A Worker that is run locally by the Runner and merely executes the batches in a subprocess.
 
     Attributes:
@@ -40,7 +40,7 @@ class LocalWorker(RunnableWorker):
             data_file (str): The path to a temp file containing the information required to run the
                 Worker
         """
-        RunnableWorker.__init__(self)
+        ProcessWorker.__init__(self)
         self.data_file = data_file
         self.proc = None
 
@@ -59,12 +59,12 @@ class LocalWorker(RunnableWorker):
 
         # pylint: disable=consider-using-with
 
-        self.proc = RunnableWorker.spawn_proc(WorkerType.LOCAL, [self.data_file])
+        self.proc = ProcessWorker.spawn_proc(WorkerType.LOCAL, [self.data_file])
 
     @staticmethod
     def spawn_from_batches(
         schema: AutoTransformSchema, batches: List[Batch]
-    ) -> Sequence[RunnableWorker]:
+    ) -> Sequence[ProcessWorker]:
         """Sets up a data file with the batches and schema, creating a LocalWorker based on
         this data file.
 

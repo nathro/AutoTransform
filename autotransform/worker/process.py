@@ -19,7 +19,7 @@ from autotransform.worker.base import Worker
 from autotransform.worker.type import WorkerType
 
 
-class RunnableWorker(Worker):
+class ProcessWorker(Worker):
     """The base for all Workers that leverage the autotransform.instance script for process
     spawning.
     """
