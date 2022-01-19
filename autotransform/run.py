@@ -41,7 +41,7 @@ def parse_arguments() -> argparse.Namespace:
         metavar="encoding",
         type=str,
         required=False,
-        help="How long in seconds to allow the process to run",
+        help="The encoding of the file containing your schema",
     )
     parser.add_argument(
         "-b",
