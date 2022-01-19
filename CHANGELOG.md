@@ -5,7 +5,6 @@
 #### New Components
 
 #### New Scripts
- - Manager script renamed to run, now invoked as atrun
 
 #### API Changes
 
@@ -14,6 +13,10 @@
 #### Upgrade Packages
 
 #### Misc
+
+- Manager script renamed to run, now invoked as atrun
+- RunnableWorker renamed to ProcessWorker
+- Runner renamed to Coordinator
 
 ## Release 0.1.1 - Initial Beta!
 
