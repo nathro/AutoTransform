@@ -56,7 +56,7 @@ class SchemaBuilder(ABC):
 
         # pylint: disable=no-self-use
 
-        return SingleBatcher({"metadata": {"title": "", "summary": None, "tests": None}})
+        return SingleBatcher({"metadata": {"title": ""}})
 
     @abstractmethod
     def get_transformer(self) -> Transformer:

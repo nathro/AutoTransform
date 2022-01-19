@@ -22,7 +22,7 @@ class DirectoryInputParams(TypedDict):
     path: str
 
 
-class DirectoryInput(Input):
+class DirectoryInput(Input[DirectoryInputParams]):
     """A Input that lists all files recursively within a provided directory.
 
     Attributes:

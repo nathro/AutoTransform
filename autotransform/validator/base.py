@@ -11,10 +11,12 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Any, Dict, Mapping, Optional, TypedDict
+from typing import Any, Generic, Mapping, Optional, TypedDict, TypeVar
 
 from autotransform.batcher.base import Batch
 from autotransform.validator.type import ValidatorType
+
+TParams = TypeVar("TParams", bound=Mapping[str, Any])
 
 
 class ValidationResultLevel(int, Enum):
@@ -104,21 +106,21 @@ class ValidatorBundle(TypedDict):
     type: ValidatorType
 
 
-class Validator(ABC):
+class Validator(Generic[TParams], ABC):
     """The base for Validator components.
 
     Attributes:
-        params (Mapping[str, Any]): The paramaters that control operation of the Validator.
+        params (TParams): The paramaters that control operation of the Validator.
             Should be defined using a TypedDict in subclasses
     """
 
-    params: Mapping[str, Any]
+    params: TParams
 
-    def __init__(self, params: Dict[str, Any]):
+    def __init__(self, params: TParams):
         """A simple constructor.
 
         Args:
-            params (Mapping[str, Any]): The paramaters used to set up the Validator
+            params (TParams): The paramaters used to set up the Validator
         """
         self.params = params
 

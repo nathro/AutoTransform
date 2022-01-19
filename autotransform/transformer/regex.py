@@ -24,7 +24,7 @@ class RegexTransformerParams(TypedDict):
     replacement: str
 
 
-class RegexTransformer(Transformer):
+class RegexTransformer(Transformer[RegexTransformerParams]):
     """A Transformer that makes regex based changes, replacing instances of the provided
     pattern with the provided replacement. Useful for simple transformations.
 

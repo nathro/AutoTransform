@@ -10,10 +10,12 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Mapping, TypedDict
+from typing import Any, Generic, Mapping, TypedDict, TypeVar
 
 from autotransform.batcher.base import Batch
 from autotransform.transformer.type import TransformerType
+
+TParams = TypeVar("TParams", bound=Mapping[str, Any])
 
 
 class TransformerBundle(TypedDict):
@@ -23,21 +25,21 @@ class TransformerBundle(TypedDict):
     type: TransformerType
 
 
-class Transformer(ABC):
+class Transformer(Generic[TParams], ABC):
     """The base for Transformer components.
 
     Attributes:
-        params (Mapping[str, Any]): The paramaters that control operation of the Transformer.
+        params (TParams): The paramaters that control operation of the Transformer.
             Should be defined using a TypedDict in subclasses
     """
 
-    params: Mapping[str, Any]
+    params: TParams
 
-    def __init__(self, params: Mapping[str, Any]):
+    def __init__(self, params: TParams):
         """A simple constructor.
 
         Args:
-            params (Mapping[str, Any]): The paramaters used to set up the Transformer
+            params (TParams): The paramaters used to set up the Transformer
         """
         self.params = params
 

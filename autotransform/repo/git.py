@@ -25,7 +25,7 @@ class GitRepoParams(TypedDict):
     path: str
 
 
-class GitRepo(Repo):
+class GitRepo(Repo[GitRepoParams]):
     """A Repo that provides support for commiting changes to git.
 
     Attributes:

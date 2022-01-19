@@ -30,7 +30,7 @@ class ExtensionFilterParams(TypedDict):
     extensions: Sequence[Extensions]
 
 
-class ExtensionFilter(Filter):
+class ExtensionFilter(Filter[ExtensionFilterParams]):
     """A Filter which only passes files ending with one of a set of extensions.
 
     Attributes:
