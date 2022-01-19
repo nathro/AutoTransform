@@ -43,7 +43,7 @@ setuptools.setup(
     entry_points={
         "console_scripts": [
             "regexmod = autotransform.regexmod:main",
-            "atmanager = autotransform.manager:main",
+            "atrun = autotransform.run:main",
         ]
     },
     package_data={"": ["data/sample_config.ini", "data/packages/sample_package.json"]},

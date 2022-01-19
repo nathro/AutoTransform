@@ -5,6 +5,7 @@
 #### New Components
 
 #### New Scripts
+ - Manager script renamed to run, now invoked as atrun
 
 #### API Changes
 
