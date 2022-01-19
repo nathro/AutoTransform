@@ -8,6 +8,8 @@
 
 #### API Changes
 
+ - Transformer: Transform now takes Batch instead of Cached File
+
 #### Upgrade Packages
 
 #### Misc

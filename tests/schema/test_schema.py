@@ -68,7 +68,7 @@ def mock_batcher(mocked_batch) -> None:
 def mock_transformer(mocked_transform) -> None:
     """Sets up the transformer mock."""
 
-    def transform(_: CachedFile) -> None:
+    def transform(_: Batch) -> None:
         pass
 
     mocked_transform.side_effect = transform
@@ -180,7 +180,7 @@ def test_run_with_changes(
 
     # Check transformer called
     mocked_transform.assert_called_once()
-    transformed_path = mocked_transform.call_args.args[0].path
+    transformed_path = mocked_transform.call_args.args[0]["files"][0].path
     assert [transformed_path] == ALLOWED_FILES
 
     # Check repo calls
@@ -236,7 +236,7 @@ def test_run_with_no_changes(
 
     # Check transformer called
     mocked_transform.assert_called_once()
-    transformed_path = mocked_transform.call_args.args[0].path
+    transformed_path = mocked_transform.call_args.args[0]["files"][0].path
     assert [transformed_path] == ALLOWED_FILES
 
     # Check repo calls

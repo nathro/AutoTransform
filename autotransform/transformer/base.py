@@ -12,7 +12,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Mapping, TypedDict
 
-from autotransform.common.cachedfile import CachedFile
+from autotransform.batcher.base import Batch
 from autotransform.transformer.type import TransformerType
 
 
@@ -50,7 +50,7 @@ class Transformer(ABC):
         """
 
     @abstractmethod
-    def transform(self, file: CachedFile) -> None:
+    def transform(self, batch: Batch) -> None:
         """Execute a transformation against the provided file. Additional files may be modified
         based on these changes (i.e. as part of a rename) and should be done as part of this
         transform rather than using separate calls to transform. All writing should be done via
