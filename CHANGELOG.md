@@ -17,6 +17,7 @@
 - Manager script renamed to run, now invoked as atrun
 - RunnableWorker renamed to ProcessWorker
 - Runner renamed to Coordinator
+- Updated BatchMetadata to only require title
 
 ## Release 0.1.1 - Initial Beta!
 
