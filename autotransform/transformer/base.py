@@ -53,13 +53,13 @@ class Transformer(Generic[TParams], ABC):
 
     @abstractmethod
     def transform(self, batch: Batch) -> None:
-        """Execute a transformation against the provided file. Additional files may be modified
+        """Execute a transformation against the provided batch. Additional files may be modified
         based on these changes (i.e. as part of a rename) and should be done as part of this
         transform rather than using separate calls to transform. All writing should be done via
         CachedFile's write_content method to ensure operations are easily accessible to testing.
 
         Args:
-            file (CachedFile): The file that will be transformed
+            batch (Batch): The batch that will be transformed
         """
 
     def bundle(self) -> TransformerBundle:
