@@ -19,7 +19,7 @@ class FileDataObject:
         """A simple constructor
 
         Args:
-            data (Dict[str, Any]): The data associated with the file
+            data (Dict[str, Any]): The data associated with the file, must be JSON encodable
         """
         self.data: Dict[str, Any] = data
 
