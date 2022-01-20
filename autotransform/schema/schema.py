@@ -136,8 +136,7 @@ class AutoTransformSchema:
         repo = self.repo
         if repo is not None:
             repo.clean(batch)
-        for file in batch["files"]:
-            self.transformer.transform(file)
+        self.transformer.transform(batch)
         for validator in self.validators:
             validation_result = validator.validate(batch)
             if validation_result["level"] > self.config.allowed_validation_level:

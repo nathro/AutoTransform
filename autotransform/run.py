@@ -13,7 +13,7 @@ import argparse
 import sys
 import time
 
-from autotransform.common.runner import Runner
+from autotransform.coordinator import Coordinator
 from autotransform.schema.factory import SchemaBuilderFactory
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.worker.factory import WorkerFactory
@@ -41,7 +41,7 @@ def parse_arguments() -> argparse.Namespace:
         metavar="encoding",
         type=str,
         required=False,
-        help="How long in seconds to allow the process to run",
+        help="The encoding of the file containing your schema",
     )
     parser.add_argument(
         "-b",
@@ -99,7 +99,7 @@ def main():
     if worker is None:
         worker = WorkerType.LOCAL
     worker_type = WorkerFactory.get(worker)
-    runner = Runner(schema, worker_type)
+    runner = Coordinator(schema, worker_type)
     start_time = time.time()
     runner.start()
     while not runner.is_finished() and time.time() <= start_time + args.timeout:

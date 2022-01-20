@@ -12,7 +12,7 @@ from __future__ import annotations
 import re
 from typing import Any, Mapping, TypedDict
 
-from autotransform.common.cachedfile import CachedFile
+from autotransform.batcher.base import Batch
 from autotransform.transformer.base import Transformer
 from autotransform.transformer.type import TransformerType
 
@@ -24,7 +24,7 @@ class RegexTransformerParams(TypedDict):
     replacement: str
 
 
-class RegexTransformer(Transformer):
+class RegexTransformer(Transformer[RegexTransformerParams]):
     """A Transformer that makes regex based changes, replacing instances of the provided
     pattern with the provided replacement. Useful for simple transformations.
 
@@ -42,7 +42,7 @@ class RegexTransformer(Transformer):
         """
         return TransformerType.REGEX
 
-    def transform(self, file: CachedFile) -> None:
+    def transform(self, batch: Batch) -> None:
         """Replaces all instances of pattern in the file with the replacement string.
 
         Args:
@@ -50,10 +50,10 @@ class RegexTransformer(Transformer):
         """
 
         # pylint: disable=unspecified-encoding
-
-        content = file.get_content()
-        new_content = re.sub(self.params["pattern"], self.params["replacement"], content)
-        file.write_content(new_content)
+        for file in batch["files"]:
+            content = file.get_content()
+            new_content = re.sub(self.params["pattern"], self.params["replacement"], content)
+            file.write_content(new_content)
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> RegexTransformer:

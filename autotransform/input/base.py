@@ -10,9 +10,11 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, List, Mapping, TypedDict
+from typing import Any, Generic, List, Mapping, TypedDict, TypeVar
 
 from autotransform.input.type import InputType
+
+TParams = TypeVar("TParams", bound=Mapping[str, Any])
 
 
 class InputBundle(TypedDict):
@@ -22,21 +24,21 @@ class InputBundle(TypedDict):
     type: InputType
 
 
-class Input(ABC):
+class Input(Generic[TParams], ABC):
     """The base for Input components.
 
     Attributes:
-        params (Mapping[str, Any]): The paramaters that control operation of the Input.
+        params (TParams): The paramaters that control operation of the Input.
             Should be defined using a TypedDict in subclasses
     """
 
-    params: Mapping[str, Any]
+    params: TParams
 
-    def __init__(self, params: Mapping[str, Any]):
+    def __init__(self, params: TParams):
         """A simple constructor.
 
         Args:
-            params (Mapping[str, Any]): The paramaters used to set up the Input
+            params (TParams): The paramaters used to set up the Input
         """
         self.params = params
 

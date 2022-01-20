@@ -11,18 +11,27 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Mapping, TypedDict
 
+from typing_extensions import NotRequired
+
 from autotransform.batcher.base import Batch, Batcher, BatchMetadata
 from autotransform.batcher.type import BatcherType
 from autotransform.common.cachedfile import CachedFile
 
 
+class SingleBatcherBatchMetadata(BatchMetadata):
+    """The metadata associated with batches from the Single"""
+
+    summary: NotRequired[str]
+    tests: NotRequired[str]
+
+
 class SingleBatcherParams(TypedDict):
     """The param type for a SingleBatcher."""
 
-    metadata: BatchMetadata
+    metadata: SingleBatcherBatchMetadata
 
 
-class SingleBatcher(Batcher):
+class SingleBatcher(Batcher[SingleBatcherParams]):
     """A batcher which puts all inputs together in to a single Batch.
 
     Attributes:

@@ -46,7 +46,9 @@ class TransformerTester:
 
         mock_file = mock.create_autospec(CachedFile)
         mock_file.get_content.return_value = input_content
-        self.transformer.transform(mock_file)
+        self.transformer.transform(
+            {"files": [mock_file], "metadata": {"title": "Foo", "summary": "Bar", "tests": "Baz"}}
+        )
         mock_file.write_content.assert_called_once_with(output_content)
 
     def update(self):
@@ -61,7 +63,9 @@ class TransformerTester:
 
         mock_file = mock.create_autospec(CachedFile)
         mock_file.get_content.return_value = input_content
-        self.transformer.transform(mock_file)
+        self.transformer.transform(
+            {"files": [mock_file], "metadata": {"title": "Foo", "summary": "Bar", "tests": "Baz"}}
+        )
         output_content = [
             args[0] for name, args, _ in mock_file.mock_calls if name == "write_content"
         ][0]

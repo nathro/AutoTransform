@@ -27,8 +27,6 @@ setuptools.setup(
         "Source": "https://github.com/nathro/AutoTransform/",
         "Bug Tracker": "https://github.com/nathro/AutoTransform/issues",
         "Say Thanks!": "https://saythanks.io/to/nathro.software",
-        "Support": "https://www.paypal.com/paypalme/nathrosoftware",
-        "Stream": "https://www.twitch.tv/AllSublime",
     },
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -45,7 +43,7 @@ setuptools.setup(
     entry_points={
         "console_scripts": [
             "regexmod = autotransform.regexmod:main",
-            "atmanager = autotransform.manager:main",
+            "atrun = autotransform.run:main",
         ]
     },
     package_data={"": ["data/sample_config.ini", "data/packages/sample_package.json"]},

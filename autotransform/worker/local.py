@@ -16,12 +16,14 @@ from typing import List, Optional, Sequence
 
 from autotransform.batcher.base import Batch
 from autotransform.common.cachedfile import CachedFile
+from autotransform.common.dataobject import FileDataObject
+from autotransform.common.datastore import data_store
 from autotransform.schema.schema import AutoTransformSchema
-from autotransform.worker.runnable import RunnableWorker
+from autotransform.worker.process import ProcessWorker
 from autotransform.worker.type import WorkerType
 
 
-class LocalWorker(RunnableWorker):
+class LocalWorker(ProcessWorker):
     """A Worker that is run locally by the Runner and merely executes the batches in a subprocess.
 
     Attributes:
@@ -40,7 +42,7 @@ class LocalWorker(RunnableWorker):
             data_file (str): The path to a temp file containing the information required to run the
                 Worker
         """
-        RunnableWorker.__init__(self)
+        ProcessWorker.__init__(self)
         self.data_file = data_file
         self.proc = None
 
@@ -59,12 +61,12 @@ class LocalWorker(RunnableWorker):
 
         # pylint: disable=consider-using-with
 
-        self.proc = RunnableWorker.spawn_proc(WorkerType.LOCAL, [self.data_file])
+        self.proc = ProcessWorker.spawn_proc(WorkerType.LOCAL, [self.data_file])
 
     @staticmethod
     def spawn_from_batches(
         schema: AutoTransformSchema, batches: List[Batch]
-    ) -> Sequence[RunnableWorker]:
+    ) -> Sequence[ProcessWorker]:
         """Sets up a data file with the batches and schema, creating a LocalWorker based on
         this data file.
 
@@ -82,7 +84,17 @@ class LocalWorker(RunnableWorker):
             {"files": [file.path for file in batch["files"]], "metadata": batch["metadata"]}
             for batch in batches
         ]
-        full_data = {"batches": encodable_batches, "schema": schema.bundle()}
+        encodable_file_data = {}
+        for batch in batches:
+            for file in batch["files"]:
+                data_object = data_store.get_object_data(file.path)
+                if data_object is not None:
+                    encodable_file_data[file.path] = data_object.data
+        full_data = {
+            "batches": encodable_batches,
+            "schema": schema.bundle(),
+            "file_data": encodable_file_data,
+        }
         json.dump(full_data, data_file)
         data_file.close()
 
@@ -124,6 +136,9 @@ class LocalWorker(RunnableWorker):
             data = json.loads(data_file.read())
             schema = AutoTransformSchema.from_bundle(data["schema"])
             encoded_batches = data["batches"]
+            encoded_file_data = data["file_data"]
+            for path, file_data in encoded_file_data:
+                data_store.add_object(path, FileDataObject(file_data))
             batches: List[Batch] = [
                 {
                     "files": [CachedFile(path) for path in batch["files"]],

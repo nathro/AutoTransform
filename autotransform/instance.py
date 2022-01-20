@@ -10,7 +10,7 @@
 import argparse
 
 from autotransform.worker.factory import WorkerFactory
-from autotransform.worker.runnable import RunnableWorker
+from autotransform.worker.process import ProcessWorker
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -37,7 +37,7 @@ def main():
     """Runs the Worker."""
     args = parse_arguments()
     worker_type = WorkerFactory.get(args.worker)
-    assert issubclass(worker_type, RunnableWorker)
+    assert issubclass(worker_type, ProcessWorker)
     worker_args = worker_type.parse_arguments()
     worker_type.main(worker_args)
 

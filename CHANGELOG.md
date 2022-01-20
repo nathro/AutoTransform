@@ -8,9 +8,17 @@
 
 #### API Changes
 
+ - Transformer: Transform now takes Batch instead of Cached File
+
 #### Upgrade Packages
 
 #### Misc
+
+- Manager script renamed to run, now invoked as atrun
+- RunnableWorker renamed to ProcessWorker
+- Runner renamed to Coordinator
+- Updated BatchMetadata to only require title
+- Add a generic to components for params so that type safety is improved
 
 ## Release 0.1.1 - Initial Beta!
 

@@ -10,10 +10,12 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Mapping, Optional, TypedDict
+from typing import Any, Generic, Mapping, Optional, TypedDict, TypeVar
 
 from autotransform.common.cachedfile import CachedFile
 from autotransform.filter.type import FilterType
+
+TParams = TypeVar("TParams", bound=Mapping[str, Any])
 
 
 class FilterBundle(TypedDict):
@@ -24,23 +26,23 @@ class FilterBundle(TypedDict):
     type: FilterType
 
 
-class Filter(ABC):
+class Filter(Generic[TParams], ABC):
     """The base for Filter components.
 
     Attributes:
-        params (Mapping[str, Any]): The paramaters that control operation of the Filter.
+        params (TParams): The paramaters that control operation of the Filter.
             Should be defined using a TypedDict in subclasses
         inverted (bool): Whether to invert the results of the filter
     """
 
     inverted: bool
-    params: Mapping[str, Any]
+    params: TParams
 
-    def __init__(self, params: Mapping[str, Any]):
+    def __init__(self, params: TParams):
         """A simple constructor
 
         Args:
-            params (Mapping[str, Any]): The paramaters used to set up the Filter
+            params (TParams): The paramaters used to set up the Filter
         """
         self.inverted = False
         self.params = params

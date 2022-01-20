@@ -10,10 +10,12 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Mapping, TypedDict
+from typing import Any, Generic, Mapping, TypedDict, TypeVar
 
 from autotransform.batcher.base import Batch
 from autotransform.command.type import CommandType
+
+TParams = TypeVar("TParams", bound=Mapping[str, Any])
 
 
 class CommandBundle(TypedDict):
@@ -23,21 +25,21 @@ class CommandBundle(TypedDict):
     type: CommandType
 
 
-class Command(ABC):
+class Command(Generic[TParams], ABC):
     """The base for Command components.
 
     Attributes:
-        params (Mapping[str, Any]): The paramaters that control operation of the Command.
+        params (TParams): The paramaters that control operation of the Command.
             Should be defined using a TypedDict in subclasses
     """
 
-    params: Mapping[str, Any]
+    params: TParams
 
-    def __init__(self, params: Mapping[str, Any]):
+    def __init__(self, params: TParams):
         """A simple constructor.
 
         Args:
-            params (Mapping[str, Any]): The paramaters used to set up the Command
+            params (TParams): The paramaters used to set up the Command
         """
         self.params = params
 
