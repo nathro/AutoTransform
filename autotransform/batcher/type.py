@@ -19,4 +19,5 @@ class BatcherType(str, Enum):
     """
 
     CHUNK = "chunk"
+    DIRECTORY = "directory"
     SINGLE = "single"

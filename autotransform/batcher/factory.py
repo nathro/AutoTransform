@@ -18,6 +18,7 @@ from typing import Any, Callable, Dict, Mapping
 
 from autotransform.batcher.base import Batcher, BatcherBundle
 from autotransform.batcher.chunk import ChunkBatcher
+from autotransform.batcher.directory import DirectoryBatcher
 from autotransform.batcher.single import SingleBatcher
 from autotransform.batcher.type import BatcherType
 from autotransform.config import fetcher as Config
@@ -39,6 +40,7 @@ class BatcherFactory:
 
     _getters: Dict[BatcherType, Callable[[Mapping[str, Any]], Batcher]] = {
         BatcherType.CHUNK: ChunkBatcher.from_data,
+        BatcherType.DIRECTORY: DirectoryBatcher.from_data,
         BatcherType.SINGLE: SingleBatcher.from_data,
     }
 
