@@ -1,7 +1,7 @@
 {
     "input": {
         "params": {
-            "path": "C:/repos/autotransform"
+            "path": "<<REPO ROOT>>"
         },
         "type": "directory"
     },
@@ -40,7 +40,7 @@
     },
     "repo": {
         "params": {
-            "path": "C:/repos/autotransform",
+            "path": "<<REPO ROOT>>",
             "full_github_name": "nathro/AutoTransform"
         },
         "type": "github"

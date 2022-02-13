@@ -26,14 +26,14 @@ from autotransform.transformer.regex import RegexTransformer
 
 def get_sample_schema() -> AutoTransformSchema:
     """Gets the sample schema being used for testing."""
+
+    repo_root = str(pathlib.Path(__file__).parent.parent.parent.resolve()).replace("\\", "/")
     return AutoTransformSchema(
-        DirectoryInput({"path": "C:/repos/autotransform"}),
+        DirectoryInput({"path": repo_root}),
         SingleBatcher({"metadata": {"title": "test", "summary": "", "tests": ""}}),
         RegexTransformer({"pattern": "input", "replacement": "inputsource"}),
         filters=[ExtensionFilter({"extensions": [Extensions.PYTHON]})],
-        repo=GithubRepo(
-            {"path": "C:/repos/autotransform", "full_github_name": "nathro/AutoTransform"}
-        ),
+        repo=GithubRepo({"path": repo_root, "full_github_name": "nathro/AutoTransform"}),
     )
 
 
@@ -256,6 +256,8 @@ def test_json_encoding():
     parent_dir = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
     with open(parent_dir + "/data/sample_schema.json", "r") as schema_file:
         actual_json = schema_file.read()
+    repo_root = str(pathlib.Path(__file__).parent.parent.parent.resolve()).replace("\\", "/")
+    actual_json = actual_json.replace("<<REPO ROOT>>", repo_root)
     assert schema_json == actual_json
 
 
@@ -268,6 +270,8 @@ def test_json_decoding():
     parent_dir = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
     with open(parent_dir + "/data/sample_schema.json", "r") as schema_file:
         actual_json = schema_file.read()
+    repo_root = str(pathlib.Path(__file__).parent.parent.parent.resolve()).replace("\\", "/")
+    actual_json = actual_json.replace("<<REPO ROOT>>", repo_root)
     actual_schema = AutoTransformSchema.from_json(actual_json)
 
     # Check input
