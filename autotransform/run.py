@@ -10,7 +10,6 @@ Schema provided by a SchemaBuilder.
 """
 
 import argparse
-import sys
 import time
 
 from autotransform.coordinator import Coordinator
@@ -27,30 +26,33 @@ def parse_arguments() -> argparse.Namespace:
         argparse.Namespace: The arguments for the run
     """
     parser = argparse.ArgumentParser(description="Runs an autotransform schema")
+
+    # Schema Arguments
     parser.add_argument(
-        "-f",
-        "--file",
-        metavar="file",
+        "schema",
+        metavar="schema",
         type=str,
-        required=False,
-        help="A file containing a JSON encoded schema",
+        help="The schema to be used, defaults to assuming a file",
     )
-    parser.add_argument(
-        "-e",
-        "--encoding",
-        metavar="encoding",
-        type=str,
-        required=False,
-        help="The encoding of the file containing your schema",
-    )
-    parser.add_argument(
+    type_group = parser.add_mutually_exclusive_group()
+    type_group.add_argument(
         "-b",
         "--builder",
-        metavar="builder",
-        type=str,
+        dest="use_builder",
+        action="store_true",
         required=False,
-        help="The name of a schema builder(see schema.name)",
+        help="Tells the script to interpret the schema as a builder name",
     )
+    type_group.add_argument(
+        "-f",
+        "--file",
+        dest="use_builder",
+        action="store_false",
+        required=False,
+        help="Tells the script to interpret the schema as a file",
+    )
+
+    # Setting Arguments
     parser.add_argument(
         "-t",
         "--timeout",
@@ -66,8 +68,10 @@ def parse_arguments() -> argparse.Namespace:
         metavar="worker",
         type=str,
         required=False,
-        help="The type of worker to use(see worker.type)",
+        help="The type of worker to use(see worker.type). Defaults to using local",
     )
+
+    parser.set_defaults(use_builder=False, worker=WorkerType.LOCAL)
     return parser.parse_args()
 
 
@@ -77,27 +81,14 @@ def main():
     # pylint: disable=unspecified-encoding
 
     args = parse_arguments()
-    builder = args.builder
-    file = args.file
-    if file is not None and builder is not None:
-        print("A schema and a file were provided, only provide one")
-        sys.exit(1)
-    elif file is not None:
-        if args.encoding is not None:
-            with open(file, "r", encoding=args.encoding) as schema_file:
-                schema = AutoTransformSchema.from_json(schema_file.read())
-        else:
-            with open(file, "r") as schema_file:
-                schema = AutoTransformSchema.from_json(schema_file.read())
-    elif builder is not None:
-        schema = SchemaBuilderFactory.get(builder).build()
+    schema = args.schema
+    if args.use_builder:
+        schema = SchemaBuilderFactory.get(schema).build()
     else:
-        print("Must provide either a builder name or a file containing the schema as JSON")
-        sys.exit(1)
+        with open(schema, "r") as schema_file:
+            schema = AutoTransformSchema.from_json(schema_file.read())
 
     worker = args.worker
-    if worker is None:
-        worker = WorkerType.LOCAL
     worker_type = WorkerFactory.get(worker)
     runner = Coordinator(schema, worker_type)
     start_time = time.time()
