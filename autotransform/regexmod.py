@@ -28,6 +28,8 @@ def parse_arguments() -> argparse.Namespace:
         argparse.Namespace: The arguments for the regexmod
     """
     parser = argparse.ArgumentParser(description="Runs simple regex based codemods")
+
+    # Filter Arguments
     parser.add_argument(
         "-e",
         "--extensions",
@@ -36,20 +38,15 @@ def parse_arguments() -> argparse.Namespace:
         required=False,
         help="A comma separated list of extensions for files to modify",
     )
-    parser.add_argument(
-        "-d",
-        "--directory",
-        metavar="directory",
-        type=str,
-        required=True,
-        help="The directory to search within within for files to modify",
-    )
+
+    # Repo Arguments
     parser.add_argument(
         "--git",
         metavar="git_repo_path",
         type=str,
         required=False,
-        help="The absolute path to a git repo containing the directory",
+        help="The absolute path to a git repo containing the directory. Setting this will cause "
+        + "changes to be commited to git.",
     )
     parser.add_argument(
         "--github",
@@ -58,10 +55,22 @@ def parse_arguments() -> argparse.Namespace:
         required=False,
         help="The full name of the github repo that a pull request should be submitted against",
     )
+
+    # Input Arguments
+    parser.add_argument(
+        "directory",
+        metavar="directory",
+        type=str,
+        help="The directory to search within for files to modify",
+    )
+
+    # Transformation Arguments
     parser.add_argument("pattern", metavar="pattern", type=str, help="The pattern to be replaced")
     parser.add_argument(
         "replacement", metavar="replacement", type=str, help="What you wish to replace with"
     )
+
+    # Arguments used by the repo object for committing/PRs
     parser.add_argument(
         "--title",
         metavar="title",
