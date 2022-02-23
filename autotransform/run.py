@@ -90,12 +90,12 @@ def main():
 
     worker = args.worker
     worker_type = WorkerFactory.get(worker)
-    runner = Coordinator(schema, worker_type)
+    coordinator = Coordinator(schema, worker_type)
     start_time = time.time()
-    runner.start()
-    while not runner.is_finished() and time.time() <= start_time + args.timeout:
+    coordinator.start()
+    while not coordinator.is_finished() and time.time() <= start_time + args.timeout:
         time.sleep(1)
-    runner.kill()
+    coordinator.kill()
 
 
 if __name__ == "__main__":

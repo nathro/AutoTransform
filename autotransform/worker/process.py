@@ -26,35 +26,12 @@ class ProcessWorker(Worker):
 
     @staticmethod
     @abstractmethod
-    def _parse_arguments(parser: ArgumentParser) -> Namespace:
-        """Parse all arguments needed by the worker and return them as a Namespace.
+    def add_args(parser: ArgumentParser) -> None:
+        """Adds the arguments needed for the worker as a subparser command
 
         Args:
-            parser (ArgumentParser): A parser which already has arguments of the instance script
-                added
-
-        Returns:
-            Namespace: The arguments for the Worker
+            subparsers (_SubParsersAction): The subparsers action to add the parser to
         """
-
-    @classmethod
-    def parse_arguments(cls) -> Namespace:
-        """Adds all arguments used by the instance script before allowing the Worker to add
-        further arguments.
-
-        Returns:
-            Namespace: The arguments for the Worker
-        """
-        parser = ArgumentParser(description="A local worker running a batch")
-        parser.add_argument(
-            "-w",
-            "--worker",
-            metavar="worker",
-            type=str,
-            required=False,
-            help="The name of the worker type to use",
-        )
-        return cls._parse_arguments(parser)
 
     @staticmethod
     @abstractmethod
@@ -76,7 +53,7 @@ class ProcessWorker(Worker):
         Returns:
             Popen: A handle for the process running the Worker
         """
-        args = [sys.executable, "-m", "autotransform.instance", "-w", worker_type]
+        args = [sys.executable, "-m", "autotransform.scripts.main", "i", worker_type.value]
         for arg in worker_args:
             args.append(arg)
         return Popen(args)

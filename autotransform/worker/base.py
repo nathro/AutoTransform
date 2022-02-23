@@ -14,10 +14,20 @@ from typing import List, Sequence
 
 from autotransform.batcher.base import Batch
 from autotransform.schema.schema import AutoTransformSchema
+from autotransform.worker.type import WorkerType
 
 
 class Worker(ABC):
     """The base for Workers. These are used to execute a Schema"""
+
+    @staticmethod
+    @abstractmethod
+    def get_type() -> WorkerType:
+        """Gets the type of the worker
+
+        Returns:
+            WorkerType: The type of the worker object
+        """
 
     @abstractmethod
     def is_finished(self) -> bool:

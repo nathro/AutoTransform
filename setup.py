@@ -44,6 +44,7 @@ setuptools.setup(
         "console_scripts": [
             "regexmod = autotransform.regexmod:main",
             "atrun = autotransform.run:main",
+            "autotransform = autotransform.scripts.main:main",
         ]
     },
     package_data={"": ["data/sample_config.ini", "data/packages/sample_package.json"]},

@@ -46,6 +46,15 @@ class LocalWorker(ProcessWorker):
         self.data_file = data_file
         self.proc = None
 
+    @staticmethod
+    def get_type() -> WorkerType:
+        """Gets the type of the worker
+
+        Returns:
+            WorkerType: The type of the worker object
+        """
+        return WorkerType.LOCAL
+
     def is_finished(self) -> bool:
         """Checks whether the subprocess has finished
 
@@ -108,14 +117,11 @@ class LocalWorker(ProcessWorker):
             proc.kill()
 
     @staticmethod
-    def _parse_arguments(parser: ArgumentParser) -> Namespace:
+    def add_args(parser: ArgumentParser) -> None:
         """Adds the argument to allow access to the data file
 
         Args:
             parser (ArgumentParser): The parser with previously added arguments
-
-        Returns:
-            Namespace: The arguments for the Worker
         """
         parser.add_argument(
             "data_file",
@@ -123,7 +129,7 @@ class LocalWorker(ProcessWorker):
             type=str,
             help="The file containing a JSON encoded batch",
         )
-        return parser.parse_args()
+        parser.set_defaults(func=LocalWorker.main)
 
     @staticmethod
     def main(args: Namespace) -> None:

@@ -128,13 +128,13 @@ def main():
     else:
         repo = None
     schema = AutoTransformSchema(inp, batcher, transformer, filters=filters, repo=repo)
-    runner = Coordinator(schema, LocalWorker)
+    coordinator = Coordinator(schema, LocalWorker)
     start_time = time.time()
-    runner.start()
+    coordinator.start()
     timeout = 30
-    while not runner.is_finished() and time.time() <= start_time + timeout:
+    while not coordinator.is_finished() and time.time() <= start_time + timeout:
         time.sleep(1)
-    runner.kill()
+    coordinator.kill()
 
 
 if __name__ == "__main__":
