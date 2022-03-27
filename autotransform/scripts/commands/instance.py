@@ -18,7 +18,7 @@ def add_args(parser: ArgumentParser) -> None:
     """Adds the instance command arguments
 
     Args:
-        subparsers (_SubParsersAction[ArgumentParser]): The subparsers for the command
+        parser (ArgumentParser): The parser for the command
     """
     subparsers = parser.add_subparsers()
     for worker_type in WorkerType:

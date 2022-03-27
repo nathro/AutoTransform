@@ -5,35 +5,32 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""A script for triggering a Schema run from a JSON encoded Schema or a
-Schema provided by a SchemaBuilder.
-"""
+"""The instance command is used to run an instance of a process worker"""
 
-import argparse
 import time
+from argparse import ArgumentParser, Namespace
 
-from autotransform.coordinator import Coordinator
 from autotransform.schema.factory import SchemaBuilderFactory
 from autotransform.schema.schema import AutoTransformSchema
+from autotransform.worker.coordinator import Coordinator
 from autotransform.worker.factory import WorkerFactory
 from autotransform.worker.type import WorkerType
 
 
-def parse_arguments() -> argparse.Namespace:
-    """Parses the script arguments. Run with -h to see all arguments.
+def add_args(parser: ArgumentParser) -> None:
+    """Adds the run command arguments
 
-    Returns:
-        argparse.Namespace: The arguments for the run
+    Args:
+        parser (ArgumentParser): The parser for the command
     """
-    parser = argparse.ArgumentParser(description="Runs an autotransform schema")
 
-    # Schema Arguments
     parser.add_argument(
         "schema",
         metavar="schema",
         type=str,
         help="The schema to be used, defaults to assuming a file",
     )
+
     type_group = parser.add_mutually_exclusive_group()
     type_group.add_argument(
         "-b",
@@ -71,16 +68,18 @@ def parse_arguments() -> argparse.Namespace:
         help="The type of worker to use(see worker.type). Defaults to using local",
     )
 
-    parser.set_defaults(use_builder=False, worker=WorkerType.LOCAL)
-    return parser.parse_args()
+    parser.set_defaults(use_builder=False, worker=WorkerType.LOCAL, func=run_command_main)
 
 
-def main():
-    """A full run of AutoTransform from the provided Schema."""
+def run_command_main(args: Namespace) -> None:
+    """The main method for the run command, handles the actual execution of a run.
 
+    Args:
+        args (Namespace): The arguments supplied to the run command, such as the schema and
+            worker type
+    """
     # pylint: disable=unspecified-encoding
 
-    args = parse_arguments()
     schema = args.schema
     if args.use_builder:
         schema = SchemaBuilderFactory.get(schema).build()
@@ -96,7 +95,3 @@ def main():
     while not coordinator.is_finished() and time.time() <= start_time + args.timeout:
         time.sleep(1)
     coordinator.kill()
-
-
-if __name__ == "__main__":
-    main()

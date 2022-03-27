@@ -9,7 +9,7 @@
 
 from argparse import ArgumentParser
 
-from autotransform.scripts.commands import instance
+from autotransform.scripts.commands import instance, run
 
 
 def get_arg_parser() -> ArgumentParser:
@@ -23,12 +23,23 @@ def get_arg_parser() -> ArgumentParser:
         prog="AutoTransform",
     )
     subparsers = parser.add_subparsers()
+
+    # Add instance command
     instance_parser = subparsers.add_parser(
         "instance",
         help="Run an instance of an AutoTransform process worker, see ProcessWorker",
         aliases=["i"],
     )
     instance.add_args(instance_parser)
+
+    # Add run command
+    run_parser = subparsers.add_parser(
+        "run",
+        help="Execute a full run of AutoTransform",
+        aliases=["r"],
+    )
+    run.add_args(run_parser)
+
     return parser
 
 
