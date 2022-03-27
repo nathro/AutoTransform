@@ -44,4 +44,4 @@ In addition to schema configuration, configuration is available for AutoTransfor
 
 AutoTransform exposes two scripts as part of package deployment
  - autotransform.regexmod is exposed as `regexmod` run `regexmod -h` for options
- - autotransform.run is exposed as `atrun` run `atrun -h` for options
+ - autotransform.scripts.main is exposed as `autotransform` run `autotransform -h` for options
