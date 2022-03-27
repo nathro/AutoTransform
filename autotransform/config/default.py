@@ -28,13 +28,21 @@ class DefaultConfigFetcher(ConfigFetcher):
 
     def __init__(self):
         """A simple constructor that parses the default config file"""
-        config_path: str = (
+        config = ConfigParser()
+        config.read(self.get_config_path())
+        self.config = config
+
+    @staticmethod
+    def get_config_path() -> str:
+        """Gets the path where the config file is located
+
+        Returns:
+            str: The path to the config file
+        """
+        return (
             str(pathlib.Path(__file__).parent.parent.resolve()).replace("\\", "/")
             + "/data/config.ini"
         )
-        config = ConfigParser()
-        config.read(config_path)
-        self.config = config
 
     def get_github_token(self) -> Optional[str]:
         """Pulls the github authentication token from the config file

@@ -9,7 +9,7 @@
 
 from argparse import ArgumentParser
 
-from autotransform.scripts.commands import instance, run
+from autotransform.scripts.commands import config, instance, run
 
 
 def get_arg_parser() -> ArgumentParser:
@@ -39,6 +39,14 @@ def get_arg_parser() -> ArgumentParser:
         aliases=["r"],
     )
     run.add_args(run_parser)
+
+    # Add config command
+    config_parser = subparsers.add_parser(
+        "config",
+        help="Updates/lists values in the config",
+        aliases=["c"],
+    )
+    config.add_args(config_parser)
 
     return parser
 
