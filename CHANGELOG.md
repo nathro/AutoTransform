@@ -6,6 +6,8 @@
 
 #### New Scripts
 
+ - Run and instance scripts have been migrated to the main script
+
 #### API Changes
 
  - Transformer: Transform now takes Batch instead of Cached File

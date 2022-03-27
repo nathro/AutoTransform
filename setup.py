@@ -43,7 +43,6 @@ setuptools.setup(
     entry_points={
         "console_scripts": [
             "regexmod = autotransform.regexmod:main",
-            "atrun = autotransform.run:main",
             "autotransform = autotransform.scripts.main:main",
         ]
     },
