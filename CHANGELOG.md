@@ -4,9 +4,10 @@
 
 #### New Components
 
-#### New Scripts
+#### Scripts
 
  - Run and instance scripts have been migrated to the main script
+ - Config command added to main scripts for listing or updating config.ini values
 
 #### API Changes
 
