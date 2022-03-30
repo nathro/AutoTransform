@@ -22,6 +22,7 @@
 - Runner renamed to Coordinator
 - Updated BatchMetadata to only require title
 - Add a generic to components for params so that type safety is improved
+- Changed how custom components are expected to be handled, now being imported through a config setting
 
 ## Release 0.1.1 - Initial Beta!
 
