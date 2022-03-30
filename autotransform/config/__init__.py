@@ -17,6 +17,7 @@ from typing import Dict, Type
 
 from autotransform.config.console import ConsoleConfigFetcher
 from autotransform.config.default import DefaultConfigFetcher
+from autotransform.config.envvar import EnvironmentVariableConfigFetcher
 from autotransform.config.fetcher import ConfigFetcher
 
 fetcher_to_use = os.getenv("AUTO_TRANSFORM_CONFIG")
@@ -24,6 +25,7 @@ fetcher_to_use = os.getenv("AUTO_TRANSFORM_CONFIG")
 fetchers: Dict[str, Type[ConfigFetcher]] = {
     "console": ConsoleConfigFetcher,
     "default": DefaultConfigFetcher,
+    "environment": EnvironmentVariableConfigFetcher,
 }
 
 if fetcher_to_use is not None:
