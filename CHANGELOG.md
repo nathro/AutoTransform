@@ -4,6 +4,8 @@
 
 #### New Components
 
+ - EnvironmentVariableConfigFetcher: A config fetcher that pulls values from environment variables
+
 #### Scripts
 
  - Run and instance scripts have been migrated to the main script
