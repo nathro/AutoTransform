@@ -9,7 +9,7 @@
 
 import pathlib
 from configparser import ConfigParser
-from typing import Optional
+from typing import List, Optional
 
 from autotransform.config.fetcher import ConfigFetcher
 
@@ -79,3 +79,14 @@ class DefaultConfigFetcher(ConfigFetcher):
         """
         credentials = self.config["CREDENTIALS"]
         return credentials.get("github_base_url", None)
+
+    def get_custom_component_imports(self) -> List[str]:
+        """The modules containing the custom components to use: see autotransform.thirdparty.example
+
+        Returns:
+            List[str]: A list of the modules containing custom components that are not part base
+                AutoTransform
+        """
+        imports = self.config["IMPORTS"]
+        module_list = imports.get("custom_components", None)
+        return [module.strip() for module in module_list.split(",")]

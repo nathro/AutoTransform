@@ -19,6 +19,3 @@ class BatcherType(str, Enum):
     """
 
     SINGLE = "single"
-
-    # BEGIN CUSTOM TYPES
-    # END CUSTOM TYPES

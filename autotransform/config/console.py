@@ -8,7 +8,7 @@
 """A ConfigFetcher that asks for input from the user."""
 
 from getpass import getpass
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 from autotransform.config.fetcher import ConfigFetcher
 
@@ -82,3 +82,17 @@ class ConsoleConfigFetcher(ConfigFetcher):
             base_url = None
         self.config["github_base_url"] = base_url
         return base_url
+
+    def get_custom_component_imports(self) -> List[str]:
+        """The modules containing the custom components to use: see autotransform.thirdparty.example
+
+        Returns:
+            List[str]: A list of the modules containing custom components that are not part base
+                AutoTransform
+        """
+        component_module_string: str = input(
+            "Please provide a command separated list of custom component modules to import: "
+        )
+        if component_module_string == "":
+            return []
+        return [module.strip() for module in component_module_string.split(",")]

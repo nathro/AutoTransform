@@ -13,14 +13,13 @@ Note:
     Do not auto organize imports when using custom imports to avoid merge conflicts
 """
 
+import importlib
 from typing import Any, Callable, Dict, Mapping
 
 from autotransform.batcher.base import Batcher, BatcherBundle
 from autotransform.batcher.single import SingleBatcher
 from autotransform.batcher.type import BatcherType
-
-# BEGIN CUSTOM IMPORTS
-# END CUSTOM IMPORTS
+from autotransform.config import fetcher as Config
 
 
 class BatcherFactory:
@@ -39,8 +38,6 @@ class BatcherFactory:
 
     _getters: Dict[BatcherType, Callable[[Mapping[str, Any]], Batcher]] = {
         BatcherType.SINGLE: SingleBatcher.from_data,
-        # BEGIN CUSTOM BATCHER
-        # END CUSTOM BATCHER
     }
 
     @staticmethod
@@ -53,4 +50,12 @@ class BatcherFactory:
         Returns:
             Batcher: The Batcher instance of the decoded bundle
         """
-        return BatcherFactory._getters[bundle["type"]](bundle["params"])
+        if bundle["type"] in BatcherFactory._getters:
+            return BatcherFactory._getters[bundle["type"]](bundle["params"])
+
+        custom_component_modules = Config.get_custom_component_imports()
+        for module_string in custom_component_modules:
+            module = importlib.import_module(module_string)
+            if hasattr(module, "BATCHERS") and bundle["type"] in module.BATCHERS:
+                return module.BATCHERS[bundle["type"]](bundle["params"])
+        raise ValueError(f"No batcher found for type {bundle['type']}")

@@ -8,7 +8,7 @@
 """A base class for configuration fetching."""
 
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import List, Optional
 
 
 class ConfigFetcher(ABC):
@@ -44,4 +44,13 @@ class ConfigFetcher(ABC):
 
         Returns:
             Optional[str]: The github base URL
+        """
+
+    @abstractmethod
+    def get_custom_component_imports(self) -> List[str]:
+        """The modules containing the custom components to use: see autotransform.thirdparty.example
+
+        Returns:
+            List[str]: A list of the modules containing custom components that are not part base
+                AutoTransform
         """
