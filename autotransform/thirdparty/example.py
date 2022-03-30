@@ -8,8 +8,22 @@
 """An example module containing custom imports. Used via the custom_components config setting.
 All custom component imports should follow this structure."""
 
-from typing import Any, Callable, Dict, Mapping
+from typing import Any, Callable, Dict, Mapping, Type
 
 from autotransform.batcher.base import Batcher
+from autotransform.command.base import Command
+from autotransform.filter.base import Filter
+from autotransform.input.base import Input
+from autotransform.schema.builder import SchemaBuilder
+from autotransform.transformer.base import Transformer
+from autotransform.validator.base import Validator
+from autotransform.worker.base import Worker
 
 BATCHERS: Dict[str, Callable[[Mapping[str, Any]], Batcher]] = {}
+COMMANDS: Dict[str, Callable[[Mapping[str, Any]], Command]] = {}
+FILTERS: Dict[str, Callable[[bool, Mapping[str, Any]], Filter]] = {}
+INPUTS: Dict[str, Callable[[Mapping[str, Any]], Input]] = {}
+SCHEMAS: Dict[str, Type[SchemaBuilder]] = {}
+TRANSFORMERS: Dict[str, Callable[[Mapping[str, Any]], Transformer]] = {}
+VALIDATORS: Dict[str, Callable[[Mapping[str, Any]], Validator]] = {}
+WORKERS: Dict[str, Type[Worker]] = {}

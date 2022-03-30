@@ -13,13 +13,12 @@ Note:
     Do not auto organize imports when using custom imports to avoid merge conflicts
 """
 
+import importlib
 from typing import Any, Callable, Dict, Mapping
 
+from autotransform.config import fetcher as Config
 from autotransform.validator.base import Validator, ValidatorBundle
 from autotransform.validator.type import ValidatorType
-
-# BEGIN CUSTOM IMPORTS
-# END CUSTOM IMPORTS
 
 
 class ValidatorFactory:
@@ -36,13 +35,10 @@ class ValidatorFactory:
 
     # pylint: disable=too-few-public-methods
 
-    _getters: Dict[ValidatorType, Callable[[Mapping[str, Any]], Validator]] = {
-        # BEGIN CUSTOM VALIDATORS
-        # END CUSTOM VALIDATORS
-    }
+    _getters: Dict[ValidatorType, Callable[[Mapping[str, Any]], Validator]] = {}
 
     @staticmethod
-    def get(validator: ValidatorBundle) -> Validator:
+    def get(bundle: ValidatorBundle) -> Validator:
         """Simple get method using the _getters attribute
 
         Args:
@@ -51,4 +47,12 @@ class ValidatorFactory:
         Returns:
             Validator: The Validator instance of the decoded bundle
         """
-        return ValidatorFactory._getters[validator["type"]](validator["params"])
+        if bundle["type"] in ValidatorFactory._getters:
+            return ValidatorFactory._getters[bundle["type"]](bundle["params"])
+
+        custom_component_modules = Config.get_custom_component_imports()
+        for module_string in custom_component_modules:
+            module = importlib.import_module(module_string)
+            if hasattr(module, "VALIDATORS") and bundle["type"] in module.VALIDATORS:
+                return module.VALIDATORS[bundle["type"]](bundle["params"])
+        raise ValueError(f"No validator found for type {bundle['type']}")

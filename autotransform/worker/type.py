@@ -19,6 +19,3 @@ class WorkerType(str, Enum):
     """
 
     LOCAL = "local"
-
-    # BEGIN CUSTOM TYPES
-    # END CUSTOM TYPES

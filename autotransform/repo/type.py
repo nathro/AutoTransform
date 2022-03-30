@@ -20,6 +20,3 @@ class RepoType(str, Enum):
 
     GIT = "git"
     GITHUB = "github"
-
-    # BEGIN CUSTOM TYPES
-    # END CUSTOM TYPES

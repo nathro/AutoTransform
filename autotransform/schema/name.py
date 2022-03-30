@@ -17,6 +17,3 @@ class SchemaBuilderName(str, Enum):
         Custom names should be placed in the CUSTOM NAMES section.
         This will reduce merge conflicts when merging in upstream changes.
     """
-
-    # BEGIN CUSTOM NAMES
-    # END CUSTOM NAMES

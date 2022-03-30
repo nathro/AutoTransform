@@ -19,6 +19,3 @@ class TransformerType(str, Enum):
     """
 
     REGEX = "regex"
-
-    # BEGIN CUSTOM TYPES
-    # END CUSTOM TYPES

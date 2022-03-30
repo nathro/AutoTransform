@@ -13,13 +13,12 @@ Note:
     Do not auto organize imports when using custom imports to avoid merge conflicts
 """
 
+import importlib
 from typing import Any, Callable, Dict, Mapping
 
 from autotransform.command.base import Command, CommandBundle
 from autotransform.command.type import CommandType
-
-# BEGIN CUSTOM IMPORTS
-# END CUSTOM IMPORTS
+from autotransform.config import fetcher as Config
 
 
 class CommandFactory:
@@ -36,10 +35,7 @@ class CommandFactory:
 
     # pylint: disable=too-few-public-methods
 
-    _getters: Dict[CommandType, Callable[[Mapping[str, Any]], Command]] = {
-        # BEGIN CUSTOM COMMANDS
-        # END CUSTOM COMMANDS
-    }
+    _getters: Dict[CommandType, Callable[[Mapping[str, Any]], Command]] = {}
 
     @staticmethod
     def get(bundle: CommandBundle) -> Command:
@@ -51,4 +47,12 @@ class CommandFactory:
         Returns:
             Command: The Command instance of the decoded bundle
         """
-        return CommandFactory._getters[bundle["type"]](bundle["params"])
+        if bundle["type"] in CommandFactory._getters:
+            return CommandFactory._getters[bundle["type"]](bundle["params"])
+
+        custom_component_modules = Config.get_custom_component_imports()
+        for module_string in custom_component_modules:
+            module = importlib.import_module(module_string)
+            if hasattr(module, "COMMANDS") and bundle["type"] in module.COMMANDS:
+                return module.COMMANDS[bundle["type"]](bundle["params"])
+        raise ValueError(f"No command found for type {bundle['type']}")

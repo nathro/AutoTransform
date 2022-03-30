@@ -13,14 +13,13 @@ Note:
     Do not auto organize imports when using custom imports to avoid merge conflicts
 """
 
+import importlib
 from typing import Any, Callable, Dict, Mapping
 
+from autotransform.config import fetcher as Config
 from autotransform.input.base import Input, InputBundle
 from autotransform.input.directory import DirectoryInput
 from autotransform.input.type import InputType
-
-# BEGIN CUSTOM IMPORTS
-# END CUSTOM IMPORTS
 
 
 class InputFactory:
@@ -39,8 +38,6 @@ class InputFactory:
 
     _getters: Dict[InputType, Callable[[Mapping[str, Any]], Input]] = {
         InputType.DIRECTORY: DirectoryInput.from_data,
-        # BEGIN CUSTOM INPUTS
-        # END CUSTOM INPUTS
     }
 
     @staticmethod
@@ -53,4 +50,12 @@ class InputFactory:
         Returns:
             Input: The Input instance of the decoded bundle
         """
-        return InputFactory._getters[bundle["type"]](bundle["params"])
+        if bundle["type"] in InputFactory._getters:
+            return InputFactory._getters[bundle["type"]](bundle["params"])
+
+        custom_component_modules = Config.get_custom_component_imports()
+        for module_string in custom_component_modules:
+            module = importlib.import_module(module_string)
+            if hasattr(module, "INPUTS") and bundle["type"] in module.INPUTS:
+                return module.INPUTS[bundle["type"]](bundle["params"])
+        raise ValueError(f"No input found for type {bundle['type']}")

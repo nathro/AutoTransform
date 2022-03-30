@@ -17,6 +17,3 @@ class ValidatorType(str, Enum):
         Custom types should be placed in the CUSTOM TYPES section.
         This will reduce merge conflicts when merging in upstream changes.
     """
-
-    # BEGIN CUSTOM TYPES
-    # END CUSTOM TYPES

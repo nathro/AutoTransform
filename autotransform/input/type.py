@@ -19,6 +19,3 @@ class InputType(str, Enum):
     """
 
     DIRECTORY = "directory"
-
-    # BEGIN CUSTOM TYPES
-    # END CUSTOM TYPES

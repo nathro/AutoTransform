@@ -13,13 +13,12 @@ Note:
     Do not auto organize imports when using custom imports to avoid merge conflicts
 """
 
+import importlib
 from typing import Dict, Type
 
+from autotransform.config import fetcher as Config
 from autotransform.schema.builder import SchemaBuilder
 from autotransform.schema.name import SchemaBuilderName
-
-# BEGIN CUSTOM IMPORTS
-# END CUSTOM IMPORTS
 
 
 class SchemaBuilderFactory:
@@ -36,10 +35,7 @@ class SchemaBuilderFactory:
 
     # pylint: disable=too-few-public-methods
 
-    _map: Dict[SchemaBuilderName, Type[SchemaBuilder]] = {
-        # BEGIN CUSTOM BUILDERS
-        # END CUSTOM BUILDERS
-    }
+    _map: Dict[SchemaBuilderName, Type[SchemaBuilder]] = {}
 
     @staticmethod
     def get(name: SchemaBuilderName) -> SchemaBuilder:
@@ -51,4 +47,12 @@ class SchemaBuilderFactory:
         Returns:
             SchemaBuilder: An instance of the associated SchemaBuilder
         """
-        return SchemaBuilderFactory._map[name]()
+        if name in SchemaBuilderFactory._map:
+            return SchemaBuilderFactory._map[name]()
+
+        custom_component_modules = Config.get_custom_component_imports()
+        for module_string in custom_component_modules:
+            module = importlib.import_module(module_string)
+            if hasattr(module, "SCHEMAS") and name in module.SCHEMAS:
+                return module.SCHEMAS[name]()
+        raise ValueError(f"No schema builder found for type {name}")

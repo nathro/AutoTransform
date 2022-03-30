@@ -13,14 +13,13 @@ Note:
     Do not auto organize imports when using custom imports to avoid merge conflicts
 """
 
+import importlib
 from typing import Any, Callable, Dict, Mapping
 
+from autotransform.config import fetcher as Config
 from autotransform.filter.base import Filter, FilterBundle
 from autotransform.filter.extension import ExtensionFilter
 from autotransform.filter.type import FilterType
-
-# BEGIN CUSTOM IMPORTS
-# END CUSTOM IMPORTS
 
 
 class FilterFactory:
@@ -39,8 +38,6 @@ class FilterFactory:
 
     _getters: Dict[FilterType, Callable[[bool, Mapping[str, Any]], Filter]] = {
         FilterType.EXTENSION: ExtensionFilter.from_data,
-        # BEGIN CUSTOM FILTERS
-        # END CUSTOM FILTERS
     }
 
     @staticmethod
@@ -54,4 +51,12 @@ class FilterFactory:
             Filter: The Filter instance of the decoded bundle
         """
         inverted = bool(bundle.get("inverted", False))
-        return FilterFactory._getters[bundle["type"]](inverted, bundle["params"])
+        if bundle["type"] in FilterFactory._getters:
+            return FilterFactory._getters[bundle["type"]](inverted, bundle["params"])
+
+        custom_component_modules = Config.get_custom_component_imports()
+        for module_string in custom_component_modules:
+            module = importlib.import_module(module_string)
+            if hasattr(module, "FILTERS") and bundle["type"] in module.FILTERS:
+                return module.FILTERS[bundle["type"]](inverted, bundle["params"])
+        raise ValueError(f"No filter found for type {bundle['type']}")

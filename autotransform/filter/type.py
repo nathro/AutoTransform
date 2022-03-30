@@ -19,6 +19,3 @@ class FilterType(str, Enum):
     """
 
     EXTENSION = "extension"
-
-    # BEGIN CUSTOM TYPES
-    # END CUSTOM TYPES

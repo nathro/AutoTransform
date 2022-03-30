@@ -13,14 +13,13 @@ Note:
     Do not auto organize imports when using custom imports to avoid merge conflicts
 """
 
+import importlib
 from typing import Any, Callable, Dict, Mapping
 
+from autotransform.config import fetcher as Config
 from autotransform.transformer.base import Transformer, TransformerBundle
 from autotransform.transformer.regex import RegexTransformer
 from autotransform.transformer.type import TransformerType
-
-# BEGIN CUSTOM IMPORTS
-# END CUSTOM IMPORTS
 
 
 class TransformerFactory:
@@ -39,8 +38,6 @@ class TransformerFactory:
 
     _getters: Dict[TransformerType, Callable[[Mapping[str, Any]], Transformer]] = {
         TransformerType.REGEX: RegexTransformer.from_data,
-        # BEGIN CUSTOM TRANSFORMERS
-        # END CUSTOM TRANSFORMERS
     }
 
     @staticmethod
@@ -54,4 +51,12 @@ class TransformerFactory:
         Returns:
             Transformer: The Transformer instance of the decoded bundle
         """
-        return TransformerFactory._getters[bundle["type"]](bundle["params"])
+        if bundle["type"] in TransformerFactory._getters:
+            return TransformerFactory._getters[bundle["type"]](bundle["params"])
+
+        custom_component_modules = Config.get_custom_component_imports()
+        for module_string in custom_component_modules:
+            module = importlib.import_module(module_string)
+            if hasattr(module, "TRANSFORMERS") and bundle["type"] in module.TRANSFORMERS:
+                return module.TRANSFORMERS[bundle["type"]](bundle["params"])
+        raise ValueError(f"No transformer found for type {bundle['type']}")

@@ -13,14 +13,13 @@ Note:
     Do not auto organize imports when using custom imports to avoid merge conflicts
 """
 
+import importlib
 from typing import Dict, Type
 
+from autotransform.config import fetcher as Config
 from autotransform.worker.base import Worker
 from autotransform.worker.local import LocalWorker
 from autotransform.worker.type import WorkerType
-
-# BEGIN CUSTOM IMPORTS
-# END CUSTOM IMPORTS
 
 
 class WorkerFactory:
@@ -52,4 +51,12 @@ class WorkerFactory:
         Returns:
             Type[Worker]: The class of the worker type
         """
-        return WorkerFactory._map[worker_type]
+        if worker_type in WorkerFactory._map:
+            return WorkerFactory._map[worker_type]
+
+        custom_component_modules = Config.get_custom_component_imports()
+        for module_string in custom_component_modules:
+            module = importlib.import_module(module_string)
+            if hasattr(module, "WORKERS") and worker_type in module.WORKERS:
+                return module.WORKERS[worker_type]
+        raise ValueError(f"No worker found for type {worker_type}")

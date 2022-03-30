@@ -13,15 +13,14 @@ Note:
     Do not auto organize imports when using custom imports to avoid merge conflicts
 """
 
+import importlib
 from typing import Any, Callable, Dict, Mapping
 
+from autotransform.config import fetcher as Config
 from autotransform.repo.base import Repo, RepoBundle
 from autotransform.repo.git import GitRepo
 from autotransform.repo.github import GithubRepo
 from autotransform.repo.type import RepoType
-
-# BEGIN CUSTOM IMPORTS
-# END CUSTOM IMPORTS
 
 
 class RepoFactory:
@@ -41,8 +40,6 @@ class RepoFactory:
     _getters: Dict[RepoType, Callable[[Mapping[str, Any]], Repo]] = {
         RepoType.GIT: GitRepo.from_data,
         RepoType.GITHUB: GithubRepo.from_data,
-        # BEGIN CUSTOM REPOS
-        # END CUSTOM REPOS
     }
 
     @staticmethod
@@ -55,4 +52,12 @@ class RepoFactory:
         Returns:
             Repo: The Repo instance of the decoded bundle
         """
-        return RepoFactory._getters[bundle["type"]](bundle["params"])
+        if bundle["type"] in RepoFactory._getters:
+            return RepoFactory._getters[bundle["type"]](bundle["params"])
+
+        custom_component_modules = Config.get_custom_component_imports()
+        for module_string in custom_component_modules:
+            module = importlib.import_module(module_string)
+            if hasattr(module, "REPOS") and bundle["type"] in module.REPOS:
+                return module.REPOS[bundle["type"]](bundle["params"])
+        raise ValueError(f"No repo found for type {bundle['type']}")
