@@ -7,7 +7,6 @@
 
 """Tests for the DirectoryInput component."""
 
-import pathlib
 from typing import List
 
 from autotransform.input.directory import DirectoryInput
@@ -20,15 +19,11 @@ def assert_directory_content(directory: str, expected_files: List[str]):
         directory (str): The directory within the tests data to search
         expected_files (List[str]): The relative paths of all expected results
     """
-    parent_dir = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
-    test_data_path = parent_dir + "/data/directory_input_test/"
-    dir_to_check = test_data_path + directory
-
-    inp: DirectoryInput = DirectoryInput({"path": dir_to_check})
-    files = [file.replace("\\", "/") for file in inp.get_files()]
+    inp: DirectoryInput = DirectoryInput({"path": directory})
+    files = inp.get_files()
     missing_files = []
     for file in expected_files:
-        if dir_to_check + "/" + file not in files:
+        if file not in files:
             missing_files.append(file)
     assert not missing_files, "The following files were expected but not found: " + ", ".join(
         missing_files
@@ -36,31 +31,38 @@ def assert_directory_content(directory: str, expected_files: List[str]):
 
     extra_files = []
     for file in files:
-        stripped_file = file.removeprefix(dir_to_check + "/")
-        if stripped_file not in expected_files:
-            extra_files.append(stripped_file)
+        if file not in expected_files:
+            extra_files.append(file)
     assert not extra_files, "The following files were found but not expected: " + ", ".join(
         extra_files
     )
 
 
-def test_empty_dir():
+def test_empty_dir(tmpdir):
     """Tests running DirectoryInput against a directory with no files in it."""
-    directory = "empty_dir"
+    empty_dir = tmpdir.mkdir("empty_dir")
     expected_files = []
-    assert_directory_content(directory, expected_files)
+    assert_directory_content(str(empty_dir), expected_files)
 
 
-def test_non_empty_dir():
+def test_non_empty_dir(tmpdir):
     """Tests running DirectoryInput against a directory with a single file in it."""
-    directory = "non_empty_dir"
-    expected_files = ["test.txt"]
-    assert_directory_content(directory, expected_files)
+    non_empty_dir = tmpdir.mkdir("non_empty_dir")
+    test_file = non_empty_dir.join("test.txt")
+    test_file.write("test")
+    expected_files = [str(test_file)]
+    assert_directory_content(str(non_empty_dir), expected_files)
 
 
-def test_recursive_dir():
+def test_recursive_dir(tmpdir):
     """Tests running DirectoryInput against a directory that has files within a
     subdirectory as well as a sub directory with no files in it."""
-    directory = "recursive_dir"
-    expected_files = ["non_empty_subdir/test.txt", "non_empty_subdir/test2.txt"]
-    assert_directory_content(directory, expected_files)
+    root_dir = tmpdir.mkdir("root_dir")
+    non_empty_dir = root_dir.mkdir("non_empty_dir")
+    test_file_1 = non_empty_dir.join("test1.txt")
+    test_file_1.write("test")
+    test_file_2 = non_empty_dir.join("test2.txt")
+    test_file_2.write("test")
+    root_dir.mkdir("empty_dir")
+    expected_files = [str(test_file_1), str(test_file_2)]
+    assert_directory_content(str(root_dir), expected_files)
