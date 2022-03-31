@@ -25,6 +25,8 @@ jobs:
     - name: pytest
       run: |
         pytest tests/
+      env:
+        PYTHONPATH: home/runner/work/autotransform
     - name: pytest
       run: |
         pylint autotransform/ --enable=W0611,R0201,R0902,R0903,R0913,R1732 --disable=R0801
