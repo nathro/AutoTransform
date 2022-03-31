@@ -31,6 +31,14 @@ def add_args(parser: ArgumentParser) -> None:
         help="A JSON encoded list of values to supply for the settings.",
     )
     parser.add_argument(
+        "-a",
+        "--append",
+        dest="append",
+        action="store_true",
+        required=False,
+        help="Appends the update value to the end of the existing value as a comma separated list.",
+    )
+    parser.add_argument(
         "settings",
         metavar="setting",
         type=str,
@@ -79,7 +87,10 @@ def run_config_main(args: Namespace) -> None:
             else:
                 print(f"No value found for {setting}")
         else:
-            sub_config[sections[-1]] = update_value
+            if sections[-1] in sub_config:
+                sub_config[sections[-1]] = sub_config[sections[-1]] + "," + update_value
+            else:
+                sub_config[sections[-1]] = update_value
     if should_write:
         with open(config_path, "w") as config_file:
             config.write(config_file)
