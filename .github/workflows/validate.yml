@@ -28,6 +28,8 @@ jobs:
         pytest tests/
       env:
         PYTHONPATH: /home/runner/work/AutoTransform/AutoTransform/
+        AUTO_TRANSFORM_CONFIG: environment
+        AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ github.token }}
     - name: pylint
       run: |
         pylint autotransform/ --enable=W0611,R0201,R0902,R0903,R0913,R1732 --disable=R0801
