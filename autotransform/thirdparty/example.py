@@ -6,7 +6,9 @@
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
 """An example module containing custom imports. Used via the custom_components config setting.
-All custom component imports should follow this structure."""
+All custom component imports should follow this structure. Component types that do not have any
+custom implementations do not need to be included (i.e. if there are no custom batchers, the
+BATCHERS variable can be left out."""
 
 from typing import Any, Callable, Dict, Mapping, Type
 
