@@ -1,11 +1,11 @@
-name: Mypy
+name: Validate
 
 on: [push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Mypy
+    name: Validate
     steps:
     - uses: actions/checkout@v1
     - name: Set up Python 3.10
