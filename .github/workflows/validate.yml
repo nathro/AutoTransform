@@ -16,6 +16,7 @@ jobs:
       run: |
         pip install mypy
         pip install pytest
+        pip install pytest-mock
         pip install pylint
         pip install GitPython
         pip install PyGithub
