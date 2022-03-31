@@ -12,6 +12,7 @@
 import pathlib
 from typing import List
 
+from git import Repo as GitPython
 from mock import patch
 
 from autotransform.batcher.base import Batch, BatchMetadata
@@ -74,13 +75,6 @@ def mock_transformer(mocked_transform) -> None:
     mocked_transform.side_effect = transform
 
 
-def mock_repo_init(mocked_init) -> None:
-    def mock_init_impl(self, params):
-        self.params = params
-
-    mocked_init.side_effect = mock_init_impl
-
-
 def mock_repo(
     mocked_clean,
     mocked_has_changes,
@@ -109,22 +103,21 @@ def mock_repo(
 
 
 # patches are in reverse order
+@patch.object(GitPython, "active_branch")
 @patch.object(SingleBatcher, "batch")
 @patch.object(ExtensionFilter, "_is_valid")
 @patch.object(DirectoryInput, "get_files")
-@patch.object(GithubRepo, "__init__")
 def test_get_batches(
     mocked_get_files,
     mocked_is_valid,
     mocked_batch,
-    mocked_init,
+    mocked_active_branch,
 ):
     """Checks that get_batches properly calls and uses components."""
     # Set up mocks
     mock_input(mocked_get_files)
     mock_filter(mocked_is_valid)
     mock_batcher(mocked_batch)
-    mock_repo_init(mocked_init)
 
     # Run test
     schema = get_sample_schema()
@@ -153,7 +146,7 @@ def test_get_batches(
 @patch.object(GithubRepo, "submit")
 @patch.object(GithubRepo, "has_changes")
 @patch.object(GithubRepo, "clean")
-@patch.object(GithubRepo, "__init__")
+@patch.object(GitPython, "active_branch")
 @patch.object(RegexTransformer, "transform")
 @patch.object(SingleBatcher, "batch")
 @patch.object(ExtensionFilter, "_is_valid")
@@ -163,7 +156,7 @@ def test_run_with_changes(
     mocked_is_valid,
     mocked_batch,
     mocked_transform,
-    mocked_init,
+    mocked_active_branch,
     mocked_clean,
     mocked_has_changes,
     mocked_submit,
@@ -175,7 +168,6 @@ def test_run_with_changes(
     mock_filter(mocked_is_valid)
     mock_batcher(mocked_batch)
     mock_transformer(mocked_transform)
-    mock_repo_init(mocked_init)
     mock_repo(mocked_clean, mocked_has_changes, mocked_submit, mocked_rewind, True)
 
     # Run test
@@ -212,7 +204,7 @@ def test_run_with_changes(
 @patch.object(GithubRepo, "submit")
 @patch.object(GithubRepo, "has_changes")
 @patch.object(GithubRepo, "clean")
-@patch.object(GithubRepo, "__init__")
+@patch.object(GitPython, "active_branch")
 @patch.object(RegexTransformer, "transform")
 @patch.object(SingleBatcher, "batch")
 @patch.object(ExtensionFilter, "_is_valid")
@@ -222,7 +214,7 @@ def test_run_with_no_changes(
     mocked_is_valid,
     mocked_batch,
     mocked_transform,
-    mocked_init,
+    mocked_active_branch,
     mocked_clean,
     mocked_has_changes,
     mocked_submit,
@@ -234,7 +226,6 @@ def test_run_with_no_changes(
     mock_filter(mocked_is_valid)
     mock_batcher(mocked_batch)
     mock_transformer(mocked_transform)
-    mock_repo_init(mocked_init)
     mock_repo(mocked_clean, mocked_has_changes, mocked_submit, mocked_rewind, False)
 
     # Run test
@@ -266,13 +257,11 @@ def test_run_with_no_changes(
     assert mocked_rewind.call_count == 0
 
 
-@patch.object(GithubRepo, "__init__")
-def test_json_encoding(mocked_init):
+@patch.object(GitPython, "active_branch")
+def test_json_encoding(mocked_active_branch):
     """Checks that the schema is encoded correctly."""
 
     # pylint: disable=unspecified-encoding
-
-    mock_repo_init(mocked_init)
 
     schema = get_sample_schema()
     schema_json = schema.to_json(pretty=True)
@@ -284,13 +273,11 @@ def test_json_encoding(mocked_init):
     assert schema_json == actual_json
 
 
-@patch.object(GithubRepo, "__init__")
-def test_json_decoding(mocked_init):
+@patch.object(GitPython, "active_branch")
+def test_json_decoding(mocked_active_branch):
     """Checks that the schema is decoded correctly."""
 
     # pylint: disable=unspecified-encoding,consider-using-enumerate
-
-    mock_repo_init(mocked_init)
 
     expected_schema = get_sample_schema()
     parent_dir = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
