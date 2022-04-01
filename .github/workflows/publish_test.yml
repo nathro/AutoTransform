@@ -1,0 +1,50 @@
+name: Publish Test
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Validate and publish test package
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install Dependencies
+      run: |
+        pip install mypy
+        pip install pytest
+        pip install mock
+        pip install pylint
+        pip install GitPython
+        pip install PyGithub
+        pip install build
+        pip install twine
+    - name: mypy
+      run: |
+        mypy autotransform/
+    - name: pytest
+      run: |
+        pytest tests/
+      env:
+        PYTHONPATH: /home/runner/work/AutoTransform/AutoTransform/
+        AUTO_TRANSFORM_CONFIG: environment
+        AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ github.token }}
+    - name: pylint
+      run: |
+        pylint autotransform/ --enable=W0611,R0201,R0902,R0903,R0913,R1732 --disable=R0801
+    - name: build
+      run: |
+        python3 -m build
+    - name: publish
+      run: |
+        python3 -m twine upload dist/*
+      env:
+        TWINE_USERNAME: __token__
+        TWINE_PASSWORD: ${{ secrets.TWINE_TEST_TOKEN }}
+        TWINE_REPOSITORY: testpypi
