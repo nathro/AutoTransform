@@ -11,24 +11,15 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Mapping, TypedDict
 
-from typing_extensions import NotRequired
-
 from autotransform.batcher.base import Batch, Batcher, BatchMetadata
 from autotransform.batcher.type import BatcherType
 from autotransform.common.cachedfile import CachedFile
 
 
-class SingleBatcherBatchMetadata(BatchMetadata):
-    """The metadata associated with batches from the Single"""
-
-    summary: NotRequired[str]
-    tests: NotRequired[str]
-
-
 class SingleBatcherParams(TypedDict):
     """The param type for a SingleBatcher."""
 
-    metadata: SingleBatcherBatchMetadata
+    metadata: BatchMetadata
 
 
 class SingleBatcher(Batcher[SingleBatcherParams]):
@@ -76,26 +67,7 @@ class SingleBatcher(Batcher[SingleBatcherParams]):
             SingleBatcher: An instance of the SingleBatcher
         """
 
-        metadata = data["metadata"]
-        assert isinstance(metadata, Dict)
-        title = metadata["title"]
-        assert isinstance(title, str)
-        if "summary" in metadata:
-            summary = metadata["summary"]
-            assert isinstance(summary, str)
-        else:
-            summary = None
-        if "tests" in metadata:
-            tests = metadata["tests"]
-            assert isinstance(tests, str)
-        else:
-            tests = None
-        return SingleBatcher(
-            {
-                "metadata": {
-                    "title": title,
-                    "summary": summary,
-                    "tests": tests,
-                }
-            }
-        )
+        assert isinstance(data["metadata"], Dict)
+        assert isinstance(data["metadata"]["title"], str)
+
+        return SingleBatcher(data)  # type: ignore

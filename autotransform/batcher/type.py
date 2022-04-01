@@ -18,4 +18,5 @@ class BatcherType(str, Enum):
         This will reduce merge conflicts when merging in upstream changes.
     """
 
+    CHUNK = "chunk"
     SINGLE = "single"
