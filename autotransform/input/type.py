@@ -19,3 +19,4 @@ class InputType(str, Enum):
     """
 
     DIRECTORY = "directory"
+    GIT_GREP = "git_grep"
