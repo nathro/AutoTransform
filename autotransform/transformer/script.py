@@ -11,10 +11,11 @@ from __future__ import annotations
 
 import json
 import subprocess
-from tempfile import NamedTemporaryFile
+from tempfile import NamedTemporaryFile as TmpFile
 from typing import Any, List, Mapping, TypedDict
 
 from autotransform.batcher.base import Batch
+from autotransform.common.datastore import data_store
 from autotransform.transformer.base import Transformer
 from autotransform.transformer.type import TransformerType
 
@@ -51,26 +52,40 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
         return TransformerType.SCRIPT
 
     def transform(self, batch: Batch) -> None:
-        """Execute a transformation against the provided batch. Additional files may be modified
-        based on these changes (i.e. as part of a rename) and should be done as part of this
-        transform rather than using separate calls to transform. All writing should be done via
-        CachedFile's write_content method to ensure operations are easily accessible to testing.
+        """Executes a simple script to transform the given input. Sentinel values can be used
+        in args that will be replaced when the script is invoked. Possible values include:
+            <<INPUT>>: A JSON encoded list of the inputs in the batch
+            <<METADATA>>: A JSON encoded representation of the batch metadata
+            <<EXTRA_DATA>>: A JSON encoded mapping from input to extra data stored
+                in FileDataStore
+            Additionally, _FILE can be appended to the value to use a path to a file containing
+            the value (i.e. <<INPUT_FILE>> would be a path to a tmp file containing the JSON
+            encoded input)
 
         Args:
             batch (Batch): The batch that will be transformed
         """
         cmd = [self.params["script"]]
+        encodable_file_data = {}
+        for file in batch["files"]:
+            data_object = data_store.get_object_data(file.path)
+            if data_object is not None:
+                encodable_file_data[file.path] = data_object.data
         arg_replacements = {
             "<<INPUT>>": json.dumps(batch["files"]),
             "<<METADATA>>": json.dumps(batch["metadata"]),
+            "<<EXTRA_DATA>>": json.dumps(encodable_file_data),
         }
-        with NamedTemporaryFile(mode="w+") as inp_file, NamedTemporaryFile(mode="w+") as meta_file:
-            json.dump(batch["files"], inp_file)
-            inp_file.flush()
-            json.dump(batch["metadata"], meta_file)
-            meta_file.flush()
-            arg_replacements["<<INPUT_FILE>>"] = inp_file.name
-            arg_replacements["<<METADATA_FILE>>"] = meta_file.name
+        with TmpFile(mode="w+") as inp, TmpFile(mode="w+") as meta, TmpFile(mode="w+") as extra:
+            json.dump(batch["files"], inp)
+            inp.flush()
+            json.dump(batch["metadata"], meta)
+            meta.flush()
+            json.dump(encodable_file_data, extra)
+            extra.flush()
+            arg_replacements["<<INPUT_FILE>>"] = inp.name
+            arg_replacements["<<METADATA_FILE>>"] = meta.name
+            arg_replacements["<<EXTRA_DATA_FILE>>"] = extra.name
             for arg in self.params["args"]:
                 if arg in arg_replacements:
                     cmd.append(arg_replacements[arg])
