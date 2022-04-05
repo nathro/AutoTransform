@@ -19,3 +19,4 @@ class TransformerType(str, Enum):
     """
 
     REGEX = "regex"
+    SCRIPT = "script"

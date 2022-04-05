@@ -19,6 +19,7 @@ from typing import Any, Callable, Dict, Mapping
 from autotransform.config import fetcher as Config
 from autotransform.transformer.base import Transformer, TransformerBundle
 from autotransform.transformer.regex import RegexTransformer
+from autotransform.transformer.script import ScriptTransformer
 from autotransform.transformer.type import TransformerType
 
 
@@ -38,6 +39,7 @@ class TransformerFactory:
 
     _getters: Dict[TransformerType, Callable[[Mapping[str, Any]], Transformer]] = {
         TransformerType.REGEX: RegexTransformer.from_data,
+        TransformerType.SCRIPT: ScriptTransformer.from_data,
     }
 
     @staticmethod
