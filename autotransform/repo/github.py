@@ -73,19 +73,6 @@ class GithubRepo(GitRepo):
             return Github(Config.get_github_username(), Config.get_github_password(), base_url=url)
         return Github(Config.get_github_username(), Config.get_github_password())
 
-    def _get_body(self, batch: Batch) -> str:
-        # pylint: disable=no-self-use
-        summary = batch["metadata"].get("summary", "")
-        tests = batch["metadata"].get("tests", "")
-
-        return f"""
-            SUMMARY
-            {summary}
-            
-            TESTS
-            {tests}
-        """
-
     def submit(self, batch: Batch) -> None:
         """Performs the normal submit for a git repo then submits a pull request
         against the provided Github repo.
@@ -102,9 +89,13 @@ class GithubRepo(GitRepo):
         self.local_repo.git.push(remote.name, "-u", commit_branch)
 
         github_repo = self.github.get_repo(self.params["full_github_name"])
-        body = self._get_body(batch)
+        body = str(batch["metadata"].get("body"))
+        assert body is not None, "All pull requests must have a body."
         github_repo.create_pull(
-            title=title, body=body, base=self.active_branch.name, head=commit_branch
+            title=title,
+            body=body,
+            base=self.active_branch.name,
+            head=commit_branch,
         )
 
     @staticmethod
