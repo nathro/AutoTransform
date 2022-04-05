@@ -9,9 +9,7 @@
 
 
 from abc import abstractmethod
-from typing import Any, Generic, TypeVar
-
-from build import Mapping
+from typing import Any, Generic, Mapping, TypeVar
 
 from autotransform.batcher.base import Batch
 from autotransform.common.cachedfile import CachedFile

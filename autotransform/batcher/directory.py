@@ -9,9 +9,8 @@
 
 from __future__ import annotations
 
+import pathlib
 from typing import Any, Dict, List, Mapping, TypedDict
-
-from importlib_metadata import pathlib
 
 from autotransform.batcher.base import Batch, Batcher
 from autotransform.batcher.type import BatcherType
