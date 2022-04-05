@@ -5,6 +5,10 @@
 #### New Components
 
  - EnvironmentVariableConfigFetcher: A config fetcher that pulls values from environment variables
+ - GitGrepInput for using git grep to find files
+ - DirectoryBatcher for batching files within a directory together
+ - ChunkBatcher for chunking inputs
+ - ScriptTransformer as simple transformer that invokes a script
 
 #### Scripts
 
@@ -19,12 +23,12 @@
 
 #### Misc
 
-- Manager script renamed to run, now invoked as atrun
 - RunnableWorker renamed to ProcessWorker
 - Runner renamed to Coordinator
 - Updated BatchMetadata to only require title
 - Add a generic to components for params so that type safety is improved
 - Changed how custom components are expected to be handled, now being imported through a config setting
+- GithubRepo now uses body param from metadata for PR body
 
 ## Release 0.1.1 - Initial Beta!
 
