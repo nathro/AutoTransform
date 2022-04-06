@@ -10,6 +10,7 @@
  - ChunkBatcher for chunking inputs
  - ScriptTransformer as simple transformer that invokes a script
  - RegexFilter as a filter which checks the input against a regex pattern
+ - ContentRegexFilter as a filter that checks a file's contents against a regex pattern
 
 #### Scripts
 
