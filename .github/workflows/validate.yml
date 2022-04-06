@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Validate
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
@@ -17,7 +17,7 @@ jobs:
         pip install GitPython
         pip install PyGithub
         pip install typing-extensions
-        
+
         pip install mypy
         pip install pytest
         pip install mock
