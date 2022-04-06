@@ -32,7 +32,11 @@ jobs:
         pip install PyGithub
         pip install typing-extensions
     - name: Run AutoTransform
-      run: python3 -m autotransform.scripts.main r -s -w $WORKER '$SCHEMA'
+      run: |
+        tmp_file = $(mktmp)
+        echo "$SCHEMA" >> ${tmp_file}
+        python3 -m autotransform.scripts.main r -f -w $WORKER ${tmp_file}
+        rm ${tmp_file}
       env:
         SCHEMA: ${{ github.event.inputs.schema }}
         WORKER: ${{ github.event.inputs.worker }}
