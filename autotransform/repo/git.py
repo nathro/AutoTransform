@@ -30,12 +30,10 @@ class GitRepo(Repo[GitRepoParams]):
     Attributes:
         params (GitRepoParams): Contains the root path to the git repo
         local_repo (GitPython): An object representing the repo used for git operations
-        active_branch (Head): The initial active branch of the repo to be used for rewinding
     """
 
     params: GitRepoParams
     local_repo: GitPython
-    active_branch: Head
 
     COMMIT_BRANCH_BASE: str = "AUTO_TRANSFORM_COMMIT"
 
@@ -61,7 +59,6 @@ class GitRepo(Repo[GitRepoParams]):
         dir_cmd = ["git", "rev-parse", "--show-toplevel"]
         repo_dir = subprocess.check_output(dir_cmd, encoding="UTF-8").replace("\\", "/").strip()
         self.local_repo = GitPython(repo_dir)
-        self.active_branch = self.local_repo.active_branch
 
     def get_type(self) -> RepoType:
         """Used to map Repo components 1:1 with an enum, allowing construction from JSON.
@@ -106,7 +103,7 @@ class GitRepo(Repo[GitRepoParams]):
             batch (Batch): The Batch for the submitted changes that is being rewound
         """
         self.clean(batch)
-        self.local_repo.active_branch.checkout()
+        self.local_repo.heads[1].checkout()
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> GitRepo:
