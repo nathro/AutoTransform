@@ -18,5 +18,6 @@ class FilterType(str, Enum):
         This will reduce merge conflicts when merging in upstream changes.
     """
 
+    CONTENT_REGEX = "content_regex"
     EXTENSION = "extension"
     REGEX = "regex"
