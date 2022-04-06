@@ -34,7 +34,7 @@ def get_sample_schema() -> AutoTransformSchema:
         SingleBatcher({"metadata": {"title": "test", "summary": "", "tests": ""}}),
         RegexTransformer({"pattern": "input", "replacement": "inputsource"}),
         filters=[ExtensionFilter({"extensions": [Extensions.PYTHON]})],
-        repo=GithubRepo({"path": repo_root, "full_github_name": "nathro/AutoTransform"}),
+        repo=GithubRepo({"full_github_name": "nathro/AutoTransform"}),
     )
 
 

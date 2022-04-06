@@ -108,8 +108,6 @@ class GithubRepo(GitRepo):
         Returns:
             GithubRepo: An instance of the GithubRepo
         """
-        path = data["path"]
-        assert isinstance(path, str)
         full_github_name = data["full_github_name"]
         assert isinstance(full_github_name, str)
-        return GithubRepo({"path": path, "full_github_name": full_github_name})
+        return GithubRepo({"full_github_name": full_github_name})

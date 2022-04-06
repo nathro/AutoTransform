@@ -40,7 +40,6 @@
     },
     "repo": {
         "params": {
-            "path": "<<REPO ROOT>>",
             "full_github_name": "nathro/AutoTransform"
         },
         "type": "github"

@@ -9,6 +9,7 @@
 
 from __future__ import annotations
 
+import subprocess
 from typing import Any, Mapping, TypedDict
 
 from git import Repo as GitPython
@@ -21,8 +22,6 @@ from autotransform.repo.type import RepoType
 
 class GitRepoParams(TypedDict):
     """The param type for a GitRepo."""
-
-    path: str
 
 
 class GitRepo(Repo[GitRepoParams]):
@@ -59,7 +58,9 @@ class GitRepo(Repo[GitRepoParams]):
             params (GitRepoParams): The paramaters used to set up the GitRepo
         """
         Repo.__init__(self, params)
-        self.local_repo = GitPython(self.params["path"])
+        dir_cmd = ["git", "rev-parse", "--show-toplevel"]
+        repo_dir = subprocess.check_output(dir_cmd, encoding="UTF-8").replace("\\", "/").strip()
+        self.local_repo = GitPython(repo_dir)
         self.active_branch = self.local_repo.active_branch
 
     def get_type(self) -> RepoType:
@@ -117,9 +118,7 @@ class GitRepo(Repo[GitRepoParams]):
         Returns:
             GitRepo: An instance of the GitRepo
         """
-        path = data["path"]
-        assert isinstance(path, str)
-        return GitRepo({"path": path})
+        return GitRepo({})
 
     def commit(self, metadata: BatchMetadata) -> None:
         """Creates a new branch for all changes, stages them, and commits them.

@@ -35,3 +35,8 @@ jobs:
       env:
         SCHEMA: ${{ github.event.input.schema }}
         WORKER: ${{ github.event.input.worker }}
+        PYTHONPATH: /home/runner/work/AutoTransform/AutoTransform/
+        AUTO_TRANSFORM_CONFIG: environment
+        AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}
+        # Import your custom components using the package here
+        AUTO_TRANSFORM_IMPORTS_CUSTOM_COMPONENTS: autotransform.thirdparty.example
