@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""A ConfigFetcher that asks for input from the user."""
+"""A ConfigFetcher that asks for inputsource from the user."""
 
 from getpass import getpass
 from typing import Dict, List, Optional
@@ -14,7 +14,7 @@ from autotransform.config.fetcher import ConfigFetcher
 
 
 class ConsoleConfigFetcher(ConfigFetcher):
-    """A config that uses user input as the source.
+    """A config that uses user inputsource as the source.
 
     Attributes:
         config (Dict[str, Optional[str]]): A cache of all requested config information
@@ -49,7 +49,7 @@ class ConsoleConfigFetcher(ConfigFetcher):
         """
         if "github_username" in self.config:
             return self.config["github_username"]
-        username: Optional[str] = input("Github Username: ")
+        username: Optional[str] = inputsource("Github Username: ")
         if username == "":
             username = None
         self.config["github_username"] = username
@@ -77,7 +77,7 @@ class ConsoleConfigFetcher(ConfigFetcher):
         """
         if "github_base_url" in self.config:
             return self.config["github_base_url"]
-        base_url: Optional[str] = input("Github Base URL(empty for default): ")
+        base_url: Optional[str] = inputsource("Github Base URL(empty for default): ")
         if base_url == "":
             base_url = None
         self.config["github_base_url"] = base_url
@@ -90,7 +90,7 @@ class ConsoleConfigFetcher(ConfigFetcher):
             List[str]: A list of the modules containing custom components that are not part base
                 AutoTransform
         """
-        component_module_string: str = input(
+        component_module_string: str = inputsource(
             "Please provide a command separated list of custom component modules to import: "
         )
         if component_module_string == "":

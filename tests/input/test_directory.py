@@ -9,11 +9,11 @@
 
 from typing import List
 
-from autotransform.input.directory import DirectoryInput
+from autotransform.inputsource.directory import DirectoryInput
 
 
 def assert_directory_content(directory: str, expected_files: List[str]):
-    """Helper function that handles the logic of actually testing given inputs and expected results.
+    """Helper function that handles the logic of actually testing given inputsources and expected results.
 
     Args:
         directory (str): The directory within the tests data to search

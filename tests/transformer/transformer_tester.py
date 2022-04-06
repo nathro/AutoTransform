@@ -16,7 +16,7 @@ from autotransform.transformer.base import Transformer
 
 
 class TransformerTester:
-    """A utility class used to test transformers. Follows a .input and .output
+    """A utility class used to test transformers. Follows a .inputsource and .output
     file pattern for running tests.
 
     Attributes:
@@ -34,18 +34,18 @@ class TransformerTester:
 
     def check(self):
         """Checks that the provided Transformer writes expected output by checking the results
-        of running the Transformer against the .input file against the .output file
+        of running the Transformer against the .inputsource file against the .output file
         """
 
         # pylint: disable="unspecified-encoding"
 
-        with open(self.path + ".input", "r") as input_file:
-            input_content = input_file.read()
+        with open(self.path + ".inputsource", "r") as inputsource_file:
+            inputsource_content = inputsource_file.read()
         with open(self.path + ".output", "r") as output_file:
             output_content = output_file.read()
 
         mock_file = mock.create_autospec(CachedFile)
-        mock_file.get_content.return_value = input_content
+        mock_file.get_content.return_value = inputsource_content
         self.transformer.transform(
             {"files": [mock_file], "metadata": {"title": "Foo", "summary": "Bar", "tests": "Baz"}}
         )
@@ -58,11 +58,11 @@ class TransformerTester:
 
         # pylint: disable="unspecified-encoding"
 
-        with open(self.path + ".input", "r") as input_file:
-            input_content = input_file.read()
+        with open(self.path + ".inputsource", "r") as inputsource_file:
+            inputsource_content = inputsource_file.read()
 
         mock_file = mock.create_autospec(CachedFile)
-        mock_file.get_content.return_value = input_content
+        mock_file.get_content.return_value = inputsource_content
         self.transformer.transform(
             {"files": [mock_file], "metadata": {"title": "Foo", "summary": "Bar", "tests": "Baz"}}
         )

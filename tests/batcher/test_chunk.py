@@ -15,7 +15,7 @@ from .batcher_test import check_batcher
 
 
 def test_with_no_files():
-    """Checks that the batcher works with no input files."""
+    """Checks that the batcher works with no inputsource files."""
     metadata = {"title": "foo", "summary": "bar", "tests": "baz"}
     files = []
     batcher = ChunkBatcher({"metadata": metadata, "chunk_size": 10})
@@ -23,7 +23,7 @@ def test_with_no_files():
 
 
 def test_with_one_files():
-    """Checks that the batcher works with one input file."""
+    """Checks that the batcher works with one inputsource file."""
     metadata = {"title": "foo", "summary": "bar", "tests": "baz"}
     metadata_expected = deepcopy(metadata)
     metadata_expected["title"] = "[1/1] foo"
@@ -33,7 +33,7 @@ def test_with_one_files():
 
 
 def test_with_multiple_files():
-    """Checks that the batcher works with multiple input files."""
+    """Checks that the batcher works with multiple inputsource files."""
     metadata = {"title": "foo", "summary": "bar", "tests": "baz"}
     metadata_expected = deepcopy(metadata)
     metadata_expected["title"] = "[1/1] foo"
@@ -43,7 +43,7 @@ def test_with_multiple_files():
 
 
 def test_with_multiple_files_and_multiple_batches():
-    """Checks that the batcher works with multiple input files."""
+    """Checks that the batcher works with multiple inputsource files."""
     metadata = {"title": "foo", "summary": "bar", "tests": "baz"}
     metadata_1 = deepcopy(metadata)
     metadata_1["title"] = "[1/2] foo"
@@ -62,7 +62,7 @@ def test_with_multiple_files_and_multiple_batches():
 
 
 def test_with_multiple_files_and_max_batches():
-    """Checks that the batcher works with multiple input files."""
+    """Checks that the batcher works with multiple inputsource files."""
     metadata = {"title": "foo", "summary": "bar", "tests": "baz"}
     metadata_1 = deepcopy(metadata)
     metadata_1["title"] = "[1/2] foo"
