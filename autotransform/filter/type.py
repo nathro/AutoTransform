@@ -19,3 +19,4 @@ class FilterType(str, Enum):
     """
 
     EXTENSION = "extension"
+    REGEX = "regex"

@@ -9,6 +9,7 @@
  - DirectoryBatcher for batching files within a directory together
  - ChunkBatcher for chunking inputs
  - ScriptTransformer as simple transformer that invokes a script
+ - RegexFilter as a filter which checks the input against a regex pattern
 
 #### Scripts
 
