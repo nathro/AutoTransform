@@ -30,6 +30,7 @@ jobs:
       run: |
         pip install GitPython
         pip install PyGithub
+        pip install typing-extensions
     - name: Run AutoTransform
       run: python3 -m autotransform.scripts.main r -s -w $WORKER $SCHEMA
       env:
