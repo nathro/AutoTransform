@@ -12,6 +12,7 @@ from __future__ import annotations
 import subprocess
 from typing import Any, Mapping, TypedDict
 
+from git import Head
 from git import Repo as GitPython
 
 from autotransform.batcher.base import Batch, BatchMetadata
@@ -22,6 +23,8 @@ from autotransform.repo.type import RepoType
 class GitRepoParams(TypedDict):
     """The param type for a GitRepo."""
 
+    base_branch_name: str
+
 
 class GitRepo(Repo[GitRepoParams]):
     """A Repo that provides support for commiting changes to git.
@@ -29,10 +32,12 @@ class GitRepo(Repo[GitRepoParams]):
     Attributes:
         params (GitRepoParams): Contains the root path to the git repo
         local_repo (GitPython): An object representing the repo used for git operations
+        base_branch (Head): The base branch to use for changes
     """
 
     params: GitRepoParams
     local_repo: GitPython
+    base_branch: Head
 
     COMMIT_BRANCH_BASE: str = "AUTO_TRANSFORM_COMMIT"
 
@@ -58,6 +63,10 @@ class GitRepo(Repo[GitRepoParams]):
         dir_cmd = ["git", "rev-parse", "--show-toplevel"]
         repo_dir = subprocess.check_output(dir_cmd, encoding="UTF-8").replace("\\", "/").strip()
         self.local_repo = GitPython(repo_dir)
+        for branch in self.local_repo.heads:
+            if branch.name == self.params["base_branch_name"]:
+                branch.checkout()
+                self.base_branch = branch
 
     def get_type(self) -> RepoType:
         """Used to map Repo components 1:1 with an enum, allowing construction from JSON.
@@ -102,7 +111,7 @@ class GitRepo(Repo[GitRepoParams]):
             batch (Batch): The Batch for the submitted changes that is being rewound
         """
         self.clean(batch)
-        self.local_repo.heads[1].checkout()
+        self.base_branch.checkout()
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> GitRepo:
@@ -114,7 +123,9 @@ class GitRepo(Repo[GitRepoParams]):
         Returns:
             GitRepo: An instance of the GitRepo
         """
-        return GitRepo({})
+        base_branch_name = data["base_branch_name"]
+        assert isinstance(base_branch_name, str)
+        return GitRepo({"base_branch_name": base_branch_name})
 
     def commit(self, metadata: BatchMetadata) -> None:
         """Creates a new branch for all changes, stages them, and commits them.

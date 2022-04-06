@@ -94,7 +94,7 @@ class GithubRepo(GitRepo):
         github_repo.create_pull(
             title=title,
             body=body,
-            base=self.active_branch.name,
+            base=self.base_branch.name,
             head=commit_branch,
         )
 
@@ -108,6 +108,10 @@ class GithubRepo(GitRepo):
         Returns:
             GithubRepo: An instance of the GithubRepo
         """
+        base_branch_name = data["base_branch_name"]
+        assert isinstance(base_branch_name, str)
         full_github_name = data["full_github_name"]
         assert isinstance(full_github_name, str)
-        return GithubRepo({"full_github_name": full_github_name})
+        return GithubRepo(
+            {"base_branch_name": base_branch_name, "full_github_name": full_github_name}
+        )
