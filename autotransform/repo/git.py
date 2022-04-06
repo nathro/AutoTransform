@@ -13,7 +13,6 @@ import subprocess
 from typing import Any, Mapping, TypedDict
 
 from git import Repo as GitPython
-from git.refs.head import Head
 
 from autotransform.batcher.base import Batch, BatchMetadata
 from autotransform.repo.base import Repo
