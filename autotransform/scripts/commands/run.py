@@ -7,6 +7,7 @@
 
 """The instance command is used to run an instance of a process worker"""
 
+import os
 import time
 from argparse import ArgumentParser, Namespace
 
@@ -59,6 +60,16 @@ def add_args(parser: ArgumentParser) -> None:
         required=False,
         help="Tells the script to interpret the schema as a JSON encoded string",
     )
+    type_group.add_argument(
+        "-e",
+        "--environment",
+        dest="schema_type",
+        action="store_const",
+        const="environment",
+        required=False,
+        help="Tells the script to interpret the schema as an environment variable storing the JSON "
+        + "encoded schema",
+    )
 
     # Setting Arguments
     parser.add_argument(
@@ -92,11 +103,16 @@ def run_command_main(args: Namespace) -> None:
     # pylint: disable=unspecified-encoding
 
     schema = args.schema
+    print(schema)
     if args.schema_type == "builder":
         schema = SchemaBuilderFactory.get(schema).build()
     elif args.schema_type == "file":
         with open(schema, "r") as schema_file:
             schema = AutoTransformSchema.from_json(schema_file.read())
+    elif args.schema_type == "environment":
+        schema = os.getenv(schema)
+        assert isinstance(schema, str)
+        schema = AutoTransformSchema.from_json(schema)
     else:
         schema = AutoTransformSchema.from_json(schema)
 

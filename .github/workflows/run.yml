@@ -32,16 +32,12 @@ jobs:
         pip install PyGithub
         pip install typing-extensions
     - name: Run AutoTransform
-      run: |
-        tmp_file = $(mktmp)
-        echo "$SCHEMA" >> ${tmp_file}
-        python3 -m autotransform.scripts.main r -f -w $WORKER ${tmp_file}
-        rm ${tmp_file}
+      run: python3 -m autotransform.scripts.main r -e -w $WORKER AUTO_TRANSFORM_SCHEMA
       env:
-        SCHEMA: ${{ github.event.inputs.schema }}
         WORKER: ${{ github.event.inputs.worker }}
         PYTHONPATH: /home/runner/work/AutoTransform/AutoTransform/
         AUTO_TRANSFORM_CONFIG: environment
         AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}
+        AUTO_TRANSFORM_SCHEMA: ${{ github.event.inputs.schema }}
         # Import your custom components using the package here
         AUTO_TRANSFORM_IMPORTS_CUSTOM_COMPONENTS: autotransform.thirdparty.example
