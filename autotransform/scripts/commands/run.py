@@ -35,18 +35,29 @@ def add_args(parser: ArgumentParser) -> None:
     type_group.add_argument(
         "-b",
         "--builder",
-        dest="use_builder",
-        action="store_true",
+        dest="schema_type",
+        action="store_const",
+        const="builder",
         required=False,
         help="Tells the script to interpret the schema as a builder name",
     )
     type_group.add_argument(
         "-f",
         "--file",
-        dest="use_builder",
-        action="store_false",
+        dest="schema_type",
+        action="store_const",
+        const="file",
         required=False,
         help="Tells the script to interpret the schema as a file",
+    )
+    type_group.add_argument(
+        "-s",
+        "--string",
+        dest="schema_type",
+        action="store_const",
+        const="string",
+        required=False,
+        help="Tells the script to interpret the schema as a JSON encoded string",
     )
 
     # Setting Arguments
@@ -68,7 +79,7 @@ def add_args(parser: ArgumentParser) -> None:
         help="The type of worker to use(see worker.type). Defaults to using local",
     )
 
-    parser.set_defaults(use_builder=False, worker=WorkerType.LOCAL, func=run_command_main)
+    parser.set_defaults(schema_type="file", worker=WorkerType.LOCAL, func=run_command_main)
 
 
 def run_command_main(args: Namespace) -> None:
@@ -81,11 +92,13 @@ def run_command_main(args: Namespace) -> None:
     # pylint: disable=unspecified-encoding
 
     schema = args.schema
-    if args.use_builder:
+    if args.schema_type == "builder":
         schema = SchemaBuilderFactory.get(schema).build()
-    else:
+    elif args.schema_type == "file":
         with open(schema, "r") as schema_file:
             schema = AutoTransformSchema.from_json(schema_file.read())
+    else:
+        schema = AutoTransformSchema.from_json(schema)
 
     worker = args.worker
     worker_type = WorkerFactory.get(worker)

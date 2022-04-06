@@ -1,0 +1,37 @@
+name: Run AutoTransform
+
+on:
+  workflow_dispatch:
+    inputs:
+      schema:
+        description: "A JSON encoded schema to run"
+        required: true
+        type: string
+      worker:
+        description: "The WorkerType to use for the run"
+        required: true
+        type: choice
+        options:
+        - local
+
+jobs:
+  run-autotransform:
+    runs-on: ubuntu-latest
+    name: Run
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    # When deploying for other repos AutoTransform will need to be installed
+    # either use pip or get the master checkout of AutoTransform
+    - name: Install Dependencies
+      run: |
+        pip install GitPython
+        pip install PyGithub
+    - name: Run AutoTransform
+      run: python3 -m autotransform.scripts.main r -s -w $WORKER $SCHEMA
+      env:
+        SCHEMA: ${{ github.event.input.schema }}
+        WORKER: ${{ github.event.input.worker }}
