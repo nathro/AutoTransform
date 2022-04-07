@@ -29,7 +29,7 @@ class ChunkBatcherParams(TypedDict):
 
 
 class ChunkBatcher(Batcher[ChunkBatcherParams]):
-    """A batcher which puts chunks inputs in to several batches. A chunk size is supplied that
+    """A batcher which puts chunks inputsources in to several batches. A chunk size is supplied that
     determines the size of batches. A maximum number of chunks can optionally be supplied. If
     the chunk size would result in more than the maximum number of chunks, the chunk size is
     increased to the minimum required to create only max_chunks. The title in metadata will
@@ -51,13 +51,13 @@ class ChunkBatcher(Batcher[ChunkBatcherParams]):
         return BatcherType.CHUNK
 
     def batch(self, files: List[CachedFile]) -> List[Batch]:
-        """Takes in a list of input files and separates them in to batches
+        """Takes in a list of inputsource files and separates them in to batches
 
         Args:
-            files (List[CachedFile]): The filtered input files.
+            files (List[CachedFile]): The filtered inputsource files.
 
         Returns:
-            List[Batch]: A list containing a single batch for the input
+            List[Batch]: A list containing a single batch for the inputsource
         """
         chunk_size = self.params["chunk_size"]
         if "max_chunks" in self.params and len(files) / chunk_size > self.params["max_chunks"]:

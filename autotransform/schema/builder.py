@@ -14,7 +14,7 @@ from autotransform.batcher.base import Batcher
 from autotransform.batcher.single import SingleBatcher
 from autotransform.command.base import Command
 from autotransform.filter.base import Filter
-from autotransform.input.base import Input
+from autotransform.inputsource.base import Input
 from autotransform.repo.base import Repo
 from autotransform.schema.config import Config
 from autotransform.schema.schema import AutoTransformSchema
@@ -24,12 +24,12 @@ from autotransform.validator.base import Validator
 
 class SchemaBuilder(ABC):
     """The base for SchemaBuilders. SchemaBuilders are used for programatic schema generation.
-    This can be used in conjunction with input params or configuration to customize Schemas run
+    This can be used in conjunction with inputsource params or configuration to customize Schemas run
     through automation. Can also be used to generate JSON schemas that can be utilized.
     """
 
     @abstractmethod
-    def get_input(self) -> Input:
+    def get_inputsource(self) -> Input:
         """Get the Input for the schema.
 
         Returns:
@@ -117,7 +117,7 @@ class SchemaBuilder(ABC):
             AutoTransformSchema: The Schema produced by this SchemaBuilder
         """
         return AutoTransformSchema(
-            self.get_input(),
+            self.get_inputsource(),
             self.get_batcher(),
             self.get_transformer(),
             filters=self.get_filters(),

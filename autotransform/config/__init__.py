@@ -8,7 +8,7 @@
 """Provides configuration to AutoTransform. By default this configuration is pulled from
 data/config.ini (see data/sample_config.ini). The configuration fetcher used can be overridden
 using the AUTO_TRANSFORM_CONFIG environment variable. This can support different methods of
-configuration, such as console input or organization specific methods.
+configuration, such as console inputsource or organization specific methods.
 """
 
 

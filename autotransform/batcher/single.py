@@ -23,7 +23,7 @@ class SingleBatcherParams(TypedDict):
 
 
 class SingleBatcher(Batcher[SingleBatcherParams]):
-    """A batcher which puts all inputs together in to a single Batch.
+    """A batcher which puts all inputsources together in to a single Batch.
 
     Attributes:
         params (SingleBatcherParams): Contains the metadata to associate with the Batch
@@ -40,14 +40,14 @@ class SingleBatcher(Batcher[SingleBatcherParams]):
         return BatcherType.SINGLE
 
     def batch(self, files: List[CachedFile]) -> List[Batch]:
-        """Takes in a list of input files and produces a single Batch from them.
+        """Takes in a list of inputsource files and produces a single Batch from them.
         Uses the metadata stored in params as the metadata for the Batch.
 
         Args:
-            files (List[CachedFile]): The filtered input files.
+            files (List[CachedFile]): The filtered inputsource files.
 
         Returns:
-            List[Batch]: A list containing a single batch for the input
+            List[Batch]: A list containing a single batch for the inputsource
         """
         batch: Batch = {
             "files": files,

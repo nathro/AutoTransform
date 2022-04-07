@@ -28,7 +28,7 @@ class BatchMetadata(TypedDict):
 
 
 class Batch(TypedDict):
-    """A logical grouping of inputs with assocaited metadata."""
+    """A logical grouping of inputsources with assocaited metadata."""
 
     files: List[CachedFile]
     metadata: BatchMetadata
@@ -69,15 +69,15 @@ class Batcher(Generic[TParams], ABC):
 
     @abstractmethod
     def batch(self, files: List[CachedFile]) -> List[Batch]:
-        """Take filtered input and separate in to logical groupings with associated group metadata.
+        """Take filtered inputsource and separate in to logical groupings with associated group metadata.
         If additional information should be associated with an individual file see
         autotransform.common.datastore.
 
         Args:
-            files (List[CachedFile]): The filtered inputs to separate
+            files (List[CachedFile]): The filtered inputsources to separate
 
         Returns:
-            List[Batch]: A list of logical groupings of inputs with associated group metadata
+            List[Batch]: A list of logical groupings of inputsources with associated group metadata
         """
 
     def bundle(self) -> BatcherBundle:
