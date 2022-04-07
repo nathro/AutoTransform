@@ -17,10 +17,10 @@ import importlib
 from typing import Any, Callable, Dict, Mapping
 
 from autotransform.config import fetcher as Config
-from autotransform.input.base import Input, InputBundle
-from autotransform.input.directory import DirectoryInput
-from autotransform.input.gitgrep import GitGrepInput
-from autotransform.input.type import InputType
+from autotransform.inputsource.base import Input, InputBundle
+from autotransform.inputsource.directory import DirectoryInput
+from autotransform.inputsource.gitgrep import GitGrepInput
+from autotransform.inputsource.type import InputType
 
 
 class InputFactory:
@@ -28,10 +28,10 @@ class InputFactory:
 
     Attributes:
         _getters (Dict[InputType, Callable[[Mapping[str, Any]], Input]]): A mapping
-            from InputType to that inputs's from_data function.
+            from InputType to that inputsources's from_data function.
 
     Note:
-        Custom inputs should have their getters placed in the CUSTOM INPUTS section.
+        Custom inputsources should have their getters placed in the CUSTOM INPUTS section.
         This will reduce merge conflicts when merging in upstream changes.
     """
 
@@ -60,4 +60,4 @@ class InputFactory:
             module = importlib.import_module(module_string)
             if hasattr(module, "INPUTS") and bundle["type"] in module.INPUTS:
                 return module.INPUTS[bundle["type"]](bundle["params"])
-        raise ValueError(f"No input found for type {bundle['type']}")
+        raise ValueError(f"No inputsource found for type {bundle['type']}")

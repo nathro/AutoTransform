@@ -30,9 +30,9 @@ class ScriptTransformerParams(TypedDict):
 
 class ScriptTransformer(Transformer[ScriptTransformerParams]):
     """A Transformer that makes changes using an invoked script. Sentinel values can be used in the
-    args to supply information from the inputs.
+    args to supply information from the inputsources.
     The available sentinel values for args are:
-        <<INPUT>>: A json encoded list of the input files for a batch
+        <<INPUT>>: A json encoded list of the inputsource files for a batch
         <<METADATA>>: A json encoded version of the metadata
     _FILE can be appended to any of these (i.e. <<INPUT_FILE>>) and the arg will instead be replaced
      with a path to a file containing the value.
@@ -52,15 +52,15 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
         return TransformerType.SCRIPT
 
     def transform(self, batch: Batch) -> None:
-        """Executes a simple script to transform the given input. Sentinel values can be used
+        """Executes a simple script to transform the given inputsource. Sentinel values can be used
         in args that will be replaced when the script is invoked. Possible values include:
-            <<INPUT>>: A JSON encoded list of the inputs in the batch
+            <<INPUT>>: A JSON encoded list of the inputsources in the batch
             <<METADATA>>: A JSON encoded representation of the batch metadata
-            <<EXTRA_DATA>>: A JSON encoded mapping from input to extra data stored
+            <<EXTRA_DATA>>: A JSON encoded mapping from inputsource to extra data stored
                 in FileDataStore
             Additionally, _FILE can be appended to the value to use a path to a file containing
             the value (i.e. <<INPUT_FILE>> would be a path to a tmp file containing the JSON
-            encoded input)
+            encoded inputsource)
 
         Args:
             batch (Batch): The batch that will be transformed

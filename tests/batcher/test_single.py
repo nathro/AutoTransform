@@ -13,7 +13,7 @@ from .batcher_test import check_batcher
 
 
 def test_with_no_files():
-    """Checks that the batcher works with no input files."""
+    """Checks that the batcher works with no inputsource files."""
     metadata = {"title": "foo", "summary": "bar", "tests": "baz"}
     files = []
     batcher = SingleBatcher({"metadata": metadata})
@@ -21,7 +21,7 @@ def test_with_no_files():
 
 
 def test_with_one_files():
-    """Checks that the batcher works with one input file."""
+    """Checks that the batcher works with one inputsource file."""
     metadata = {"title": "foo", "summary": "bar", "tests": "baz"}
     files = [CachedFile("foo.py")]
     batcher = SingleBatcher({"metadata": metadata})
@@ -29,7 +29,7 @@ def test_with_one_files():
 
 
 def test_with_multiple_files():
-    """Checks that the batcher works with multiple input files."""
+    """Checks that the batcher works with multiple inputsource files."""
     metadata = {"title": "foo", "summary": "bar", "tests": "baz"}
     files = [CachedFile("foo.py"), CachedFile("bar.py")]
     batcher = SingleBatcher({"metadata": metadata})

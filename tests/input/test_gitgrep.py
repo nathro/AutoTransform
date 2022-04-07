@@ -7,7 +7,7 @@
 
 """Tests for the GitGrepInput component."""
 
-from autotransform.input.gitgrep import GitGrepInput
+from autotransform.inputsource.gitgrep import GitGrepInput
 
 
 def test_pattern_present() -> None:

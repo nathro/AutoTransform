@@ -12,8 +12,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, List, Mapping, TypedDict
 
-from autotransform.input.base import Input
-from autotransform.input.type import InputType
+from autotransform.inputsource.base import Input
+from autotransform.inputsource.type import InputType
 
 
 class DirectoryInputParams(TypedDict):
@@ -27,14 +27,14 @@ class DirectoryInput(Input[DirectoryInputParams]):
 
     Attributes:
         params (DirectoryInputParams): Contains the directory to walk
-        files (List[str]): A cached list of the files provided by the input
+        files (List[str]): A cached list of the files provided by the inputsource
     """
 
     files: List[str]
     params: DirectoryInputParams
 
     def __init__(self, params: DirectoryInputParams):
-        """Initializes the files for the input to an empty list to be populated later.
+        """Initializes the files for the inputsource to an empty list to be populated later.
 
         Args:
             params (DirectoryInputParams): The paramaters used to set up the DirectoryInput
@@ -51,7 +51,7 @@ class DirectoryInput(Input[DirectoryInputParams]):
         return InputType.DIRECTORY
 
     def populate_files(self, path: Path) -> None:
-        """Populates the file cache for this input. Recursively called to walk all directories
+        """Populates the file cache for this inputsource. Recursively called to walk all directories
         under the path.
 
         Args:

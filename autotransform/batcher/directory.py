@@ -26,7 +26,7 @@ class DirectoryBatcherParams(TypedDict):
 
 
 class DirectoryBatcher(Batcher[DirectoryBatcherParams]):
-    """A batcher which puts separates inputs in to batches based on directory.
+    """A batcher which puts separates inputsources in to batches based on directory.
 
     Attributes:
         params (DirectoryBatcherParams): Contains the metadata to associate with the Batch
@@ -43,11 +43,11 @@ class DirectoryBatcher(Batcher[DirectoryBatcherParams]):
         return BatcherType.DIRECTORY
 
     def batch(self, files: List[CachedFile]) -> List[Batch]:
-        """Takes in a list of input files and produces a batch for each directory.
+        """Takes in a list of inputsource files and produces a batch for each directory.
         The last folder containing the file is used as the key for batching.
 
         Args:
-            files (List[CachedFile]): The filtered input files.
+            files (List[CachedFile]): The filtered inputsource files.
 
         Returns:
             List[Batch]: A list containing a batch for each folder containing files

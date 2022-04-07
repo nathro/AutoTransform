@@ -12,8 +12,8 @@ from __future__ import annotations
 import subprocess
 from typing import Any, List, Mapping, TypedDict
 
-from autotransform.input.base import Input
-from autotransform.input.type import InputType
+from autotransform.inputsource.base import Input
+from autotransform.inputsource.type import InputType
 
 
 class GitGrepInputParams(TypedDict):
