@@ -18,7 +18,6 @@ from autotransform.schema.factory import SchemaBuilderFactory
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.worker.coordinator import Coordinator
 from autotransform.worker.factory import WorkerFactory
-from autotransform.worker.type import WorkerType
 
 
 def add_args(parser: ArgumentParser) -> None:
