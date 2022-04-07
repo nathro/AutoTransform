@@ -41,19 +41,18 @@ def parse_arguments() -> argparse.Namespace:
 
     # Repo Arguments
     parser.add_argument(
-        "--git",
-        metavar="git_repo_path",
-        type=str,
-        required=False,
-        help="The absolute path to a git repo containing the directory. Setting this will cause "
-        + "changes to be commited to git.",
-    )
-    parser.add_argument(
         "--github",
         metavar="repo_name",
         type=str,
         required=False,
         help="The full name of the github repo that a pull request should be submitted against",
+    )
+    parser.add_argument(
+        "--branch",
+        metavar="branch",
+        type=str,
+        required=False,
+        help="The base branch to use for git, needed for any git changes",
     )
 
     # Input Arguments
@@ -115,16 +114,16 @@ def main():
         ]
         filters.append(ExtensionFilter({"extensions": extensions}))
 
-    git_repo = args.git
-    if isinstance(git_repo, str):
+    git_branch = args.branch
+    if isinstance(git_branch, str):
         github_repo = args.github
         if isinstance(github_repo, str):
             print("Using Github repo: " + github_repo)
-            print("Local repo: " + git_repo)
-            repo = GithubRepo({"path": git_repo, "full_github_name": github_repo})
+            print("Base Branch: " + git_branch)
+            repo = GithubRepo({"base_branch_name": git_branch, "full_github_name": github_repo})
         else:
-            print("Using git repo: " + git_repo)
-            repo = GitRepo({"path": git_repo})
+            print("Base Branch: " + git_branch)
+            repo = GitRepo({"base_branch_name": git_branch})
     else:
         repo = None
     schema = AutoTransformSchema(inp, batcher, transformer, filters=filters, repo=repo)
