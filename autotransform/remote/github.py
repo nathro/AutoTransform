@@ -79,12 +79,12 @@ class GithubRemote(Remote[GithubRemoteParams]):
             try:
                 jobs_response = requests.get(run.jobs_url)
                 jobs_json = json.loads(jobs_response.text)
-                for jobs_data in jobs_json["jobs"]:
-                    if (
-                        jobs_data["name"] == "Workflow ID Provider"
-                        and jobs_data["steps"][0]["name"] == workflow_uuid
-                    ):
-                        return run.html_url
+                for job_data in jobs_json["jobs"]:
+                    if job_data["name"] != "Workflow ID Provider":
+                        continue
+                    for step_data in job_data["steps"]:
+                        if step_data["name"] == workflow_uuid:
+                            return run.html_url
             finally:
                 continue
         return "No URL found"
