@@ -112,9 +112,7 @@ def add_args(parser: ArgumentParser) -> None:
         help="Tells the script to run remote using the remote component from the config",
     )
 
-    parser.set_defaults(
-        schema_type="file", worker=WorkerType.LOCAL, run_local=True, func=run_command_main
-    )
+    parser.set_defaults(schema_type="file", worker="local", run_local=True, func=run_command_main)
 
 
 def run_command_main(args: Namespace) -> None:
