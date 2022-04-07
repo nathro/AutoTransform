@@ -7,10 +7,13 @@
 
 """The instance command is used to run an instance of a process worker"""
 
+import json
 import os
 import time
 from argparse import ArgumentParser, Namespace
 
+from autotransform.config import fetcher as Config
+from autotransform.remote.factory import RemoteFactory
 from autotransform.schema.factory import SchemaBuilderFactory
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.worker.coordinator import Coordinator
@@ -90,7 +93,28 @@ def add_args(parser: ArgumentParser) -> None:
         help="The type of worker to use(see worker.type). Defaults to using local",
     )
 
-    parser.set_defaults(schema_type="file", worker=WorkerType.LOCAL, func=run_command_main)
+    # Run Mode
+    mode_group = parser.add_mutually_exclusive_group()
+    mode_group.add_argument(
+        "-l",
+        "--local",
+        dest="run_local",
+        action="store_true",
+        required=False,
+        help="Tells the script to run locally, local is the default mode",
+    )
+    mode_group.add_argument(
+        "-r",
+        "--remote",
+        dest="run_local",
+        action="store_false",
+        required=False,
+        help="Tells the script to run remote using the remote component from the config",
+    )
+
+    parser.set_defaults(
+        schema_type="file", worker=WorkerType.LOCAL, run_local=True, func=run_command_main
+    )
 
 
 def run_command_main(args: Namespace) -> None:
@@ -118,9 +142,16 @@ def run_command_main(args: Namespace) -> None:
 
     worker = args.worker
     worker_type = WorkerFactory.get(worker)
-    coordinator = Coordinator(schema, worker_type)
-    start_time = time.time()
-    coordinator.start()
-    while not coordinator.is_finished() and time.time() <= start_time + args.timeout:
-        time.sleep(1)
-    coordinator.kill()
+    if args.run_local:
+        coordinator = Coordinator(schema, worker_type)
+        start_time = time.time()
+        coordinator.start()
+        while not coordinator.is_finished() and time.time() <= start_time + args.timeout:
+            time.sleep(1)
+        coordinator.kill()
+    else:
+        remote_str = Config.get_remote()
+        assert remote_str is not None, "Remote not specified in config"
+        remote = RemoteFactory.get(json.loads(remote_str))
+        remote_ref = remote.run(schema)
+        print(f"Remote ref: {remote_ref}")
