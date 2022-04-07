@@ -50,6 +50,8 @@ class DefaultConfigFetcher(ConfigFetcher):
         Returns:
             Optional[str]: The github authentication token if present
         """
+        if "CREDENTIALS" not in self.config:
+            return None
         credentials = self.config["CREDENTIALS"]
         return credentials.get("github_token", None)
 
@@ -59,6 +61,8 @@ class DefaultConfigFetcher(ConfigFetcher):
         Returns:
             Optional[str]: The github username if present
         """
+        if "CREDENTIALS" not in self.config:
+            return None
         credentials = self.config["CREDENTIALS"]
         return credentials.get("github_username", None)
 
@@ -68,6 +72,8 @@ class DefaultConfigFetcher(ConfigFetcher):
         Returns:
             Optional[str]: The github password if present
         """
+        if "CREDENTIALS" not in self.config:
+            return None
         credentials = self.config["CREDENTIALS"]
         return credentials.get("github_password", None)
 
@@ -77,6 +83,8 @@ class DefaultConfigFetcher(ConfigFetcher):
         Returns:
             Optional[str]: The github base URL if present
         """
+        if "CREDENTIALS" not in self.config:
+            return None
         credentials = self.config["CREDENTIALS"]
         return credentials.get("github_base_url", None)
 
@@ -87,6 +95,8 @@ class DefaultConfigFetcher(ConfigFetcher):
             List[str]: A list of the modules containing custom components that are not part base
                 AutoTransform
         """
+        if "IMPORTS" not in self.config:
+            return []
         imports = self.config["IMPORTS"]
         module_list = imports.get("custom_components", None)
         return [module.strip() for module in module_list.split(",")]
@@ -97,5 +107,7 @@ class DefaultConfigFetcher(ConfigFetcher):
         Returns:
             str: The JSON encoded Remote component to use
         """
+        if "REMOTE" not in self.config:
+            return None
         remote = self.config["REMOTE"]
         return remote.get("runner", None)
