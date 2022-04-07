@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from typing import Any, Mapping
 
-from github import Github
+from github import Github, Repository
 
 from autotransform.batcher.base import Batch
 from autotransform.config import fetcher as Config
@@ -31,11 +31,11 @@ class GithubRepo(GitRepo):
     Attributes:
         params (GithubRepoParams): Contains the root path to the fully qualified name of the
             repo on Github
-        github (Github): An object allowing interaction with the Github API
+        github_repo (Repository.Repository): The Github Repository being interacted with
     """
 
     params: GithubRepoParams
-    github: Github
+    github_repo: Repository.Repository
 
     def __init__(self, params: GithubRepoParams):
         """Establishes the Github object to enable API access
@@ -44,7 +44,7 @@ class GithubRepo(GitRepo):
             params (GithubRepoParams): The paramaters used to set up the GithubRepo
         """
         GitRepo.__init__(self, params)
-        self.github = GithubRepo.get_github_object()
+        self.github_repo = GithubRepo.get_github_object().get_repo(self.params["full_github_name"])
 
     def get_type(self) -> RepoType:
         """Used to map Repo components 1:1 with an enum, allowing construction from JSON.
@@ -88,10 +88,9 @@ class GithubRepo(GitRepo):
         remote = self.local_repo.remote()
         self.local_repo.git.push(remote.name, "-u", commit_branch)
 
-        github_repo = self.github.get_repo(self.params["full_github_name"])
         body = str(batch["metadata"].get("body"))
         assert body is not None, "All pull requests must have a body."
-        github_repo.create_pull(
+        self.github_repo.create_pull(
             title=title,
             body=body,
             base=self.base_branch.name,

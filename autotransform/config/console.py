@@ -91,8 +91,19 @@ class ConsoleConfigFetcher(ConfigFetcher):
                 AutoTransform
         """
         component_module_string: str = input(
-            "Please provide a command separated list of custom component modules to import: "
+            "Please provide a comma separated list of custom component modules to import: "
         )
         if component_module_string == "":
             return []
         return [module.strip() for module in component_module_string.split(",")]
+
+    def get_remote(self) -> Optional[str]:
+        """Gets the JSON encoded Remote component to use
+
+        Returns:
+            str: The JSON encoded Remote component to use
+        """
+        remote_string: str = input("Please provide a JSON encoded Remote component: ")
+        if remote_string == "":
+            return None
+        return remote_string

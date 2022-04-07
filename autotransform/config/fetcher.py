@@ -54,3 +54,11 @@ class ConfigFetcher(ABC):
             List[str]: A list of the modules containing custom components that are not part base
                 AutoTransform
         """
+
+    @abstractmethod
+    def get_remote(self) -> Optional[str]:
+        """Gets the JSON encoded Remote component to use
+
+        Returns:
+            str: The JSON encoded Remote component to use
+        """

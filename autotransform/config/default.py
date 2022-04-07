@@ -90,3 +90,12 @@ class DefaultConfigFetcher(ConfigFetcher):
         imports = self.config["IMPORTS"]
         module_list = imports.get("custom_components", None)
         return [module.strip() for module in module_list.split(",")]
+
+    def get_remote(self) -> Optional[str]:
+        """Gets the JSON encoded Remote component to use
+
+        Returns:
+            str: The JSON encoded Remote component to use
+        """
+        remote = self.config["REMOTE"]
+        return remote.get("runner", None)

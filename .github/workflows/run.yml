@@ -13,8 +13,18 @@ on:
         type: choice
         options:
         - local
+      uuid:
+        description: "A uuid for disambiguating runs"
+        required: false
+        type: string
 
 jobs:
+  id:
+    name: Workflow ID Provider
+    runs-on: ubuntu-latest
+    steps:
+      - name: ${{github.event.inputs.uuid}}
+        run: echo run identifier ${{ inputs.uuid }}
   run-autotransform:
     runs-on: ubuntu-latest
     name: Run

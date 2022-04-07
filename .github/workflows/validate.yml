@@ -17,6 +17,7 @@ jobs:
         pip install GitPython
         pip install PyGithub
         pip install typing-extensions
+        pip install types-requests
 
         pip install mypy
         pip install pytest

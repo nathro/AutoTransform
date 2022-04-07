@@ -16,6 +16,7 @@ from autotransform.batcher.base import Batcher
 from autotransform.command.base import Command
 from autotransform.filter.base import Filter
 from autotransform.input.base import Input
+from autotransform.remote.base import Remote
 from autotransform.schema.builder import SchemaBuilder
 from autotransform.transformer.base import Transformer
 from autotransform.validator.base import Validator
@@ -29,3 +30,4 @@ SCHEMAS: Dict[str, Type[SchemaBuilder]] = {}
 TRANSFORMERS: Dict[str, Callable[[Mapping[str, Any]], Transformer]] = {}
 VALIDATORS: Dict[str, Callable[[Mapping[str, Any]], Validator]] = {}
 WORKERS: Dict[str, Type[Worker]] = {}
+REMOTES: Dict[str, Callable[[Mapping[str, Any]], Remote]]

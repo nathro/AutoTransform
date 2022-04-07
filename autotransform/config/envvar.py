@@ -59,3 +59,11 @@ class EnvironmentVariableConfigFetcher(ConfigFetcher):
         if module_list is None or module_list == "":
             return []
         return [module.strip() for module in module_list.split(",")]
+
+    def get_remote(self) -> Optional[str]:
+        """Gets the JSON encoded Remote component to use
+
+        Returns:
+            str: The JSON encoded Remote component to use
+        """
+        return os.getenv("AUTO_TRANSFORM_REMOTE_RUNNER")
