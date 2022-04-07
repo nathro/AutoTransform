@@ -9,11 +9,8 @@
 
 from __future__ import annotations
 
-import json
-import uuid
+import time
 from typing import Any, Mapping, TypedDict, TypeVar
-
-import requests
 
 from autotransform.remote.base import Remote
 from autotransform.remote.type import RemoteType
@@ -65,29 +62,20 @@ class GithubRemote(Remote[GithubRemoteParams]):
         ), "Github remote can only run using schemas that have Github repos"
         github_repo = repo.github_repo
         workflow = github_repo.get_workflow(self.params["workflow_id"])
-        workflow_uuid = uuid.uuid1().hex
         dispatch_success = workflow.create_dispatch(
             repo.params["base_branch_name"],
-            {"schema": schema.to_json(), "worker": self.params["worker"], "uuid": workflow_uuid},
+            {"schema": schema.to_json(), "worker": self.params["worker"]},
         )
         assert dispatch_success, "Failed to dispatch workflow request"
-        for run in workflow.get_runs(
+        # We wait a bit to make sure Github's API is updated
+        time.sleep(15)
+        workflow_runs = workflow.get_runs(
             event="workflow_dispatch",
             branch=repo.params["base_branch_name"],
             actor=repo.get_github_object().get_user().login,
-        ):
-            try:
-                jobs_response = requests.get(run.jobs_url)
-                jobs_json = json.loads(jobs_response.text)
-                for job_data in jobs_json["jobs"]:
-                    if job_data["name"] != "Workflow ID Provider":
-                        continue
-                    for step_data in job_data["steps"]:
-                        if step_data["name"] == workflow_uuid:
-                            return run.html_url
-            finally:
-                continue
-        return "No URL found"
+        )
+        print("Github does not provide URLs on dispatch, taking best guess")
+        return workflow_runs[0].html_url
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> GithubRemote:
