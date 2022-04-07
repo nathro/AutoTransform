@@ -18,7 +18,7 @@ def check_batcher(batcher: Batcher, files: List[CachedFile], expected: List[Batc
 
     Args:
         batcher (Batcher): The Batcher being tests
-        files (List[CachedFile]): The input files for batching
+        files (List[CachedFile]): The inputsource files for batching
         expected (List[Batch]): The expected output batches
     """
     actual = batcher.batch(files)

@@ -9,5 +9,5 @@
 
 Note:
     When creating custom Inputs as part of deployment for your organization, best practice
-    is to include them in a subpackage named: autotransform.<organization>.input
+    is to include them in a subpackage named: autotransform.<organization>.inputsource
 """

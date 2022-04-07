@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""Filters take input files and check that they pass some criteria. Filters should be named
+"""Filters take inputsource files and check that they pass some criteria. Filters should be named
 based on what they use to validate a file and should follow an allowlist approach, using the
 invert() function to blocklist.
 
