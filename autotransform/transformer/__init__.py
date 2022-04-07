@@ -7,7 +7,7 @@
 
 """Transformers are the core functionality of a change. They take in the filtered files and execute
 the changes to the codebase. Transformers can also modify additional files as necesary to support
-the changes made to the input files (i.e. as part of a rename)
+the changes made to the inputsource files (i.e. as part of a rename)
 
 Note:
     When creating custom Transformers as part of deployment for your organization, best practice

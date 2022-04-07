@@ -19,7 +19,7 @@ from autotransform.batcher.base import Batch, BatchMetadata
 from autotransform.batcher.single import SingleBatcher
 from autotransform.common.cachedfile import CachedFile
 from autotransform.filter.extension import ExtensionFilter, Extensions
-from autotransform.input.directory import DirectoryInput
+from autotransform.inputsource.directory import DirectoryInput
 from autotransform.repo.github import GithubRepo
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.transformer.regex import RegexTransformer
@@ -32,7 +32,7 @@ def get_sample_schema() -> AutoTransformSchema:
     return AutoTransformSchema(
         DirectoryInput({"path": repo_root}),
         SingleBatcher({"metadata": {"title": "test", "summary": "", "tests": ""}}),
-        RegexTransformer({"pattern": "input", "replacement": "inputsource"}),
+        RegexTransformer({"pattern": "inputsource", "replacement": "inputsourcesource"}),
         filters=[ExtensionFilter({"extensions": [Extensions.PYTHON]})],
         repo=GithubRepo({"base_branch_name": "master", "full_github_name": "nathro/AutoTransform"}),
     )
@@ -43,8 +43,8 @@ ALL_FILES = ["allowed", "not_allowed"]
 EXPECTED_METADATA = BatchMetadata({"title": "", "summary": "", "tests": ""})
 
 
-def mock_input(mocked_get_files) -> None:
-    """Sets up the input mock."""
+def mock_inputsource(mocked_get_files) -> None:
+    """Sets up the inputsource mock."""
     mocked_get_files.return_value = ALL_FILES
 
 
@@ -115,7 +115,7 @@ def test_get_batches(
 ):
     """Checks that get_batches properly calls and uses components."""
     # Set up mocks
-    mock_input(mocked_get_files)
+    mock_inputsource(mocked_get_files)
     mock_filter(mocked_is_valid)
     mock_batcher(mocked_batch)
 
@@ -123,7 +123,7 @@ def test_get_batches(
     schema = get_sample_schema()
     actual_batch = schema.get_batches()[0]
 
-    # Check input called
+    # Check inputsource called
     mocked_get_files.assert_called_once()
 
     # Check filter called
@@ -164,7 +164,7 @@ def test_run_with_changes(
 ):
     """Checks that get_batches properly calls and uses components."""
     # Set up mocks
-    mock_input(mocked_get_files)
+    mock_inputsource(mocked_get_files)
     mock_filter(mocked_is_valid)
     mock_batcher(mocked_batch)
     mock_transformer(mocked_transform)
@@ -174,7 +174,7 @@ def test_run_with_changes(
     schema = get_sample_schema()
     schema.run()
 
-    # Check input called
+    # Check inputsource called
     mocked_get_files.assert_called_once()
 
     # Check filter called
@@ -222,7 +222,7 @@ def test_run_with_no_changes(
 ):
     """Checks that get_batches properly calls and uses components."""
     # Set up mocks
-    mock_input(mocked_get_files)
+    mock_inputsource(mocked_get_files)
     mock_filter(mocked_is_valid)
     mock_batcher(mocked_batch)
     mock_transformer(mocked_transform)
@@ -232,7 +232,7 @@ def test_run_with_no_changes(
     schema = get_sample_schema()
     schema.run()
 
-    # Check input called
+    # Check inputsource called
     mocked_get_files.assert_called_once()
 
     # Check filter called
@@ -287,10 +287,10 @@ def test_json_decoding(mocked_active_branch):
     actual_json = actual_json.replace("<<REPO ROOT>>", repo_root)
     actual_schema = AutoTransformSchema.from_json(actual_json)
 
-    # Check input
-    assert type(actual_schema.input) is type(expected_schema.input), "Inputs are not the same"
+    # Check inputsource
+    assert type(actual_schema.inputsource) is type(expected_schema.inputsource), "Inputs are not the same"
     assert (
-        actual_schema.input.params == expected_schema.input.params
+        actual_schema.inputsource.params == expected_schema.inputsource.params
     ), "Inputs do not have the same params"
 
     # Check batcher
