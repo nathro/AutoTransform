@@ -9,9 +9,10 @@
 
 from __future__ import annotations
 
-from typing import Any, Mapping
+from typing import Any, List, Mapping
 
 from github import Github, Repository
+from typing_extensions import NotRequired
 
 from autotransform.batcher.base import Batch
 from autotransform.config import fetcher as Config
@@ -23,6 +24,7 @@ class GithubRepoParams(GitRepoParams):
     """The param type for a GithubRepo."""
 
     full_github_name: str
+    required_labels: NotRequired[List[str]]
 
 
 class GithubRepo(GitRepo):
@@ -90,12 +92,18 @@ class GithubRepo(GitRepo):
 
         body = str(batch["metadata"].get("body"))
         assert body is not None, "All pull requests must have a body."
-        self.github_repo.create_pull(
+        pull_request = self.github_repo.create_pull(
             title=title,
             body=body,
             base=self.base_branch.name,
             head=commit_branch,
         )
+
+        labels = batch["metadata"].get("labels", [])
+        assert isinstance(labels, List)
+        labels = labels + self.params.get("required_labels", [])
+        if len(labels) > 0:
+            pull_request.add_to_labels(*labels)
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> GithubRepo:
@@ -111,6 +119,19 @@ class GithubRepo(GitRepo):
         assert isinstance(base_branch_name, str)
         full_github_name = data["full_github_name"]
         assert isinstance(full_github_name, str)
+        required_labels = data.get("required_labels")
+        if required_labels is None:
+            return GithubRepo(
+                {
+                    "base_branch_name": base_branch_name,
+                    "full_github_name": full_github_name,
+                }
+            )
+        assert isinstance(required_labels, List)
         return GithubRepo(
-            {"base_branch_name": base_branch_name, "full_github_name": full_github_name}
+            {
+                "base_branch_name": base_branch_name,
+                "full_github_name": full_github_name,
+                "required_labels": [str(label) for label in required_labels],
+            }
         )
