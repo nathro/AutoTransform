@@ -39,7 +39,7 @@ class GitRepo(Repo[GitRepoParams]):
     local_repo: GitPython
     base_branch: Head
 
-    COMMIT_BRANCH_BASE: str = "AUTO_TRANSFORM_COMMIT"
+    COMMIT_BRANCH_BASE: str = "AUTO_TRANSFORM"
 
     @staticmethod
     def get_branch_name(title: str) -> str:
@@ -52,6 +52,18 @@ class GitRepo(Repo[GitRepoParams]):
             str: The name of the branch for this change
         """
         return GitRepo.COMMIT_BRANCH_BASE + "_" + title.replace(" ", "_")
+
+    @staticmethod
+    def get_commit_message(metadata: BatchMetadata) -> str:
+        """Gets a commit message for the change based on BatchMetadata
+
+        Args:
+            metadata (BatchMetadata): The metadata of the batch the commit message is for
+
+        Returns:
+            str: The commit message
+        """
+        return "[AutoTransform] " + metadata["title"]
 
     def __init__(self, params: GitRepoParams):
         """Gets the local repo object for future operations and attains the initial active branch.
@@ -135,4 +147,4 @@ class GitRepo(Repo[GitRepoParams]):
         """
         self.local_repo.git.checkout("-b", GitRepo.get_branch_name(metadata["title"]))
         self.local_repo.git.add(all=True)
-        self.local_repo.index.commit(metadata["title"])
+        self.local_repo.index.commit(GitRepo.get_commit_message(metadata))

@@ -80,7 +80,7 @@ class GithubRepo(GitRepo):
         Args:
             batch (Batch): The Batch for which the changes were made
         """
-        title = batch["metadata"]["title"]
+        title = GitRepo.get_commit_message(batch["metadata"])
 
         self.commit(batch["metadata"])
 
