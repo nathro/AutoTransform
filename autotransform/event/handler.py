@@ -27,7 +27,7 @@ class EventHandler:
 
     logging_level: LoggingLevel
     __instance: Optional[EventHandler] = None
-    __color_map: Dict[LoggingLevel, Fore] = {
+    __color_map: Dict[LoggingLevel, str] = {
         LoggingLevel.ERROR: Fore.RED,
         LoggingLevel.WARNING: Fore.YELLOW,
         LoggingLevel.INFO: Fore.WHITE,

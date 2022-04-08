@@ -14,8 +14,6 @@ import time
 from abc import ABC, abstractmethod
 from typing import Any, Generic, Mapping, Optional, TypeVar
 
-from colorama import Fore
-
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.type import EventType
 
@@ -69,11 +67,12 @@ class Event(Generic[TParams], ABC):
         """
 
     @staticmethod
-    def get_color_override() -> Optional[Fore]:
-        """Used to override logging color for specific events where needed
+    def get_color_override() -> Optional[str]:
+        """Used to override logging color for specific events where needed. Should use
+        colorama ANSI codes
 
         Returns:
-            Optional[Fore]: An optional color to use to override defaults when logging
+            Optional[str]: An optional color to use to override defaults when logging
         """
         return None
 
