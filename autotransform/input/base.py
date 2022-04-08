@@ -12,7 +12,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Generic, List, Mapping, TypedDict, TypeVar
 
-from autotransform.input.type import InputType
+from autotransform.inputsource.type import InputType
 
 TParams = TypeVar("TParams", bound=Mapping[str, Any])
 
@@ -52,7 +52,7 @@ class Input(Generic[TParams], ABC):
 
     @abstractmethod
     def get_files(self) -> List[str]:
-        """Get a list of files to be used by the transformation based on the input criteria.
+        """Get a list of files to be used by the transformation based on the inputsource criteria.
 
         Returns:
             List[str]: The eligible files for transformation

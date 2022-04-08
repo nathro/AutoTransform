@@ -12,7 +12,7 @@ import time
 
 from autotransform.batcher.single import SingleBatcher
 from autotransform.filter.extension import ExtensionFilter
-from autotransform.input.directory import DirectoryInput
+from autotransform.inputsource.directory import DirectoryInput
 from autotransform.repo.git import GitRepo
 from autotransform.repo.github import GithubRepo
 from autotransform.schema.schema import AutoTransformSchema

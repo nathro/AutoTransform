@@ -15,7 +15,7 @@ from typing import Any, Callable, Dict, Mapping, Type
 from autotransform.batcher.base import Batcher
 from autotransform.command.base import Command
 from autotransform.filter.base import Filter
-from autotransform.input.base import Input
+from autotransform.inputsource.base import Input
 from autotransform.remote.base import Remote
 from autotransform.schema.builder import SchemaBuilder
 from autotransform.transformer.base import Transformer
