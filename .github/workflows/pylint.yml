@@ -16,7 +16,6 @@ jobs:
       run: |
         pip install GitPython
         pip install PyGithub
-        pip install typing-extensions
         pip install colorama
 
         pip install pylint

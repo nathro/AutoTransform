@@ -18,6 +18,7 @@ jobs:
         pip install PyGithub
         pip install typing-extensions
         pip install colorama
+        pip install types-colorama
 
         pip install mypy
     - name: Check mypy
