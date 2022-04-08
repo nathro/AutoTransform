@@ -37,6 +37,7 @@
 - GithubRepo now uses body param from metadata for PR body
 - Added labels option for GithubRepo to attach labels to a PR
 - Added Event class and EventHandler class for dispatching events for logs and other hooks
+- Added Data/workflows/autotransform_runner.yml as a sample for github workflows
 
 ## Release 0.1.1 - Initial Beta!
 

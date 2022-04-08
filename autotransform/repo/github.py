@@ -86,7 +86,7 @@ class GithubRepo(GitRepo):
 
         self.commit(batch["metadata"])
 
-        commit_branch = GitRepo.get_branch_name(title)
+        commit_branch = GitRepo.get_branch_name(batch["metadata"]["title"])
         remote = self.local_repo.remote()
         self.local_repo.git.push(remote.name, "-u", commit_branch)
 
