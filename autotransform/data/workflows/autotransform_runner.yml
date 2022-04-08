@@ -42,7 +42,6 @@ jobs:
       run: autotransform r -e -w $WORKER AUTO_TRANSFORM_SCHEMA
       env:
         WORKER: ${{ github.event.inputs.worker }}
-        PYTHONPATH: ${{ GITHUB_WORKSPACE }}
         AUTO_TRANSFORM_CONFIG: environment
         AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}
         AUTO_TRANSFORM_SCHEMA: ${{ github.event.inputs.schema }}
