@@ -16,7 +16,7 @@ from typing import Any, Generic, Mapping, Optional, TypeVar
 
 from colorama import Fore
 
-from autotransform.event.handler import EventHandler, LoggingLevel
+from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.type import EventType
 
 TParams = TypeVar("TParams", bound=Mapping[str, Any])
@@ -76,10 +76,6 @@ class Event(Generic[TParams], ABC):
             Optional[Fore]: An optional color to use to override defaults when logging
         """
         return None
-
-    def dispatch(self) -> None:
-        """Dispatches the event to the event handler to be acted upon."""
-        EventHandler.get().handle(self)
 
     def get_message(self) -> str:
         """Gets a message that can be output to logs representing the event

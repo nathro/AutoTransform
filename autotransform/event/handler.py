@@ -12,21 +12,12 @@ the event, such as logging.
 from __future__ import annotations
 
 from datetime import datetime
-from enum import Enum
 from typing import Dict, Optional
 
 from colorama import Fore
 
-import autotransform.event.base as Event
-
-
-class LoggingLevel(int, Enum):
-    """The level of detail that will be output to logs"""
-
-    ERROR = 0
-    WARNING = 1
-    INFO = 2
-    DEBUG = 3
+from autotransform.event.base import Event
+from autotransform.event.logginglevel import LoggingLevel
 
 
 class EventHandler:
@@ -67,21 +58,21 @@ class EventHandler:
         """
         self.logging_level = logging_level
 
-    def handle(self, event: Event.Event) -> None:
+    def handle(self, event: Event) -> None:
         """Handles the given Event, logging and executing any hooks needed.
 
         Args:
-            event (Event.Event): The Event that was dispatched
+            event (Event): The Event that was dispatched
         """
         if self.logging_level < event.get_logging_level():
             self.output_to_cli(event)
 
     @staticmethod
-    def output_to_cli(event: Event.Event) -> None:
+    def output_to_cli(event: Event) -> None:
         """Outputs the event to CLI with appropriate coloring
 
         Args:
-            event (Event.Event): The event being logged
+            event (Event): The event being logged
         """
         color = event.get_color_override()
         if color is None:
