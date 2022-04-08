@@ -1,5 +1,3 @@
-# See https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners#codeowners-syntax
-
 # AutoTransform has been originally written by Nathan Rockenbach
 # This CODEOWNERS file is only to make sure that @nathro is requested
 # for a code review in case of a pull request.
