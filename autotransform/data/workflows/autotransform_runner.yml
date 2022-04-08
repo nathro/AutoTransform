@@ -1,3 +1,7 @@
+# A sample workflow that can be used by a github repo to run AutoTransform
+# using github actions. Usable with the GithubRemote runner for triggering
+# remote runs.
+
 name: Run AutoTransform
 
 on:
@@ -21,27 +25,26 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up git user
+      # It is highly recommended to create a bot name/email to represent automated runs
       run: |
-        git config --global user.name "AutoTransform Bot"
-        git config --global user.email "nathro.autotransform@gmail.com"
+        git config --global user.name "<<BOT NAME>>"
+        git config --global user.email "<<BOT EMAIL>>"
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
         python-version: "3.10"
-    # When deploying for other repos AutoTransform will need to be installed
-    # either use pip or get the master checkout of AutoTransform
-    - name: Install Dependencies
-      run: |
-        pip install GitPython
-        pip install PyGithub
-        pip install typing-extensions
+    - name: Install AutoTransform
+      run: pip install AutoTransform
+    # Optionally install any custom components needed
+    - name: Install custom components
+      run: # Install your custom components here
     - name: Run AutoTransform
-      run: python3 -m autotransform.scripts.main r -e -w $WORKER AUTO_TRANSFORM_SCHEMA
+      run: autotransform r -e -w $WORKER AUTO_TRANSFORM_SCHEMA
       env:
         WORKER: ${{ github.event.inputs.worker }}
-        PYTHONPATH: /home/runner/work/AutoTransform/AutoTransform/
+        PYTHONPATH: ${{ GITHUB_WORKSPACE }}
         AUTO_TRANSFORM_CONFIG: environment
         AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}
         AUTO_TRANSFORM_SCHEMA: ${{ github.event.inputs.schema }}
-        # Import your custom components using the package here
-        AUTO_TRANSFORM_IMPORTS_CUSTOM_COMPONENTS: autotransform.thirdparty.example
+        # List your custom components, leave off if not using any
+        AUTO_TRANSFORM_IMPORTS_CUSTOM_COMPONENTS: <<custom.component.modules>>

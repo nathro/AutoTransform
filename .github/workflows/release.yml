@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Validate and publish test package
+    name: Validate and publish package
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.10
@@ -20,7 +20,8 @@ jobs:
         pip install GitPython
         pip install PyGithub
         pip install typing-extensions
-        pip install types-requests
+        pip install colorama
+        pip install types-colorama
 
         pip install mypy
         pip install pytest
@@ -42,10 +43,10 @@ jobs:
     - name: Check pylint
       run: |
         pylint autotransform/ --enable=W0611,R0201,R0902,R0903,R0913,R1732 --disable=R0801
-    - name: build
+    - name: Build
       run: |
         python3 -m build
-    - name: publish
+    - name: Publish
       run: |
         python3 -m twine upload dist/*
       env:

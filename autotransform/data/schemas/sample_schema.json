@@ -1,15 +1,15 @@
 {
     "input": {
         "params": {
-            "path": "."
+            "path": "autotransform"
         },
         "type": "directory"
     },
     "batcher": {
         "params": {
             "metadata": {
-                "title": "AUTO_TRANSFORM_TEST",
-                "body": "A simple test"
+                "title": "SAMPLE_SCHEMA",
+                "body": "A simple test of the sample schema"
             }
         },
         "type": "single"

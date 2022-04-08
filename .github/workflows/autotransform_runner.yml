@@ -1,0 +1,44 @@
+name: Run AutoTransform
+
+on:
+  workflow_dispatch:
+    inputs:
+      schema:
+        description: "A JSON encoded schema to run"
+        required: true
+        type: string
+      worker:
+        description: "The WorkerType to use for the run"
+        required: true
+        type: choice
+        options:
+        - local
+
+jobs:
+  run-autotransform:
+    runs-on: ubuntu-latest
+    name: Run
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up git user
+      run: |
+        git config --global user.name "AutoTransform Bot"
+        git config --global user.email "nathro.autotransform@gmail.com"
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install Dependencies
+      run: |
+        pip install GitPython
+        pip install PyGithub
+        pip install typing-extensions
+        pip install colorama
+    - name: Run AutoTransform
+      run: python3 -m autotransform.scripts.main r -e -w $WORKER AUTO_TRANSFORM_SCHEMA
+      env:
+        WORKER: ${{ github.event.inputs.worker }}
+        PYTHONPATH: ${{ GITHUB_WORKSPACE }}
+        AUTO_TRANSFORM_CONFIG: environment
+        AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}
+        AUTO_TRANSFORM_SCHEMA: ${{ github.event.inputs.schema }}
