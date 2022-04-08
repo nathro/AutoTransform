@@ -1,0 +1,25 @@
+name: Check mypy
+
+on: push
+
+jobs:
+  mypy:
+    runs-on: ubuntu-latest
+    name: mypy
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install Dependencies
+      run: |
+        pip install GitPython
+        pip install PyGithub
+        pip install typing-extensions
+        pip install colorama
+
+        pip install mypy
+    - name: Check mypy
+      run: |
+        mypy autotransform/
