@@ -1,11 +1,11 @@
-name: Check pylint
+name: Check pytest
 
 on: push
 
 jobs:
-  pylint:
+  pytest:
     runs-on: ubuntu-latest
-    name: pylint
+    name: pytest
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.10
