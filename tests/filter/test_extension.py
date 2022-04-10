@@ -7,8 +7,8 @@
 
 """Tests for the ExtensionFilter component."""
 
-from autotransform.common.cachedfile import CachedFile
 from autotransform.filter.extension import ExtensionFilter
+from autotransform.util.cachedfile import CachedFile
 
 
 def test_no_directory():

@@ -10,7 +10,7 @@
 from typing import List
 
 from autotransform.batcher.base import Batch, Batcher
-from autotransform.common.cachedfile import CachedFile
+from autotransform.util.cachedfile import CachedFile
 
 
 def check_batcher(batcher: Batcher, files: List[CachedFile], expected: List[Batch]):

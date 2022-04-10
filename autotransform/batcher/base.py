@@ -13,7 +13,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Generic, List, Mapping, TypedDict, TypeVar
 
 from autotransform.batcher.type import BatcherType
-from autotransform.common.cachedfile import CachedFile
+from autotransform.util.cachedfile import CachedFile
 
 TParams = TypeVar("TParams", bound=Mapping[str, Any])
 

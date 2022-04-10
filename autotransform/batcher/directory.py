@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Mapping, TypedDict
 
 from autotransform.batcher.base import Batch, Batcher
 from autotransform.batcher.type import BatcherType
-from autotransform.common.cachedfile import CachedFile
+from autotransform.util.cachedfile import CachedFile
 
 
 class DirectoryBatcherParams(TypedDict):

@@ -15,10 +15,10 @@ from subprocess import Popen
 from typing import List, Optional, Sequence
 
 from autotransform.batcher.base import Batch
-from autotransform.common.cachedfile import CachedFile
-from autotransform.common.dataobject import FileDataObject
-from autotransform.common.datastore import data_store
 from autotransform.schema.schema import AutoTransformSchema
+from autotransform.util.cachedfile import CachedFile
+from autotransform.util.dataobject import DataObject
+from autotransform.util.datastore import DataStore
 from autotransform.worker.process import ProcessWorker
 from autotransform.worker.type import WorkerType
 
@@ -94,6 +94,7 @@ class LocalWorker(ProcessWorker):
             for batch in batches
         ]
         encodable_file_data = {}
+        data_store = DataStore.get()
         for batch in batches:
             for file in batch["files"]:
                 data_object = data_store.get_object_data(file.path)
@@ -143,8 +144,9 @@ class LocalWorker(ProcessWorker):
             schema = AutoTransformSchema.from_bundle(data["schema"])
             encoded_batches = data["batches"]
             encoded_file_data = data["file_data"]
+            data_store = DataStore.get()
             for path, file_data in encoded_file_data:
-                data_store.add_object(path, FileDataObject(file_data))
+                data_store.add_object(path, DataObject(file_data))
             batches: List[Batch] = [
                 {
                     "files": [CachedFile(path) for path in batch["files"]],

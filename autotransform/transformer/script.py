@@ -15,9 +15,9 @@ from tempfile import NamedTemporaryFile as TmpFile
 from typing import Any, List, Mapping, TypedDict
 
 from autotransform.batcher.base import Batch
-from autotransform.common.datastore import data_store
 from autotransform.transformer.base import Transformer
 from autotransform.transformer.type import TransformerType
+from autotransform.util.datastore import DataStore
 
 
 class ScriptTransformerParams(TypedDict):
@@ -68,7 +68,7 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
         cmd = [self.params["script"]]
         encodable_file_data = {}
         for file in batch["files"]:
-            data_object = data_store.get_object_data(file.path)
+            data_object = DataStore.get().get_object_data(file.path)
             if data_object is not None:
                 encodable_file_data[file.path] = data_object.data
         arg_replacements = {

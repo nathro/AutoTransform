@@ -5,21 +5,24 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""An object representing data associated with a given file that is primed by the Input
-component.
+"""A wrapper around keyed data that's used to provide extra data for items supplied by
+the Input component of a Schema and make it available to other components. Adding extra
+data should be done by the Input component using DataStore.get().add_data(...). All data
+stored by this object must be JSON encodable.
 """
 
 from typing import Any, Dict, Optional
 
 
-class FileDataObject:
-    """An object representing keyed data about an object providing typed getter methods."""
+class DataObject:
+    """A wrapper around keyed data that provides typed getter methods. Used when storing
+    extra data from an Input component about specific items."""
 
     def __init__(self, data: Dict[str, Any]):
         """A simple constructor
 
         Args:
-            data (Dict[str, Any]): The data associated with the file, must be JSON encodable
+            data (Dict[str, Any]): The data associated with the item, must be JSON encodable.
         """
         self.data: Dict[str, Any] = data
 
@@ -27,14 +30,14 @@ class FileDataObject:
         """Gets the string value associated with a given key.
 
         Args:
-            key (str): The key for which to fetch a value
+            key (str): The key for which to fetch a value.
 
         Raises:
-            ValueError: Raises an error when the value is not present or
-                is not of the correct type
+            ValueError: Raises an error when the value is of an incorrect
+                type.
 
         Returns:
-            str: The value associated with the key
+            str: The value associated with the key.
         """
         val = self.data[key]
         if isinstance(val, str):
@@ -46,11 +49,11 @@ class FileDataObject:
         None is returned.
 
         Args:
-            key (str): The key for which to fetch a value
+            key (str): The key for which to fetch a value.
 
         Raises:
             ValueError: Raises an error when the value is of an incorrect
-                type
+                type.
 
         Returns:
             Optional[str]: The value associated with the key if present, otherwise None
@@ -66,14 +69,14 @@ class FileDataObject:
         """Gets the int value associated with a given key.
 
         Args:
-            key (str): The key for which to fetch a value
+            key (str): The key for which to fetch a value.
 
         Raises:
-            ValueError: Raises an error when the value is not present or
-                is not of the correct type
+            ValueError: Raises an error when the value is of an incorrect
+                type.
 
         Returns:
-            int: The value associated with the key
+            int: The value associated with the key.
         """
         val = self.data[key]
         if isinstance(val, int):
@@ -89,7 +92,7 @@ class FileDataObject:
 
         Raises:
             ValueError: Raises an error when the value is of an incorrect
-                type
+                type.
 
         Returns:
             Optional[int]: The value associated with the key if present, otherwise None

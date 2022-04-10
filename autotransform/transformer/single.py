@@ -12,8 +12,8 @@ from abc import abstractmethod
 from typing import Any, Generic, Mapping, TypeVar
 
 from autotransform.batcher.base import Batch
-from autotransform.common.cachedfile import CachedFile
 from autotransform.transformer.base import Transformer
+from autotransform.util.cachedfile import CachedFile
 
 TParams = TypeVar("TParams", bound=Mapping[str, Any])
 

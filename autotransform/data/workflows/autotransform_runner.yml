@@ -1,4 +1,11 @@
-# A sample workflow that can be used by a github repo to run AutoTransform
+# AutoTransform
+# Large scale, component based code modification library
+#
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
+
+# A sample workflow that can be used by a repo on Github to run AutoTransform
 # using github actions. Usable with the GithubRemote runner for triggering
 # remote runs.
 

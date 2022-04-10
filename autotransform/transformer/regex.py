@@ -12,9 +12,9 @@ from __future__ import annotations
 import re
 from typing import Any, Mapping, TypedDict
 
-from autotransform.common.cachedfile import CachedFile
 from autotransform.transformer.single import SingleTransformer
 from autotransform.transformer.type import TransformerType
+from autotransform.util.cachedfile import CachedFile
 
 
 class RegexTransformerParams(TypedDict):

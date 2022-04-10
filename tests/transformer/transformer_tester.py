@@ -11,8 +11,8 @@ import pathlib
 
 import mock
 
-from autotransform.common.cachedfile import CachedFile
 from autotransform.transformer.base import Transformer
+from autotransform.util.cachedfile import CachedFile
 
 
 class TransformerTester:

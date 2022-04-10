@@ -18,7 +18,6 @@ from autotransform.batcher.base import Batch, Batcher
 from autotransform.batcher.factory import BatcherFactory
 from autotransform.command.base import Command
 from autotransform.command.factory import CommandFactory
-from autotransform.common.cachedfile import CachedFile
 from autotransform.filter.base import Filter
 from autotransform.filter.factory import FilterFactory
 from autotransform.input.base import Input
@@ -28,6 +27,7 @@ from autotransform.repo.factory import RepoFactory
 from autotransform.schema.config import Config
 from autotransform.transformer.base import Transformer
 from autotransform.transformer.factory import TransformerFactory
+from autotransform.util.cachedfile import CachedFile
 from autotransform.validator.base import ValidationError, Validator
 from autotransform.validator.factory import ValidatorFactory
 

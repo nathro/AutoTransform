@@ -12,9 +12,9 @@ from __future__ import annotations
 import re
 from typing import Any, Mapping, TypedDict
 
-from autotransform.common.cachedfile import CachedFile
 from autotransform.filter.base import Filter
 from autotransform.filter.type import FilterType
+from autotransform.util.cachedfile import CachedFile
 
 
 class ContentRegexFilterParams(TypedDict):

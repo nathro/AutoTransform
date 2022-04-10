@@ -9,7 +9,7 @@
 from copy import deepcopy
 
 from autotransform.batcher.chunk import ChunkBatcher
-from autotransform.common.cachedfile import CachedFile
+from autotransform.util.cachedfile import CachedFile
 
 from .batcher_test import check_batcher
 

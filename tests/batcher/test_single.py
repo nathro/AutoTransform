@@ -7,7 +7,7 @@
 
 """Tests for SingleBatcher component."""
 from autotransform.batcher.single import SingleBatcher
-from autotransform.common.cachedfile import CachedFile
+from autotransform.util.cachedfile import CachedFile
 
 from .batcher_test import check_batcher
 

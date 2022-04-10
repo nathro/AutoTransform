@@ -17,12 +17,12 @@ from mock import patch
 
 from autotransform.batcher.base import Batch, BatchMetadata
 from autotransform.batcher.single import SingleBatcher
-from autotransform.common.cachedfile import CachedFile
 from autotransform.filter.extension import ExtensionFilter, Extensions
 from autotransform.input.directory import DirectoryInput
 from autotransform.repo.github import GithubRepo
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.transformer.regex import RegexTransformer
+from autotransform.util.cachedfile import CachedFile
 
 
 def get_sample_schema() -> AutoTransformSchema:

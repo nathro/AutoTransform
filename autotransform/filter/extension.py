@@ -12,9 +12,9 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any, List, Mapping, Sequence, TypedDict
 
-from autotransform.common.cachedfile import CachedFile
 from autotransform.filter.base import Filter
 from autotransform.filter.type import FilterType
+from autotransform.util.cachedfile import CachedFile
 
 
 class Extensions(str, Enum):

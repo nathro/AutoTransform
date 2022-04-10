@@ -12,8 +12,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Generic, Mapping, Optional, TypedDict, TypeVar
 
-from autotransform.common.cachedfile import CachedFile
 from autotransform.filter.type import FilterType
+from autotransform.util.cachedfile import CachedFile
 
 TParams = TypeVar("TParams", bound=Mapping[str, Any])
 
