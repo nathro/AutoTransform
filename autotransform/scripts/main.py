@@ -1,11 +1,15 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""A script for running autotransform commands"""
+"""The AutoTransform script, responsible for handling AutoTransform CLI invocations.
+Different CLI commands are handled as subparsers. Includes the following commands
+    - Run: Executes a full run of AutoTransform.
+    - Instance: Triggers a ProcessWorker's main method.
+    - Config: Lists or updates config values."""
 
 from argparse import ArgumentParser
 
@@ -13,10 +17,10 @@ from autotransform.scripts.commands import config, instance, run
 
 
 def get_arg_parser() -> ArgumentParser:
-    """Gets the argument parser for AutoTransform
+    """Gets the argument parser for AutoTransform. Sets up each command as a sub parser.
 
     Returns:
-        ArgumentParser: The arg parser with all args set up
+        ArgumentParser: The arg parser with all args set up.
     """
     parser = ArgumentParser(
         description="AutoTransform is a tool for structured, automated code modifcation",
@@ -52,7 +56,7 @@ def get_arg_parser() -> ArgumentParser:
 
 
 def main():
-    """Run autotransform commands"""
+    """Parse the arguments of a script run and execute the command invoked."""
     parser = get_arg_parser()
     args = parser.parse_args()
     args.func(args)

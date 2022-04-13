@@ -1,11 +1,12 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""The instance command is used to run an instance of a process worker"""
+"""The run command is used to execute a full run of a schema, either locally
+or by kicking off a remote job."""
 
 import json
 import os
@@ -13,6 +14,9 @@ import time
 from argparse import ArgumentParser, Namespace
 
 from autotransform.config import fetcher as Config
+from autotransform.event.debug import DebugEvent
+from autotransform.event.handler import EventHandler
+from autotransform.event.run import ScriptRunEvent
 from autotransform.remote.factory import RemoteFactory
 from autotransform.schema.factory import SchemaBuilderFactory
 from autotransform.schema.schema import AutoTransformSchema
@@ -21,17 +25,18 @@ from autotransform.worker.factory import WorkerFactory
 
 
 def add_args(parser: ArgumentParser) -> None:
-    """Adds the run command arguments
+    """Adds the args to a subparser that are required to run a schema.
 
     Args:
-        parser (ArgumentParser): The parser for the command
+        parser (ArgumentParser): The parser for the schema run.
     """
 
     parser.add_argument(
         "schema",
         metavar="schema",
         type=str,
-        help="The schema to be used, defaults to assuming a file",
+        help="The schema that will be run. Could be a file path, string, "
+        + "environment variable name, or builder name.",
     )
 
     type_group = parser.add_mutually_exclusive_group()
@@ -42,7 +47,7 @@ def add_args(parser: ArgumentParser) -> None:
         action="store_const",
         const="builder",
         required=False,
-        help="Tells the script to interpret the schema as a builder name",
+        help="Tells the script to interpret the schema as a builder name.",
     )
     type_group.add_argument(
         "-f",
@@ -51,7 +56,7 @@ def add_args(parser: ArgumentParser) -> None:
         action="store_const",
         const="file",
         required=False,
-        help="Tells the script to interpret the schema as a file",
+        help="Tells the script to interpret the schema as a file path.",
     )
     type_group.add_argument(
         "-s",
@@ -70,7 +75,7 @@ def add_args(parser: ArgumentParser) -> None:
         const="environment",
         required=False,
         help="Tells the script to interpret the schema as an environment variable storing the JSON "
-        + "encoded schema",
+        + "encoded schema.",
     )
 
     # Setting Arguments
@@ -81,7 +86,7 @@ def add_args(parser: ArgumentParser) -> None:
         type=int,
         required=False,
         default=360,
-        help="How long in seconds to allow the process to run",
+        help="How long in seconds to allow the process to run.",
     )
     parser.add_argument(
         "-w",
@@ -89,7 +94,7 @@ def add_args(parser: ArgumentParser) -> None:
         metavar="worker",
         type=str,
         required=False,
-        help="The type of worker to use(see worker.type). Defaults to using local",
+        help="The type of worker to use(see worker.type). Defaults to using local.",
     )
 
     # Run Mode
@@ -100,7 +105,7 @@ def add_args(parser: ArgumentParser) -> None:
         dest="run_local",
         action="store_true",
         required=False,
-        help="Tells the script to run locally, local is the default mode",
+        help="Tells the script to run locally, local is the default mode.",
     )
     mode_group.add_argument(
         "-r",
@@ -108,7 +113,7 @@ def add_args(parser: ArgumentParser) -> None:
         dest="run_local",
         action="store_false",
         required=False,
-        help="Tells the script to run remote using the remote component from the config",
+        help="Tells the script to run remote using the remote component from the config.",
     )
 
     parser.set_defaults(schema_type="file", worker="local", run_local=True, func=run_command_main)
@@ -119,12 +124,16 @@ def run_command_main(args: Namespace) -> None:
 
     Args:
         args (Namespace): The arguments supplied to the run command, such as the schema and
-            worker type
+            worker type.
     """
     # pylint: disable=unspecified-encoding
 
+    event_args = {}
+    event_handler = EventHandler.get()
     schema = args.schema
-    print(schema)
+    event_handler.handle(DebugEvent({"message": f"Schema: ({args.schema_type}) {args.schema}"}))
+    event_args["schema"] = args.schema
+    event_args["schema_type"] = args.schema_type
     if args.schema_type == "builder":
         schema = SchemaBuilderFactory.get(schema).build()
     elif args.schema_type == "file":
@@ -137,9 +146,16 @@ def run_command_main(args: Namespace) -> None:
     else:
         schema = AutoTransformSchema.from_json(schema)
 
+    if args.schema_type != "string":
+        event_handler.handle(DebugEvent({"message": f"JSON Schema: {schema.to_json()}"}))
+
     worker = args.worker
+    event_args["worker"] = args.worker
+    event_handler.handle(DebugEvent({"message": f"Worker: {args.worker}"}))
     worker_type = WorkerFactory.get(worker)
     if args.run_local:
+        event_handler.handle(DebugEvent({"message": "Running locally"}))
+        event_handler.handle(ScriptRunEvent({"script": "local run", "args": event_args}))
         coordinator = Coordinator(schema, worker_type)
         start_time = time.time()
         coordinator.start()
@@ -149,6 +165,9 @@ def run_command_main(args: Namespace) -> None:
     else:
         remote_str = Config.get_remote()
         assert remote_str is not None, "Remote not specified in config"
+        event_handler.handle(DebugEvent({"message": f"Remote: {remote_str}"}))
+        event_args["remote"] = remote_str
+        event_handler.handle(ScriptRunEvent({"script": "remote run", "args": event_args}))
         remote = RemoteFactory.get(json.loads(remote_str))
         remote_ref = remote.run(schema)
-        print(f"Remote ref: {remote_ref}")
+        event_handler.handle(DebugEvent({"message": f"Remote reg: {remote_ref}"}))

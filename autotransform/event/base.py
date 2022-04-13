@@ -1,7 +1,7 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
@@ -17,27 +17,28 @@ from typing import Any, Generic, Mapping, Optional, TypeVar
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.type import EventType
 
-TParams = TypeVar("TParams", bound=Mapping[str, Any])
+TData = TypeVar("TData", bound=Mapping[str, Any])
 
 
-class Event(Generic[TParams], ABC):
-    """The base for Events. Used to
+class Event(Generic[TData], ABC):
+    """The base for Events. Used to construct a loggable event that can be hooked in to
+    through the EventHandler to store logs in custom deployments.
 
     Attributes:
-        params (TParams): The paramaters that represent details of the Event
-        create_time (float): The current timestamp
+        data (TData): The data that represents details of the Event.
+        create_time (float): The current timestamp when the event is created.
     """
 
-    params: TParams
-    time: float
+    data: TData
+    create_time: float
 
-    def __init__(self, params: TParams):
+    def __init__(self, data: TData):
         """A simple constructor.
 
         Args:
-            params (TParams): The paramaters used to set up the Batcher
+            data (TData): The data that represents details of the Event.
         """
-        self.params = params
+        self.data = data
         self.create_time = time.time()
 
     @staticmethod
@@ -46,7 +47,7 @@ class Event(Generic[TParams], ABC):
         """Used to represent the type of Event, output to logs.
 
         Returns:
-            EventType: The unique type associated with this Event
+            EventType: The unique type associated with this Event.
         """
 
     @staticmethod
@@ -55,31 +56,33 @@ class Event(Generic[TParams], ABC):
         """The logging level for events of this type.
 
         Returns:
-            LoggingLevel: The logging detail required to log this event
+            LoggingLevel: The logging detail required to log this event.
         """
 
     @abstractmethod
     def _get_message(self) -> str:
-        """Gets a message representing the details of the event
+        """Gets a message representing the details of the event.
 
         Returns:
-            str: The message for the event
+            str: The message for the event.
         """
 
     @staticmethod
     def get_color_override() -> Optional[str]:
         """Used to override logging color for specific events where needed. Should use
-        colorama ANSI codes
+        colorama ANSI codes.
 
         Returns:
-            Optional[str]: An optional color to use to override defaults when logging
+            Optional[str]: An optional color to use to override defaults when logging.
         """
         return None
 
     def get_message(self) -> str:
-        """Gets a message that can be output to logs representing the event
+        """Gets a message that can be output to logs representing the event. Converts type from
+        lowercase with underscores to capitalized words for the message.
 
         Returns:
-            str: The loggable message
+            str: The loggable message.
         """
-        return f"[{self.get_type().upper()}] {self._get_message()}"
+        type_str = "".join([w.capitalize() for w in self.get_type().split("_")])
+        return f"[{type_str}] {self._get_message()}"

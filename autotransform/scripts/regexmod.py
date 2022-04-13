@@ -1,16 +1,20 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
 """A simple script for running regex based transformations from the command line."""
 
 import argparse
+import json
 import time
 
 from autotransform.batcher.single import SingleBatcher
+from autotransform.event.debug import DebugEvent
+from autotransform.event.handler import EventHandler
+from autotransform.event.run import ScriptRunEvent
 from autotransform.filter.extension import ExtensionFilter
 from autotransform.input.directory import DirectoryInput
 from autotransform.repo.git import GitRepo
@@ -22,10 +26,10 @@ from autotransform.worker.local import LocalWorker
 
 
 def parse_arguments() -> argparse.Namespace:
-    """Parses the script arguments. Run with -h to see all arguments.
+    """Sets up the argparser for the regexmod script and parses the arguments.
 
     Returns:
-        argparse.Namespace: The arguments for the regexmod
+        argparse.Namespace: The arguments for the regexmod.
     """
     parser = argparse.ArgumentParser(description="Runs simple regex based codemods")
 
@@ -79,32 +83,45 @@ def parse_arguments() -> argparse.Namespace:
         help="The message for any git commit and the title of any github pull request",
     )
     parser.add_argument(
-        "--summary",
-        metavar="summary",
+        "--body",
+        metavar="body",
         type=str,
         required=False,
         default="",
-        help="The summary to include in the pull request when using github",
-    )
-    parser.add_argument(
-        "--tests",
-        metavar="tests",
-        type=str,
-        required=False,
-        default="",
-        help="The text of a tests section of a pull request body",
+        help="The body to include in the pull request when using github",
     )
     return parser.parse_args()
 
 
 def main():
     """Run the regex based transformation."""
+    event_args = {}
+    event_handler = EventHandler.get()
     args = parse_arguments()
+
+    # Get the input component
     inp = DirectoryInput({"path": args.directory})
+    event_args["directory"] = args.directory
+    event_handler.handle(DebugEvent({"message": f"Dirctory: {args.directory}"}))
+
+    # Get the transformer component
     transformer = RegexTransformer({"pattern": args.pattern, "replacement": args.replacement})
-    batcher = SingleBatcher(
-        {"metadata": {"title": args.title, "summary": args.summary, "tests": args.tests}}
+    event_handler.handle(
+        DebugEvent({"message": f"Pattern: {args.pattern} -- Replacement: {args.replacement}"})
     )
+    event_args["pattern"] = args.pattern
+    event_args["replacement"] = args.replacement
+
+    # Get the batcher
+    batcher = SingleBatcher({"metadata": {"title": args.title, "body": args.body}})
+    if args.title is not None:
+        event_handler.handle(DebugEvent({"message": f"Commit Title: {args.title}"}))
+        event_args["title"] = args.title
+    if args.body is not None:
+        event_handler.handle(DebugEvent({"message": f"PR Body: {args.body}"}))
+        event_args["body"] = args.body
+
+    # Get the extensions to use for an extension filter
     filters = []
     extensions = args.extensions
     if isinstance(extensions, str):
@@ -112,25 +129,32 @@ def main():
         extensions = [
             extension if extension.startswith(".") else "." + extension for extension in extensions
         ]
+        event_args["extensions"] = json.dumps(extensions)
+        event_handler.handle(DebugEvent({"message": f"Extensions: {json.dumps(extensions)}"}))
         filters.append(ExtensionFilter({"extensions": extensions}))
 
+    # Get the repo component, using the git branch and the github name from args if present
     git_branch = args.branch
     if isinstance(git_branch, str):
+        event_args["branch"] = git_branch
+        event_handler.handle(DebugEvent({"message": f"Git Base Branch: {git_branch}"}))
         github_repo = args.github
         if isinstance(github_repo, str):
-            print("Using Github repo: " + github_repo)
-            print("Base Branch: " + git_branch)
+            event_args["github_repo"] = github_repo
+            event_handler.handle(DebugEvent({"message": f"Github Repo Name: {github_repo}"}))
             repo = GithubRepo({"base_branch_name": git_branch, "full_github_name": github_repo})
         else:
-            print("Base Branch: " + git_branch)
             repo = GitRepo({"base_branch_name": git_branch})
     else:
         repo = None
+
+    # Construct and run the schema
+    event_handler.handle(ScriptRunEvent({"script": "regexmod", "args": event_args}))
     schema = AutoTransformSchema(inp, batcher, transformer, filters=filters, repo=repo)
     coordinator = Coordinator(schema, LocalWorker)
     start_time = time.time()
     coordinator.start()
-    timeout = 30
+    timeout = 60
     while not coordinator.is_finished() and time.time() <= start_time + timeout:
         time.sleep(1)
     coordinator.kill()
