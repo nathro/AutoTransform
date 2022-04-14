@@ -17,6 +17,7 @@ from typing import Any, List, Mapping, TypedDict
 from autotransform.batcher.base import Batch
 from autotransform.transformer.base import Transformer
 from autotransform.transformer.type import TransformerType
+from autotransform.util.cachedfile import CachedFile
 from autotransform.util.datastore import DataStore
 
 
@@ -26,6 +27,7 @@ class ScriptTransformerParams(TypedDict):
     script: str
     args: List[str]
     timeout: int
+    per_file: bool
 
 
 class ScriptTransformer(Transformer[ScriptTransformerParams]):
@@ -52,7 +54,36 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
         return TransformerType.SCRIPT
 
     def transform(self, batch: Batch) -> None:
-        """Executes a simple script to transform the given input. Sentinel values can be used
+        if self.params["per_file"]:
+            for file in batch["files"]:
+                self._transform_single(file)
+        else:
+            self._transform_batch(batch)
+
+    def _transform_single(self, file: CachedFile) -> None:
+        """Executes a simple script to transform the a given input. Sentinel values can be used
+        in args that will be replaced when the script is invoked. Possible values include:
+            <<INPUT>>: The individual input item for the transform.
+            <<EXTRA_DATA>>: A JSON encoded mapping of the extra data associated with the input.
+
+        Args:
+            file (CachedFile): The file that will be transformed.
+        """
+        cmd = [self.params["script"]]
+        extra_data = DataStore.get().get_object_data(file.path)
+        arg_replacements = {
+            "<<INPUT>>": file.path,
+            "<<EXTRA_DATA>>": json.dumps(extra_data),
+        }
+        for arg in self.params["args"]:
+            if arg in arg_replacements:
+                cmd.append(arg_replacements[arg])
+            else:
+                cmd.append(arg)
+        subprocess.check_output(cmd, timeout=self.params["timeout"])
+
+    def _transform_batch(self, batch: Batch) -> None:
+        """Executes a simple script to transform the given batch. Sentinel values can be used
         in args that will be replaced when the script is invoked. Possible values include:
             <<INPUT>>: A JSON encoded list of the inputs in the batch
             <<METADATA>>: A JSON encoded representation of the batch metadata
@@ -67,17 +98,18 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
         """
         cmd = [self.params["script"]]
         encodable_file_data = {}
-        for file in batch["files"]:
-            data_object = DataStore.get().get_object_data(file.path)
+        file_paths = [file.path for file in batch["files"]]
+        for path in file_paths:
+            data_object = DataStore.get().get_object_data(path)
             if data_object is not None:
-                encodable_file_data[file.path] = data_object.data
+                encodable_file_data[path] = data_object.data
         arg_replacements = {
-            "<<INPUT>>": json.dumps(batch["files"]),
+            "<<INPUT>>": json.dumps(file_paths),
             "<<METADATA>>": json.dumps(batch["metadata"]),
             "<<EXTRA_DATA>>": json.dumps(encodable_file_data),
         }
         with TmpFile(mode="w+") as inp, TmpFile(mode="w+") as meta, TmpFile(mode="w+") as extra:
-            json.dump(batch["files"], inp)
+            json.dump(file_paths, inp)
             inp.flush()
             json.dump(batch["metadata"], meta)
             meta.flush()
@@ -110,5 +142,8 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
         args = [str(arg) for arg in args]
         timeout = data["timeout"]
         assert isinstance(timeout, int)
+        per_file = bool(data.get("per_file", False))
 
-        return ScriptTransformer({"script": script, "args": args, "timeout": timeout})
+        return ScriptTransformer(
+            {"script": script, "args": args, "timeout": timeout, "per_file": per_file}
+        )
