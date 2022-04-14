@@ -10,7 +10,7 @@
 from __future__ import annotations
 
 import time
-from typing import Any, Mapping, TypedDict, TypeVar
+from typing import Any, Mapping, TypedDict, TypeVar, Union
 
 from autotransform.remote.base import Remote
 from autotransform.remote.type import RemoteType
@@ -24,7 +24,7 @@ TParams = TypeVar("TParams", bound=Mapping[str, Any])
 class GithubRemoteParams(TypedDict):
     """The params required for a GithubRemote instance"""
 
-    workflow_id: int
+    workflow: Union[str, int]
     worker: WorkerType
 
 
@@ -61,7 +61,7 @@ class GithubRemote(Remote[GithubRemoteParams]):
             repo, GithubRepo
         ), "Github remote can only run using schemas that have Github repos"
         github_repo = repo.github_repo
-        workflow = github_repo.get_workflow(self.params["workflow_id"])
+        workflow = github_repo.get_workflow(self.params["workflow"])
         dispatch_success = workflow.create_dispatch(
             repo.params["base_branch_name"],
             {"schema": schema.to_json(), "worker": self.params["worker"]},
@@ -87,8 +87,8 @@ class GithubRemote(Remote[GithubRemoteParams]):
         Returns:
             GithubRemote: An instance of the GithubRemote
         """
-        workflow_id = data["workflow_id"]
-        assert isinstance(workflow_id, int)
+        workflow = data["workflow"]
+        assert isinstance(workflow, int) or isinstance(workflow, str)
         worker = data["worker"]
         assert isinstance(worker, str)
-        return GithubRemote({"workflow_id": workflow_id, "worker": worker})  # type: ignore
+        return GithubRemote({"workflow": workflow, "worker": worker})  # type: ignore
