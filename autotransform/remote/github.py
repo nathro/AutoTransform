@@ -68,12 +68,8 @@ class GithubRemote(Remote[GithubRemoteParams]):
         )
         assert dispatch_success, "Failed to dispatch workflow request"
         # We wait a bit to make sure Github's API is updated
-        time.sleep(15)
-        workflow_runs = workflow.get_runs(
-            event="workflow_dispatch",
-            branch=repo.params["base_branch_name"],
-            actor=repo.get_github_object().get_user().login,
-        )
+        time.sleep(5)
+        workflow_runs = workflow.get_runs()
         print("Github does not provide URLs on dispatch, taking best guess")
         return workflow_runs[0].html_url
 
