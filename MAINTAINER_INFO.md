@@ -24,18 +24,9 @@ Steps to release AutoTransform
  - Validate changelog accurate and add summary
  - Bump version in setup.py, update version in changelog for release
  - Commit version bump with message Release-&lt;version&gt;
- - `py -m build`
- - `py -m twine upload --repository pypi dist/AutoTransform-<version>*`
- - Update release branch to point to master
- - Push changes upstream
+ - Update release branch to point to newest commit and push to Github
  - Add new release and tag to Github repo (tag should be "Release-&lt;version&gt;")
  - Switch to master branch
  - Add new sections to Change Log file for next release
-   - Main title = Upcoming Release
-   - New Components
-   - New Scripts
-   - API Changes
-   - Upgrade Packages
-   - Misc
- - Commit as "Post Release-&lt;version&gt; Preparation For Next Release"
+ - Commit as "Post Release-&lt;version&gt;"
  - Push upstream
