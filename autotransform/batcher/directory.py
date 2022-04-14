@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+# @black_format
+
 """The implementation for the directory Batcher."""
 
 from __future__ import annotations
@@ -21,6 +23,8 @@ class DirectoryBatcherParams(TypedDict):
     """The param type for a DirectoryBatcher. Includes a prefix that's added to the
     front of the directory to create a title.
     """
+
+
 
     prefix: str
 
@@ -58,10 +62,7 @@ class DirectoryBatcher(Batcher[DirectoryBatcherParams]):
             if directory not in batches:
                 batches[directory] = []
             batches[directory].append(file)
-        return [
-            {"files": files, "metadata": {"title": self.params["prefix"] + ": " + directory}}
-            for directory, files in batches.items()
-        ]
+        return [{"files": files, "metadata": {"title": self.params["prefix"] + ": " + directory}} for directory, files in batches.items()]
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> DirectoryBatcher:
