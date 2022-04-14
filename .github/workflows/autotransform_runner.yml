@@ -41,6 +41,7 @@ jobs:
         pip install PyGithub
         pip install typing-extensions
         pip install colorama
+        pip install black
     - name: Run AutoTransform
       run: python3 -m autotransform.scripts.main r -e -w $WORKER AUTO_TRANSFORM_SCHEMA
       env:
