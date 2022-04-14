@@ -170,4 +170,4 @@ def run_command_main(args: Namespace) -> None:
         event_handler.handle(ScriptRunEvent({"script": "remote run", "args": event_args}))
         remote = RemoteFactory.get(json.loads(remote_str))
         remote_ref = remote.run(schema)
-        event_handler.handle(DebugEvent({"message": f"Remote reg: {remote_ref}"}))
+        event_handler.handle(DebugEvent({"message": f"Remote ref: {remote_ref}"}))
