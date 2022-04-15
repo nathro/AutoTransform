@@ -58,7 +58,7 @@ class FilterFactory:
         if bundle["type"] in FilterFactory._getters:
             return FilterFactory._getters[bundle["type"]](inverted, bundle["params"])
 
-        custom_component_modules = Config.get_custom_component_imports()
+        custom_component_modules = Config.get_component_imports()
         for module_string in custom_component_modules:
             module = importlib.import_module(module_string)
             if hasattr(module, "FILTERS") and bundle["type"] in module.FILTERS:

@@ -88,7 +88,7 @@ class DefaultConfigFetcher(ConfigFetcher):
         credentials = self.config["CREDENTIALS"]
         return credentials.get("github_base_url", None)
 
-    def get_custom_component_imports(self) -> List[str]:
+    def get_component_imports(self) -> List[str]:
         """The modules containing the custom components to use: see autotransform.thirdparty.example
 
         Returns:
@@ -98,7 +98,7 @@ class DefaultConfigFetcher(ConfigFetcher):
         if "IMPORTS" not in self.config:
             return []
         imports = self.config["IMPORTS"]
-        module_list = imports.get("custom_components", None)
+        module_list = imports.get("components", None)
         return [module.strip() for module in module_list.split(",")]
 
     def get_remote(self) -> Optional[str]:

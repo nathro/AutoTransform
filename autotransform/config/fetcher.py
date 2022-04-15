@@ -47,7 +47,7 @@ class ConfigFetcher(ABC):
         """
 
     @abstractmethod
-    def get_custom_component_imports(self) -> List[str]:
+    def get_component_imports(self) -> List[str]:
         """The modules containing the custom components to use: see autotransform.thirdparty.example
 
         Returns:

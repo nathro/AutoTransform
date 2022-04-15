@@ -48,14 +48,14 @@ class EnvironmentVariableConfigFetcher(ConfigFetcher):
         """
         return os.getenv("AUTO_TRANSFORM_CREDENTIALS_GITHUB_BASE_URL")
 
-    def get_custom_component_imports(self) -> List[str]:
+    def get_component_imports(self) -> List[str]:
         """The modules containing the custom components to use: see autotransform.thirdparty.example
 
         Returns:
             List[str]: A list of the modules containing custom components that are not part base
                 AutoTransform
         """
-        module_list = os.getenv("AUTO_TRANSFORM_IMPORTS_CUSTOM_COMPONENTS")
+        module_list = os.getenv("AUTO_TRANSFORM_IMPORTS_COMPONENTS")
         if module_list is None or module_list == "":
             return []
         return [module.strip() for module in module_list.split(",")]

@@ -31,7 +31,7 @@ def add_args(parser: ArgumentParser) -> None:
             worker.add_args(worker_parser)
 
     # Check for custom module workers
-    custom_component_modules = Config.get_custom_component_imports()
+    custom_component_modules = Config.get_component_imports()
     for module_string in custom_component_modules:
         module = importlib.import_module(module_string)
         if hasattr(module, "WORKERS"):

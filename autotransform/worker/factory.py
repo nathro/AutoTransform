@@ -54,7 +54,7 @@ class WorkerFactory:
         if worker_type in WorkerFactory._map:
             return WorkerFactory._map[worker_type]
 
-        custom_component_modules = Config.get_custom_component_imports()
+        custom_component_modules = Config.get_component_imports()
         for module_string in custom_component_modules:
             module = importlib.import_module(module_string)
             if hasattr(module, "WORKERS") and worker_type in module.WORKERS:

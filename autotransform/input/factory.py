@@ -55,7 +55,7 @@ class InputFactory:
         if bundle["type"] in InputFactory._getters:
             return InputFactory._getters[bundle["type"]](bundle["params"])
 
-        custom_component_modules = Config.get_custom_component_imports()
+        custom_component_modules = Config.get_component_imports()
         for module_string in custom_component_modules:
             module = importlib.import_module(module_string)
             if hasattr(module, "INPUTS") and bundle["type"] in module.INPUTS:

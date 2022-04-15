@@ -34,7 +34,7 @@ class DebugEvent(Event[DebugEventData]):
         Returns:
             EventType: The unique type associated with this Event.
         """
-        return EventType.SCRIPT_RUN
+        return EventType.DEBUG
 
     @staticmethod
     def get_logging_level() -> LoggingLevel:

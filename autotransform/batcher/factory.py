@@ -57,7 +57,7 @@ class BatcherFactory:
         if bundle["type"] in BatcherFactory._getters:
             return BatcherFactory._getters[bundle["type"]](bundle["params"])
 
-        custom_component_modules = Config.get_custom_component_imports()
+        custom_component_modules = Config.get_component_imports()
         for module_string in custom_component_modules:
             module = importlib.import_module(module_string)
             if hasattr(module, "BATCHERS") and bundle["type"] in module.BATCHERS:

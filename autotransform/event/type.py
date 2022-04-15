@@ -13,4 +13,5 @@ from enum import Enum
 class EventType(str, Enum):
     """A simple enum for Event naming"""
 
+    DEBUG = "debug"
     SCRIPT_RUN = "script_run"

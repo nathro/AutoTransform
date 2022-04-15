@@ -10,10 +10,11 @@ All custom component imports should follow this structure. Component types that 
 custom implementations do not need to be included (i.e. if there are no custom batchers, the
 BATCHERS variable can be left out."""
 
-from typing import Any, Callable, Dict, Mapping, Type
+from typing import Any, Callable, Dict, List, Mapping, Type
 
 from autotransform.batcher.base import Batcher
 from autotransform.command.base import Command
+from autotransform.event.base import Event
 from autotransform.filter.base import Filter
 from autotransform.input.base import Input
 from autotransform.remote.base import Remote
@@ -22,12 +23,23 @@ from autotransform.transformer.base import Transformer
 from autotransform.validator.base import Validator
 from autotransform.worker.base import Worker
 
+# See autotransform.batcher.factory
 BATCHERS: Dict[str, Callable[[Mapping[str, Any]], Batcher]] = {}
+# See autotransform.command.factory
 COMMANDS: Dict[str, Callable[[Mapping[str, Any]], Command]] = {}
+# See autotransform.filter.factory
 FILTERS: Dict[str, Callable[[bool, Mapping[str, Any]], Filter]] = {}
+# See autotransform.input.factory
 INPUTS: Dict[str, Callable[[Mapping[str, Any]], Input]] = {}
+# See autotransform.schema.builder
 SCHEMAS: Dict[str, Type[SchemaBuilder]] = {}
+# See autotransform.transformer.factory
 TRANSFORMERS: Dict[str, Callable[[Mapping[str, Any]], Transformer]] = {}
+# See autotransform.validator.factory
 VALIDATORS: Dict[str, Callable[[Mapping[str, Any]], Validator]] = {}
+# See autotransform.worker.factory
 WORKERS: Dict[str, Type[Worker]] = {}
-REMOTES: Dict[str, Callable[[Mapping[str, Any]], Remote]]
+# See autotransform.remote.factory
+REMOTES: Dict[str, Callable[[Mapping[str, Any]], Remote]] = {}
+# See autotransform.event.handler
+EVENT_CALLBACKS: List[Callable[[Event], None]] = []

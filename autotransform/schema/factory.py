@@ -50,7 +50,7 @@ class SchemaBuilderFactory:
         if name in SchemaBuilderFactory._map:
             return SchemaBuilderFactory._map[name]()
 
-        custom_component_modules = Config.get_custom_component_imports()
+        custom_component_modules = Config.get_component_imports()
         for module_string in custom_component_modules:
             module = importlib.import_module(module_string)
             if hasattr(module, "SCHEMAS") and name in module.SCHEMAS:

@@ -83,7 +83,7 @@ class ConsoleConfigFetcher(ConfigFetcher):
         self.config["github_base_url"] = base_url
         return base_url
 
-    def get_custom_component_imports(self) -> List[str]:
+    def get_component_imports(self) -> List[str]:
         """The modules containing the custom components to use: see autotransform.thirdparty.example
 
         Returns:
