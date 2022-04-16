@@ -8,13 +8,13 @@
 """Tests that the schema factory has all types included."""
 
 from autotransform.schema.factory import SchemaBuilderFactory
-from autotransform.schema.name import SchemaBuilderName
+from autotransform.schema.type import SchemaBuilderType
 
 
 def test_all_enum_values_present():
     """Ensures that all values from the enum are present in the factory getters."""
     missing_values = []
-    for schema in SchemaBuilderName:
+    for schema in SchemaBuilderType:
         # pylint: disable=protected-access
         if schema not in SchemaBuilderFactory._map:
             missing_values.append(schema)

@@ -1,7 +1,7 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
@@ -37,11 +37,11 @@ class Config:
         """
         self.allowed_validation_level = allowed_validation_level
 
-    def bundle(self):
+    def bundle(self) -> Dict[str, Any]:
         """Bundles the configuration for JSON encoding.
 
         Returns:
-            [type]: [description]
+            Dict[str, Any]: The bundled configuration.
         """
         return {
             "allowed_validation_level": self.allowed_validation_level,
@@ -49,13 +49,13 @@ class Config:
 
     @classmethod
     def from_data(cls, data: Dict[str, Any]) -> Config:
-        """Produces a Config from supplied options
+        """Produces a Config from supplied options.
 
         Args:
-            data (Dict[str, Any]): The options from a bundled Config
+            data (Dict[str, Any]): The options from a bundled Config.
 
         Returns:
-            Config: The configuration represented by the provided data
+            Config: The configuration represented by the provided data.
         """
         if "allowed_validation_level" in data:
             validation_level = data["allowed_validation_level"]

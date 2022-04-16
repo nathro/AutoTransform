@@ -84,7 +84,7 @@ class GithubRemote(Remote[GithubRemoteParams]):
             GithubRemote: An instance of the GithubRemote
         """
         workflow = data["workflow"]
-        assert isinstance(workflow, int) or isinstance(workflow, str)
+        assert isinstance(workflow, (int, str))
         worker = data["worker"]
         assert isinstance(worker, str)
         return GithubRemote({"workflow": workflow, "worker": worker})  # type: ignore

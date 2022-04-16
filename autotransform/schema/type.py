@@ -5,6 +5,10 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""Schemas are the heart of AutoTransform. They contain all necesary components and configuration
-to deploy a change.
-"""
+"""The type of SchemaBuilder, used create a 1:1 mapping."""
+
+from enum import Enum
+
+
+class SchemaBuilderType(str, Enum):
+    """A simple enum for 1:1 SchemaBuilder to type mapping."""

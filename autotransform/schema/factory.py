@@ -18,7 +18,7 @@ from typing import Dict, Type
 
 from autotransform.config import fetcher as Config
 from autotransform.schema.builder import SchemaBuilder
-from autotransform.schema.name import SchemaBuilderName
+from autotransform.schema.type import SchemaBuilderType
 
 
 class SchemaBuilderFactory:
@@ -35,10 +35,10 @@ class SchemaBuilderFactory:
 
     # pylint: disable=too-few-public-methods
 
-    _map: Dict[SchemaBuilderName, Type[SchemaBuilder]] = {}
+    _map: Dict[SchemaBuilderType, Type[SchemaBuilder]] = {}
 
     @staticmethod
-    def get(name: SchemaBuilderName) -> SchemaBuilder:
+    def get(name: SchemaBuilderType) -> SchemaBuilder:
         """Simple get method using the _map attribute
 
         Args:

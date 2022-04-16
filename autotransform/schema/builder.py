@@ -1,11 +1,11 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""The base class and associated classes for SchemaBuilders."""
+"""The base class for SchemaBuilders which are used to programatically generate a Schema."""
 
 from abc import ABC, abstractmethod
 from typing import List, Optional
@@ -23,24 +23,24 @@ from autotransform.validator.base import Validator
 
 
 class SchemaBuilder(ABC):
-    """The base for SchemaBuilders. SchemaBuilders are used for programatic schema generation.
+    """The base for SchemaBuilders. SchemaBuilders are used for programatic Schema generation.
     This can be used in conjunction with input params or configuration to customize Schemas run
-    through automation. Can also be used to generate JSON schemas that can be utilized.
+    through automation. Can also be used to generate JSON Schemas that can be utilized.
     """
 
     @abstractmethod
     def get_input(self) -> Input:
-        """Get the Input for the schema.
+        """Get the Input for the Schema.
 
         Returns:
-            Input: The Input that will be used in the built schema
+            Input: The Input that will be used in the built Schema.
         """
 
     def get_filters(self) -> List[Filter]:
-        """Get the Filters for the schema.
+        """Get the Filters for the Schema.
 
         Returns:
-            List[Filter]: The Filters that will be used in the built schema
+            List[Filter]: The Filters that will be used in the built Schema.
         """
 
         # pylint: disable=no-self-use
@@ -48,10 +48,10 @@ class SchemaBuilder(ABC):
         return []
 
     def get_batcher(self) -> Batcher:
-        """Get the Batcher for the schema.
+        """Get the Batcher for the Schema.
 
         Returns:
-            Batcher: The Batcher that will be used in the built schema
+            Batcher: The Batcher that will be used in the built Schema.
         """
 
         # pylint: disable=no-self-use
@@ -60,17 +60,17 @@ class SchemaBuilder(ABC):
 
     @abstractmethod
     def get_transformer(self) -> Transformer:
-        """Get the Transformer for the schema.
+        """Get the Transformer for the Schema.
 
         Returns:
-            Transformer: The Transformer that will be used in the built schema
+            Transformer: The Transformer that will be used in the built Schema.
         """
 
     def get_validators(self) -> List[Validator]:
-        """Get the Validators for the schema.
+        """Get the Validators for the Schema.
 
         Returns:
-            List[Validator]: The Validators that will be used in the built schema
+            List[Validator]: The Validators that will be used in the built Schema.
         """
 
         # pylint: disable=no-self-use
@@ -78,10 +78,10 @@ class SchemaBuilder(ABC):
         return []
 
     def get_commands(self) -> List[Command]:
-        """Get the Commands for the schema.
+        """Get the Commands for the Schema.
 
         Returns:
-            List[Command]: The Commands that will be used in the built schema
+            List[Command]: The Commands that will be used in the built Schema.
         """
 
         # pylint: disable=no-self-use
@@ -89,10 +89,10 @@ class SchemaBuilder(ABC):
         return []
 
     def get_repo(self) -> Optional[Repo]:
-        """Get the Repo for the schema.
+        """Get the Repo for the Schema.
 
         Returns:
-            Repo: The Repo that will be used in the built schema
+            Repo: The Repo that will be used in the built Schema.
         """
 
         # pylint: disable=no-self-use
@@ -100,10 +100,10 @@ class SchemaBuilder(ABC):
         return None
 
     def get_config(self) -> Config:
-        """Get the Config for the schema.
+        """Get the Config for the Schema.
 
         Returns:
-            Config: The Config that will be used in the built schema
+            Config: The Config that will be used in the built Schema.
         """
 
         # pylint: disable=no-self-use
@@ -114,7 +114,7 @@ class SchemaBuilder(ABC):
         """Builds a Schema based on the state of the SchemaBuilder.
 
         Returns:
-            AutoTransformSchema: The Schema produced by this SchemaBuilder
+            AutoTransformSchema: The Schema produced by this SchemaBuilder.
         """
         return AutoTransformSchema(
             self.get_input(),
@@ -132,7 +132,7 @@ class SchemaBuilder(ABC):
         path.
 
         Args:
-            path (str): The path of the file to dump the JSON encoded Schema to
+            path (str): The path of the file to dump the JSON encoded Schema to.
         """
 
         # pylint: disable=unspecified-encoding
