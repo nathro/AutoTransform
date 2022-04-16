@@ -1,7 +1,7 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
@@ -27,11 +27,11 @@ class ConsoleConfigFetcher(ConfigFetcher):
         """A simple constructor to initialize the cache."""
         self.config = {}
 
-    def get_github_token(self) -> Optional[str]:
+    def get_credentials_github_token(self) -> Optional[str]:
         """Requests a github authentication token from the user and caches it.
 
         Returns:
-            Optional[str]: The provided token or None if not provided
+            Optional[str]: The provided token or None if not provided.
         """
         if "github_token" in self.config:
             return self.config["github_token"]
@@ -41,11 +41,11 @@ class ConsoleConfigFetcher(ConfigFetcher):
         self.config["github_token"] = token
         return token
 
-    def get_github_username(self) -> Optional[str]:
+    def get_credentials_github_username(self) -> Optional[str]:
         """Requests a github username from the user and caches it.
 
         Returns:
-            Optional[str]: The provided username or None if not provided
+            Optional[str]: The provided username or None if not provided.
         """
         if "github_username" in self.config:
             return self.config["github_username"]
@@ -55,11 +55,11 @@ class ConsoleConfigFetcher(ConfigFetcher):
         self.config["github_username"] = username
         return username
 
-    def get_github_password(self) -> Optional[str]:
+    def get_credentials_github_password(self) -> Optional[str]:
         """Requests a github password from the user and caches it.
 
         Returns:
-            Optional[str]: The provided password or None if not provided
+            Optional[str]: The provided password or None if not provided.
         """
         if "github_password" in self.config:
             return self.config["github_password"]
@@ -69,11 +69,11 @@ class ConsoleConfigFetcher(ConfigFetcher):
         self.config["github_password"] = password
         return password
 
-    def get_github_base_url(self) -> Optional[str]:
+    def get_credentials_github_base_url(self) -> Optional[str]:
         """Requests a github base URL for enterprise usecase and caches it.
 
         Returns:
-            Optional[str]: The provided base URL or None if not provided
+            Optional[str]: The provided base URL or None if not provided.
         """
         if "github_base_url" in self.config:
             return self.config["github_base_url"]
@@ -83,12 +83,13 @@ class ConsoleConfigFetcher(ConfigFetcher):
         self.config["github_base_url"] = base_url
         return base_url
 
-    def get_component_imports(self) -> List[str]:
-        """The modules containing the custom components to use: see autotransform.thirdparty.example
+    def get_imports_components(self) -> List[str]:
+        """The modules containing the custom components to use. See
+        autotransform.thirdparty.components for an example.
 
         Returns:
-            List[str]: A list of the modules containing custom components that are not part base
-                AutoTransform
+            List[str]: A list of the modules containing custom components that are not part of base
+                AutoTransform.
         """
         component_module_string: str = input(
             "Please provide a comma separated list of custom component modules to import: "
@@ -97,11 +98,11 @@ class ConsoleConfigFetcher(ConfigFetcher):
             return []
         return [module.strip() for module in component_module_string.split(",")]
 
-    def get_remote(self) -> Optional[str]:
-        """Gets the JSON encoded Remote component to use
+    def get_remote_runner(self) -> Optional[str]:
+        """Gets the JSON encoded Remote component to use.
 
         Returns:
-            str: The JSON encoded Remote component to use
+            str: The JSON encoded Remote component to use.
         """
         remote_string: str = input("Please provide a JSON encoded Remote component: ")
         if remote_string == "":

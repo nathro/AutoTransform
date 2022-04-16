@@ -163,7 +163,7 @@ def run_command_main(args: Namespace) -> None:
             time.sleep(1)
         coordinator.kill()
     else:
-        remote_str = Config.get_remote()
+        remote_str = Config.get_remote_runner()
         assert remote_str is not None, "Remote not specified in config"
         event_handler.handle(DebugEvent({"message": f"Remote: {remote_str}"}))
         event_args["remote"] = remote_str

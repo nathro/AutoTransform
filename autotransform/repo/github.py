@@ -65,15 +65,21 @@ class GithubRepo(GitRepo):
         Returns:
             Github: An object allowing interaction with the Github API
         """
-        url = Config.get_github_base_url()
-        token = Config.get_github_token()
+        url = Config.get_credentials_github_base_url()
+        token = Config.get_credentials_github_token()
         if token is not None:
             if url is not None:
                 return Github(token, base_url=url)
             return Github(token)
         if url is not None:
-            return Github(Config.get_github_username(), Config.get_github_password(), base_url=url)
-        return Github(Config.get_github_username(), Config.get_github_password())
+            return Github(
+                Config.get_credentials_github_username(),
+                Config.get_credentials_github_password(),
+                base_url=url,
+            )
+        return Github(
+            Config.get_credentials_github_username(), Config.get_credentials_github_password()
+        )
 
     def submit(self, batch: Batch) -> None:
         """Performs the normal submit for a git repo then submits a pull request

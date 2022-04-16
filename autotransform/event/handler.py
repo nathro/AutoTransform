@@ -51,7 +51,7 @@ class EventHandler:
             raise Exception("Trying to instantiate new EventHandler when one already present")
         self.logging_level = LoggingLevel.INFO
         self.callbacks = []
-        custom_component_modules = Config.get_component_imports()
+        custom_component_modules = Config.get_imports_components()
         for module_string in custom_component_modules:
             module = importlib.import_module(module_string)
             if hasattr(module, "EVENT_CALLBACKS"):

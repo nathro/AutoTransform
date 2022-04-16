@@ -50,7 +50,7 @@ class CommandFactory:
         if bundle["type"] in CommandFactory._getters:
             return CommandFactory._getters[bundle["type"]](bundle["params"])
 
-        custom_component_modules = Config.get_component_imports()
+        custom_component_modules = Config.get_imports_components()
         for module_string in custom_component_modules:
             module = importlib.import_module(module_string)
             if hasattr(module, "COMMANDS") and bundle["type"] in module.COMMANDS:

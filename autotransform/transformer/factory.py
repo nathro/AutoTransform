@@ -56,7 +56,7 @@ class TransformerFactory:
         if bundle["type"] in TransformerFactory._getters:
             return TransformerFactory._getters[bundle["type"]](bundle["params"])
 
-        custom_component_modules = Config.get_component_imports()
+        custom_component_modules = Config.get_imports_components()
         for module_string in custom_component_modules:
             module = importlib.import_module(module_string)
             if hasattr(module, "TRANSFORMERS") and bundle["type"] in module.TRANSFORMERS:
