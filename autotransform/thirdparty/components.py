@@ -17,29 +17,26 @@ from autotransform.command.base import Command
 from autotransform.event.base import Event
 from autotransform.filter.base import Filter
 from autotransform.input.base import Input
-from autotransform.remote.base import Remote
+from autotransform.runner.base import Runner
 from autotransform.schema.builder import SchemaBuilder
 from autotransform.transformer.base import Transformer
 from autotransform.validator.base import Validator
-from autotransform.worker.base import Worker
 
 # See autotransform.batcher.factory
 BATCHERS: Dict[str, Callable[[Mapping[str, Any]], Batcher]] = {}
 # See autotransform.command.factory
 COMMANDS: Dict[str, Callable[[Mapping[str, Any]], Command]] = {}
+# See autotransform.event.handler
+EVENT_CALLBACKS: List[Callable[[Event], None]] = []
 # See autotransform.filter.factory
 FILTERS: Dict[str, Callable[[bool, Mapping[str, Any]], Filter]] = {}
 # See autotransform.input.factory
 INPUTS: Dict[str, Callable[[Mapping[str, Any]], Input]] = {}
+# See autotransform.runner.factory
+RUNNERS: Dict[str, Callable[[Mapping[str, Any]], Runner]] = {}
 # See autotransform.schema.builder
 SCHEMAS: Dict[str, Type[SchemaBuilder]] = {}
 # See autotransform.transformer.factory
 TRANSFORMERS: Dict[str, Callable[[Mapping[str, Any]], Transformer]] = {}
 # See autotransform.validator.factory
 VALIDATORS: Dict[str, Callable[[Mapping[str, Any]], Validator]] = {}
-# See autotransform.worker.factory
-WORKERS: Dict[str, Type[Worker]] = {}
-# See autotransform.remote.factory
-REMOTES: Dict[str, Callable[[Mapping[str, Any]], Remote]] = {}
-# See autotransform.event.handler
-EVENT_CALLBACKS: List[Callable[[Event], None]] = []

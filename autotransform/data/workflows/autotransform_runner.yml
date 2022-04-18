@@ -18,12 +18,6 @@ on:
         description: "A JSON encoded schema to run"
         required: true
         type: string
-      worker:
-        description: "The WorkerType to use for the run"
-        required: true
-        type: choice
-        options:
-        - local
 
 jobs:
   run-autotransform:
@@ -48,7 +42,6 @@ jobs:
     - name: Run AutoTransform
       run: autotransform r -e -w $WORKER AUTO_TRANSFORM_SCHEMA
       env:
-        WORKER: ${{ github.event.inputs.worker }}
         AUTO_TRANSFORM_CONFIG: environment
         AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}
         AUTO_TRANSFORM_SCHEMA: ${{ github.event.inputs.schema }}

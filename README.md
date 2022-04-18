@@ -81,13 +81,9 @@ The config fetcher allows for configuration of AutoTransform as a whole. This in
 * **[Console](https://github.com/nathro/AutoTransform/blob/master/autotransform/config/console.py)** - Prompts the user to input configuration values when they are needed via console input. This is occasionally useful for CLI use cases.
 * **[Environment Variable](https://github.com/nathro/AutoTransform/blob/master/autotransform/config/envvar.py)** - Pulls configuration from environment variables, using names that match the pattern: AUTO_TRANSFORM_&lt;SECTION>_&lt;SETTING> where section and setting represent the section and setting that would be used in a config.ini file, such as AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN. This is the preferred option for production use cases.
 
-### **Worker**
+### **Runner**
 
-**[Workers](https://github.com/nathro/AutoTransform/blob/master/autotransform/worker/base.py)** actually execute a schema. They allow integration with an organization’s CI infrastructure for distributed runs or local runs using the[ LocalWorker](https://github.com/nathro/AutoTransform/blob/master/autotransform/worker/local.py). Other options can be created to leverage things like queue based systems for batches with workers pulling batches off a common queue.
-
-### **Remote**
-
-**[Remote](https://github.com/nathro/AutoTransform/blob/master/autotransform/remote/base.py)** components are used to trigger a run on an organization’s CI infrastructure or other job queue system. This allows developers to run their transformations on remote machines rather than locally. Additionally, they are used by the scheduling logic of AutoTransform to handle scheduled runs.
+**[Runner](https://github.com/nathro/AutoTransform/blob/master/autotransform/runner/base.py)** components are used to trigger a run of AutoTransform either locally or on an organization's remote infrastructure or job queue system. This allows organizations to set up integrations with their infrastructure to speed up developers by offloading the runs of AutoTransform. Additionally, remote infrastructure is used by scheduling logic when setting up scheduled runs of AutoTransform.
 
 ### **Data Store**
 
@@ -100,10 +96,6 @@ The config fetcher allows for configuration of AutoTransform as a whole. This in
 **[A visual representation](https://lucid.app/lucidchart/eca43a3d-175f-416f-bb4f-4363d56f951b/edit?invitationId=inv_f44ed708-8c4a-4998-96f2-8b860aba8ebc)**
 
 The input component of the schema will get a list of strings representing inputs, these are then passed through the filters where only those that pass the is_valid check make it through. This filtered set of inputs is then passed to a batcher which breaks the input into groups called batches. Batches will be executed sequentially as independent changes going through a multi-step process. First, the batch goes to a transformer which makes the actual changes to the codebase. Next, validators are invoked which check to ensure the codebase is still healthy. After this, commands are run which perform post-change processing, such as code generation. Finally, the repo object will check for changes, commit them if present and submit them (i.e. as a Pull Request). Once this is done, the repo object will return the repository to a clean state in preparation for the next batch.
-
-### **Worker**
-
-Workers are handled using a[ Coordinator](https://github.com/nathro/AutoTransform/blob/master/autotransform/worker/coordinator.py) class that spawns, runs, and manages workers. When started, a coordinator will run a schema's get_batches() function to get each batch for the schema. It will then spawn workers from these batches based on the WorkerType supplied to the coordinator. A script run will check the is_finished() state of the coordinator before eventually killing the jobs if a timeout is passed.
 
 # **Upcoming Milestones**
 

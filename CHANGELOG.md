@@ -1,6 +1,8 @@
 # Change Log
 
-## Upcoming Release
+## Release 0.2.0 - Production Beta
+
+Version 0.2.0 represents a production ready beta of AutoTransform. It includes all initial functionality for production environments and represents the desired API for AutoTransform. This API will not be final until 1.0.0 is released, at which point breaking changes will generally only occur with major version updates.
 
 #### New Components
 
@@ -12,25 +14,25 @@
  - RegexFilter as a filter which checks the input against a regex pattern
  - ContentRegexFilter as a filter that checks a file's contents against a regex pattern
 
- - Remote class added to provide an API for invoking remote runs
- - GithubRemote class added to use Github workflows for remote runs
+ - Runner class added to provide an API for invoking runs
+ - GithubRunner class added to use Github workflows for remote runs
 
 #### Scripts
 
- - Run and instance scripts have been migrated to the main script
+ - Run script has been migrated to the main script
+ - Instance script and regexmod script eliminated
  - Config command added to main scripts for listing or updating config.ini values
  - Updated run script to allow remote runs
 
 #### API Changes
 
  - Transformer: Transform now takes Batch instead of Cached File
+ - Eliminated Worker concept and merged logic in to Runners, which can handle local and remote running
 
 #### Upgrade Packages
 
 #### Misc
 
-- RunnableWorker renamed to ProcessWorker
-- Runner renamed to Coordinator
 - Updated BatchMetadata to only require title
 - Add a generic to components for params so that type safety is improved
 - Changed how custom components are expected to be handled, now being imported through a config setting

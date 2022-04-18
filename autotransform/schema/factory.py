@@ -1,17 +1,11 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""A simple factory for producing SchemaBuilders from their name
-
-Note:
-    Imports for custom SchemaBuilders should be in the CUSTOM IMPORTS section.
-    This will reduce merge conflicts when merging in upstream changes.
-    Do not auto organize imports when using custom imports to avoid merge conflicts
-"""
+"""A simple factory for producing SchemaBuilders from their type."""
 
 import importlib
 from typing import Dict, Type
@@ -22,15 +16,11 @@ from autotransform.schema.type import SchemaBuilderType
 
 
 class SchemaBuilderFactory:
-    """The factory class
+    """The factory class for SchemaBuilders. Maps a type to a SchemaBuilder.
 
     Attributes:
-        _map (Dict[SchemaBuilderName, Type[SchemaBuilder]]): A mapping from SchemaBuilderName to
-            the associated class
-
-    Note:
-        Custom builders should have their getters placed in the CUSTOM BUILDERS section.
-        This will reduce merge conflicts when merging in upstream changes.
+        _map (Dict[SchemaBuilderType, Type[SchemaBuilder]]): A mapping from SchemaBuilderType to
+            the associated class.
     """
 
     # pylint: disable=too-few-public-methods
@@ -38,21 +28,21 @@ class SchemaBuilderFactory:
     _map: Dict[SchemaBuilderType, Type[SchemaBuilder]] = {}
 
     @staticmethod
-    def get(name: SchemaBuilderType) -> SchemaBuilder:
-        """Simple get method using the _map attribute
+    def get(builder_type: SchemaBuilderType) -> SchemaBuilder:
+        """Simple get method using the _map attribute.
 
         Args:
-            name (SchemaBuilderName): The name of a SchemaBuilder
+            builder_type (SchemaBuilderType): The type of a SchemaBuilder.
 
         Returns:
-            SchemaBuilder: An instance of the associated SchemaBuilder
+            SchemaBuilder: An instance of the associated SchemaBuilder.
         """
-        if name in SchemaBuilderFactory._map:
-            return SchemaBuilderFactory._map[name]()
+        if builder_type in SchemaBuilderFactory._map:
+            return SchemaBuilderFactory._map[builder_type]()
 
         custom_component_modules = Config.get_imports_components()
         for module_string in custom_component_modules:
             module = importlib.import_module(module_string)
-            if hasattr(module, "SCHEMAS") and name in module.SCHEMAS:
-                return module.SCHEMAS[name]()
-        raise ValueError(f"No schema builder found for type {name}")
+            if hasattr(module, "SCHEMAS") and builder_type in module.SCHEMAS:
+                return module.SCHEMAS[builder_type]()
+        raise ValueError(f"No schema builder found for type {builder_type}")

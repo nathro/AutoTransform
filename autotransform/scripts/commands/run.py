@@ -10,18 +10,16 @@ or by kicking off a remote job."""
 
 import json
 import os
-import time
 from argparse import ArgumentParser, Namespace
 
 from autotransform.config import fetcher as Config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.run import ScriptRunEvent
-from autotransform.remote.factory import RemoteFactory
+from autotransform.runner.factory import RunnerFactory
+from autotransform.runner.local import LocalRunner
 from autotransform.schema.factory import SchemaBuilderFactory
 from autotransform.schema.schema import AutoTransformSchema
-from autotransform.worker.coordinator import Coordinator
-from autotransform.worker.factory import WorkerFactory
 
 
 def add_args(parser: ArgumentParser) -> None:
@@ -88,14 +86,6 @@ def add_args(parser: ArgumentParser) -> None:
         default=360,
         help="How long in seconds to allow the process to run.",
     )
-    parser.add_argument(
-        "-w",
-        "--worker",
-        metavar="worker",
-        type=str,
-        required=False,
-        help="The type of worker to use(see worker.type). Defaults to using local.",
-    )
 
     # Run Mode
     mode_group = parser.add_mutually_exclusive_group()
@@ -116,15 +106,14 @@ def add_args(parser: ArgumentParser) -> None:
         help="Tells the script to run remote using the remote component from the config.",
     )
 
-    parser.set_defaults(schema_type="file", worker="local", run_local=True, func=run_command_main)
+    parser.set_defaults(schema_type="file", run_local=True, func=run_command_main)
 
 
 def run_command_main(args: Namespace) -> None:
     """The main method for the run command, handles the actual execution of a run.
 
     Args:
-        args (Namespace): The arguments supplied to the run command, such as the schema and
-            worker type.
+        args (Namespace): The arguments supplied to the run command, such as the schema.
     """
     # pylint: disable=unspecified-encoding
 
@@ -149,25 +138,17 @@ def run_command_main(args: Namespace) -> None:
     if args.schema_type != "string":
         event_handler.handle(DebugEvent({"message": f"JSON Schema: {schema.to_json()}"}))
 
-    worker = args.worker
-    event_args["worker"] = args.worker
-    event_handler.handle(DebugEvent({"message": f"Worker: {args.worker}"}))
-    worker_type = WorkerFactory.get(worker)
     if args.run_local:
         event_handler.handle(DebugEvent({"message": "Running locally"}))
         event_handler.handle(ScriptRunEvent({"script": "local run", "args": event_args}))
-        coordinator = Coordinator(schema, worker_type)
-        start_time = time.time()
-        coordinator.start()
-        while not coordinator.is_finished() and time.time() <= start_time + args.timeout:
-            time.sleep(1)
-        coordinator.kill()
+        runner = LocalRunner({})
+        runner.run(schema)
     else:
         remote_str = Config.get_remote_runner()
         assert remote_str is not None, "Remote not specified in config"
         event_handler.handle(DebugEvent({"message": f"Remote: {remote_str}"}))
         event_args["remote"] = remote_str
         event_handler.handle(ScriptRunEvent({"script": "remote run", "args": event_args}))
-        remote = RemoteFactory.get(json.loads(remote_str))
+        remote = RunnerFactory.get(json.loads(remote_str))
         remote_ref = remote.run(schema)
         event_handler.handle(DebugEvent({"message": f"Remote ref: {remote_ref}"}))
