@@ -15,6 +15,7 @@ from argparse import ArgumentParser, Namespace
 from autotransform.config import fetcher as Config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
+from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.run import ScriptRunEvent
 from autotransform.runner.factory import RunnerFactory
 from autotransform.runner.local import LocalRunner
@@ -35,6 +36,15 @@ def add_args(parser: ArgumentParser) -> None:
         type=str,
         help="The schema that will be run. Could be a file path, string, "
         + "environment variable name, or builder name.",
+    )
+    
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        dest="verbose",
+        action="store_true",
+        required=False,
+        help="Tells the script to output verbose logs.",
     )
 
     type_group = parser.add_mutually_exclusive_group()
@@ -76,17 +86,6 @@ def add_args(parser: ArgumentParser) -> None:
         + "encoded schema.",
     )
 
-    # Setting Arguments
-    parser.add_argument(
-        "-t",
-        "--timeout",
-        metavar="timeout",
-        type=int,
-        required=False,
-        default=360,
-        help="How long in seconds to allow the process to run.",
-    )
-
     # Run Mode
     mode_group = parser.add_mutually_exclusive_group()
     mode_group.add_argument(
@@ -119,6 +118,8 @@ def run_command_main(args: Namespace) -> None:
 
     event_args = {}
     event_handler = EventHandler.get()
+    if args.verbose:
+        event_handler.set_logging_level(LoggingLevel.DEBUG)
     schema = args.schema
     event_handler.handle(DebugEvent({"message": f"Schema: ({args.schema_type}) {args.schema}"}))
     event_args["schema"] = args.schema
