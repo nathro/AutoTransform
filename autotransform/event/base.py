@@ -85,4 +85,7 @@ class Event(Generic[TData], ABC):
             str: The loggable message.
         """
         type_str = "".join([w.capitalize() for w in self.get_type().split("_")])
-        return f"[{type_str}] {self._get_message()}"
+        message = self._get_message()
+        if message[0] == "[":
+            return f"[{type_str}]{message}"
+        return f"[{type_str}] {message}"

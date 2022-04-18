@@ -37,7 +37,7 @@ def add_args(parser: ArgumentParser) -> None:
         help="The schema that will be run. Could be a file path, string, "
         + "environment variable name, or builder name.",
     )
-    
+
     parser.add_argument(
         "-v",
         "--verbose",

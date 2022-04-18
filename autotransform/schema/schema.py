@@ -125,8 +125,9 @@ class AutoTransformSchema:
             for cur_filter in self.filters:
                 if not cur_filter.is_valid(cached_file):
                     is_valid = False
+                    type_str = "".join([w.capitalize() for w in cur_filter.get_type().split("_")])
                     event = DebugEvent(
-                        {"message": f"[{cur_filter.get_type()}] Input invalid: {cached_file.path}"}
+                        {"message": f"[{type_str}] Input invalid: {cached_file.path}"}
                     )
                     event_handler.handle(event)
                     break
@@ -195,6 +196,7 @@ class AutoTransformSchema:
                 repo.rewind(batch)
             else:
                 event_handler.handle(DebugEvent({"message": "No changes found"}))
+        event_handler.handle(DebugEvent({"message": "Finish batch"}))
 
     def run(self):
         """Fully run a given Schema including getting and executing all Batches."""
