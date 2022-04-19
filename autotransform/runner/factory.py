@@ -5,8 +5,7 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""A simple factory for producing Runners from type and param information.
-"""
+"""A simple factory for producing Runners from type and param information."""
 
 import importlib
 from typing import Any, Callable, Dict, Mapping
@@ -38,7 +37,7 @@ class RunnerFactory:
         """Simple get method using the _map attribute.
 
         Args:
-            bundle (RunnerBundle): The type of a Runner.
+            bundle (RunnerBundle): The bundled Runner type and params.
 
         Returns:
             Runner: An instance of the associated Runner.

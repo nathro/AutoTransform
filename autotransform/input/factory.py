@@ -1,17 +1,11 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""A simple factory for producing Inputs from type and param information
-
-Note:
-    Imports for custom Inputs should be in the CUSTOM IMPORTS section.
-    This will reduce merge conflicts when merging in upstream changes.
-    Do not auto organize imports when using custom imports to avoid merge conflicts
-"""
+"""A simple factory for producing Inputs from type and param information."""
 
 import importlib
 from typing import Any, Callable, Dict, Mapping
@@ -24,36 +18,32 @@ from autotransform.input.type import InputType
 
 
 class InputFactory:
-    """The factory class
+    """The factory class for Inputs. Maps a type to a Input
 
     Attributes:
-        _getters (Dict[InputType, Callable[[Mapping[str, Any]], Input]]): A mapping
-            from InputType to that inputs's from_data function.
-
-    Note:
-        Custom inputs should have their getters placed in the CUSTOM INPUTS section.
-        This will reduce merge conflicts when merging in upstream changes.
+        _map (Dict[InputType, Callable[[Mapping[str, Any]], Input]]): A mapping from
+            InputType to the from_data function of the appropriate Input.
     """
 
     # pylint: disable=too-few-public-methods
 
-    _getters: Dict[InputType, Callable[[Mapping[str, Any]], Input]] = {
+    _map: Dict[InputType, Callable[[Mapping[str, Any]], Input]] = {
         InputType.DIRECTORY: DirectoryInput.from_data,
         InputType.GIT_GREP: GitGrepInput.from_data,
     }
 
     @staticmethod
     def get(bundle: InputBundle) -> Input:
-        """Simple get method using the _getters attribute
+        """Simple get method using the _map attribute.
 
         Args:
-            bundle (InputBundle): The decoded bundle from which to produce a Input instance
+            bundle (InputBundle): The bundled Input type and params.
 
         Returns:
-            Input: The Input instance of the decoded bundle
+            Input: An instance of the associated Input.
         """
-        if bundle["type"] in InputFactory._getters:
-            return InputFactory._getters[bundle["type"]](bundle["params"])
+        if bundle["type"] in InputFactory._map:
+            return InputFactory._map[bundle["type"]](bundle["params"])
 
         custom_component_modules = Config.get_imports_components()
         for module_string in custom_component_modules:

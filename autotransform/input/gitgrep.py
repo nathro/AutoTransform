@@ -1,7 +1,7 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
@@ -23,27 +23,28 @@ class GitGrepInputParams(TypedDict):
 
 
 class GitGrepInput(Input[GitGrepInputParams]):
-    """A Input that lists all files recursively within a provided directory.
+    """An input that uses git grep to search a repository for a pattern and returns all files
+    that contain a match of the supplied pattern.
 
     Attributes:
-        params (GitGrepInputParams): Contains the arguments for doing a git grep search
+        _params (GitGrepInputParams): Contains the arguments for doing a git grep search.
     """
 
-    params: GitGrepInputParams
+    _params: GitGrepInputParams
 
     def get_type(self) -> InputType:
         """Used to map Input components 1:1 with an enum, allowing construction from JSON.
 
         Returns:
-            InputType: The unique type associated with this Input
+            InputType: The unique type associated with this Input.
         """
         return InputType.GIT_GREP
 
-    def get_files(self) -> List[str]:
-        """Gets a list of files using git grep that match the supplied pattern
+    def get_keys(self) -> List[str]:
+        """Gets a list of files using git grep that match the supplied pattern.
 
         Returns:
-            List[str]: The eligible files for transformation
+            List[str]: The eligible files for transformation.
         """
         dir_cmd = ["git", "rev-parse", "--show-toplevel"]
         repo_dir = subprocess.check_output(dir_cmd, encoding="UTF-8").replace("\\", "/").strip()
@@ -54,7 +55,7 @@ class GitGrepInput(Input[GitGrepInputParams]):
             "-l",
             "--untracked",
             "-e",
-            self.params["pattern"],
+            self._params["pattern"],
             "--",
             repo_dir,
         ]

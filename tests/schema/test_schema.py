@@ -43,9 +43,9 @@ ALL_FILES = ["allowed", "not_allowed"]
 EXPECTED_METADATA = BatchMetadata({"title": "", "summary": "", "tests": ""})
 
 
-def mock_input(mocked_get_files) -> None:
+def mock_input(mocked_get_keys) -> None:
     """Sets up the input mock."""
-    mocked_get_files.return_value = ALL_FILES
+    mocked_get_keys.return_value = ALL_FILES
 
 
 def mock_filter(mocked_is_valid) -> None:
@@ -106,16 +106,16 @@ def mock_repo(
 @patch.object(GitPython, "active_branch")
 @patch.object(SingleBatcher, "batch")
 @patch.object(ExtensionFilter, "_is_valid")
-@patch.object(DirectoryInput, "get_files")
+@patch.object(DirectoryInput, "get_keys")
 def test_get_batches(
-    mocked_get_files,
+    mocked_get_keys,
     mocked_is_valid,
     mocked_batch,
     mocked_active_branch,
 ):
     """Checks that get_batches properly calls and uses components."""
     # Set up mocks
-    mock_input(mocked_get_files)
+    mock_input(mocked_get_keys)
     mock_filter(mocked_is_valid)
     mock_batcher(mocked_batch)
 
@@ -124,7 +124,7 @@ def test_get_batches(
     actual_batch = schema.get_batches()[0]
 
     # Check input called
-    mocked_get_files.assert_called_once()
+    mocked_get_keys.assert_called_once()
 
     # Check filter called
     assert mocked_is_valid.call_count == 2
@@ -150,9 +150,9 @@ def test_get_batches(
 @patch.object(RegexTransformer, "transform")
 @patch.object(SingleBatcher, "batch")
 @patch.object(ExtensionFilter, "_is_valid")
-@patch.object(DirectoryInput, "get_files")
+@patch.object(DirectoryInput, "get_keys")
 def test_run_with_changes(
-    mocked_get_files,
+    mocked_get_keys,
     mocked_is_valid,
     mocked_batch,
     mocked_transform,
@@ -164,7 +164,7 @@ def test_run_with_changes(
 ):
     """Checks that get_batches properly calls and uses components."""
     # Set up mocks
-    mock_input(mocked_get_files)
+    mock_input(mocked_get_keys)
     mock_filter(mocked_is_valid)
     mock_batcher(mocked_batch)
     mock_transformer(mocked_transform)
@@ -175,7 +175,7 @@ def test_run_with_changes(
     schema.run()
 
     # Check input called
-    mocked_get_files.assert_called_once()
+    mocked_get_keys.assert_called_once()
 
     # Check filter called
     assert mocked_is_valid.call_count == 2
@@ -208,9 +208,9 @@ def test_run_with_changes(
 @patch.object(RegexTransformer, "transform")
 @patch.object(SingleBatcher, "batch")
 @patch.object(ExtensionFilter, "_is_valid")
-@patch.object(DirectoryInput, "get_files")
+@patch.object(DirectoryInput, "get_keys")
 def test_run_with_no_changes(
-    mocked_get_files,
+    mocked_get_keys,
     mocked_is_valid,
     mocked_batch,
     mocked_transform,
@@ -222,7 +222,7 @@ def test_run_with_no_changes(
 ):
     """Checks that get_batches properly calls and uses components."""
     # Set up mocks
-    mock_input(mocked_get_files)
+    mock_input(mocked_get_keys)
     mock_filter(mocked_is_valid)
     mock_batcher(mocked_batch)
     mock_transformer(mocked_transform)
@@ -233,7 +233,7 @@ def test_run_with_no_changes(
     schema.run()
 
     # Check input called
-    mocked_get_files.assert_called_once()
+    mocked_get_keys.assert_called_once()
 
     # Check filter called
     assert mocked_is_valid.call_count == 2
@@ -290,7 +290,7 @@ def test_json_decoding(mocked_active_branch):
     # Check input
     assert type(actual_schema.input) is type(expected_schema.input), "Inputs are not the same"
     assert (
-        actual_schema.input.params == expected_schema.input.params
+        actual_schema.input.get_params() == expected_schema.input.get_params()
     ), "Inputs do not have the same params"
 
     # Check batcher

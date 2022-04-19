@@ -1,7 +1,7 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
@@ -25,37 +25,48 @@ class InputBundle(TypedDict):
 
 
 class Input(Generic[TParams], ABC):
-    """The base for Input components.
+    """The base for Input components. Used by AutoTransform to get string keys that
+    represent the inputs for a Schema. Usually returns file paths but any string can be
+    returned as long as Schema components work with it.
 
     Attributes:
-        params (TParams): The paramaters that control operation of the Input.
+        _params (TParams): The paramaters that control operation of the Input.
             Should be defined using a TypedDict in subclasses
     """
 
-    params: TParams
+    _params: TParams
 
     def __init__(self, params: TParams):
         """A simple constructor.
 
         Args:
-            params (TParams): The paramaters used to set up the Input
+            params (TParams): The paramaters used to set up the Input.
         """
-        self.params = params
+        self._params = params
+
+    def get_params(self) -> TParams:
+        """Gets the paramaters used to set up the Input.
+
+        Returns:
+            TParams: The paramaters used to set up the Input.
+        """
+        return self._params
 
     @abstractmethod
     def get_type(self) -> InputType:
         """Used to map Input components 1:1 with an enum, allowing construction from JSON.
 
         Returns:
-            InputType: The unique type associated with this Input
+            InputType: The unique type associated with this Input.
         """
 
     @abstractmethod
-    def get_files(self) -> List[str]:
-        """Get a list of files to be used by the transformation based on the input criteria.
+    def get_keys(self) -> List[str]:
+        """Get a list of keys to be used by the transformation based on the input criteria. Usually
+        file paths, but any string can be used.
 
         Returns:
-            List[str]: The eligible files for transformation
+            List[str]: The eligible keys for transformation.
         """
 
     def bundle(self) -> InputBundle:
@@ -64,10 +75,10 @@ class Input(Generic[TParams], ABC):
         an encodable version.
 
         Returns:
-            InputBundle: The encodable bundle
+            InputBundle: The encodable bundle.
         """
         return {
-            "params": self.params,
+            "params": self._params,
             "type": self.get_type(),
         }
 
@@ -78,8 +89,8 @@ class Input(Generic[TParams], ABC):
         assert that the data provided matches expected types and is valid.
 
         Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
+            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
 
         Returns:
-            Input: An instance of the Input
+            Input: An instance of the Input.
         """

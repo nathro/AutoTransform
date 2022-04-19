@@ -25,8 +25,10 @@ class LocalRunner(Runner[LocalRunnerParams]):
     """A Runner component that runs a Schema locally on the machine.
 
     Attributes:
-        params (LocalRunnerParams): The paramaters that control operation of the Runner.
+        _params (LocalRunnerParams): The paramaters that control operation of the Runner.
     """
+
+    _params: LocalRunnerParams
 
     def get_type(self) -> RunnerType:
         """Used to map Runner components 1:1 with an enum, allowing construction from JSON.

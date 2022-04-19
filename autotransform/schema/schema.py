@@ -116,7 +116,7 @@ class AutoTransformSchema:
         event_handler.handle(DebugEvent({"message": "Begin get_batches"}))
         valid_inputs = []
         event_handler.handle(DebugEvent({"message": "Begin get_input"}))
-        all_inputs = self.input.get_files()
+        all_inputs = self.input.get_keys()
         event_handler.handle(DebugEvent({"message": f"Inputs: {json.dumps(all_inputs)}"}))
         event_handler.handle(DebugEvent({"message": "Begin filters"}))
         for possible_input in all_inputs:

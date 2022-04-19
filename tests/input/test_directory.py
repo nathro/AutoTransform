@@ -20,7 +20,7 @@ def assert_directory_content(directory: str, expected_files: List[str]):
         expected_files (List[str]): The relative paths of all expected results
     """
     inp: DirectoryInput = DirectoryInput({"path": directory})
-    files = inp.get_files()
+    files = inp.get_keys()
     missing_files = []
     for file in expected_files:
         if file not in files:

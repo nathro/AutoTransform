@@ -32,8 +32,10 @@ class GithubRunner(Runner[GithubRunnerParams]):
     data/workflows/autotransform_runner.yml.
 
     Attributes:
-        params (GithubRunnerParams): The paramaters that control operation of the Runner.
+        _params (GithubRunnerParams): The paramaters that control operation of the Runner.
     """
+
+    _params: GithubRunnerParams
 
     def get_type(self) -> RunnerType:
         """Used to map Runner components 1:1 with an enum, allowing construction from JSON.
@@ -58,7 +60,7 @@ class GithubRunner(Runner[GithubRunnerParams]):
             repo, GithubRepo
         ), "GithubRunner can only run using schemas that have Github repos"
         github_repo = repo.github_repo
-        workflow = github_repo.get_workflow(self.params["workflow"])
+        workflow = github_repo.get_workflow(self._params["workflow"])
         event_handler.handle(DebugEvent({"message": f"Workflow found: {workflow.name}"}))
         dispatch_success = workflow.create_dispatch(
             repo.params["base_branch_name"],

@@ -30,11 +30,11 @@ class Runner(Generic[TParams], ABC):
     either locally on the machine or on remote infrastructure.
 
     Attributes:
-        params (TParams): The paramaters that control operation of the Runner.
+        _params (TParams): The paramaters that control operation of the Runner.
             Should be defined using a TypedDict in subclasses.
     """
 
-    params: TParams
+    _params: TParams
 
     def __init__(self, params: TParams):
         """A simple constructor.
@@ -42,7 +42,7 @@ class Runner(Generic[TParams], ABC):
         Args:
             params (TParams): The paramaters used to set up the Runner.
         """
-        self.params = params
+        self._params = params
 
     @abstractmethod
     def get_type(self) -> RunnerType:
@@ -69,7 +69,7 @@ class Runner(Generic[TParams], ABC):
             RunnerBundle: The encodable bundle.
         """
         return {
-            "params": self.params,
+            "params": self._params,
             "type": self.get_type(),
         }
 

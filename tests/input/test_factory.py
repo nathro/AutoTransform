@@ -16,6 +16,6 @@ def test_all_enum_values_present():
     missing_values = []
     for input_type in InputType:
         # pylint: disable=protected-access
-        if input_type not in InputFactory._getters:
+        if input_type not in InputFactory._map:
             missing_values.append(input_type)
     assert not missing_values, "Types missing from factory: " + ", ".join(missing_values)
