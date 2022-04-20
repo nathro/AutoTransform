@@ -117,7 +117,7 @@ class AutoTransformSchema:
         valid_keys = []
         event_handler.handle(DebugEvent({"message": "Begin get_input"}))
         all_keys = self.input.get_keys()
-        event_handler.handle(DebugEvent({"message": f"Inputs: {json.dumps(all_keys)}"}))
+        event_handler.handle(DebugEvent({"message": f"Keys: {json.dumps(all_keys)}"}))
         event_handler.handle(DebugEvent({"message": "Begin filters"}))
         for key in all_keys:
             is_valid = True
@@ -133,7 +133,7 @@ class AutoTransformSchema:
             if is_valid:
                 valid_keys.append(key)
         event_handler.handle(
-            DebugEvent({"message": f"Valid Inputs: {json.dumps(valid_keys)}"})
+            DebugEvent({"message": f"Valid keys: {json.dumps(valid_keys)}"})
         )
         event_handler.handle(DebugEvent({"message": "Begin batching"}))
         batches = self.batcher.batch([CachedFile(key) for key in valid_keys])
