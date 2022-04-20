@@ -44,8 +44,9 @@ class Runner(Generic[TParams], ABC):
         """
         self._params = params
 
+    @staticmethod
     @abstractmethod
-    def get_type(self) -> RunnerType:
+    def get_type() -> RunnerType:
         """Used to map Runner components 1:1 with an enum, allowing construction from JSON.
 
         Returns:

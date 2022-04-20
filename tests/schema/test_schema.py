@@ -17,7 +17,7 @@ from mock import patch
 
 from autotransform.batcher.base import Batch, BatchMetadata
 from autotransform.batcher.single import SingleBatcher
-from autotransform.filter.extension import ExtensionFilter, Extensions
+from autotransform.filter.regex import RegexFilter
 from autotransform.input.directory import DirectoryInput
 from autotransform.repo.github import GithubRepo
 from autotransform.schema.schema import AutoTransformSchema
@@ -33,26 +33,26 @@ def get_sample_schema() -> AutoTransformSchema:
         DirectoryInput({"path": repo_root}),
         SingleBatcher({"metadata": {"title": "test", "summary": "", "tests": ""}}),
         RegexTransformer({"pattern": "input", "replacement": "inputsource"}),
-        filters=[ExtensionFilter({"extensions": [Extensions.PYTHON]})],
+        filters=[RegexFilter({"pattern": ".*\\.py$"})],
         repo=GithubRepo({"base_branch_name": "master", "full_github_name": "nathro/AutoTransform"}),
     )
 
 
-ALLOWED_FILES = ["allowed"]
-ALL_FILES = ["allowed", "not_allowed"]
+ALLOWED_KEYS = ["allowed"]
+ALL_KEYS = ["allowed", "not_allowed"]
 EXPECTED_METADATA = BatchMetadata({"title": "", "summary": "", "tests": ""})
 
 
 def mock_input(mocked_get_keys) -> None:
     """Sets up the input mock."""
-    mocked_get_keys.return_value = ALL_FILES
+    mocked_get_keys.return_value = ALL_KEYS
 
 
 def mock_filter(mocked_is_valid) -> None:
     """Sets up the filter mock."""
 
-    def mock_is_valid(file: CachedFile) -> bool:
-        return file.path in ALLOWED_FILES
+    def mock_is_valid(key: str) -> bool:
+        return key in ALLOWED_KEYS
 
     mocked_is_valid.side_effect = mock_is_valid
 
@@ -105,7 +105,7 @@ def mock_repo(
 # patches are in reverse order
 @patch.object(GitPython, "active_branch")
 @patch.object(SingleBatcher, "batch")
-@patch.object(ExtensionFilter, "_is_valid")
+@patch.object(RegexFilter, "_is_valid")
 @patch.object(DirectoryInput, "get_keys")
 def test_get_batches(
     mocked_get_keys,
@@ -128,16 +128,16 @@ def test_get_batches(
 
     # Check filter called
     assert mocked_is_valid.call_count == 2
-    filtered_paths = [mock_call.args[0].path for mock_call in mocked_is_valid.call_args_list]
-    assert filtered_paths == ALL_FILES
+    filtered_inputs = [mock_call.args[0] for mock_call in mocked_is_valid.call_args_list]
+    assert filtered_inputs == ALL_KEYS
 
     # Check batcher called
     mocked_batch.assert_called_once()
     batched_paths = [file.path for file in mocked_batch.call_args.args[0]]
-    assert batched_paths == ALLOWED_FILES
+    assert batched_paths == ALLOWED_KEYS
 
     # Check end result
-    assert [file.path for file in actual_batch["files"]] == ALLOWED_FILES
+    assert [file.path for file in actual_batch["files"]] == ALLOWED_KEYS
     assert actual_batch["metadata"] == EXPECTED_METADATA
 
 
@@ -149,7 +149,7 @@ def test_get_batches(
 @patch.object(GitPython, "active_branch")
 @patch.object(RegexTransformer, "transform")
 @patch.object(SingleBatcher, "batch")
-@patch.object(ExtensionFilter, "_is_valid")
+@patch.object(RegexFilter, "_is_valid")
 @patch.object(DirectoryInput, "get_keys")
 def test_run_with_changes(
     mocked_get_keys,
@@ -179,18 +179,18 @@ def test_run_with_changes(
 
     # Check filter called
     assert mocked_is_valid.call_count == 2
-    filtered_paths = [mock_call.args[0].path for mock_call in mocked_is_valid.call_args_list]
-    assert filtered_paths == ALL_FILES
+    filtered_inputs = [mock_call.args[0] for mock_call in mocked_is_valid.call_args_list]
+    assert filtered_inputs == ALL_KEYS
 
     # Check batcher called
     mocked_batch.assert_called_once()
     batched_paths = [file.path for file in mocked_batch.call_args.args[0]]
-    assert batched_paths == ALLOWED_FILES
+    assert batched_paths == ALLOWED_KEYS
 
     # Check transformer called
     mocked_transform.assert_called_once()
     transformed_path = mocked_transform.call_args.args[0]["files"][0].path
-    assert [transformed_path] == ALLOWED_FILES
+    assert [transformed_path] == ALLOWED_KEYS
 
     # Check repo calls
     mocked_clean.assert_called_once()
@@ -207,7 +207,7 @@ def test_run_with_changes(
 @patch.object(GitPython, "active_branch")
 @patch.object(RegexTransformer, "transform")
 @patch.object(SingleBatcher, "batch")
-@patch.object(ExtensionFilter, "_is_valid")
+@patch.object(RegexFilter, "_is_valid")
 @patch.object(DirectoryInput, "get_keys")
 def test_run_with_no_changes(
     mocked_get_keys,
@@ -237,18 +237,18 @@ def test_run_with_no_changes(
 
     # Check filter called
     assert mocked_is_valid.call_count == 2
-    filtered_paths = [mock_call.args[0].path for mock_call in mocked_is_valid.call_args_list]
-    assert filtered_paths == ALL_FILES
+    filtered_inputs = [mock_call.args[0] for mock_call in mocked_is_valid.call_args_list]
+    assert filtered_inputs == ALL_KEYS
 
     # Check batcher called
     mocked_batch.assert_called_once()
     batched_paths = [file.path for file in mocked_batch.call_args.args[0]]
-    assert batched_paths == ALLOWED_FILES
+    assert batched_paths == ALLOWED_KEYS
 
     # Check transformer called
     mocked_transform.assert_called_once()
     transformed_path = mocked_transform.call_args.args[0]["files"][0].path
-    assert [transformed_path] == ALLOWED_FILES
+    assert [transformed_path] == ALLOWED_KEYS
 
     # Check repo calls
     mocked_clean.assert_called_once()
@@ -322,7 +322,7 @@ def test_json_decoding(mocked_active_branch):
             expected_schema.filters[i]
         ), "Filters are not the same"
         assert (
-            actual_schema.filters[i].params == expected_schema.filters[i].params
+            actual_schema.filters[i].get_params() == expected_schema.filters[i].get_params()
         ), "Filters do not have the same params"
 
     # Check validators

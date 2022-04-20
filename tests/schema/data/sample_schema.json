@@ -26,11 +26,9 @@
         {
             "inverted": false,
             "params": {
-                "extensions": [
-                    ".py"
-                ]
+                "pattern": ".*\\.py$"
             },
-            "type": "extension"
+            "type": "regex"
         }
     ],
     "validators": [],

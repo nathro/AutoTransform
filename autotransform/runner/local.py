@@ -30,7 +30,8 @@ class LocalRunner(Runner[LocalRunnerParams]):
 
     _params: LocalRunnerParams
 
-    def get_type(self) -> RunnerType:
+    @staticmethod
+    def get_type() -> RunnerType:
         """Used to map Runner components 1:1 with an enum, allowing construction from JSON.
 
         Returns:

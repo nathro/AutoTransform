@@ -18,7 +18,7 @@ from autotransform.runner.type import RunnerType
 
 
 class RunnerFactory:
-    """The factory class for Runners. Maps a type to a Runner
+    """The factory class for Runners. Maps a type to a Runner.
 
     Attributes:
         _map (Dict[RunnerType, Callable[[Mapping[str, Any]], Runner]]): A mapping from

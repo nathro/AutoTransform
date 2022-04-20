@@ -31,7 +31,7 @@ class Input(Generic[TParams], ABC):
 
     Attributes:
         _params (TParams): The paramaters that control operation of the Input.
-            Should be defined using a TypedDict in subclasses
+            Should be defined using a TypedDict in subclasses.
     """
 
     _params: TParams
@@ -52,8 +52,9 @@ class Input(Generic[TParams], ABC):
         """
         return self._params
 
+    @staticmethod
     @abstractmethod
-    def get_type(self) -> InputType:
+    def get_type() -> InputType:
         """Used to map Input components 1:1 with an enum, allowing construction from JSON.
 
         Returns:

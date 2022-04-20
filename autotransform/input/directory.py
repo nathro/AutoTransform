@@ -42,7 +42,8 @@ class DirectoryInput(Input[DirectoryInputParams]):
         Input.__init__(self, params)
         self._files = []
 
-    def get_type(self) -> InputType:
+    @staticmethod
+    def get_type() -> InputType:
         """Used to map Input components 1:1 with an enum, allowing construction from JSON.
 
         Returns:

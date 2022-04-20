@@ -114,34 +114,32 @@ class AutoTransformSchema:
         """
         event_handler = EventHandler.get()
         event_handler.handle(DebugEvent({"message": "Begin get_batches"}))
-        valid_inputs = []
+        valid_keys = []
         event_handler.handle(DebugEvent({"message": "Begin get_input"}))
-        all_inputs = self.input.get_keys()
-        event_handler.handle(DebugEvent({"message": f"Inputs: {json.dumps(all_inputs)}"}))
+        all_keys = self.input.get_keys()
+        event_handler.handle(DebugEvent({"message": f"Inputs: {json.dumps(all_keys)}"}))
         event_handler.handle(DebugEvent({"message": "Begin filters"}))
-        for possible_input in all_inputs:
-            cached_file = CachedFile(possible_input)
+        for key in all_keys:
             is_valid = True
             for cur_filter in self.filters:
-                if not cur_filter.is_valid(cached_file):
+                if not cur_filter.is_valid(key):
                     is_valid = False
                     type_str = "".join([w.capitalize() for w in cur_filter.get_type().split("_")])
                     event = DebugEvent(
-                        {"message": f"[{type_str}] Input invalid: {cached_file.path}"}
+                        {"message": f"[{type_str}] Key invalid: {key}"}
                     )
                     event_handler.handle(event)
                     break
             if is_valid:
-                valid_inputs.append(cached_file)
-        encodable_valid_inputs = [inp.path for inp in valid_inputs]
+                valid_keys.append(key)
         event_handler.handle(
-            DebugEvent({"message": f"Valid Inputs: {json.dumps(encodable_valid_inputs)}"})
+            DebugEvent({"message": f"Valid Inputs: {json.dumps(valid_keys)}"})
         )
         event_handler.handle(DebugEvent({"message": "Begin batching"}))
-        batches = self.batcher.batch(valid_inputs)
+        batches = self.batcher.batch([CachedFile(key) for key in valid_keys])
 
         encodable_batches = [
-            {"inputs": [inp.path for inp in batch["files"]], "metadata": batch["metadata"]}
+            {"keys": [inp.path for inp in batch["files"]], "metadata": batch["metadata"]}
             for batch in batches
         ]
         event_handler.handle(DebugEvent({"message": f"Batches: {json.dumps(encodable_batches)}"}))

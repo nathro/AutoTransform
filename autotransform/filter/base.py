@@ -1,7 +1,7 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
@@ -13,13 +13,12 @@ from abc import ABC, abstractmethod
 from typing import Any, Generic, Mapping, Optional, TypedDict, TypeVar
 
 from autotransform.filter.type import FilterType
-from autotransform.util.cachedfile import CachedFile
 
 TParams = TypeVar("TParams", bound=Mapping[str, Any])
 
 
 class FilterBundle(TypedDict):
-    """A bundled version of the Filter object used for JSON encoding"""
+    """A bundled version of the Filter object used for JSON encoding."""
 
     inverted: Optional[bool]
     params: Mapping[str, Any]
@@ -27,63 +26,74 @@ class FilterBundle(TypedDict):
 
 
 class Filter(Generic[TParams], ABC):
-    """The base for Filter components.
+    """The base for Filter components. Used by AutoTransform to determine if a key from an Input
+    is eligible for transformation.
 
     Attributes:
-        params (TParams): The paramaters that control operation of the Filter.
-            Should be defined using a TypedDict in subclasses
-        inverted (bool): Whether to invert the results of the filter
+        _params (TParams): The paramaters that control operation of the Filter.
+            Should be defined using a TypedDict in subclasses.
+        _inverted (bool): Whether to invert the results of the filter.
     """
 
-    inverted: bool
-    params: TParams
+    _inverted: bool
+    _params: TParams
 
     def __init__(self, params: TParams):
-        """A simple constructor
+        """A simple constructor.
 
         Args:
-            params (TParams): The paramaters used to set up the Filter
+            params (TParams): The paramaters used to set up the Filter.
         """
-        self.inverted = False
-        self.params = params
+        self._inverted = False
+        self._params = params
 
-    @abstractmethod
-    def get_type(self) -> FilterType:
-        """Used to map Filter components 1:1 with an enum, allowing construction from JSON
+    def get_params(self) -> TParams:
+        """Gets the paramaters used to set up the Filter.
 
         Returns:
-            FilterType: The unique type associated with this Filter
+            TParams: The paramaters used to set up the Filter.
+        """
+        return self._params
+
+    @staticmethod
+    @abstractmethod
+    def get_type() -> FilterType:
+        """Used to map Filter components 1:1 with an enum, allowing construction from JSON.
+
+        Returns:
+            FilterType: The unique type associated with this Filter.
         """
 
     def invert(self) -> Filter:
-        """Inverts the results that the filter will provide
+        """Inverts the results that the filter will provide. Inverting an already inverted Filter
+        will return it to normal operation.
 
         Returns:
-            Filter: The Filter after setting the inversion
+            Filter: The Filter after setting the inversion.
         """
-        self.inverted = not self.inverted
+        self._inverted = not self._inverted
         return self
 
-    def is_valid(self, file: CachedFile) -> bool:
-        """Check whether a file is valid based on the filter and handle inversion
+    def is_valid(self, key: str) -> bool:
+        """Check whether a key is valid based on the Filter and handle inversion.
 
         Args:
-            file (CachedFile): The file to check
+            key (str): The key to check.
 
         Returns:
-            bool: Returns True if the file should be included
+            bool: Returns True if the key is eligible for transformation
         """
-        return self.inverted != self._is_valid(file)
+        return self._inverted != self._is_valid(key)
 
     @abstractmethod
-    def _is_valid(self, file: CachedFile) -> bool:
-        """Check whether a file is valid based on the filter. Does not handle inversion.
+    def _is_valid(self, key: str) -> bool:
+        """Check whether a key is valid based on the Filter. Does not handle inversion.
 
         Args:
-            file (CachedFile): The file to check
+            key (str): The key to check.
 
         Returns:
-            bool: Returns True if the file should be included
+            bool: Returns True if the key is eligible for transformation
         """
 
     def bundle(self) -> FilterBundle:
@@ -92,11 +102,11 @@ class Filter(Generic[TParams], ABC):
         an encodable version.
 
         Returns:
-            FilterBundle: The encodable bundle
+            FilterBundle: The encodable bundle.
         """
         return {
-            "inverted": self.inverted,
-            "params": self.params,
+            "inverted": self._inverted,
+            "params": self._params,
             "type": self.get_type(),
         }
 
@@ -107,11 +117,11 @@ class Filter(Generic[TParams], ABC):
         capabilities of the Filter.
 
         Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
-            inverted (Optional[bool]): Whether the filter was inverted before encoding
+            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
+            inverted (Optional[bool]): Whether the filter was inverted before encoding.
 
         Returns:
-            Filter: An instance of the Filter
+            Filter: An instance of the Filter.
         """
         unbundled_filter = cls._from_data(data)
         if inverted:
@@ -125,8 +135,8 @@ class Filter(Generic[TParams], ABC):
         assert that the data provided matches expected types and is valid.
 
         Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
+            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
 
         Returns:
-            Filter: An instance of the Filter
+            Filter: An instance of the Filter.
         """

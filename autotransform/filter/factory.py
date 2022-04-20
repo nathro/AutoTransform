@@ -18,45 +18,38 @@ from typing import Any, Callable, Dict, Mapping
 
 from autotransform.config import fetcher as Config
 from autotransform.filter.base import Filter, FilterBundle
-from autotransform.filter.contentregex import ContentRegexFilter
-from autotransform.filter.extension import ExtensionFilter
-from autotransform.filter.regex import RegexFilter
+from autotransform.filter.regex import FileContentRegexFilter, RegexFilter
 from autotransform.filter.type import FilterType
 
 
 class FilterFactory:
-    """The factory class
+    """The factory class for Filters. Maps a type to a Filter.
 
     Attributes:
-        _getters (Dict[FilterType, Callable[[Mapping[str, Any]], Filter]]): A mapping
-            from FilterType to that filters's from_data function.
-
-    Note:
-        Custom filters should have their getters placed in the CUSTOM FILTERS section.
-        This will reduce merge conflicts when merging in upstream changes.
+        _map (Dict[FilterType, Callable[[bool, Mapping[str, Any]], Filter]]): A mapping from
+            FilterType to the from_data function of the appropriate Filter.
     """
 
     # pylint: disable=too-few-public-methods
 
-    _getters: Dict[FilterType, Callable[[bool, Mapping[str, Any]], Filter]] = {
-        FilterType.CONTENT_REGEX: ContentRegexFilter.from_data,
-        FilterType.EXTENSION: ExtensionFilter.from_data,
+    _map: Dict[FilterType, Callable[[bool, Mapping[str, Any]], Filter]] = {
+        FilterType.FILE_CONTENT_REGEX: FileContentRegexFilter.from_data,
         FilterType.REGEX: RegexFilter.from_data,
     }
 
     @staticmethod
     def get(bundle: FilterBundle) -> Filter:
-        """Simple get method using the _getters attribute
+        """Simple get method using the _map attribute.
 
         Args:
-            bundle (FilterBundle): The decoded bundle from which to produce a Filter instance
+            bundle (FilterBundle): The bundled Filter type and params.
 
         Returns:
-            Filter: The Filter instance of the decoded bundle
+            Filter: An instance of the associated Filter.
         """
         inverted = bool(bundle.get("inverted", False))
-        if bundle["type"] in FilterFactory._getters:
-            return FilterFactory._getters[bundle["type"]](inverted, bundle["params"])
+        if bundle["type"] in FilterFactory._map:
+            return FilterFactory._map[bundle["type"]](inverted, bundle["params"])
 
         custom_component_modules = Config.get_imports_components()
         for module_string in custom_component_modules:
