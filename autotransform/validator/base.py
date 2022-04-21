@@ -1,7 +1,7 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
@@ -31,10 +31,10 @@ class ValidationResultLevel(int, Enum):
         """Checks is the provided value is a valid value for this enum.
 
         Args:
-            value (Any): An unknown value
+            value (Any): An unknown value.
 
         Returns:
-            [bool]: Whether the value is present in the enum
+            [bool]: Whether the value is present in the enum.
         """
 
         # pylint: disable=no-member
@@ -46,10 +46,10 @@ class ValidationResultLevel(int, Enum):
         """Gets the enum value associated with a name.
 
         Args:
-            name (str): The name of a member of the enum
+            name (str): The name of a member of the enum.
 
         Returns:
-            [ValidationResultLevel]: The associated enum value
+            ValidationResultLevel: The associated enum value.
         """
 
         # pylint: disable=no-member
@@ -70,33 +70,35 @@ class ValidationError(Exception):
     """An error raised by validation failing on a run.
 
     Attributes:
-        issue (ValidationResult): The validation result that triggered the error
-        message (str): A message representing why the validation failed
+        _issue (ValidationResult): The validation result that triggered the error.
+        _message (str): A message representing why the validation failed.
     """
 
-    issue: ValidationResult
-    message: Optional[str]
+    _issue: ValidationResult
+    _message: Optional[str]
 
     def __init__(self, issue: ValidationResult):
         """A simple constructor.
 
         Args:
-            issue (ValidationResult): The issue responsible for the validation error
+            issue (ValidationResult): The issue responsible for the validation error.
         """
+
         super().__init__(issue["message"])
-        self.message = issue["message"]
-        self.issue = issue
+        self._message = issue["message"]
+        self._issue = issue
 
     def __str__(self) -> str:
         """Override the default str casting of the error to include useful information.
 
         Returns:
-            str: A string representation of the error
+            str: A string representation of the error.
         """
-        level = ValidationResultLevel(self.issue["level"]).name
-        validator = self.issue["validator"]
 
-        return f"[{level}][{validator}]: {self.message}"
+        level = ValidationResultLevel(self._issue["level"]).name
+        validator = self._issue["validator"]
+
+        return f"[{level}][{validator}]: {self._message}"
 
 
 class ValidatorBundle(TypedDict):
@@ -107,11 +109,12 @@ class ValidatorBundle(TypedDict):
 
 
 class Validator(Generic[TParams], ABC):
-    """The base for Validator components.
+    """The base for Validator components. Validators test that the codebase is still
+    healthy after a transformation.
 
     Attributes:
-        params (TParams): The paramaters that control operation of the Validator.
-            Should be defined using a TypedDict in subclasses
+        _params (TParams): The paramaters that control operation of the Validator.
+            Should be defined using a TypedDict in subclasses.
     """
 
     params: TParams
@@ -120,25 +123,35 @@ class Validator(Generic[TParams], ABC):
         """A simple constructor.
 
         Args:
-            params (TParams): The paramaters used to set up the Validator
+            params (TParams): The paramaters used to set up the Validator.
         """
-        self.params = params
+
+        self._params = params
+
+    def get_params(self) -> TParams:
+        """Gets the paramaters used to set up the Validator.
+
+        Returns:
+            TParams: The paramaters used to set up the Validator.
+        """
+
+        return self._params
 
     @abstractmethod
     def get_type(self) -> ValidatorType:
         """Used to map Validator components 1:1 with an enum, allowing construction from JSON.
 
         Returns:
-            ValidatorType: The unique type associated with this Validator
+            ValidatorType: The unique type associated with this Validator.
         """
 
     @abstractmethod
     def validate(self, batch: Batch) -> ValidationResult:
-        """Validate that a batch that has undergone transformation does not produce any issues
+        """Validate that a Batch that has undergone transformation does not produce any issues
         such as test failures or type errors.
 
         Args:
-            batch (Batch): The transformed batch to validate
+            batch (Batch): The transformed Batch to validate.
 
         Returns:
             ValidationResult: The result of the validation check indicating the severity of any
@@ -151,8 +164,9 @@ class Validator(Generic[TParams], ABC):
         an encodable version.
 
         Returns:
-            ValidatorBundle: The encodable bundle
+            ValidatorBundle: The encodable bundle.
         """
+
         return {
             "params": self.params,
             "type": self.get_type(),
@@ -165,8 +179,8 @@ class Validator(Generic[TParams], ABC):
         assert that the data provided matches expected types and is valid.
 
         Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
+            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
 
         Returns:
-            Validator: An instance of the Validator
+            Validator: An instance of the Validator.
         """
