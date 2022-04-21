@@ -7,9 +7,8 @@
 
 """The AutoTransform script, responsible for handling AutoTransform CLI invocations.
 Different CLI commands are handled as subparsers. Includes the following commands
-    - Run: Executes a full run of AutoTransform.
-    - Instance: Triggers a ProcessWorker's main method.
-    - Config: Lists or updates config values."""
+    Run: Executes a full run of AutoTransform.
+    Config: Lists or updates config values."""
 
 from argparse import ArgumentParser
 

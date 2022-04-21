@@ -21,3 +21,7 @@ Upstream changes are intended to support the wider AutoTransform community. Besp
 #### I Want To Contribute, What Should I Do?
 
 If after seing the above you still want to contribute to AutoTransform, follow standard Github practices by forking the repo, making changes, and submitting pull requests. If you are interested in becoming a frequent contributor with access to the repo reach out to nathro.software@gmail.com
+
+#### What About the Docs?
+
+AutoTransform uses Sphinx for automating documentation updates. To update the docs, make sure you `pip install -U sphinx sphinx-rtd-theme recommonmark`. Then simply run `sphinx-apidoc -o source "../autotransform"` from the docs/ directory, followed by `make html`.

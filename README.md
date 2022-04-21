@@ -1,6 +1,6 @@
 # **Overview**
 
-## Installing
+## **Installing**
 
 > **⚠ WARNING:** AutoTransform requires Python 3.10
 
