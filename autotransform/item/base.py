@@ -30,8 +30,8 @@ class Item(ABC):
     AutoTransform operates.
 
     Attributes:
-        _extra_data (Optional[Mapping[str, Any]]): Any extra data that needs to be associated with this Item.
-            Should be JSON encodable.
+        _extra_data (Optional[Mapping[str, Any]]): Any extra data that needs to be associated with
+            this Item.Should be JSON encodable.
         _key (str): A unique key used to represent this item, such as a file path.
     """
 
@@ -46,10 +46,10 @@ class Item(ABC):
             extra_data (Optional[Mapping[str, Any]]): Any extra data that needs to be associated
                 with the Item.
         """
-        
+
         self._key = key
         self._extra_data = extra_data
-        
+
     def get_key(self) -> str:
         """Gets the unique key that represents the Item.
 
