@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>autotransform.transformer package &mdash; AutoTransform 0.1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="autotransform.util package" href="autotransform.util.html" />
+    <link rel="prev" title="autotransform.thirdparty package" href="autotransform.thirdparty.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> AutoTransform
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">autotransform</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="autotransform.html">autotransform package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="autotransform.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="autotransform.batcher.html">autotransform.batcher package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.command.html">autotransform.command package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.config.html">autotransform.config package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.event.html">autotransform.event package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.filter.html">autotransform.filter package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.input.html">autotransform.input package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.item.html">autotransform.item package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.repo.html">autotransform.repo package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.runner.html">autotransform.runner package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.schema.html">autotransform.schema package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.scripts.html">autotransform.scripts package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.thirdparty.html">autotransform.thirdparty package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">autotransform.transformer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.util.html">autotransform.util package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.validator.html">autotransform.validator package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.html#module-autotransform">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AutoTransform</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">autotransform</a> &raquo;</li>
+          <li><a href="autotransform.html">autotransform package</a> &raquo;</li>
+      <li>autotransform.transformer package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/autotransform.transformer.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="autotransform-transformer-package">
+<h1>autotransform.transformer package<a class="headerlink" href="#autotransform-transformer-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-autotransform.transformer.base">
+<span id="autotransform-transformer-base-module"></span><h2>autotransform.transformer.base module<a class="headerlink" href="#module-autotransform.transformer.base" title="Permalink to this headline"></a></h2>
+<p>The base class and associated classes for Transformer components.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.transformer.base.Transformer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.transformer.base.</span></span><span class="sig-name descname"><span class="pre">Transformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autotransform.transformer.base.TParams</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.transformer.base.Transformer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">autotransform.transformer.base.TParams</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>The base for Transformer components. Transformers are used to execute changes to a codebase.
+A Transformer takes in a Batch and then executes all changes associated with the Batch.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.transformer.base.Transformer._params">
+<span class="sig-name descname"><span class="pre">_params</span></span><a class="headerlink" href="#autotransform.transformer.base.Transformer._params" title="Permalink to this definition"></a></dt>
+<dd><p>The paramaters that control operation of the Transformer.
+Should be defined using a TypedDict in subclasses</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>TParams</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.transformer.base.Transformer.bundle">
+<span class="sig-name descname"><span class="pre">bundle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.transformer.base.TransformerBundle" title="autotransform.transformer.base.TransformerBundle"><span class="pre">autotransform.transformer.base.TransformerBundle</span></a></span></span><a class="headerlink" href="#autotransform.transformer.base.Transformer.bundle" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a JSON encodable bundle.
+If a component’s params are not JSON encodable this method should be overridden to provide
+an encodable version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The encodable bundle.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.transformer.base.TransformerBundle" title="autotransform.transformer.base.TransformerBundle">TransformerBundle</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.transformer.base.Transformer.from_data">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.transformer.base.Transformer" title="autotransform.transformer.base.Transformer"><span class="pre">autotransform.transformer.base.Transformer</span></a></span></span><a class="headerlink" href="#autotransform.transformer.base.Transformer.from_data" title="Permalink to this definition"></a></dt>
+<dd><p>Produces an instance of the component from decoded params. Implementations should
+assert that the data provided matches expected types and is valid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – The JSON decoded params from an encoded bundle.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the Transformer.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.transformer.base.Transformer" title="autotransform.transformer.base.Transformer">Transformer</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.transformer.base.Transformer.get_params">
+<span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">autotransform.transformer.base.TParams</span></span></span><a class="headerlink" href="#autotransform.transformer.base.Transformer.get_params" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the paramaters used to set up the Transformer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The paramaters used to set up the Transformer.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>TParams</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.transformer.base.Transformer.get_type">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.transformer.type.TransformerType" title="autotransform.transformer.type.TransformerType"><span class="pre">autotransform.transformer.type.TransformerType</span></a></span></span><a class="headerlink" href="#autotransform.transformer.base.Transformer.get_type" title="Permalink to this definition"></a></dt>
+<dd><p>Used to map Transformer components 1:1 with an enum, allowing construction from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The unique type associated with this Transformer.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.transformer.type.TransformerType" title="autotransform.transformer.type.TransformerType">TransformerType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.transformer.base.Transformer.transform">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.transformer.base.Transformer.transform" title="Permalink to this definition"></a></dt>
+<dd><p>Execute a transformation against the provided Batch. All writing should be done via
+CachedFile’s write_content method or FileItem’s write_content method to ensure operations
+are easily accessible to testing and file content cache’s are kept accurate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>batch</strong> (<a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><em>Batch</em></a>) – The Batch that will be transformed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.transformer.base.TransformerBundle">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.transformer.base.</span></span><span class="sig-name descname"><span class="pre">TransformerBundle</span></span><a class="headerlink" href="#autotransform.transformer.base.TransformerBundle" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>A bundled version of the Transformer object used for JSON encoding.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.transformer.base.TransformerBundle.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#autotransform.transformer.base.TransformerBundle.params" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.transformer.base.TransformerBundle.type">
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#autotransform.transformer.type.TransformerType" title="autotransform.transformer.type.TransformerType"><span class="pre">autotransform.transformer.type.TransformerType</span></a></em><a class="headerlink" href="#autotransform.transformer.base.TransformerBundle.type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.transformer.factory">
+<span id="autotransform-transformer-factory-module"></span><h2>autotransform.transformer.factory module<a class="headerlink" href="#module-autotransform.transformer.factory" title="Permalink to this headline"></a></h2>
+<p>A simple factory for producing Transformers from type and param information.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.transformer.factory.TransformerFactory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.transformer.factory.</span></span><span class="sig-name descname"><span class="pre">TransformerFactory</span></span><a class="headerlink" href="#autotransform.transformer.factory.TransformerFactory" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The factory class for Transformers. Maps a type to a Transformer.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.transformer.factory.TransformerFactory._map">
+<span class="sig-name descname"><span class="pre">_map</span></span><a class="headerlink" href="#autotransform.transformer.factory.TransformerFactory._map" title="Permalink to this definition"></a></dt>
+<dd><p>A mapping from
+TransformerType to the from_data function of the appropriate Transformer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Dict[<a class="reference internal" href="#autotransform.transformer.type.TransformerType" title="autotransform.transformer.type.TransformerType">TransformerType</a>, Callable[[Mapping[str, Any]], <a class="reference internal" href="#autotransform.transformer.base.Transformer" title="autotransform.transformer.base.Transformer">Transformer</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.transformer.factory.TransformerFactory.get">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bundle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#autotransform.transformer.base.TransformerBundle" title="autotransform.transformer.base.TransformerBundle"><span class="pre">autotransform.transformer.base.TransformerBundle</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.transformer.base.Transformer" title="autotransform.transformer.base.Transformer"><span class="pre">autotransform.transformer.base.Transformer</span></a></span></span><a class="headerlink" href="#autotransform.transformer.factory.TransformerFactory.get" title="Permalink to this definition"></a></dt>
+<dd><p>Simple get method using the _map attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bundle</strong> (<a class="reference internal" href="#autotransform.transformer.base.TransformerBundle" title="autotransform.transformer.base.TransformerBundle"><em>TransformerBundle</em></a>) – The bundled Transformer type and params.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the associated Transformer.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.transformer.base.Transformer" title="autotransform.transformer.base.Transformer">Transformer</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.transformer.regex">
+<span id="autotransform-transformer-regex-module"></span><h2>autotransform.transformer.regex module<a class="headerlink" href="#module-autotransform.transformer.regex" title="Permalink to this headline"></a></h2>
+<p>The implementation for the RegexTransformer.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.transformer.regex.RegexTransformer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.transformer.regex.</span></span><span class="sig-name descname"><span class="pre">RegexTransformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autotransform.transformer.base.TParams</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.transformer.regex.RegexTransformer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#autotransform.transformer.single.SingleTransformer" title="autotransform.transformer.single.SingleTransformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.transformer.single.SingleTransformer</span></code></a>[<a class="reference internal" href="#autotransform.transformer.regex.RegexTransformerParams" title="autotransform.transformer.regex.RegexTransformerParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.transformer.regex.RegexTransformerParams</span></code></a>]</p>
+<p>A Transformer that makes regex based changes, replacing instances of the provided
+pattern with the provided replacement. Useful for simple transformations. Operates on
+FileItems.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.transformer.regex.RegexTransformer._params">
+<span class="sig-name descname"><span class="pre">_params</span></span><a class="headerlink" href="#autotransform.transformer.regex.RegexTransformer._params" title="Permalink to this definition"></a></dt>
+<dd><p>Contains the pattern and replacement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.transformer.regex.RegexTransformerParams" title="autotransform.transformer.regex.RegexTransformerParams">RegexTransformerParams</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.transformer.regex.RegexTransformer.from_data">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.transformer.regex.RegexTransformer" title="autotransform.transformer.regex.RegexTransformer"><span class="pre">autotransform.transformer.regex.RegexTransformer</span></a></span></span><a class="headerlink" href="#autotransform.transformer.regex.RegexTransformer.from_data" title="Permalink to this definition"></a></dt>
+<dd><p>Produces a RegexTransformer from the provided data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – The JSON decoded params from an encoded bundle.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the RegexTransformer.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.transformer.regex.RegexTransformer" title="autotransform.transformer.regex.RegexTransformer">RegexTransformer</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.transformer.regex.RegexTransformer.get_type">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.transformer.type.TransformerType" title="autotransform.transformer.type.TransformerType"><span class="pre">autotransform.transformer.type.TransformerType</span></a></span></span><a class="headerlink" href="#autotransform.transformer.regex.RegexTransformer.get_type" title="Permalink to this definition"></a></dt>
+<dd><p>Used to map Transformer components 1:1 with an enum, allowing construction from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The unique type associated with this Transformer.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.transformer.type.TransformerType" title="autotransform.transformer.type.TransformerType">TransformerType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.transformer.regex.RegexTransformerParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.transformer.regex.</span></span><span class="sig-name descname"><span class="pre">RegexTransformerParams</span></span><a class="headerlink" href="#autotransform.transformer.regex.RegexTransformerParams" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>The param type for a RegexTransformer.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.transformer.regex.RegexTransformerParams.pattern">
+<span class="sig-name descname"><span class="pre">pattern</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#autotransform.transformer.regex.RegexTransformerParams.pattern" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.transformer.regex.RegexTransformerParams.replacement">
+<span class="sig-name descname"><span class="pre">replacement</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#autotransform.transformer.regex.RegexTransformerParams.replacement" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.transformer.script">
+<span id="autotransform-transformer-script-module"></span><h2>autotransform.transformer.script module<a class="headerlink" href="#module-autotransform.transformer.script" title="Permalink to this headline"></a></h2>
+<p>The implementation for the ScriptTransformer.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.transformer.script.ScriptTransformer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.transformer.script.</span></span><span class="sig-name descname"><span class="pre">ScriptTransformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autotransform.transformer.base.TParams</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.transformer.script.ScriptTransformer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#autotransform.transformer.base.Transformer" title="autotransform.transformer.base.Transformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.transformer.base.Transformer</span></code></a>[<a class="reference internal" href="#autotransform.transformer.script.ScriptTransformerParams" title="autotransform.transformer.script.ScriptTransformerParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.transformer.script.ScriptTransformerParams</span></code></a>]</p>
+<p>A Transformer that makes changes using an invoked script. Sentinel values can be used in the
+args to supply information from the Batch.
+The available sentinel values for args are:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>&lt;&lt;KEY&gt;&gt;: A json encoded list of the input files for a batch. If the per_item flag is set in</dt><dd><p>params, this will simply be the key of an Item.</p>
+</dd>
+<dt>&lt;&lt;EXTRA_DATA&gt;&gt;: A JSON encoded mapping from Item key to that Item’s extra_data. If the</dt><dd><p>per_item flag is set in params, this will simply be a JSON encoding of the Item’s
+extra_data. If extra_data is not present for an item, it is treated as an empty Dict.</p>
+</dd>
+</dl>
+<p>&lt;&lt;METADATA&gt;&gt;: A JSON encoded version of the Batch’s metadata.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>_FILE can be appended to any of these (i.e. &lt;&lt;KEY_FILE&gt;&gt;) and the arg will instead be replaced</dt><dd><p>with a path to a file containing the value.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.transformer.script.ScriptTransformer._params">
+<span class="sig-name descname"><span class="pre">_params</span></span><a class="headerlink" href="#autotransform.transformer.script.ScriptTransformer._params" title="Permalink to this definition"></a></dt>
+<dd><p>The script and args, along with the timeout and a
+per_item flag for invoking the script on each Item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.transformer.script.ScriptTransformerParams" title="autotransform.transformer.script.ScriptTransformerParams">ScriptTransformerParams</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.transformer.script.ScriptTransformer.from_data">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.transformer.script.ScriptTransformer" title="autotransform.transformer.script.ScriptTransformer"><span class="pre">autotransform.transformer.script.ScriptTransformer</span></a></span></span><a class="headerlink" href="#autotransform.transformer.script.ScriptTransformer.from_data" title="Permalink to this definition"></a></dt>
+<dd><p>Produces a ScriptTransformer from the provided data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – The JSON decoded params from an encoded bundle.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the ScriptTransformer.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.transformer.script.ScriptTransformer" title="autotransform.transformer.script.ScriptTransformer">ScriptTransformer</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.transformer.script.ScriptTransformer.get_type">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.transformer.type.TransformerType" title="autotransform.transformer.type.TransformerType"><span class="pre">autotransform.transformer.type.TransformerType</span></a></span></span><a class="headerlink" href="#autotransform.transformer.script.ScriptTransformer.get_type" title="Permalink to this definition"></a></dt>
+<dd><p>Used to map Transformer components 1:1 with an enum, allowing construction from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The unique type associated with this Transformer.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.transformer.type.TransformerType" title="autotransform.transformer.type.TransformerType">TransformerType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.transformer.script.ScriptTransformer.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.transformer.script.ScriptTransformer.transform" title="Permalink to this definition"></a></dt>
+<dd><p>Execute a transformation against the provided Batch. All writing should be done via
+CachedFile’s write_content method or FileItem’s write_content method to ensure operations
+are easily accessible to testing and file content cache’s are kept accurate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>batch</strong> (<a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><em>Batch</em></a>) – The Batch that will be transformed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.transformer.script.ScriptTransformerParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.transformer.script.</span></span><span class="sig-name descname"><span class="pre">ScriptTransformerParams</span></span><a class="headerlink" href="#autotransform.transformer.script.ScriptTransformerParams" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>The param type for a ScriptTransformer.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.transformer.script.ScriptTransformerParams.args">
+<span class="sig-name descname"><span class="pre">args</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#autotransform.transformer.script.ScriptTransformerParams.args" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.transformer.script.ScriptTransformerParams.per_item">
+<span class="sig-name descname"><span class="pre">per_item</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">typing_extensions.NotRequired</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#autotransform.transformer.script.ScriptTransformerParams.per_item" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.transformer.script.ScriptTransformerParams.script">
+<span class="sig-name descname"><span class="pre">script</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#autotransform.transformer.script.ScriptTransformerParams.script" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.transformer.script.ScriptTransformerParams.timeout">
+<span class="sig-name descname"><span class="pre">timeout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#autotransform.transformer.script.ScriptTransformerParams.timeout" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.transformer.single">
+<span id="autotransform-transformer-single-module"></span><h2>autotransform.transformer.single module<a class="headerlink" href="#module-autotransform.transformer.single" title="Permalink to this headline"></a></h2>
+<p>An interface for Transformers that operate on single Items with no metadata needs.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.transformer.single.SingleTransformer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.transformer.single.</span></span><span class="sig-name descname"><span class="pre">SingleTransformer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autotransform.transformer.base.TParams</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.transformer.single.SingleTransformer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">autotransform.transformer.single.TParams</span></code>], <a class="reference internal" href="#autotransform.transformer.base.Transformer" title="autotransform.transformer.base.Transformer"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.transformer.base.Transformer</span></code></a>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">autotransform.transformer.single.TParams</span></code>]</p>
+<p>A simple interface for writing a Transformer that operates on an individual Item level.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.transformer.single.SingleTransformer.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.transformer.single.SingleTransformer.transform" title="Permalink to this definition"></a></dt>
+<dd><p>Splits out all Items to be transformed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>batch</strong> (<a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><em>Batch</em></a>) – The Batch being transformed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.transformer.type">
+<span id="autotransform-transformer-type-module"></span><h2>autotransform.transformer.type module<a class="headerlink" href="#module-autotransform.transformer.type" title="Permalink to this headline"></a></h2>
+<p>The type of Transformer, used create a 1:1 mapping.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.transformer.type.TransformerType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.transformer.type.</span></span><span class="sig-name descname"><span class="pre">TransformerType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.transformer.type.TransformerType" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>A simple enum for 1:1 Transformer to type mapping.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.transformer.type.TransformerType.REGEX">
+<span class="sig-name descname"><span class="pre">REGEX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'regex'</span></em><a class="headerlink" href="#autotransform.transformer.type.TransformerType.REGEX" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.transformer.type.TransformerType.SCRIPT">
+<span class="sig-name descname"><span class="pre">SCRIPT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'script'</span></em><a class="headerlink" href="#autotransform.transformer.type.TransformerType.SCRIPT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.transformer">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-autotransform.transformer" title="Permalink to this headline"></a></h2>
+<p>Transformers are the core of a Schema. They take in a Batch and execute the changes to the
+codebase.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="autotransform.thirdparty.html" class="btn btn-neutral float-left" title="autotransform.thirdparty package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="autotransform.util.html" class="btn btn-neutral float-right" title="autotransform.util package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Nathan Rockenbach.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

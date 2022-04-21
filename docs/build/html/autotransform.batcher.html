@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>autotransform.batcher package &mdash; AutoTransform 0.1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="autotransform.command package" href="autotransform.command.html" />
+    <link rel="prev" title="autotransform package" href="autotransform.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> AutoTransform
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">autotransform</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="autotransform.html">autotransform package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="autotransform.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">autotransform.batcher package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.command.html">autotransform.command package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.config.html">autotransform.config package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.event.html">autotransform.event package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.filter.html">autotransform.filter package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.input.html">autotransform.input package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.item.html">autotransform.item package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.repo.html">autotransform.repo package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.runner.html">autotransform.runner package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.schema.html">autotransform.schema package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.scripts.html">autotransform.scripts package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.thirdparty.html">autotransform.thirdparty package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.transformer.html">autotransform.transformer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.util.html">autotransform.util package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.validator.html">autotransform.validator package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.html#module-autotransform">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AutoTransform</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">autotransform</a> &raquo;</li>
+          <li><a href="autotransform.html">autotransform package</a> &raquo;</li>
+      <li>autotransform.batcher package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/autotransform.batcher.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="autotransform-batcher-package">
+<h1>autotransform.batcher package<a class="headerlink" href="#autotransform-batcher-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-autotransform.batcher.base">
+<span id="autotransform-batcher-base-module"></span><h2>autotransform.batcher.base module<a class="headerlink" href="#module-autotransform.batcher.base" title="Permalink to this headline"></a></h2>
+<p>The base class and associated classes for Batcher components.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.batcher.base.Batch">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.batcher.base.</span></span><span class="sig-name descname"><span class="pre">Batch</span></span><a class="headerlink" href="#autotransform.batcher.base.Batch" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>A logical grouping of Items with title and associated metadata.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.base.Batch.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">typing_extensions.NotRequired</span><span class="p"><span class="pre">[</span></span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#autotransform.batcher.base.Batch.metadata" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.base.Batch.title">
+<span class="sig-name descname"><span class="pre">title</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#autotransform.batcher.base.Batch.title" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.batcher.base.Batcher">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.batcher.base.</span></span><span class="sig-name descname"><span class="pre">Batcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autotransform.batcher.base.TParams</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.batcher.base.Batcher" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">autotransform.batcher.base.TParams</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>The base for Batcher components. Used by AutoTransform to separate Items in to logical
+groupings that can be acted on indepently and have associated metadata.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.base.Batcher._params">
+<span class="sig-name descname"><span class="pre">_params</span></span><a class="headerlink" href="#autotransform.batcher.base.Batcher._params" title="Permalink to this definition"></a></dt>
+<dd><p>The paramaters that control operation of the Batcher.
+Should be defined using a TypedDict in subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>TParams</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.batcher.base.Batcher.batch">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.item.html#autotransform.item.base.Item" title="autotransform.item.base.Item"><span class="pre">autotransform.item.base.Item</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autotransform.batcher.base.Batcher.batch" title="Permalink to this definition"></a></dt>
+<dd><p>Take filtered Items and separate in to logical groupings with associated group metadata
+and title.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>items</strong> (<em>Sequence</em><em>[</em><a class="reference internal" href="autotransform.item.html#autotransform.item.base.Item" title="autotransform.item.base.Item"><em>Item</em></a><em>]</em>) – The filtered Items to separate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A list of logical groupings of Items with associated group metadata and</dt><dd><p>title.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch">Batch</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.batcher.base.Batcher.bundle">
+<span class="sig-name descname"><span class="pre">bundle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.batcher.base.BatcherBundle" title="autotransform.batcher.base.BatcherBundle"><span class="pre">autotransform.batcher.base.BatcherBundle</span></a></span></span><a class="headerlink" href="#autotransform.batcher.base.Batcher.bundle" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a JSON encodable bundle.
+If a component’s params are not JSON encodable this method should be overridden to provide
+an encodable version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The encodable bundle.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.batcher.base.BatcherBundle" title="autotransform.batcher.base.BatcherBundle">BatcherBundle</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.batcher.base.Batcher.from_data">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.batcher.base.Batcher" title="autotransform.batcher.base.Batcher"><span class="pre">autotransform.batcher.base.Batcher</span></a></span></span><a class="headerlink" href="#autotransform.batcher.base.Batcher.from_data" title="Permalink to this definition"></a></dt>
+<dd><p>Produces an instance of the component from decoded params. Implementations should
+assert that the data provided matches expected types and is valid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – The JSON decoded params from an encoded bundle.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the Batcher.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.batcher.base.Batcher" title="autotransform.batcher.base.Batcher">Batcher</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.batcher.base.Batcher.get_params">
+<span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">autotransform.batcher.base.TParams</span></span></span><a class="headerlink" href="#autotransform.batcher.base.Batcher.get_params" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the paramaters used to set up the Batcher.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The paramaters used to set up the Batcher.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>TParams</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.batcher.base.Batcher.get_type">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.batcher.type.BatcherType" title="autotransform.batcher.type.BatcherType"><span class="pre">autotransform.batcher.type.BatcherType</span></a></span></span><a class="headerlink" href="#autotransform.batcher.base.Batcher.get_type" title="Permalink to this definition"></a></dt>
+<dd><p>Used to map Batcher components 1:1 with an enum, allowing construction from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The unique type associated with this Batcher.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.batcher.type.BatcherType" title="autotransform.batcher.type.BatcherType">BatcherType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.batcher.base.BatcherBundle">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.batcher.base.</span></span><span class="sig-name descname"><span class="pre">BatcherBundle</span></span><a class="headerlink" href="#autotransform.batcher.base.BatcherBundle" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>A bundled version of the Batcher object used for JSON encoding.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.base.BatcherBundle.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#autotransform.batcher.base.BatcherBundle.params" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.base.BatcherBundle.type">
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#autotransform.batcher.type.BatcherType" title="autotransform.batcher.type.BatcherType"><span class="pre">autotransform.batcher.type.BatcherType</span></a></em><a class="headerlink" href="#autotransform.batcher.base.BatcherBundle.type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.batcher.chunk">
+<span id="autotransform-batcher-chunk-module"></span><h2>autotransform.batcher.chunk module<a class="headerlink" href="#module-autotransform.batcher.chunk" title="Permalink to this headline"></a></h2>
+<p>The implementation for the chunk Batcher.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.batcher.chunk.ChunkBatcher">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.batcher.chunk.</span></span><span class="sig-name descname"><span class="pre">ChunkBatcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autotransform.batcher.base.TParams</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.batcher.chunk.ChunkBatcher" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#autotransform.batcher.base.Batcher" title="autotransform.batcher.base.Batcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.batcher.base.Batcher</span></code></a>[<a class="reference internal" href="#autotransform.batcher.chunk.ChunkBatcherParams" title="autotransform.batcher.chunk.ChunkBatcherParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.batcher.chunk.ChunkBatcherParams</span></code></a>]</p>
+<p>A batcher which chunks Items in to several Batches. A chunk size is supplied that
+determines the size of Batches. A maximum number of chunks can optionally be supplied. If
+the chunk size would result in more than the maximum number of chunks, the chunk size is
+increased to the minimum required to create only max_chunks. The title for a batch will
+have [X/N] prepended to it, where X represents the chunk number and N represents the
+total number of chunks.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.chunk.ChunkBatcher._params">
+<span class="sig-name descname"><span class="pre">_params</span></span><a class="headerlink" href="#autotransform.batcher.chunk.ChunkBatcher._params" title="Permalink to this definition"></a></dt>
+<dd><p>Contains the chunking information along with metadata
+and title.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.batcher.chunk.ChunkBatcherParams" title="autotransform.batcher.chunk.ChunkBatcherParams">ChunkBatcherParams</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.batcher.chunk.ChunkBatcher.batch">
+<span class="sig-name descname"><span class="pre">batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.item.html#autotransform.item.base.Item" title="autotransform.item.base.Item"><span class="pre">autotransform.item.base.Item</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autotransform.batcher.chunk.ChunkBatcher.batch" title="Permalink to this definition"></a></dt>
+<dd><p>Take filtered Items and chunk them into Batches.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>items</strong> (<em>Sequence</em><em>[</em><a class="reference internal" href="autotransform.item.html#autotransform.item.base.Item" title="autotransform.item.base.Item"><em>Item</em></a><em>]</em>) – The filtered Items to separate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A list of logical groupings of Items with associated group metadata and</dt><dd><p>title.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch">Batch</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.batcher.chunk.ChunkBatcher.from_data">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.batcher.chunk.ChunkBatcher" title="autotransform.batcher.chunk.ChunkBatcher"><span class="pre">autotransform.batcher.chunk.ChunkBatcher</span></a></span></span><a class="headerlink" href="#autotransform.batcher.chunk.ChunkBatcher.from_data" title="Permalink to this definition"></a></dt>
+<dd><p>Produces a ChunkBatcher from the provided data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – The JSON decoded params from an encoded bundle</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the ChunkBatcher with the provided params.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.batcher.chunk.ChunkBatcher" title="autotransform.batcher.chunk.ChunkBatcher">ChunkBatcher</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.batcher.chunk.ChunkBatcher.get_type">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.batcher.type.BatcherType" title="autotransform.batcher.type.BatcherType"><span class="pre">autotransform.batcher.type.BatcherType</span></a></span></span><a class="headerlink" href="#autotransform.batcher.chunk.ChunkBatcher.get_type" title="Permalink to this definition"></a></dt>
+<dd><p>Used to map Batcher components 1:1 with an enum, allowing construction from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The unique type associated with this Batcher.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.batcher.type.BatcherType" title="autotransform.batcher.type.BatcherType">BatcherType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.batcher.chunk.ChunkBatcherParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.batcher.chunk.</span></span><span class="sig-name descname"><span class="pre">ChunkBatcherParams</span></span><a class="headerlink" href="#autotransform.batcher.chunk.ChunkBatcherParams" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>The param type for a ChunkBatcher.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.chunk.ChunkBatcherParams.chunk_size">
+<span class="sig-name descname"><span class="pre">chunk_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#autotransform.batcher.chunk.ChunkBatcherParams.chunk_size" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.chunk.ChunkBatcherParams.max_chunks">
+<span class="sig-name descname"><span class="pre">max_chunks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">typing_extensions.NotRequired</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#autotransform.batcher.chunk.ChunkBatcherParams.max_chunks" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.chunk.ChunkBatcherParams.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">typing_extensions.NotRequired</span><span class="p"><span class="pre">[</span></span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#autotransform.batcher.chunk.ChunkBatcherParams.metadata" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.chunk.ChunkBatcherParams.title">
+<span class="sig-name descname"><span class="pre">title</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#autotransform.batcher.chunk.ChunkBatcherParams.title" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.batcher.directory">
+<span id="autotransform-batcher-directory-module"></span><h2>autotransform.batcher.directory module<a class="headerlink" href="#module-autotransform.batcher.directory" title="Permalink to this headline"></a></h2>
+<p>The implementation for the directory Batcher.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.batcher.directory.DirectoryBatcher">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.batcher.directory.</span></span><span class="sig-name descname"><span class="pre">DirectoryBatcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autotransform.batcher.base.TParams</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.batcher.directory.DirectoryBatcher" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#autotransform.batcher.base.Batcher" title="autotransform.batcher.base.Batcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.batcher.base.Batcher</span></code></a>[<a class="reference internal" href="#autotransform.batcher.directory.DirectoryBatcherParams" title="autotransform.batcher.directory.DirectoryBatcherParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.batcher.directory.DirectoryBatcherParams</span></code></a>]</p>
+<p>A batcher which separates FileItems by directory. Batches are given a title that is based
+on a prefix and the directory that the batch is using.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.directory.DirectoryBatcher._params">
+<span class="sig-name descname"><span class="pre">_params</span></span><a class="headerlink" href="#autotransform.batcher.directory.DirectoryBatcher._params" title="Permalink to this definition"></a></dt>
+<dd><p>Contains the prefix to use for constructing a title.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.batcher.directory.DirectoryBatcherParams" title="autotransform.batcher.directory.DirectoryBatcherParams">DirectoryBatcherParams</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.batcher.directory.DirectoryBatcher.batch">
+<span class="sig-name descname"><span class="pre">batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.item.html#autotransform.item.base.Item" title="autotransform.item.base.Item"><span class="pre">autotransform.item.base.Item</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autotransform.batcher.directory.DirectoryBatcher.batch" title="Permalink to this definition"></a></dt>
+<dd><p>Takes in a list FileItems and separates them based on their directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>items</strong> (<em>Sequence</em><em>[</em><a class="reference internal" href="autotransform.item.html#autotransform.item.base.Item" title="autotransform.item.base.Item"><em>Item</em></a><em>]</em>) – The filtered Items to separate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list containing a batch for each folder containing files.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch">Batch</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.batcher.directory.DirectoryBatcher.from_data">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.batcher.directory.DirectoryBatcher" title="autotransform.batcher.directory.DirectoryBatcher"><span class="pre">autotransform.batcher.directory.DirectoryBatcher</span></a></span></span><a class="headerlink" href="#autotransform.batcher.directory.DirectoryBatcher.from_data" title="Permalink to this definition"></a></dt>
+<dd><p>Produces a DirectoryBatcher from the provided data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – The JSON decoded params from an encoded bundle</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the DirectoryBatcher with the provided params.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.batcher.directory.DirectoryBatcher" title="autotransform.batcher.directory.DirectoryBatcher">DirectoryBatcher</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.batcher.directory.DirectoryBatcher.get_type">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.batcher.type.BatcherType" title="autotransform.batcher.type.BatcherType"><span class="pre">autotransform.batcher.type.BatcherType</span></a></span></span><a class="headerlink" href="#autotransform.batcher.directory.DirectoryBatcher.get_type" title="Permalink to this definition"></a></dt>
+<dd><p>Used to map Batcher components 1:1 with an enum, allowing construction from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The unique type associated with this Batcher.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.batcher.type.BatcherType" title="autotransform.batcher.type.BatcherType">BatcherType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.batcher.directory.DirectoryBatcherParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.batcher.directory.</span></span><span class="sig-name descname"><span class="pre">DirectoryBatcherParams</span></span><a class="headerlink" href="#autotransform.batcher.directory.DirectoryBatcherParams" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>The param type for a DirectoryBatcher.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.directory.DirectoryBatcherParams.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">typing_extensions.NotRequired</span><span class="p"><span class="pre">[</span></span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#autotransform.batcher.directory.DirectoryBatcherParams.metadata" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.directory.DirectoryBatcherParams.prefix">
+<span class="sig-name descname"><span class="pre">prefix</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#autotransform.batcher.directory.DirectoryBatcherParams.prefix" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.batcher.factory">
+<span id="autotransform-batcher-factory-module"></span><h2>autotransform.batcher.factory module<a class="headerlink" href="#module-autotransform.batcher.factory" title="Permalink to this headline"></a></h2>
+<p>A simple factory for producing Batchers from type and param information.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.batcher.factory.BatcherFactory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.batcher.factory.</span></span><span class="sig-name descname"><span class="pre">BatcherFactory</span></span><a class="headerlink" href="#autotransform.batcher.factory.BatcherFactory" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The factory class for Batchers. Maps a type to a Batcher.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.factory.BatcherFactory._map">
+<span class="sig-name descname"><span class="pre">_map</span></span><a class="headerlink" href="#autotransform.batcher.factory.BatcherFactory._map" title="Permalink to this definition"></a></dt>
+<dd><p>A mapping from
+BatcherType to the from_data function of the appropriate Batcher.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Dict[<a class="reference internal" href="#autotransform.batcher.type.BatcherType" title="autotransform.batcher.type.BatcherType">BatcherType</a>, Callable[[Mapping[str, Any]], <a class="reference internal" href="#autotransform.batcher.base.Batcher" title="autotransform.batcher.base.Batcher">Batcher</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.batcher.factory.BatcherFactory.get">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bundle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#autotransform.batcher.base.BatcherBundle" title="autotransform.batcher.base.BatcherBundle"><span class="pre">autotransform.batcher.base.BatcherBundle</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.batcher.base.Batcher" title="autotransform.batcher.base.Batcher"><span class="pre">autotransform.batcher.base.Batcher</span></a></span></span><a class="headerlink" href="#autotransform.batcher.factory.BatcherFactory.get" title="Permalink to this definition"></a></dt>
+<dd><p>Simple get method using the _map attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bundle</strong> (<a class="reference internal" href="#autotransform.batcher.base.BatcherBundle" title="autotransform.batcher.base.BatcherBundle"><em>BatcherBundle</em></a>) – The bundled Batcher type and params.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the associated Batcher.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.batcher.base.Batcher" title="autotransform.batcher.base.Batcher">Batcher</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.batcher.single">
+<span id="autotransform-batcher-single-module"></span><h2>autotransform.batcher.single module<a class="headerlink" href="#module-autotransform.batcher.single" title="Permalink to this headline"></a></h2>
+<p>The implementation for the SingleBatcher.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.batcher.single.SingleBatcher">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.batcher.single.</span></span><span class="sig-name descname"><span class="pre">SingleBatcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autotransform.batcher.base.TParams</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.batcher.single.SingleBatcher" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#autotransform.batcher.base.Batcher" title="autotransform.batcher.base.Batcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.batcher.base.Batcher</span></code></a>[<a class="reference internal" href="#autotransform.batcher.single.SingleBatcherParams" title="autotransform.batcher.single.SingleBatcherParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.batcher.single.SingleBatcherParams</span></code></a>]</p>
+<p>A batcher which puts all Items together in to a single batch</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.single.SingleBatcher._params">
+<span class="sig-name descname"><span class="pre">_params</span></span><a class="headerlink" href="#autotransform.batcher.single.SingleBatcher._params" title="Permalink to this definition"></a></dt>
+<dd><p>Contains the batch title and any needed metadata.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.batcher.single.SingleBatcherParams" title="autotransform.batcher.single.SingleBatcherParams">SingleBatcherParams</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.batcher.single.SingleBatcher.batch">
+<span class="sig-name descname"><span class="pre">batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.item.html#autotransform.item.base.Item" title="autotransform.item.base.Item"><span class="pre">autotransform.item.base.Item</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autotransform.batcher.single.SingleBatcher.batch" title="Permalink to this definition"></a></dt>
+<dd><p>Takes in a list Items and batches them together in to a single Batch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>items</strong> (<em>Sequence</em><em>[</em><a class="reference internal" href="autotransform.item.html#autotransform.item.base.Item" title="autotransform.item.base.Item"><em>Item</em></a><em>]</em>) – The filtered Items to separate.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list containing a single Batch for all Items.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch">Batch</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.batcher.single.SingleBatcher.from_data">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.batcher.single.SingleBatcher" title="autotransform.batcher.single.SingleBatcher"><span class="pre">autotransform.batcher.single.SingleBatcher</span></a></span></span><a class="headerlink" href="#autotransform.batcher.single.SingleBatcher.from_data" title="Permalink to this definition"></a></dt>
+<dd><p>Produces a SingleBatcher from the provided data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – The JSON decoded params from an encoded bundle.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the SingleBatcher with the provided params.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.batcher.single.SingleBatcher" title="autotransform.batcher.single.SingleBatcher">SingleBatcher</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.batcher.single.SingleBatcher.get_type">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.batcher.type.BatcherType" title="autotransform.batcher.type.BatcherType"><span class="pre">autotransform.batcher.type.BatcherType</span></a></span></span><a class="headerlink" href="#autotransform.batcher.single.SingleBatcher.get_type" title="Permalink to this definition"></a></dt>
+<dd><p>Used to map Batcher components 1:1 with an enum, allowing construction from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The unique type associated with this Batcher</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.batcher.type.BatcherType" title="autotransform.batcher.type.BatcherType">BatcherType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.batcher.single.SingleBatcherParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.batcher.single.</span></span><span class="sig-name descname"><span class="pre">SingleBatcherParams</span></span><a class="headerlink" href="#autotransform.batcher.single.SingleBatcherParams" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>The param type for a SingleBatcher.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.single.SingleBatcherParams.metadata">
+<span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">typing_extensions.NotRequired</span><span class="p"><span class="pre">[</span></span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#autotransform.batcher.single.SingleBatcherParams.metadata" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.single.SingleBatcherParams.title">
+<span class="sig-name descname"><span class="pre">title</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#autotransform.batcher.single.SingleBatcherParams.title" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.batcher.type">
+<span id="autotransform-batcher-type-module"></span><h2>autotransform.batcher.type module<a class="headerlink" href="#module-autotransform.batcher.type" title="Permalink to this headline"></a></h2>
+<p>The type of Batcher, used create a 1:1 mapping.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.batcher.type.BatcherType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.batcher.type.</span></span><span class="sig-name descname"><span class="pre">BatcherType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.batcher.type.BatcherType" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>A simple enum for 1:1 Batcher to type mapping.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.type.BatcherType.CHUNK">
+<span class="sig-name descname"><span class="pre">CHUNK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'chunk'</span></em><a class="headerlink" href="#autotransform.batcher.type.BatcherType.CHUNK" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.type.BatcherType.DIRECTORY">
+<span class="sig-name descname"><span class="pre">DIRECTORY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'directory'</span></em><a class="headerlink" href="#autotransform.batcher.type.BatcherType.DIRECTORY" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.batcher.type.BatcherType.SINGLE">
+<span class="sig-name descname"><span class="pre">SINGLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'single'</span></em><a class="headerlink" href="#autotransform.batcher.type.BatcherType.SINGLE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.batcher">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-autotransform.batcher" title="Permalink to this headline"></a></h2>
+<p>Batchers take filtered Items and separate them in to logical groupings
+with associated metadata that can be acted on independently.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="autotransform.html" class="btn btn-neutral float-left" title="autotransform package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="autotransform.command.html" class="btn btn-neutral float-right" title="autotransform.command package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Nathan Rockenbach.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>autotransform.event package &mdash; AutoTransform 0.1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="autotransform.filter package" href="autotransform.filter.html" />
+    <link rel="prev" title="autotransform.config package" href="autotransform.config.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> AutoTransform
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">autotransform</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="autotransform.html">autotransform package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="autotransform.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="autotransform.batcher.html">autotransform.batcher package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.command.html">autotransform.command package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.config.html">autotransform.config package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">autotransform.event package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.filter.html">autotransform.filter package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.input.html">autotransform.input package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.item.html">autotransform.item package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.repo.html">autotransform.repo package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.runner.html">autotransform.runner package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.schema.html">autotransform.schema package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.scripts.html">autotransform.scripts package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.thirdparty.html">autotransform.thirdparty package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.transformer.html">autotransform.transformer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.util.html">autotransform.util package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.validator.html">autotransform.validator package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.html#module-autotransform">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AutoTransform</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">autotransform</a> &raquo;</li>
+          <li><a href="autotransform.html">autotransform package</a> &raquo;</li>
+      <li>autotransform.event package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/autotransform.event.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="autotransform-event-package">
+<h1>autotransform.event package<a class="headerlink" href="#autotransform-event-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-autotransform.event.base">
+<span id="autotransform-event-base-module"></span><h2>autotransform.event.base module<a class="headerlink" href="#module-autotransform.event.base" title="Permalink to this headline"></a></h2>
+<p>The Event class represents an event happening in AutoTransform and
+serves as a base that can be used to provide consistent typing and
+messaging for similar events.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.event.base.Event">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.event.base.</span></span><span class="sig-name descname"><span class="pre">Event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autotransform.event.base.TData</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.event.base.Event" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">autotransform.event.base.TData</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>The base for Events. Used to construct a loggable event that can be hooked in to
+through the EventHandler to store logs in custom deployments.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.event.base.Event.data">
+<span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#autotransform.event.base.Event.data" title="Permalink to this definition"></a></dt>
+<dd><p>The data that represents details of the Event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>TData</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.event.base.Event.create_time">
+<span class="sig-name descname"><span class="pre">create_time</span></span><a class="headerlink" href="#autotransform.event.base.Event.create_time" title="Permalink to this definition"></a></dt>
+<dd><p>The current timestamp when the event is created.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">create_time</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">autotransform.event.base.TData</span></em><a class="headerlink" href="#id1" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.event.base.Event.get_color_override">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_color_override</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autotransform.event.base.Event.get_color_override" title="Permalink to this definition"></a></dt>
+<dd><p>Used to override logging color for specific events where needed. Should use
+colorama ANSI codes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>An optional color to use to override defaults when logging.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Optional[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.event.base.Event.get_logging_level">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_logging_level</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.event.logginglevel.LoggingLevel" title="autotransform.event.logginglevel.LoggingLevel"><span class="pre">autotransform.event.logginglevel.LoggingLevel</span></a></span></span><a class="headerlink" href="#autotransform.event.base.Event.get_logging_level" title="Permalink to this definition"></a></dt>
+<dd><p>The logging level for events of this type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The logging detail required to log this event.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.event.logginglevel.LoggingLevel" title="autotransform.event.logginglevel.LoggingLevel">LoggingLevel</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.event.base.Event.get_message">
+<span class="sig-name descname"><span class="pre">get_message</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#autotransform.event.base.Event.get_message" title="Permalink to this definition"></a></dt>
+<dd><p>Gets a message that can be output to logs representing the event. Converts type from
+lowercase with underscores to capitalized words for the message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The loggable message.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.event.base.Event.get_type">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.event.type.EventType" title="autotransform.event.type.EventType"><span class="pre">autotransform.event.type.EventType</span></a></span></span><a class="headerlink" href="#autotransform.event.base.Event.get_type" title="Permalink to this definition"></a></dt>
+<dd><p>Used to represent the type of Event, output to logs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The unique type associated with this Event.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.event.type.EventType" title="autotransform.event.type.EventType">EventType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.event.debug">
+<span id="autotransform-event-debug-module"></span><h2>autotransform.event.debug module<a class="headerlink" href="#module-autotransform.event.debug" title="Permalink to this headline"></a></h2>
+<p>The DebugEvent is a simple, generic event used for logging debug information to
+the console. This information is not expected to be logged to long term storage and
+is used when debugging usage in production environments.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.event.debug.DebugEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.event.debug.</span></span><span class="sig-name descname"><span class="pre">DebugEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autotransform.event.base.TData</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.event.debug.DebugEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#autotransform.event.base.Event" title="autotransform.event.base.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.event.base.Event</span></code></a>[<a class="reference internal" href="#autotransform.event.debug.DebugEventData" title="autotransform.event.debug.DebugEventData"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.event.debug.DebugEventData</span></code></a>]</p>
+<p>A simple, generic debugging event used to log debug information to the console.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.event.debug.DebugEvent.get_logging_level">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_logging_level</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.event.logginglevel.LoggingLevel" title="autotransform.event.logginglevel.LoggingLevel"><span class="pre">autotransform.event.logginglevel.LoggingLevel</span></a></span></span><a class="headerlink" href="#autotransform.event.debug.DebugEvent.get_logging_level" title="Permalink to this definition"></a></dt>
+<dd><p>The logging level for events of this type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The logging detail required to log this event</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.event.logginglevel.LoggingLevel" title="autotransform.event.logginglevel.LoggingLevel">LoggingLevel</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.event.debug.DebugEvent.get_type">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.event.type.EventType" title="autotransform.event.type.EventType"><span class="pre">autotransform.event.type.EventType</span></a></span></span><a class="headerlink" href="#autotransform.event.debug.DebugEvent.get_type" title="Permalink to this definition"></a></dt>
+<dd><p>Used to represent the type of Event, output to logs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The unique type associated with this Event.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.event.type.EventType" title="autotransform.event.type.EventType">EventType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.event.debug.DebugEventData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.event.debug.</span></span><span class="sig-name descname"><span class="pre">DebugEventData</span></span><a class="headerlink" href="#autotransform.event.debug.DebugEventData" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>The data for a DebugEvent. Contains the information that will be
+logged when the event is triggered.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.event.debug.DebugEventData.message">
+<span class="sig-name descname"><span class="pre">message</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#autotransform.event.debug.DebugEventData.message" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.event.handler">
+<span id="autotransform-event-handler-module"></span><h2>autotransform.event.handler module<a class="headerlink" href="#module-autotransform.event.handler" title="Permalink to this headline"></a></h2>
+<p>The EventHandler receives event dispatches and triggers appropriate behavior for
+the event, such as logging.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.event.handler.EventHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.event.handler.</span></span><span class="sig-name descname"><span class="pre">EventHandler</span></span><a class="headerlink" href="#autotransform.event.handler.EventHandler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The handler that all Events are dispatched to that logs these events. Any hooks being added
+to AutoTransform Events should be added here.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.event.handler.EventHandler.logging_level">
+<span class="sig-name descname"><span class="pre">logging_level</span></span><a class="headerlink" href="#autotransform.event.handler.EventHandler.logging_level" title="Permalink to this definition"></a></dt>
+<dd><p>The level for which logs will be output to CLI. All other
+events will be dropped.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.event.logginglevel.LoggingLevel" title="autotransform.event.logginglevel.LoggingLevel">LoggingLevel</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.event.handler.EventHandler.callbacks">
+<span class="sig-name descname"><span class="pre">callbacks</span></span><a class="headerlink" href="#autotransform.event.handler.EventHandler.callbacks" title="Permalink to this definition"></a></dt>
+<dd><p>Custom imported callback functions for handling
+events for custom deployments</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>List[Callable[[<a class="reference internal" href="#autotransform.event.base.Event" title="autotransform.event.base.Event">Event</a>], None]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.event.handler.EventHandler.__instance">
+<span class="sig-name descname"><span class="pre">__instance</span></span><a class="headerlink" href="#autotransform.event.handler.EventHandler.__instance" title="Permalink to this definition"></a></dt>
+<dd><p>The singleton instance of the EventHandler</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Optional[<a class="reference internal" href="#autotransform.event.handler.EventHandler" title="autotransform.event.handler.EventHandler">EventHandler</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.event.handler.EventHandler.__color_map">
+<span class="sig-name descname"><span class="pre">__color_map</span></span><a class="headerlink" href="#autotransform.event.handler.EventHandler.__color_map" title="Permalink to this definition"></a></dt>
+<dd><p>A mapping from log level to ANSI color for CLI
+output</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Dict[<a class="reference internal" href="#autotransform.event.logginglevel.LoggingLevel" title="autotransform.event.logginglevel.LoggingLevel">LoggingLevel</a>, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">callbacks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#autotransform.event.base.Event" title="autotransform.event.base.Event"><span class="pre">autotransform.event.base.Event</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id2" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.event.handler.EventHandler.get">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.event.handler.EventHandler" title="autotransform.event.handler.EventHandler"><span class="pre">autotransform.event.handler.EventHandler</span></a></span></span><a class="headerlink" href="#autotransform.event.handler.EventHandler.get" title="Permalink to this definition"></a></dt>
+<dd><p>Singleton method for getting the event handler.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The singleton instance of the EventHandler</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.event.handler.EventHandler" title="autotransform.event.handler.EventHandler">EventHandler</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.event.handler.EventHandler.handle">
+<span class="sig-name descname"><span class="pre">handle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#autotransform.event.base.Event" title="autotransform.event.base.Event"><span class="pre">autotransform.event.base.Event</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.event.handler.EventHandler.handle" title="Permalink to this definition"></a></dt>
+<dd><p>Handles the given Event, logging and executing any hooks needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<a class="reference internal" href="#autotransform.event.base.Event" title="autotransform.event.base.Event"><em>Event</em></a>) – The Event that was dispatched</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">logging_level</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#autotransform.event.logginglevel.LoggingLevel" title="autotransform.event.logginglevel.LoggingLevel"><span class="pre">autotransform.event.logginglevel.LoggingLevel</span></a></em><a class="headerlink" href="#id3" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.event.handler.EventHandler.output_to_cli">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">output_to_cli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#autotransform.event.base.Event" title="autotransform.event.base.Event"><span class="pre">autotransform.event.base.Event</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.event.handler.EventHandler.output_to_cli" title="Permalink to this definition"></a></dt>
+<dd><p>Outputs the event to CLI with appropriate coloring</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<a class="reference internal" href="#autotransform.event.base.Event" title="autotransform.event.base.Event"><em>Event</em></a>) – The event being logged</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.event.handler.EventHandler.set_logging_level">
+<span class="sig-name descname"><span class="pre">set_logging_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logging_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#autotransform.event.logginglevel.LoggingLevel" title="autotransform.event.logginglevel.LoggingLevel"><span class="pre">autotransform.event.logginglevel.LoggingLevel</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.event.handler.EventHandler.set_logging_level" title="Permalink to this definition"></a></dt>
+<dd><p>_summary_</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>logging_level</strong> (<a class="reference internal" href="#autotransform.event.logginglevel.LoggingLevel" title="autotransform.event.logginglevel.LoggingLevel"><em>LoggingLevel</em></a>) – The logging level to output</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.event.logginglevel">
+<span id="autotransform-event-logginglevel-module"></span><h2>autotransform.event.logginglevel module<a class="headerlink" href="#module-autotransform.event.logginglevel" title="Permalink to this headline"></a></h2>
+<p>The logging level for an Event. Determines how an event is handled, such
+as if it is written to stdout.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.event.logginglevel.LoggingLevel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.event.logginglevel.</span></span><span class="sig-name descname"><span class="pre">LoggingLevel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.event.logginglevel.LoggingLevel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>The level of an Event, used to determine how it is handled.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.event.logginglevel.LoggingLevel.DEBUG">
+<span class="sig-name descname"><span class="pre">DEBUG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#autotransform.event.logginglevel.LoggingLevel.DEBUG" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.event.logginglevel.LoggingLevel.ERROR">
+<span class="sig-name descname"><span class="pre">ERROR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#autotransform.event.logginglevel.LoggingLevel.ERROR" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.event.logginglevel.LoggingLevel.INFO">
+<span class="sig-name descname"><span class="pre">INFO</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#autotransform.event.logginglevel.LoggingLevel.INFO" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.event.logginglevel.LoggingLevel.WARNING">
+<span class="sig-name descname"><span class="pre">WARNING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#autotransform.event.logginglevel.LoggingLevel.WARNING" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.event.run">
+<span id="autotransform-event-run-module"></span><h2>autotransform.event.run module<a class="headerlink" href="#module-autotransform.event.run" title="Permalink to this headline"></a></h2>
+<p>The ScriptRunEvent is triggered whenever an AutoTransform script is run and provides
+information on the run.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.event.run.ScriptRunEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.event.run.</span></span><span class="sig-name descname"><span class="pre">ScriptRunEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autotransform.event.base.TData</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.event.run.ScriptRunEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#autotransform.event.base.Event" title="autotransform.event.base.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.event.base.Event</span></code></a>[<a class="reference internal" href="#autotransform.event.run.ScriptRunEventData" title="autotransform.event.run.ScriptRunEventData"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.event.run.ScriptRunEventData</span></code></a>]</p>
+<p>A ScriptRunEvent is triggered whenever an AutoTransform script is run, either the
+main script or the regexmod script. Logs details of the run.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.event.run.ScriptRunEvent.get_logging_level">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_logging_level</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.event.logginglevel.LoggingLevel" title="autotransform.event.logginglevel.LoggingLevel"><span class="pre">autotransform.event.logginglevel.LoggingLevel</span></a></span></span><a class="headerlink" href="#autotransform.event.run.ScriptRunEvent.get_logging_level" title="Permalink to this definition"></a></dt>
+<dd><p>The logging level for events of this type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The logging detail required to log this event.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.event.logginglevel.LoggingLevel" title="autotransform.event.logginglevel.LoggingLevel">LoggingLevel</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.event.run.ScriptRunEvent.get_type">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.event.type.EventType" title="autotransform.event.type.EventType"><span class="pre">autotransform.event.type.EventType</span></a></span></span><a class="headerlink" href="#autotransform.event.run.ScriptRunEvent.get_type" title="Permalink to this definition"></a></dt>
+<dd><p>Used to represent the type of Event, output to logs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The unique type associated with this Event.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.event.type.EventType" title="autotransform.event.type.EventType">EventType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.event.run.ScriptRunEventData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.event.run.</span></span><span class="sig-name descname"><span class="pre">ScriptRunEventData</span></span><a class="headerlink" href="#autotransform.event.run.ScriptRunEventData" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>The data for a ScriptRunEvent. Contains the information that will be
+logged when the event is triggered.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.event.run.ScriptRunEventData.args">
+<span class="sig-name descname"><span class="pre">args</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#autotransform.event.run.ScriptRunEventData.args" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.event.run.ScriptRunEventData.script">
+<span class="sig-name descname"><span class="pre">script</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#autotransform.event.run.ScriptRunEventData.script" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.event.type">
+<span id="autotransform-event-type-module"></span><h2>autotransform.event.type module<a class="headerlink" href="#module-autotransform.event.type" title="Permalink to this headline"></a></h2>
+<p>The Event type enum</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.event.type.EventType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.event.type.</span></span><span class="sig-name descname"><span class="pre">EventType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.event.type.EventType" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>A simple enum for Event naming</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.event.type.EventType.DEBUG">
+<span class="sig-name descname"><span class="pre">DEBUG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'debug'</span></em><a class="headerlink" href="#autotransform.event.type.EventType.DEBUG" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.event.type.EventType.SCRIPT_RUN">
+<span class="sig-name descname"><span class="pre">SCRIPT_RUN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'script_run'</span></em><a class="headerlink" href="#autotransform.event.type.EventType.SCRIPT_RUN" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.event">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-autotransform.event" title="Permalink to this headline"></a></h2>
+<p>Events are used by AutoTransform for the purposes of logging. The EventHandler can be used
+as an entry point for hooks in to the Event framework for logging to to an organizations specific
+dataset. Custom hooks can be added through importing modules using the IMPORTS components setting.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="autotransform.config.html" class="btn btn-neutral float-left" title="autotransform.config package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="autotransform.filter.html" class="btn btn-neutral float-right" title="autotransform.filter package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Nathan Rockenbach.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

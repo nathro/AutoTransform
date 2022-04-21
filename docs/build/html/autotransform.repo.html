@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>autotransform.repo package &mdash; AutoTransform 0.1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="autotransform.runner package" href="autotransform.runner.html" />
+    <link rel="prev" title="autotransform.item package" href="autotransform.item.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> AutoTransform
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">autotransform</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="autotransform.html">autotransform package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="autotransform.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="autotransform.batcher.html">autotransform.batcher package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.command.html">autotransform.command package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.config.html">autotransform.config package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.event.html">autotransform.event package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.filter.html">autotransform.filter package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.input.html">autotransform.input package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.item.html">autotransform.item package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">autotransform.repo package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.runner.html">autotransform.runner package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.schema.html">autotransform.schema package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.scripts.html">autotransform.scripts package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.thirdparty.html">autotransform.thirdparty package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.transformer.html">autotransform.transformer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.util.html">autotransform.util package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.validator.html">autotransform.validator package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.html#module-autotransform">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AutoTransform</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">autotransform</a> &raquo;</li>
+          <li><a href="autotransform.html">autotransform package</a> &raquo;</li>
+      <li>autotransform.repo package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/autotransform.repo.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="autotransform-repo-package">
+<h1>autotransform.repo package<a class="headerlink" href="#autotransform-repo-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-autotransform.repo.base">
+<span id="autotransform-repo-base-module"></span><h2>autotransform.repo.base module<a class="headerlink" href="#module-autotransform.repo.base" title="Permalink to this headline"></a></h2>
+<p>The base class and associated classes for Repo components.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.repo.base.Repo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.repo.base.</span></span><span class="sig-name descname"><span class="pre">Repo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autotransform.repo.base.TParams</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.repo.base.Repo" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">autotransform.repo.base.TParams</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>The base for Repo components. Used by AutoTransform to interact with version
+control and code review systems.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.base.Repo._params">
+<span class="sig-name descname"><span class="pre">_params</span></span><a class="headerlink" href="#autotransform.repo.base.Repo._params" title="Permalink to this definition"></a></dt>
+<dd><p>The paramaters that control operation of the Repo.
+Should be defined using a TypedDict in subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>TParams</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.base.Repo.bundle">
+<span class="sig-name descname"><span class="pre">bundle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.repo.base.RepoBundle" title="autotransform.repo.base.RepoBundle"><span class="pre">autotransform.repo.base.RepoBundle</span></a></span></span><a class="headerlink" href="#autotransform.repo.base.Repo.bundle" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a JSON encodable bundle.
+If a component’s params are not JSON encodable this method should be overridden to provide
+an encodable version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The encodable bundle.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.repo.base.RepoBundle" title="autotransform.repo.base.RepoBundle">RepoBundle</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.base.Repo.clean">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">clean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.repo.base.Repo.clean" title="Permalink to this definition"></a></dt>
+<dd><p>Clean any changes present in the Repo that have not been submitted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>batch</strong> (<a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><em>Batch</em></a>) – The Batch for which we are cleaning the repo.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.base.Repo.from_data">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.repo.base.Repo" title="autotransform.repo.base.Repo"><span class="pre">autotransform.repo.base.Repo</span></a></span></span><a class="headerlink" href="#autotransform.repo.base.Repo.from_data" title="Permalink to this definition"></a></dt>
+<dd><p>Produces an instance of the component from decoded params. Implementations should
+assert that the data provided matches expected types and is valid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – The JSON decoded params from an encoded bundle.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the Repo.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.repo.base.Repo" title="autotransform.repo.base.Repo">Repo</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.base.Repo.get_params">
+<span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">autotransform.repo.base.TParams</span></span></span><a class="headerlink" href="#autotransform.repo.base.Repo.get_params" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the paramaters used to set up the Repo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The paramaters used to set up the Repo.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>TParams</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.base.Repo.get_type">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.repo.type.RepoType" title="autotransform.repo.type.RepoType"><span class="pre">autotransform.repo.type.RepoType</span></a></span></span><a class="headerlink" href="#autotransform.repo.base.Repo.get_type" title="Permalink to this definition"></a></dt>
+<dd><p>Used to map Repo components 1:1 with an enum, allowing construction from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The unique type associated with this Repo.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.repo.type.RepoType" title="autotransform.repo.type.RepoType">RepoType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.base.Repo.has_changes">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_changes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#autotransform.repo.base.Repo.has_changes" title="Permalink to this definition"></a></dt>
+<dd><p>Check whether any changes have been made to the underlying code based on the Batch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>batch</strong> (<a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><em>Batch</em></a>) – The Batch that was used for the transformation.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns True if there are any changes to the codebase.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.base.Repo.rewind">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rewind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.repo.base.Repo.rewind" title="Permalink to this definition"></a></dt>
+<dd><p>Rewind the repo to a pre-submit state to prepare for executing another Batch. This
+should NOT delete any submissions (i.e. commits should stay present). Only called after a
+submit has been done.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>batch</strong> (<a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><em>Batch</em></a>) – The Batch for which changes were submitted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.base.Repo.submit">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">submit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.repo.base.Repo.submit" title="Permalink to this definition"></a></dt>
+<dd><p>Submit the changes to the Repo (i.e. commit, submit pull request, etc…).
+Only called when changes are present.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>batch</strong> (<a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><em>Batch</em></a>) – The Batch for which the changes were made.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.repo.base.RepoBundle">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.repo.base.</span></span><span class="sig-name descname"><span class="pre">RepoBundle</span></span><a class="headerlink" href="#autotransform.repo.base.RepoBundle" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>A bundled version of the Repo object used for JSON encoding.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.base.RepoBundle.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#autotransform.repo.base.RepoBundle.params" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.base.RepoBundle.type">
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#autotransform.repo.type.RepoType" title="autotransform.repo.type.RepoType"><span class="pre">autotransform.repo.type.RepoType</span></a></em><a class="headerlink" href="#autotransform.repo.base.RepoBundle.type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.repo.factory">
+<span id="autotransform-repo-factory-module"></span><h2>autotransform.repo.factory module<a class="headerlink" href="#module-autotransform.repo.factory" title="Permalink to this headline"></a></h2>
+<p>A simple factory for producing Repos from type and param information.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.repo.factory.RepoFactory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.repo.factory.</span></span><span class="sig-name descname"><span class="pre">RepoFactory</span></span><a class="headerlink" href="#autotransform.repo.factory.RepoFactory" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The factory class for Repos. Maps a type to a Repo.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.factory.RepoFactory._map">
+<span class="sig-name descname"><span class="pre">_map</span></span><a class="headerlink" href="#autotransform.repo.factory.RepoFactory._map" title="Permalink to this definition"></a></dt>
+<dd><p>A mapping from
+RepoType to the from_data function of the appropriate Repo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Dict[<a class="reference internal" href="#autotransform.repo.type.RepoType" title="autotransform.repo.type.RepoType">RepoType</a>, Callable[[Mapping[str, Any]], <a class="reference internal" href="#autotransform.repo.base.Repo" title="autotransform.repo.base.Repo">Repo</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.factory.RepoFactory.get">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bundle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#autotransform.repo.base.RepoBundle" title="autotransform.repo.base.RepoBundle"><span class="pre">autotransform.repo.base.RepoBundle</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.repo.base.Repo" title="autotransform.repo.base.Repo"><span class="pre">autotransform.repo.base.Repo</span></a></span></span><a class="headerlink" href="#autotransform.repo.factory.RepoFactory.get" title="Permalink to this definition"></a></dt>
+<dd><p>Simple get method using the _map attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bundle</strong> (<a class="reference internal" href="#autotransform.repo.base.RepoBundle" title="autotransform.repo.base.RepoBundle"><em>RepoBundle</em></a>) – The bundled Repo type and params.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the associated Repo.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.repo.base.Repo" title="autotransform.repo.base.Repo">Repo</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.repo.git">
+<span id="autotransform-repo-git-module"></span><h2>autotransform.repo.git module<a class="headerlink" href="#module-autotransform.repo.git" title="Permalink to this headline"></a></h2>
+<p>The implementation for the GitRepo.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.repo.git.GitRepo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.repo.git.</span></span><span class="sig-name descname"><span class="pre">GitRepo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#autotransform.repo.git.GitRepoParams" title="autotransform.repo.git.GitRepoParams"><span class="pre">autotransform.repo.git.GitRepoParams</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.repo.git.GitRepo" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#autotransform.repo.base.Repo" title="autotransform.repo.base.Repo"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.repo.base.Repo</span></code></a>[<a class="reference internal" href="#autotransform.repo.git.GitRepoParams" title="autotransform.repo.git.GitRepoParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.repo.git.GitRepoParams</span></code></a>]</p>
+<p>A Repo that provides support for commiting changes to git.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.git.GitRepo._params">
+<span class="sig-name descname"><span class="pre">_params</span></span><a class="headerlink" href="#autotransform.repo.git.GitRepo._params" title="Permalink to this definition"></a></dt>
+<dd><p>Contains tthe base branch name that the changes will be
+made on top of.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.repo.git.GitRepoParams" title="autotransform.repo.git.GitRepoParams">GitRepoParams</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.git.GitRepo._local_repo">
+<span class="sig-name descname"><span class="pre">_local_repo</span></span><a class="headerlink" href="#autotransform.repo.git.GitRepo._local_repo" title="Permalink to this definition"></a></dt>
+<dd><p>An object representing the repo used for git operations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>GitPython</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.git.GitRepo._base_branch">
+<span class="sig-name descname"><span class="pre">_base_branch</span></span><a class="headerlink" href="#autotransform.repo.git.GitRepo._base_branch" title="Permalink to this definition"></a></dt>
+<dd><p>The base branch to use for changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Head</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.git.GitRepo.BRANCH_NAME_PREFIX">
+<span class="sig-name descname"><span class="pre">BRANCH_NAME_PREFIX</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'AUTO_TRANSFORM'</span></em><a class="headerlink" href="#autotransform.repo.git.GitRepo.BRANCH_NAME_PREFIX" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.git.GitRepo.COMMIT_MESSAGE_PREFIX">
+<span class="sig-name descname"><span class="pre">COMMIT_MESSAGE_PREFIX</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'[AutoTransform]'</span></em><a class="headerlink" href="#autotransform.repo.git.GitRepo.COMMIT_MESSAGE_PREFIX" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.git.GitRepo.clean">
+<span class="sig-name descname"><span class="pre">clean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.repo.git.GitRepo.clean" title="Permalink to this definition"></a></dt>
+<dd><p>Performs <cite>git reset –hard</cite> to remove any changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>_</strong> (<a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><em>Batch</em></a>) – Unused Batch object used to match signature to base</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.git.GitRepo.commit">
+<span class="sig-name descname"><span class="pre">commit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.repo.git.GitRepo.commit" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a new branch for all changes, stages them, and commits them.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>title</strong> (<em>str</em>) – The title of the Batch being commited.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.git.GitRepo.from_data">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.repo.git.GitRepo" title="autotransform.repo.git.GitRepo"><span class="pre">autotransform.repo.git.GitRepo</span></a></span></span><a class="headerlink" href="#autotransform.repo.git.GitRepo.from_data" title="Permalink to this definition"></a></dt>
+<dd><p>Produces a GitRepo from the provided data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – The JSON decoded params from an encoded bundle.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the GitRepo.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.repo.git.GitRepo" title="autotransform.repo.git.GitRepo">GitRepo</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.git.GitRepo.get_branch_name">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_branch_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#autotransform.repo.git.GitRepo.get_branch_name" title="Permalink to this definition"></a></dt>
+<dd><p>Gets a unique name for a git branch using the title from the Batch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>title</strong> (<em>str</em>) – The title of the change.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The name of the branch for this change.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.git.GitRepo.get_commit_message">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_commit_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#autotransform.repo.git.GitRepo.get_commit_message" title="Permalink to this definition"></a></dt>
+<dd><p>Gets a commit message for the change based on the Batch title.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>title</strong> (<em>str</em>) – The title of the change.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The commit message for this change.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.git.GitRepo.get_type">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.repo.type.RepoType" title="autotransform.repo.type.RepoType"><span class="pre">autotransform.repo.type.RepoType</span></a></span></span><a class="headerlink" href="#autotransform.repo.git.GitRepo.get_type" title="Permalink to this definition"></a></dt>
+<dd><p>Used to map Repo components 1:1 with an enum, allowing construction from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The unique type associated with this Repo</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.repo.type.RepoType" title="autotransform.repo.type.RepoType">RepoType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.git.GitRepo.has_changes">
+<span class="sig-name descname"><span class="pre">has_changes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#autotransform.repo.git.GitRepo.has_changes" title="Permalink to this definition"></a></dt>
+<dd><p>Checks the dirty status of the repo, including untracked changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>_</strong> (<a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><em>Batch</em></a>) – Unused Batch object used to match signature to base.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns True if there are any changes to the repo either staged or unstaged.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.git.GitRepo.rewind">
+<span class="sig-name descname"><span class="pre">rewind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.repo.git.GitRepo.rewind" title="Permalink to this definition"></a></dt>
+<dd><p>First eliminates any uncommitted changes using the clean function then checks out
+the initial active branch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>batch</strong> (<a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><em>Batch</em></a>) – The Batch for the submitted changes that is being rewound.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.git.GitRepo.submit">
+<span class="sig-name descname"><span class="pre">submit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.repo.git.GitRepo.submit" title="Permalink to this definition"></a></dt>
+<dd><p>Stages all changes and commits them in a new branch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>batch</strong> (<a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><em>Batch</em></a>) – The Batch for which the changes were made</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.repo.git.GitRepoParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.repo.git.</span></span><span class="sig-name descname"><span class="pre">GitRepoParams</span></span><a class="headerlink" href="#autotransform.repo.git.GitRepoParams" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>The param type for a GitRepo.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.git.GitRepoParams.base_branch_name">
+<span class="sig-name descname"><span class="pre">base_branch_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#autotransform.repo.git.GitRepoParams.base_branch_name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.repo.github">
+<span id="autotransform-repo-github-module"></span><h2>autotransform.repo.github module<a class="headerlink" href="#module-autotransform.repo.github" title="Permalink to this headline"></a></h2>
+<p>The implementation for the GithubRepo.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.repo.github.</span></span><span class="sig-name descname"><span class="pre">GithubRepo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#autotransform.repo.github.GithubRepoParams" title="autotransform.repo.github.GithubRepoParams"><span class="pre">autotransform.repo.github.GithubRepoParams</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.repo.github.GithubRepo" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#autotransform.repo.git.GitRepo" title="autotransform.repo.git.GitRepo"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.repo.git.GitRepo</span></code></a></p>
+<p>A Repo that provides support for submitting changes as a pull request against
+a Github repo.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepo._params">
+<span class="sig-name descname"><span class="pre">_params</span></span><a class="headerlink" href="#autotransform.repo.github.GithubRepo._params" title="Permalink to this definition"></a></dt>
+<dd><p>Contains all git params as well as the Github repo
+name and any required labels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.repo.github.GithubRepoParams" title="autotransform.repo.github.GithubRepoParams">GithubRepoParams</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepo._github_repo">
+<span class="sig-name descname"><span class="pre">_github_repo</span></span><a class="headerlink" href="#autotransform.repo.github.GithubRepo._github_repo" title="Permalink to this definition"></a></dt>
+<dd><p>The Github Repository being interacted with.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Repository.Repository</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepo.from_data">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.repo.github.GithubRepo" title="autotransform.repo.github.GithubRepo"><span class="pre">autotransform.repo.github.GithubRepo</span></a></span></span><a class="headerlink" href="#autotransform.repo.github.GithubRepo.from_data" title="Permalink to this definition"></a></dt>
+<dd><p>Produces a GithubRepo from the provided data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – The JSON decoded params from an encoded bundle</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the GithubRepo</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.repo.github.GithubRepo" title="autotransform.repo.github.GithubRepo">GithubRepo</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepo.get_github_object">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_github_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">github.MainClass.Github</span></span></span><a class="headerlink" href="#autotransform.repo.github.GithubRepo.get_github_object" title="Permalink to this definition"></a></dt>
+<dd><p>Authenticates with Github to allow API access via a token provided by AutoTransform
+configuration. If no token is provided a username + password will be used. Also allows
+use of a base URL for enterprise use cases.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>An object allowing interaction with the Github API.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Github</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepo.get_github_repo">
+<span class="sig-name descname"><span class="pre">get_github_repo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">github.Repository.Repository</span></span></span><a class="headerlink" href="#autotransform.repo.github.GithubRepo.get_github_repo" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the Github repository being interacted with.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The Github repository being interacted with.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Repository.Repository</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepo.get_type">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.repo.type.RepoType" title="autotransform.repo.type.RepoType"><span class="pre">autotransform.repo.type.RepoType</span></a></span></span><a class="headerlink" href="#autotransform.repo.github.GithubRepo.get_type" title="Permalink to this definition"></a></dt>
+<dd><p>Used to map Repo components 1:1 with an enum, allowing construction from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The unique type associated with this Repo</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.repo.type.RepoType" title="autotransform.repo.type.RepoType">RepoType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepo.submit">
+<span class="sig-name descname"><span class="pre">submit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.repo.github.GithubRepo.submit" title="Permalink to this definition"></a></dt>
+<dd><p>Performs the normal submit for a git repo then submits a pull request
+against the provided Github repo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>batch</strong> (<a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><em>Batch</em></a>) – The Batch for which the changes were made.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepoParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.repo.github.</span></span><span class="sig-name descname"><span class="pre">GithubRepoParams</span></span><a class="headerlink" href="#autotransform.repo.github.GithubRepoParams" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<p>The param type for a GithubRepo.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepoParams.base_branch_name">
+<span class="sig-name descname"><span class="pre">base_branch_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#autotransform.repo.github.GithubRepoParams.base_branch_name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepoParams.full_github_name">
+<span class="sig-name descname"><span class="pre">full_github_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#autotransform.repo.github.GithubRepoParams.full_github_name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepoParams.required_labels">
+<span class="sig-name descname"><span class="pre">required_labels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">typing_extensions.NotRequired</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#autotransform.repo.github.GithubRepoParams.required_labels" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.repo.type">
+<span id="autotransform-repo-type-module"></span><h2>autotransform.repo.type module<a class="headerlink" href="#module-autotransform.repo.type" title="Permalink to this headline"></a></h2>
+<p>The type of Repo, used create a 1:1 mapping.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.repo.type.RepoType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.repo.type.</span></span><span class="sig-name descname"><span class="pre">RepoType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.repo.type.RepoType" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>A simple enum for 1:1 Repo to type mapping.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.type.RepoType.GIT">
+<span class="sig-name descname"><span class="pre">GIT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'git'</span></em><a class="headerlink" href="#autotransform.repo.type.RepoType.GIT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.type.RepoType.GITHUB">
+<span class="sig-name descname"><span class="pre">GITHUB</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'github'</span></em><a class="headerlink" href="#autotransform.repo.type.RepoType.GITHUB" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.repo">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-autotransform.repo" title="Permalink to this headline"></a></h2>
+<p>Repos provide functionality for integrating with a version control system,
+including any associated code review workflow (i.e. Github pull requests)</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="autotransform.item.html" class="btn btn-neutral float-left" title="autotransform.item package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="autotransform.runner.html" class="btn btn-neutral float-right" title="autotransform.runner package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Nathan Rockenbach.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

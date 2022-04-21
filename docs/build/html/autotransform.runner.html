@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>autotransform.runner package &mdash; AutoTransform 0.1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="autotransform.schema package" href="autotransform.schema.html" />
+    <link rel="prev" title="autotransform.repo package" href="autotransform.repo.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> AutoTransform
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">autotransform</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="autotransform.html">autotransform package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="autotransform.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="autotransform.batcher.html">autotransform.batcher package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.command.html">autotransform.command package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.config.html">autotransform.config package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.event.html">autotransform.event package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.filter.html">autotransform.filter package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.input.html">autotransform.input package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.item.html">autotransform.item package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.repo.html">autotransform.repo package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">autotransform.runner package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.schema.html">autotransform.schema package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.scripts.html">autotransform.scripts package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.thirdparty.html">autotransform.thirdparty package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.transformer.html">autotransform.transformer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.util.html">autotransform.util package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.validator.html">autotransform.validator package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.html#module-autotransform">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AutoTransform</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">autotransform</a> &raquo;</li>
+          <li><a href="autotransform.html">autotransform package</a> &raquo;</li>
+      <li>autotransform.runner package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/autotransform.runner.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="autotransform-runner-package">
+<h1>autotransform.runner package<a class="headerlink" href="#autotransform-runner-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-autotransform.runner.base">
+<span id="autotransform-runner-base-module"></span><h2>autotransform.runner.base module<a class="headerlink" href="#module-autotransform.runner.base" title="Permalink to this headline"></a></h2>
+<p>The base class and associated classes for Runner components.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.runner.base.Runner">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.runner.base.</span></span><span class="sig-name descname"><span class="pre">Runner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autotransform.runner.base.TParams</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.runner.base.Runner" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">autotransform.runner.base.TParams</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<p>The base for Runner components. Used by AutoTransform to run an AutoTransformSchema,
+either locally on the machine or on remote infrastructure.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.runner.base.Runner._params">
+<span class="sig-name descname"><span class="pre">_params</span></span><a class="headerlink" href="#autotransform.runner.base.Runner._params" title="Permalink to this definition"></a></dt>
+<dd><p>The paramaters that control operation of the Runner.
+Should be defined using a TypedDict in subclasses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>TParams</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.runner.base.Runner.bundle">
+<span class="sig-name descname"><span class="pre">bundle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.runner.base.RunnerBundle" title="autotransform.runner.base.RunnerBundle"><span class="pre">autotransform.runner.base.RunnerBundle</span></a></span></span><a class="headerlink" href="#autotransform.runner.base.Runner.bundle" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a JSON encodable bundle.
+If a component’s params are not JSON encodable this method should be overridden to provide
+an encodable version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The encodable bundle.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.runner.base.RunnerBundle" title="autotransform.runner.base.RunnerBundle">RunnerBundle</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.runner.base.Runner.from_data">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.runner.base.Runner" title="autotransform.runner.base.Runner"><span class="pre">autotransform.runner.base.Runner</span></a></span></span><a class="headerlink" href="#autotransform.runner.base.Runner.from_data" title="Permalink to this definition"></a></dt>
+<dd><p>Produces an instance of the component from decoded params. Implementations should
+assert that the data provided matches expected types and is valid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – The JSON decoded params from an encoded bundle.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the Runner.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.runner.base.Runner" title="autotransform.runner.base.Runner">Runner</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.runner.base.Runner.get_type">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.runner.type.RunnerType" title="autotransform.runner.type.RunnerType"><span class="pre">autotransform.runner.type.RunnerType</span></a></span></span><a class="headerlink" href="#autotransform.runner.base.Runner.get_type" title="Permalink to this definition"></a></dt>
+<dd><p>Used to map Runner components 1:1 with an enum, allowing construction from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The unique type associated with this Runner.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.runner.type.RunnerType" title="autotransform.runner.type.RunnerType">RunnerType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.runner.base.Runner.run">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.schema.html#autotransform.schema.schema.AutoTransformSchema" title="autotransform.schema.schema.AutoTransformSchema"><span class="pre">autotransform.schema.schema.AutoTransformSchema</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.runner.base.Runner.run" title="Permalink to this definition"></a></dt>
+<dd><p>Triggers a full run of a Schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>schema</strong> (<a class="reference internal" href="autotransform.schema.html#autotransform.schema.schema.AutoTransformSchema" title="autotransform.schema.schema.AutoTransformSchema"><em>AutoTransformSchema</em></a>) – The schema that will be run.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.runner.base.RunnerBundle">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.runner.base.</span></span><span class="sig-name descname"><span class="pre">RunnerBundle</span></span><a class="headerlink" href="#autotransform.runner.base.RunnerBundle" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>A bundled version of the Runner object used for JSON encoding.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.runner.base.RunnerBundle.params">
+<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#autotransform.runner.base.RunnerBundle.params" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.runner.base.RunnerBundle.type">
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#autotransform.runner.type.RunnerType" title="autotransform.runner.type.RunnerType"><span class="pre">autotransform.runner.type.RunnerType</span></a></em><a class="headerlink" href="#autotransform.runner.base.RunnerBundle.type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.runner.factory">
+<span id="autotransform-runner-factory-module"></span><h2>autotransform.runner.factory module<a class="headerlink" href="#module-autotransform.runner.factory" title="Permalink to this headline"></a></h2>
+<p>A simple factory for producing Runners from type and param information.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.runner.factory.RunnerFactory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.runner.factory.</span></span><span class="sig-name descname"><span class="pre">RunnerFactory</span></span><a class="headerlink" href="#autotransform.runner.factory.RunnerFactory" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The factory class for Runners. Maps a type to a Runner.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.runner.factory.RunnerFactory._map">
+<span class="sig-name descname"><span class="pre">_map</span></span><a class="headerlink" href="#autotransform.runner.factory.RunnerFactory._map" title="Permalink to this definition"></a></dt>
+<dd><p>A mapping from
+RunnerType to the from_data function of the appropriate Runner.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Dict[<a class="reference internal" href="#autotransform.runner.type.RunnerType" title="autotransform.runner.type.RunnerType">RunnerType</a>, Callable[[Mapping[str, Any]], <a class="reference internal" href="#autotransform.runner.base.Runner" title="autotransform.runner.base.Runner">Runner</a>]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.runner.factory.RunnerFactory.get">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bundle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#autotransform.runner.base.RunnerBundle" title="autotransform.runner.base.RunnerBundle"><span class="pre">autotransform.runner.base.RunnerBundle</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.runner.base.Runner" title="autotransform.runner.base.Runner"><span class="pre">autotransform.runner.base.Runner</span></a></span></span><a class="headerlink" href="#autotransform.runner.factory.RunnerFactory.get" title="Permalink to this definition"></a></dt>
+<dd><p>Simple get method using the _map attribute.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bundle</strong> (<a class="reference internal" href="#autotransform.runner.base.RunnerBundle" title="autotransform.runner.base.RunnerBundle"><em>RunnerBundle</em></a>) – The bundled Runner type and params.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the associated Runner.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.runner.base.Runner" title="autotransform.runner.base.Runner">Runner</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.runner.github">
+<span id="autotransform-runner-github-module"></span><h2>autotransform.runner.github module<a class="headerlink" href="#module-autotransform.runner.github" title="Permalink to this headline"></a></h2>
+<p>A GithubberRunner component, which is used to trigger a workflow on Github which
+runs a schema.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.runner.github.GithubRunner">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.runner.github.</span></span><span class="sig-name descname"><span class="pre">GithubRunner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autotransform.runner.base.TParams</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.runner.github.GithubRunner" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#autotransform.runner.base.Runner" title="autotransform.runner.base.Runner"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.runner.base.Runner</span></code></a>[<a class="reference internal" href="#autotransform.runner.github.GithubRunnerParams" title="autotransform.runner.github.GithubRunnerParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.runner.github.GithubRunnerParams</span></code></a>]</p>
+<p>A Runner component that is used to trigger Github workflows. See
+data/workflows/autotransform_runner.yml.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.runner.github.GithubRunner._params">
+<span class="sig-name descname"><span class="pre">_params</span></span><a class="headerlink" href="#autotransform.runner.github.GithubRunner._params" title="Permalink to this definition"></a></dt>
+<dd><p>The paramaters that control operation of the Runner.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.runner.github.GithubRunnerParams" title="autotransform.runner.github.GithubRunnerParams">GithubRunnerParams</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.runner.github.GithubRunner.from_data">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.runner.github.GithubRunner" title="autotransform.runner.github.GithubRunner"><span class="pre">autotransform.runner.github.GithubRunner</span></a></span></span><a class="headerlink" href="#autotransform.runner.github.GithubRunner.from_data" title="Permalink to this definition"></a></dt>
+<dd><p>Produces an instance of the component from decoded params. Implementations should
+assert that the data provided matches expected types and is valid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – The JSON decoded params from an encoded bundle.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the GithubRunner.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.runner.github.GithubRunner" title="autotransform.runner.github.GithubRunner">GithubRunner</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.runner.github.GithubRunner.get_type">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.runner.type.RunnerType" title="autotransform.runner.type.RunnerType"><span class="pre">autotransform.runner.type.RunnerType</span></a></span></span><a class="headerlink" href="#autotransform.runner.github.GithubRunner.get_type" title="Permalink to this definition"></a></dt>
+<dd><p>Used to map Runner components 1:1 with an enum, allowing construction from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The unique type associated with this Runner.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.runner.type.RunnerType" title="autotransform.runner.type.RunnerType">RunnerType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.runner.github.GithubRunner.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.schema.html#autotransform.schema.schema.AutoTransformSchema" title="autotransform.schema.schema.AutoTransformSchema"><span class="pre">autotransform.schema.schema.AutoTransformSchema</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.runner.github.GithubRunner.run" title="Permalink to this definition"></a></dt>
+<dd><p>Triggers a full run of a Schema by submitting a workflow run to the
+Github repo in the Schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>schema</strong> (<a class="reference internal" href="autotransform.schema.html#autotransform.schema.schema.AutoTransformSchema" title="autotransform.schema.schema.AutoTransformSchema"><em>AutoTransformSchema</em></a>) – The schema that will be run.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.runner.github.GithubRunnerParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.runner.github.</span></span><span class="sig-name descname"><span class="pre">GithubRunnerParams</span></span><a class="headerlink" href="#autotransform.runner.github.GithubRunnerParams" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>The params required for a GithubRunner instance.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.runner.github.GithubRunnerParams.workflow">
+<span class="sig-name descname"><span class="pre">workflow</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#autotransform.runner.github.GithubRunnerParams.workflow" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.runner.local">
+<span id="autotransform-runner-local-module"></span><h2>autotransform.runner.local module<a class="headerlink" href="#module-autotransform.runner.local" title="Permalink to this headline"></a></h2>
+<p>A GithubberRunner component, which is used to trigger a workflow on Github which
+runs a schema.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.runner.local.LocalRunner">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.runner.local.</span></span><span class="sig-name descname"><span class="pre">LocalRunner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autotransform.runner.base.TParams</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.runner.local.LocalRunner" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#autotransform.runner.base.Runner" title="autotransform.runner.base.Runner"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.runner.base.Runner</span></code></a>[<a class="reference internal" href="#autotransform.runner.local.LocalRunnerParams" title="autotransform.runner.local.LocalRunnerParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.runner.local.LocalRunnerParams</span></code></a>]</p>
+<p>A Runner component that runs a Schema locally on the machine.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.runner.local.LocalRunner._params">
+<span class="sig-name descname"><span class="pre">_params</span></span><a class="headerlink" href="#autotransform.runner.local.LocalRunner._params" title="Permalink to this definition"></a></dt>
+<dd><p>The paramaters that control operation of the Runner.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.runner.local.LocalRunnerParams" title="autotransform.runner.local.LocalRunnerParams">LocalRunnerParams</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.runner.local.LocalRunner.from_data">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.runner.local.LocalRunner" title="autotransform.runner.local.LocalRunner"><span class="pre">autotransform.runner.local.LocalRunner</span></a></span></span><a class="headerlink" href="#autotransform.runner.local.LocalRunner.from_data" title="Permalink to this definition"></a></dt>
+<dd><p>Produces an instance of the component from decoded params. Implementations should
+assert that the data provided matches expected types and is valid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – The JSON decoded params from an encoded bundle.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the LocalRunner.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.runner.local.LocalRunner" title="autotransform.runner.local.LocalRunner">LocalRunner</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.runner.local.LocalRunner.get_type">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.runner.type.RunnerType" title="autotransform.runner.type.RunnerType"><span class="pre">autotransform.runner.type.RunnerType</span></a></span></span><a class="headerlink" href="#autotransform.runner.local.LocalRunner.get_type" title="Permalink to this definition"></a></dt>
+<dd><p>Used to map Runner components 1:1 with an enum, allowing construction from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The unique type associated with this Runner.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#autotransform.runner.type.RunnerType" title="autotransform.runner.type.RunnerType">RunnerType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.runner.local.LocalRunner.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.schema.html#autotransform.schema.schema.AutoTransformSchema" title="autotransform.schema.schema.AutoTransformSchema"><span class="pre">autotransform.schema.schema.AutoTransformSchema</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.runner.local.LocalRunner.run" title="Permalink to this definition"></a></dt>
+<dd><p>Triggers a full run of a Schema locally.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>schema</strong> (<a class="reference internal" href="autotransform.schema.html#autotransform.schema.schema.AutoTransformSchema" title="autotransform.schema.schema.AutoTransformSchema"><em>AutoTransformSchema</em></a>) – The schema that will be run.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.runner.local.LocalRunnerParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.runner.local.</span></span><span class="sig-name descname"><span class="pre">LocalRunnerParams</span></span><a class="headerlink" href="#autotransform.runner.local.LocalRunnerParams" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>The params required for a LocalRunner instance.</p>
+</dd></dl>
+
+</section>
+<section id="module-autotransform.runner.type">
+<span id="autotransform-runner-type-module"></span><h2>autotransform.runner.type module<a class="headerlink" href="#module-autotransform.runner.type" title="Permalink to this headline"></a></h2>
+<p>The type of Runner, used create a 1:1 mapping.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.runner.type.RunnerType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.runner.type.</span></span><span class="sig-name descname"><span class="pre">RunnerType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.runner.type.RunnerType" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>A simple enum for 1:1 Runner to type mapping.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.runner.type.RunnerType.GITHUB">
+<span class="sig-name descname"><span class="pre">GITHUB</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'github'</span></em><a class="headerlink" href="#autotransform.runner.type.RunnerType.GITHUB" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.runner.type.RunnerType.LOCAL">
+<span class="sig-name descname"><span class="pre">LOCAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'local'</span></em><a class="headerlink" href="#autotransform.runner.type.RunnerType.LOCAL" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-autotransform.runner">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-autotransform.runner" title="Permalink to this headline"></a></h2>
+<p>Runner components are responsible for handling the running of AutoTransform schemas.
+They can trigger runs on remote infrastructure or locally on a given machine.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="autotransform.repo.html" class="btn btn-neutral float-left" title="autotransform.repo package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="autotransform.schema.html" class="btn btn-neutral float-right" title="autotransform.schema package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Nathan Rockenbach.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
