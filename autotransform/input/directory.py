@@ -10,10 +10,11 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, List, Mapping, TypedDict
+from typing import Any, List, Mapping, Sequence, TypedDict
 
 from autotransform.input.base import Input
 from autotransform.input.type import InputType
+from autotransform.item.file import FileItem
 
 
 class DirectoryInputParams(TypedDict):
@@ -26,8 +27,8 @@ class DirectoryInput(Input[DirectoryInputParams]):
     """An Input that lists all files recursively within a provided directory.
 
     Attributes:
+        _files (List[str]): A cached list of the files provided by the Input.
         _params (DirectoryInputParams): Contains the directory to walk.
-        _files (List[str]): A cached list of the files provided by the input.
     """
 
     _files: List[str]
@@ -65,15 +66,15 @@ class DirectoryInput(Input[DirectoryInputParams]):
             else:
                 self.populate_files(file)
 
-    def get_keys(self) -> List[str]:
+    def get_items(self) -> Sequence[FileItem]:
         """Gets a list of files recursively contained within the path in the DirectoryInput params.
 
         Returns:
-            List[str]: The eligible files for transformation.
+            Sequence[FileItem]: The eligible files for transformation.
         """
         if not self._files:
             self.populate_files(Path(self._params["path"]))
-        return self._files
+        return [FileItem(f) for f in self._files]
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> DirectoryInput:

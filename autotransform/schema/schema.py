@@ -24,6 +24,7 @@ from autotransform.filter.base import Filter
 from autotransform.filter.factory import FilterFactory
 from autotransform.input.base import Input
 from autotransform.input.factory import InputFactory
+from autotransform.item.base import Item
 from autotransform.repo.base import Repo
 from autotransform.repo.factory import RepoFactory
 from autotransform.schema.config import Config
@@ -39,11 +40,10 @@ class AutoTransformSchema:
     a transformation.
 
     Attributes:
-        input (Input): The Input which gets eligible keys.
-        batcher (Batcher): The Batcher which batches eligible filtered Files
-            in to logical groups.
+        input (Input): The Input which gets Items.
+        batcher (Batcher): The Batcher which batches filtered Items in to logical groups.
         transformer (Transformer): The Transformer which actually modifies files.
-        filters (List[Filter]): A list of Filters to apply to eligible keys.
+        filters (List[Filter]): A list of Filters to apply to Items.
         validators (List[Validator]): A list of Validators to ensure the changes
             did not break anything.
         commands (List[Command]): A list of Commands that run post-processing on
@@ -107,39 +107,41 @@ class AutoTransformSchema:
         self.config = config if isinstance(config, Config) else Config()
 
     def get_batches(self) -> List[Batch]:
-        """Runs the Input to get eligible keys, filters them, then batches them.
+        """Runs the Input to get eligible Items, filters them, then batches them.
 
         Returns:
             List[Batch]: The Batches for the change
         """
         event_handler = EventHandler.get()
         event_handler.handle(DebugEvent({"message": "Begin get_batches"}))
-        valid_keys = []
-        event_handler.handle(DebugEvent({"message": "Begin get_input"}))
-        all_keys = self.input.get_keys()
-        event_handler.handle(DebugEvent({"message": f"Keys: {json.dumps(all_keys)}"}))
+        event_handler.handle(DebugEvent({"message": "Begin get_items"}))
+        all_items = self.input.get_items()
+        event_handler.handle(DebugEvent(
+            {"message": f"Keys: {json.dumps([item.bundle() for item in all_items])}"}
+        ))
         event_handler.handle(DebugEvent({"message": "Begin filters"}))
-        for key in all_keys:
+        valid_items: List[Item] = []
+        for item in all_items:
             is_valid = True
             for cur_filter in self.filters:
-                if not cur_filter.is_valid(key):
+                if not cur_filter.is_valid(item):
                     is_valid = False
                     type_str = "".join([w.capitalize() for w in cur_filter.get_type().split("_")])
                     event = DebugEvent(
-                        {"message": f"[{type_str}] Key invalid: {key}"}
+                        {"message": f"[{type_str}] Invalid Item: {json.dumps(item.bundle())}"}
                     )
                     event_handler.handle(event)
                     break
             if is_valid:
-                valid_keys.append(key)
-        event_handler.handle(
-            DebugEvent({"message": f"Valid keys: {json.dumps(valid_keys)}"})
-        )
+                valid_items.append(item)
+        event_handler.handle(DebugEvent(
+            {"message": f"Valid items: {json.dumps([item.bundle() for item in valid_items])}"}
+        ))
         event_handler.handle(DebugEvent({"message": "Begin batching"}))
-        batches = self.batcher.batch([CachedFile(key) for key in valid_keys])
+        batches = self.batcher.batch([CachedFile(item.get_key()) for item in valid_items])
 
         encodable_batches = [
-            {"keys": [inp.path for inp in batch["files"]], "metadata": batch["metadata"]}
+            {"items": [inp.path for inp in batch["files"]], "metadata": batch["metadata"]}
             for batch in batches
         ]
         event_handler.handle(DebugEvent({"message": f"Batches: {json.dumps(encodable_batches)}"}))
@@ -158,7 +160,7 @@ class AutoTransformSchema:
         """
         event_handler = EventHandler.get()
         encodable_batch = {
-            "keys": [inp.path for inp in batch["files"]],
+            "items": [inp.path for inp in batch["files"]],
             "metadata": batch["metadata"],
         }
         event_handler.handle(

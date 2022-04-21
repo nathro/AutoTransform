@@ -19,6 +19,7 @@ from autotransform.batcher.base import Batch, BatchMetadata
 from autotransform.batcher.single import SingleBatcher
 from autotransform.filter.regex import RegexFilter
 from autotransform.input.directory import DirectoryInput
+from autotransform.item.base import Item
 from autotransform.repo.github import GithubRepo
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.transformer.regex import RegexTransformer
@@ -38,21 +39,21 @@ def get_sample_schema() -> AutoTransformSchema:
     )
 
 
-ALLOWED_KEYS = ["allowed"]
-ALL_KEYS = ["allowed", "not_allowed"]
+ALLOWED_ITEMS = [Item("allowed")]
+ALL_ITEMS = [Item("allowed"), Item("not_allowed")]
 EXPECTED_METADATA = BatchMetadata({"title": "", "summary": "", "tests": ""})
 
 
-def mock_input(mocked_get_keys) -> None:
+def mock_input(mocked_get_items) -> None:
     """Sets up the Input mock."""
-    mocked_get_keys.return_value = ALL_KEYS
+    mocked_get_items.return_value = ALL_ITEMS
 
 
 def mock_filter(mocked_is_valid) -> None:
     """Sets up the Filter mock."""
 
-    def mock_is_valid(key: str) -> bool:
-        return key in ALLOWED_KEYS
+    def mock_is_valid(item: Item) -> bool:
+        return item.get_key() in [item.get_key() for item in ALLOWED_ITEMS]
 
     mocked_is_valid.side_effect = mock_is_valid
 
@@ -106,16 +107,16 @@ def mock_repo(
 @patch.object(GitPython, "active_branch")
 @patch.object(SingleBatcher, "batch")
 @patch.object(RegexFilter, "_is_valid")
-@patch.object(DirectoryInput, "get_keys")
+@patch.object(DirectoryInput, "get_items")
 def test_get_batches(
-    mocked_get_keys,
+    mocked_get_items,
     mocked_is_valid,
     mocked_batch,
     mocked_active_branch,
 ):
     """Checks that get_batches properly calls and uses components."""
     # Set up mocks
-    mock_input(mocked_get_keys)
+    mock_input(mocked_get_items)
     mock_filter(mocked_is_valid)
     mock_batcher(mocked_batch)
 
@@ -124,20 +125,20 @@ def test_get_batches(
     actual_batch = schema.get_batches()[0]
 
     # Check Input called
-    mocked_get_keys.assert_called_once()
+    mocked_get_items.assert_called_once()
 
     # Check Filter called
     assert mocked_is_valid.call_count == 2
-    filtered_keys = [mock_call.args[0] for mock_call in mocked_is_valid.call_args_list]
-    assert filtered_keys == ALL_KEYS
+    filtered_keys = [mock_call.args[0].get_key() for mock_call in mocked_is_valid.call_args_list]
+    assert filtered_keys == [item.get_key() for item in ALL_ITEMS]
 
     # Check batcher called
     mocked_batch.assert_called_once()
     batched_paths = [file.path for file in mocked_batch.call_args.args[0]]
-    assert batched_paths == ALLOWED_KEYS
+    assert batched_paths == [item.get_key() for item in ALLOWED_ITEMS]
 
     # Check end result
-    assert [file.path for file in actual_batch["files"]] == ALLOWED_KEYS
+    assert [file.path for file in actual_batch["files"]] == [item.get_key() for item in ALLOWED_ITEMS]
     assert actual_batch["metadata"] == EXPECTED_METADATA
 
 
@@ -150,9 +151,9 @@ def test_get_batches(
 @patch.object(RegexTransformer, "transform")
 @patch.object(SingleBatcher, "batch")
 @patch.object(RegexFilter, "_is_valid")
-@patch.object(DirectoryInput, "get_keys")
+@patch.object(DirectoryInput, "get_items")
 def test_run_with_changes(
-    mocked_get_keys,
+    mocked_get_items,
     mocked_is_valid,
     mocked_batch,
     mocked_transform,
@@ -164,7 +165,7 @@ def test_run_with_changes(
 ):
     """Checks that get_batches properly calls and uses components."""
     # Set up mocks
-    mock_input(mocked_get_keys)
+    mock_input(mocked_get_items)
     mock_filter(mocked_is_valid)
     mock_batcher(mocked_batch)
     mock_transformer(mocked_transform)
@@ -175,22 +176,22 @@ def test_run_with_changes(
     schema.run()
 
     # Check Input called
-    mocked_get_keys.assert_called_once()
+    mocked_get_items.assert_called_once()
 
     # Check Filter called
     assert mocked_is_valid.call_count == 2
-    filtered_keys = [mock_call.args[0] for mock_call in mocked_is_valid.call_args_list]
-    assert filtered_keys == ALL_KEYS
+    filtered_keys = [mock_call.args[0].get_key() for mock_call in mocked_is_valid.call_args_list]
+    assert filtered_keys == [item.get_key() for item in ALL_ITEMS]
 
     # Check batcher called
     mocked_batch.assert_called_once()
     batched_paths = [file.path for file in mocked_batch.call_args.args[0]]
-    assert batched_paths == ALLOWED_KEYS
+    assert batched_paths == [item.get_key() for item in ALLOWED_ITEMS]
 
     # Check transformer called
     mocked_transform.assert_called_once()
     transformed_path = mocked_transform.call_args.args[0]["files"][0].path
-    assert [transformed_path] == ALLOWED_KEYS
+    assert [transformed_path] == [item.get_key() for item in ALLOWED_ITEMS]
 
     # Check repo calls
     mocked_clean.assert_called_once()
@@ -208,9 +209,9 @@ def test_run_with_changes(
 @patch.object(RegexTransformer, "transform")
 @patch.object(SingleBatcher, "batch")
 @patch.object(RegexFilter, "_is_valid")
-@patch.object(DirectoryInput, "get_keys")
+@patch.object(DirectoryInput, "get_items")
 def test_run_with_no_changes(
-    mocked_get_keys,
+    mocked_get_items,
     mocked_is_valid,
     mocked_batch,
     mocked_transform,
@@ -222,7 +223,7 @@ def test_run_with_no_changes(
 ):
     """Checks that get_batches properly calls and uses components."""
     # Set up mocks
-    mock_input(mocked_get_keys)
+    mock_input(mocked_get_items)
     mock_filter(mocked_is_valid)
     mock_batcher(mocked_batch)
     mock_transformer(mocked_transform)
@@ -233,22 +234,22 @@ def test_run_with_no_changes(
     schema.run()
 
     # Check Input called
-    mocked_get_keys.assert_called_once()
+    mocked_get_items.assert_called_once()
 
     # Check Filter called
     assert mocked_is_valid.call_count == 2
-    filtered_keys = [mock_call.args[0] for mock_call in mocked_is_valid.call_args_list]
-    assert filtered_keys == ALL_KEYS
+    filtered_keys = [mock_call.args[0].get_key() for mock_call in mocked_is_valid.call_args_list]
+    assert filtered_keys == [item.get_key() for item in ALL_ITEMS]
 
     # Check batcher called
     mocked_batch.assert_called_once()
     batched_paths = [file.path for file in mocked_batch.call_args.args[0]]
-    assert batched_paths == ALLOWED_KEYS
+    assert batched_paths == [item.get_key() for item in ALLOWED_ITEMS]
 
     # Check transformer called
     mocked_transform.assert_called_once()
     transformed_path = mocked_transform.call_args.args[0]["files"][0].path
-    assert [transformed_path] == ALLOWED_KEYS
+    assert [transformed_path] == [item.get_key() for item in ALLOWED_ITEMS]
 
     # Check repo calls
     mocked_clean.assert_called_once()

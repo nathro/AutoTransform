@@ -10,10 +10,11 @@
 from __future__ import annotations
 
 import subprocess
-from typing import Any, List, Mapping, TypedDict
+from typing import Any, Mapping, Sequence, TypedDict
 
 from autotransform.input.base import Input
 from autotransform.input.type import InputType
+from autotransform.item.file import FileItem
 
 
 class GitGrepInputParams(TypedDict):
@@ -41,11 +42,11 @@ class GitGrepInput(Input[GitGrepInputParams]):
         """
         return InputType.GIT_GREP
 
-    def get_keys(self) -> List[str]:
+    def get_items(self) -> Sequence[FileItem]:
         """Gets a list of files using git grep that match the supplied pattern.
 
         Returns:
-            List[str]: The eligible files for transformation.
+            Sequence[FileItem]: The eligible files for transformation.
         """
         dir_cmd = ["git", "rev-parse", "--show-toplevel"]
         repo_dir = subprocess.check_output(dir_cmd, encoding="UTF-8").replace("\\", "/").strip()
@@ -64,7 +65,7 @@ class GitGrepInput(Input[GitGrepInputParams]):
             files = subprocess.check_output(git_grep_cmd, encoding="UTF-8").strip().split("\n")
         except subprocess.CalledProcessError:
             return []
-        return [repo_dir + "/" + file.replace("\\", "/") for file in files]
+        return [FileItem(repo_dir + "/" + file.replace("\\", "/")) for file in files]
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> GitGrepInput:

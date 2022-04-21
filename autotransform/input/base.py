@@ -10,9 +10,10 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Generic, List, Mapping, TypedDict, TypeVar
+from typing import Any, Generic, Mapping, Sequence, TypedDict, TypeVar
 
 from autotransform.input.type import InputType
+from autotransform.item.base import Item
 
 TParams = TypeVar("TParams", bound=Mapping[str, Any])
 
@@ -25,9 +26,9 @@ class InputBundle(TypedDict):
 
 
 class Input(Generic[TParams], ABC):
-    """The base for Input components. Used by AutoTransform to get string keys that
-    represent potentially transformable items for a Schema. Usually returns file paths but
-    any string can be returned as long as Schema components work with it.
+    """The base for Input components. Used by AutoTransform to get Items that
+    represent potentially transformable units for a Schema. Usually returns files but
+    any Item can be returned as long as Schema components work with it.
 
     Attributes:
         _params (TParams): The paramaters that control operation of the Input.
@@ -62,12 +63,12 @@ class Input(Generic[TParams], ABC):
         """
 
     @abstractmethod
-    def get_keys(self) -> List[str]:
-        """Get a list of keys to be used by the transformation based on the Input criteria. Usually
-        file paths, but any string can be used.
+    def get_items(self) -> Sequence[Item]:
+        """Get a list of Items to be used by the transformation based on the Input criteria. Usually
+        files.
 
         Returns:
-            List[str]: The eligible keys for transformation.
+            Sequence[Item]: The eligible Items for transformation.
         """
 
     def bundle(self) -> InputBundle:

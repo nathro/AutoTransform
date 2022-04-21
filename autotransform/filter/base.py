@@ -13,6 +13,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Generic, Mapping, Optional, TypedDict, TypeVar
 
 from autotransform.filter.type import FilterType
+from autotransform.item.base import Item
 
 TParams = TypeVar("TParams", bound=Mapping[str, Any])
 
@@ -26,7 +27,7 @@ class FilterBundle(TypedDict):
 
 
 class Filter(Generic[TParams], ABC):
-    """The base for Filter components. Used by AutoTransform to determine if a key from an Input
+    """The base for Filter components. Used by AutoTransform to determine if an Item from an Input
     is eligible for transformation.
 
     Attributes:
@@ -74,26 +75,26 @@ class Filter(Generic[TParams], ABC):
         self._inverted = not self._inverted
         return self
 
-    def is_valid(self, key: str) -> bool:
-        """Check whether a key is valid based on the Filter and handle inversion.
+    def is_valid(self, item: Item) -> bool:
+        """Check whether an Item is valid based on the Filter and handle inversion.
 
         Args:
-            key (str): The key to check.
+            item (Item): The Item to check.
 
         Returns:
-            bool: Returns True if the key is eligible for transformation
+            bool: Returns True if the Item is eligible for transformation
         """
-        return self._inverted != self._is_valid(key)
+        return self._inverted != self._is_valid(item)
 
     @abstractmethod
-    def _is_valid(self, key: str) -> bool:
-        """Check whether a key is valid based on the Filter. Does not handle inversion.
+    def _is_valid(self, item: Item) -> bool:
+        """Check whether an Item is valid based on the Filter. Does not handle inversion.
 
         Args:
-            key (str): The key to check.
+            item (Item): The item to check.
 
         Returns:
-            bool: Returns True if the key is eligible for transformation
+            bool: Returns True if the item is eligible for transformation
         """
 
     def bundle(self) -> FilterBundle:

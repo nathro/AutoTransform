@@ -14,7 +14,8 @@ from typing import Any, Mapping, TypedDict
 
 from autotransform.filter.base import Filter
 from autotransform.filter.type import FilterType
-from autotransform.util.cachedfile import CachedFile
+from autotransform.item.base import Item
+from autotransform.item.file import FileItem
 
 
 class RegexFilterParams(TypedDict):
@@ -24,7 +25,7 @@ class RegexFilterParams(TypedDict):
 
 
 class RegexFilter(Filter[RegexFilterParams]):
-    """A Filter which only passes keys where the key matches a provided regex pattern.
+    """A Filter which only passes Items where the Item's key matches a provided regex pattern.
     Uses re.search rather than re.match.
 
     Attributes:
@@ -42,16 +43,16 @@ class RegexFilter(Filter[RegexFilterParams]):
         """
         return FilterType.REGEX
 
-    def _is_valid(self, key: str) -> bool:
+    def _is_valid(self, item: Item) -> bool:
         """Check whether the key contains the pattern in the params.
 
         Args:
-            key (str): The key to check.
+            item (Item): The Item to check.
 
         Returns:
             bool: Returns True if the pattern is found within the key.
         """
-        return re.search(self._params["pattern"], key) is not None
+        return re.search(self._params["pattern"], item.get_key()) is not None
 
     @staticmethod
     def _from_data(data: Mapping[str, Any]) -> RegexFilter:
@@ -74,12 +75,12 @@ class FileContentRegexFilterParams(TypedDict):
 
 
 class FileContentRegexFilter(Filter[FileContentRegexFilterParams]):
-    """A Filter which only passes keys where the key is a file path for a file containing
-    content that matches the provided regex pattern. Uses re.search rather than re.match.
+    """A Filter which only passes FileItems where the file's content contains a match to the
+    provided regex pattern. Uses re.search rather than re.match.
 
     Attributes:
         params (FileContentRegexFilterParams): Contains the pattern to check against the
-            content of the file represented by the key.
+            content of the file.
     """
 
     _params: FileContentRegexFilterParams
@@ -93,18 +94,17 @@ class FileContentRegexFilter(Filter[FileContentRegexFilterParams]):
         """
         return FilterType.FILE_CONTENT_REGEX
 
-    def _is_valid(self, key: str) -> bool:
-        """Check whether the contents of the file represented by the key match the regex pattern
-        in the parms.
+    def _is_valid(self, item: Item) -> bool:
+        """Check whether the contents of the file match the regex pattern in the parms.
 
         Args:
-            key (str): The key to check.
+            item (Item): The Item to check.
 
         Returns:
-            bool: Returns True if the pattern is found within the key.
+            bool: Returns True if the pattern is found within the file's content.
         """
-        file_content = CachedFile(key).get_content()
-        return re.search(self._params["pattern"], file_content) is not None
+        assert isinstance(item, FileItem)
+        return re.search(self._params["pattern"], item.get_content()) is not None
 
     @staticmethod
     def _from_data(data: Mapping[str, Any]) -> FileContentRegexFilter:

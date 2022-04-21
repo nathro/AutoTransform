@@ -9,10 +9,10 @@ Version 0.2.0 represents a production ready beta of AutoTransform. It includes a
  - EnvironmentVariableConfigFetcher: A config fetcher that pulls values from environment variables
  - GitGrepInput for using git grep to find files
  - DirectoryBatcher for batching files within a directory together
- - ChunkBatcher for chunking keys from inputs
+ - ChunkBatcher for chunking Items from Inputs
  - ScriptTransformer as simple transformer that invokes a script
- - RegexFilter as a Filter which checks the key against a regex pattern
- - ContentRegexFilter as a Filter that checks a file's contents against a regex pattern
+ - RegexFilter as a Filter which checks the Item's key against a regex pattern
+ - FileContentRegexFilter as a Filter that checks a file's contents against a regex pattern
 
  - Runner class added to provide an API for invoking runs
  - GithubRunner class added to use Github workflows for remote runs
@@ -28,6 +28,7 @@ Version 0.2.0 represents a production ready beta of AutoTransform. It includes a
 
  - Transformer: Transform now takes Batch instead of Cached File
  - Eliminated Worker concept and merged logic in to Runners, which can handle local and remote running
+ - Replaced file path strings returned by Inputs with an Item concept that encapsulates extra data, removing the need for DataStore
 
 #### Upgrade Packages
 
