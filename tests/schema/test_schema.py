@@ -332,7 +332,7 @@ def test_json_decoding(mocked_active_branch):
             expected_schema.validators[i]
         ), "Validators are not the same"
         assert (
-            actual_schema.validators[i].params == expected_schema.validators[i].params
+            actual_schema.validators[i].get_params() == expected_schema.validators[i].get_params()
         ), "Validators do not have the same params"
 
     # Check commands
@@ -342,7 +342,7 @@ def test_json_decoding(mocked_active_branch):
             expected_schema.commands[i]
         ), "Commands are not the same"
         assert (
-            actual_schema.commands[i].params == expected_schema.commands[i].params
+            actual_schema.commands[i].get_params() == expected_schema.commands[i].get_params()
         ), "Commands do not have the same params"
 
     # Check config

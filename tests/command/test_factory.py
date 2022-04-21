@@ -5,18 +5,18 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""Tests that the remote factory has all types included."""
+"""Tests that the CommandFactory has all types included."""
 
-from autotransform.runner.factory import RunnerFactory
-from autotransform.runner.type import RunnerType
+from autotransform.command.factory import CommandFactory
+from autotransform.command.type import CommandType
 
 
 def test_all_enum_values_present():
     """Ensures that all values from the enum are present in the factory map."""
 
     missing_values = []
-    for runner_type in RunnerType:
+    for command_type in CommandType:
         # pylint: disable=protected-access
-        if runner_type not in RunnerFactory._map:
-            missing_values.append(runner_type)
+        if command_type not in CommandFactory._map:
+            missing_values.append(command_type)
     assert not missing_values, "Types missing from factory: " + ", ".join(missing_values)

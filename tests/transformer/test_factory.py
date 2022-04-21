@@ -15,8 +15,8 @@ def test_all_enum_values_present():
     """Ensures that all values from the enum are present in the factory map."""
 
     missing_values = []
-    for transformer in TransformerType:
+    for transformer_type in TransformerType:
         # pylint: disable=protected-access
-        if transformer not in TransformerFactory._map:
-            missing_values.append(transformer)
+        if transformer_type not in TransformerFactory._map:
+            missing_values.append(transformer_type)
     assert not missing_values, "Types missing from factory: " + ", ".join(missing_values)

@@ -15,8 +15,8 @@ def test_all_enum_values_present():
     """Ensures that all values from the enum are present in the factory map."""
 
     missing_values = []
-    for schema in SchemaBuilderType:
+    for schema_type in SchemaBuilderType:
         # pylint: disable=protected-access
-        if schema not in SchemaBuilderFactory._map:
-            missing_values.append(schema)
+        if schema_type not in SchemaBuilderFactory._map:
+            missing_values.append(schema_type)
     assert not missing_values, "Types missing from factory: " + ", ".join(missing_values)

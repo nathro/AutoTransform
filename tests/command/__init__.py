@@ -5,5 +5,4 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""Commands take a Batch that has already been transformed and validated and perform
-post-processing steps before the Batch is submitted, such as code generation."""
+"""Tests for Command components."""

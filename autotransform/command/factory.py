@@ -1,17 +1,11 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""A simple factory for producing Commands from type and param information
-
-Note:
-    Imports for custom Commands should be in the CUSTOM IMPORTS section.
-    This will reduce merge conflicts when merging in upstream changes.
-    Do not auto organize imports when using custom imports to avoid merge conflicts
-"""
+"""A simple factory for producing Commands from type and param information."""
 
 import importlib
 from typing import Any, Callable, Dict, Mapping
@@ -22,37 +16,34 @@ from autotransform.config import fetcher as Config
 
 
 class CommandFactory:
-    """The factory class
+    """The factory class for Commands. Maps a type to a Command.
 
     Attributes:
-        _getters (Dict[CommandType, Callable[[Mapping[str, Any]], Command]]): A mapping
-            from CommandType to that commands's from_data function.
-
-    Note:
-        Custom commands should have their getters placed in the CUSTOM COMMANDS section.
-        This will reduce merge conflicts when merging in upstream changes.
+        _map (Dict[CommandType, Callable[[Mapping[str, Any]], Command]]): A mapping from
+            CommandType to the from_data function of the appropriate Command.
     """
 
     # pylint: disable=too-few-public-methods
 
-    _getters: Dict[CommandType, Callable[[Mapping[str, Any]], Command]] = {}
+    _map: Dict[CommandType, Callable[[Mapping[str, Any]], Command]] = {}
 
     @staticmethod
     def get(bundle: CommandBundle) -> Command:
-        """Simple get method using the _getters attribute
+        """Simple get method using the _map attribute.
 
         Args:
-            bundle (CommandBundle): The decoded bundle from which to produce a Command instance
+            bundle (CommandBundle): The bundled Command type and params.
 
         Returns:
-            Command: The Command instance of the decoded bundle
+            Command: An instance of the associated Command.
         """
-        if bundle["type"] in CommandFactory._getters:
-            return CommandFactory._getters[bundle["type"]](bundle["params"])
+
+        if bundle["type"] in CommandFactory._map:
+            return CommandFactory._map[bundle["type"]](bundle["params"])
 
         custom_component_modules = Config.get_imports_components()
         for module_string in custom_component_modules:
             module = importlib.import_module(module_string)
             if hasattr(module, "COMMANDS") and bundle["type"] in module.COMMANDS:
                 return module.COMMANDS[bundle["type"]](bundle["params"])
-        raise ValueError(f"No command found for type {bundle['type']}")
+        raise ValueError(f"No Command found for type {bundle['type']}")

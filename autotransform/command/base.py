@@ -1,7 +1,7 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
@@ -26,37 +26,48 @@ class CommandBundle(TypedDict):
 
 
 class Command(Generic[TParams], ABC):
-    """The base for Command components.
+    """The base for Command components. Used by AutoTransform to perform post-processing
+    operations after validation, such as code generation.
 
     Attributes:
-        params (TParams): The paramaters that control operation of the Command.
+        _params (TParams): The paramaters that control operation of the Command.
             Should be defined using a TypedDict in subclasses
     """
 
-    params: TParams
+    _params: TParams
 
     def __init__(self, params: TParams):
         """A simple constructor.
 
         Args:
-            params (TParams): The paramaters used to set up the Command
+            params (TParams): The paramaters used to set up the Command.
         """
-        self.params = params
+
+        self._params = params
+
+    def get_params(self) -> TParams:
+        """Gets the paramaters used to set up the Command.
+
+        Returns:
+            TParams: The paramaters used to set up the Command.
+        """
+
+        return self._params
 
     @abstractmethod
     def get_type(self) -> CommandType:
         """Used to map Command components 1:1 with an enum, allowing construction from JSON.
 
         Returns:
-            CommandType: The unique type associated with this Command
+            CommandType: The unique type associated with this Command.
         """
 
     @abstractmethod
     def run(self, batch: Batch) -> None:
-        """Perform the actions required of the command.
+        """Performs the post-processing steps represented by the Command.
 
         Args:
-            batch (Batch): The batch for which this command is run
+            batch (Batch): The Batch for which this Command is run.
         """
 
     def bundle(self) -> CommandBundle:
@@ -65,10 +76,11 @@ class Command(Generic[TParams], ABC):
         an encodable version.
 
         Returns:
-            CommandBundle: The encodable bundle
+            CommandBundle: The encodable bundle.
         """
+
         return {
-            "params": self.params,
+            "params": self._params,
             "type": self.get_type(),
         }
 
