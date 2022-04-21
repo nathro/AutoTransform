@@ -29,10 +29,10 @@
             "args": [
                 "-l",
                 "100",
-                "<<INPUT>>"
+                "<<KEY>>"
             ],
             "timeout": 360,
-            "per_key": true
+            "per_item": true
         },
         "type": "script"
     },

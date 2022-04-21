@@ -17,10 +17,9 @@ from typing import Any, List, Mapping, TypedDict
 from typing_extensions import NotRequired
 
 from autotransform.batcher.base import Batch
+from autotransform.item.base import Item
 from autotransform.transformer.base import Transformer
 from autotransform.transformer.type import TransformerType
-from autotransform.util.cachedfile import CachedFile
-from autotransform.util.datastore import DataStore
 
 
 class ScriptTransformerParams(TypedDict):
@@ -29,7 +28,7 @@ class ScriptTransformerParams(TypedDict):
     script: str
     args: List[str]
     timeout: int
-    per_key: NotRequired[bool]
+    per_item: NotRequired[bool]
 
 
 class ScriptTransformer(Transformer[ScriptTransformerParams]):
@@ -53,28 +52,32 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
         Returns:
             TransformerType: The unique type associated with this Transformer
         """
+
         return TransformerType.SCRIPT
 
     def transform(self, batch: Batch) -> None:
-        if self.params["per_key"]:
-            for file in batch["files"]:
-                self._transform_single(file)
+        if self.params["per_item"]:
+            for item in batch["items"]:
+                self._transform_single(item)
         else:
             self._transform_batch(batch)
 
-    def _transform_single(self, file: CachedFile) -> None:
-        """Executes a simple script to transform the a given input. Sentinel values can be used
+    def _transform_single(self, item: Item) -> None:
+        """Executes a simple script to transform a single Item. Sentinel values can be used
         in args that will be replaced when the script is invoked. Possible values include:
-            <<INPUT>>: The individual input item for the transform.
-            <<EXTRA_DATA>>: A JSON encoded mapping of the extra data associated with the input.
+            <<KEY>>: The key of the Item.
+            <<EXTRA_DATA>>: A JSON encoded mapping of the extra data associated with the Item.
 
         Args:
-            file (CachedFile): The file that will be transformed.
+            item (Item): The Item that will be transformed.
         """
+
         cmd = [self.params["script"]]
-        extra_data = DataStore.get().get_object_data(file.path)
+        extra_data = item.get_extra_data()
+        if extra_data is None:
+            extra_data = {}
         arg_replacements = {
-            "<<INPUT>>": file.path,
+            "<<ITEM>>": item.get_key(),
             "<<EXTRA_DATA>>": json.dumps(extra_data),
         }
         for arg in self.params["args"]:
@@ -87,7 +90,7 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
     def _transform_batch(self, batch: Batch) -> None:
         """Executes a simple script to transform the given batch. Sentinel values can be used
         in args that will be replaced when the script is invoked. Possible values include:
-            <<INPUT>>: A JSON encoded list of the inputs in the batch
+            <<KEY>>: A JSON encoded list of the inputs in the batch
             <<METADATA>>: A JSON encoded representation of the batch metadata
             <<EXTRA_DATA>>: A JSON encoded mapping from input to extra data stored
                 in FileDataStore
@@ -98,26 +101,26 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
         Args:
             batch (Batch): The batch that will be transformed
         """
+
         cmd = [self.params["script"]]
-        encodable_file_data = {}
-        file_paths = [file.path for file in batch["files"]]
-        for path in file_paths:
-            data_object = DataStore.get().get_object_data(path)
-            if data_object is not None:
-                encodable_file_data[path] = data_object.data
+        item_keys = [item.get_key() for item in batch["items"]]
+        extra_data = {
+            item.get_key(): item.get_extra_data()
+            for item in batch["items"] if item.get_extra_data() is not None
+        }
         arg_replacements = {
-            "<<INPUT>>": json.dumps(file_paths),
+            "<<KEY>>": json.dumps(item_keys),
             "<<METADATA>>": json.dumps(batch["metadata"]),
-            "<<EXTRA_DATA>>": json.dumps(encodable_file_data),
+            "<<EXTRA_DATA>>": json.dumps(extra_data),
         }
         with TmpFile(mode="w+") as inp, TmpFile(mode="w+") as meta, TmpFile(mode="w+") as extra:
-            json.dump(file_paths, inp)
+            json.dump(item_keys, inp)
             inp.flush()
             json.dump(batch["metadata"], meta)
             meta.flush()
-            json.dump(encodable_file_data, extra)
+            json.dump(extra_data, extra)
             extra.flush()
-            arg_replacements["<<INPUT_FILE>>"] = inp.name
+            arg_replacements["<<KEY_FILE>>"] = inp.name
             arg_replacements["<<METADATA_FILE>>"] = meta.name
             arg_replacements["<<EXTRA_DATA_FILE>>"] = extra.name
             for arg in self.params["args"]:
@@ -144,8 +147,8 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
         args = [str(arg) for arg in args]
         timeout = data["timeout"]
         assert isinstance(timeout, int)
-        per_key = bool(data.get("per_key", False))
+        per_item = bool(data.get("per_item", False))
 
         return ScriptTransformer(
-            {"script": script, "args": args, "timeout": timeout, "per_key": per_key}
+            {"script": script, "args": args, "timeout": timeout, "per_item": per_item}
         )

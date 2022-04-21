@@ -26,7 +26,8 @@ class Config:
     allowed_validation_level: ValidationResultLevel
 
     def __init__(
-        self, allowed_validation_level: ValidationResultLevel = ValidationResultLevel.NONE
+        self,
+        allowed_validation_level: ValidationResultLevel = ValidationResultLevel.NONE,
     ):
         """A simple constructor.
 
@@ -35,6 +36,7 @@ class Config:
                 validation issues. Any issues raised above this level will trigger
                 exceptions. Defaults to ValidationResultLevel.NONE.
         """
+
         self.allowed_validation_level = allowed_validation_level
 
     def bundle(self) -> Dict[str, Any]:
@@ -43,6 +45,7 @@ class Config:
         Returns:
             Dict[str, Any]: The bundled configuration.
         """
+
         return {
             "allowed_validation_level": self.allowed_validation_level,
         }
@@ -57,6 +60,7 @@ class Config:
         Returns:
             Config: The configuration represented by the provided data.
         """
+
         if "allowed_validation_level" in data:
             validation_level = data["allowed_validation_level"]
             if not ValidationResultLevel.has_value(validation_level):

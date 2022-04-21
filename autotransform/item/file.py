@@ -29,6 +29,7 @@ class FileItem(Item):
         Returns:
             ItemType: The unique type associated with this Item.
         """
+
         return ItemType.FILE
 
     def get_path(self) -> str:
@@ -37,6 +38,7 @@ class FileItem(Item):
         Returns:
             str: The file's path.
         """
+
         return self._key
 
     def get_content(self) -> str:
@@ -45,6 +47,7 @@ class FileItem(Item):
         Returns:
             str: The file's content.
         """
+
         return CachedFile(self.get_path()).get_content()
 
     def write_content(self, content: str) -> None:
@@ -53,4 +56,5 @@ class FileItem(Item):
         Args:
             content (str): The new content for the File.
         """
+
         CachedFile(self.get_path()).write_content(content)

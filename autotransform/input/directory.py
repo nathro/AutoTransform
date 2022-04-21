@@ -86,6 +86,7 @@ class DirectoryInput(Input[DirectoryInputParams]):
         Returns:
             DirectoryInput: An instance of the DirectoryInput with the provided params.
         """
+
         path = data["path"]
         assert isinstance(path, str)
         return DirectoryInput({"path": path})

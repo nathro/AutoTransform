@@ -22,6 +22,7 @@ def get_arg_parser() -> ArgumentParser:
     Returns:
         ArgumentParser: The arg parser with all args set up.
     """
+
     parser = ArgumentParser(
         description="AutoTransform is a tool for structured, automated code modifcation",
         prog="AutoTransform",
@@ -49,6 +50,7 @@ def get_arg_parser() -> ArgumentParser:
 
 def main():
     """Parse the arguments of a script run and execute the command invoked."""
+
     parser = get_arg_parser()
     args = parser.parse_args()
     args.func(args)

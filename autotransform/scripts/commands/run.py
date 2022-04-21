@@ -114,6 +114,7 @@ def run_command_main(args: Namespace) -> None:
     Args:
         args (Namespace): The arguments supplied to the run command, such as the schema.
     """
+
     # pylint: disable=unspecified-encoding
 
     event_args = {}

@@ -15,7 +15,7 @@ from typing import Any, Mapping, TypedDict
 from git import Head
 from git import Repo as GitPython
 
-from autotransform.batcher.base import Batch, BatchMetadata
+from autotransform.batcher.base import Batch
 from autotransform.repo.base import Repo
 from autotransform.repo.type import RepoType
 
@@ -54,16 +54,16 @@ class GitRepo(Repo[GitRepoParams]):
         return GitRepo.COMMIT_BRANCH_BASE + "_" + title.replace(" ", "_")
 
     @staticmethod
-    def get_commit_message(metadata: BatchMetadata) -> str:
-        """Gets a commit message for the change based on BatchMetadata
+    def get_commit_message(title: str) -> str:
+        """Gets a commit message for the change based on the Batch title
 
         Args:
-            metadata (BatchMetadata): The metadata of the batch the commit message is for
+            title (str): The metadata of the batch the commit message is for
 
         Returns:
             str: The commit message
         """
-        return "[AutoTransform] " + metadata["title"]
+        return "[AutoTransform] " + title
 
     def __init__(self, params: GitRepoParams):
         """Gets the local repo object for future operations and attains the initial active branch.
@@ -71,6 +71,7 @@ class GitRepo(Repo[GitRepoParams]):
         Args:
             params (GitRepoParams): The paramaters used to set up the GitRepo
         """
+
         Repo.__init__(self, params)
         dir_cmd = ["git", "rev-parse", "--show-toplevel"]
         repo_dir = subprocess.check_output(dir_cmd, encoding="UTF-8").replace("\\", "/").strip()
@@ -105,7 +106,7 @@ class GitRepo(Repo[GitRepoParams]):
         Args:
             batch (Batch): The Batch for which the changes were made
         """
-        self.commit(batch["metadata"])
+        self.commit(batch["title"])
 
     def clean(self, _: Batch) -> None:
         """Performs `git reset --hard` to remove any changes.
@@ -139,12 +140,13 @@ class GitRepo(Repo[GitRepoParams]):
         assert isinstance(base_branch_name, str)
         return GitRepo({"base_branch_name": base_branch_name})
 
-    def commit(self, metadata: BatchMetadata) -> None:
+    def commit(self, title: str) -> None:
         """Creates a new branch for all changes, stages them, and commits them.
 
         Args:
-            metadata (BatchMetadata): The metadata of the Batch responsible for the changes
+            title (str): The title of the Batch being commited.
         """
-        self.local_repo.git.checkout("-b", GitRepo.get_branch_name(metadata["title"]))
+
+        self.local_repo.git.checkout("-b", GitRepo.get_branch_name(title))
         self.local_repo.git.add(all=True)
-        self.local_repo.index.commit(GitRepo.get_commit_message(metadata))
+        self.local_repo.index.commit(GitRepo.get_commit_message(title))

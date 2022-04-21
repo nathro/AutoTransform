@@ -37,6 +37,7 @@ class LocalRunner(Runner[LocalRunnerParams]):
         Returns:
             RunnerType: The unique type associated with this Runner.
         """
+
         return RunnerType.LOCAL
 
     def run(self, schema: AutoTransformSchema) -> None:
@@ -45,6 +46,7 @@ class LocalRunner(Runner[LocalRunnerParams]):
         Args:
             schema (AutoTransformSchema): The schema that will be run.
         """
+
         schema.run()
 
     @staticmethod
@@ -58,4 +60,5 @@ class LocalRunner(Runner[LocalRunnerParams]):
         Returns:
             LocalRunner: An instance of the LocalRunner.
         """
+
         return LocalRunner({})

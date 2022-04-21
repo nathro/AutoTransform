@@ -42,6 +42,7 @@ class RunnerFactory:
         Returns:
             Runner: An instance of the associated Runner.
         """
+
         if bundle["type"] in RunnerFactory._map:
             return RunnerFactory._map[bundle["type"]](bundle["params"])
 

@@ -58,6 +58,7 @@ class Item(ABC):
         Returns:
             str: The unique key representing the Item.
         """
+
         return self._key
 
     def get_extra_data(self) -> Optional[Mapping[str, Any]]:
@@ -66,6 +67,7 @@ class Item(ABC):
         Returns:
             Optional[Mapping[str, Any]]: The extra data associated with the Item.
         """
+
         return self._extra_data
 
     @staticmethod
@@ -75,6 +77,7 @@ class Item(ABC):
         Returns:
             ItemType: The unique type associated with this Item.
         """
+
         return ItemType.GENERIC
 
     def bundle(self) -> ItemBundle:
@@ -85,6 +88,7 @@ class Item(ABC):
         Returns:
             ItemBundle: The encodable bundle.
         """
+
         bundle: ItemBundle = {
             "key": self._key,
             "type": self.get_type(),
@@ -103,6 +107,7 @@ class Item(ABC):
         Returns:
             Item: An instance of the Item.
         """
+
         key = data["key"]
         assert isinstance(key, str)
         extra_data = data.get("extra_data", None)

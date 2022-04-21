@@ -42,6 +42,7 @@ class Runner(Generic[TParams], ABC):
         Args:
             params (TParams): The paramaters used to set up the Runner.
         """
+
         self._params = params
 
     @staticmethod
@@ -69,6 +70,7 @@ class Runner(Generic[TParams], ABC):
         Returns:
             RunnerBundle: The encodable bundle.
         """
+
         return {
             "params": self._params,
             "type": self.get_type(),

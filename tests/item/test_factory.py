@@ -12,7 +12,8 @@ from autotransform.item.type import ItemType
 
 
 def test_all_enum_values_present():
-    """Ensures that all values from the enum are present in the factory getters."""
+    """Ensures that all values from the enum are present in the factory map."""
+
     missing_values = []
     for item_type in ItemType:
         # pylint: disable=protected-access

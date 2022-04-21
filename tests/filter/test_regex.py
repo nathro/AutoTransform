@@ -14,8 +14,8 @@ from .filter_test import run_filter_tests
 
 
 def test_regex():
-    """Runs simple tests on the Regex filter
-    """
+    """Runs simple tests on the Regex filter."""
+
     filt = RegexFilter({"pattern": "foo"})
     test_cases = {
         "foo.py": True,
@@ -29,8 +29,8 @@ def test_regex():
     run_filter_tests(filt, test_cases)
 
 def test_inverted_regex():
-    """Runs simple tests on the Regex filter
-    """
+    """Runs simple tests on the Regex filter."""
+
     filt = RegexFilter({"pattern": "foo"}).invert()
     test_cases = {
         "foo.py": False,
@@ -44,8 +44,8 @@ def test_inverted_regex():
     run_filter_tests(filt, test_cases)
 
 def test_file_content_regex(tmpdir):
-    """Runs simple tests on the Regex filter
-    """
+    """Runs simple tests on the Regex filter."""
+
     filt = FileContentRegexFilter({"pattern": "foo"})
     test_file_dir = tmpdir.mkdir("non_empty_dir")
     test_file_1 = test_file_dir.join("test1.txt")
@@ -60,8 +60,8 @@ def test_file_content_regex(tmpdir):
     run_filter_tests(filt, test_cases)
 
 def test_inverted_file_content_regex(tmpdir):
-    """Runs simple tests on the Regex filter
-    """
+    """Runs simple tests on the Regex filter."""
+
     filt = FileContentRegexFilter({"pattern": "foo"}).invert()
     test_file_dir = tmpdir.mkdir("non_empty_dir")
     test_file_1 = test_file_dir.join("test1.txt")

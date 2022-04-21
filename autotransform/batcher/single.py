@@ -1,73 +1,86 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""The implementation for the single Batcher."""
+"""The implementation for the SingleBatcher."""
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Mapping, TypedDict
+from typing import Any, Dict, List, Mapping, Sequence, TypedDict
 
-from autotransform.batcher.base import Batch, Batcher, BatchMetadata
+from typing_extensions import NotRequired
+
+from autotransform.batcher.base import Batch, Batcher
 from autotransform.batcher.type import BatcherType
-from autotransform.util.cachedfile import CachedFile
+from autotransform.item.base import Item
 
 
 class SingleBatcherParams(TypedDict):
     """The param type for a SingleBatcher."""
 
-    metadata: BatchMetadata
+    metadata: NotRequired[Mapping[str, Any]]
+    title: str
 
 
 class SingleBatcher(Batcher[SingleBatcherParams]):
-    """A batcher which puts all inputs together in to a single Batch.
+    """A batcher which puts all Items together in to a single batch
 
     Attributes:
-        params (SingleBatcherParams): Contains the metadata to associate with the Batch
+        _params (SingleBatcherParams): Contains the batch title and any needed metadata.
     """
 
-    params: SingleBatcherParams
+    _params: SingleBatcherParams
 
-    def get_type(self) -> BatcherType:
+    @staticmethod
+    def get_type() -> BatcherType:
         """Used to map Batcher components 1:1 with an enum, allowing construction from JSON.
 
         Returns:
             BatcherType: The unique type associated with this Batcher
         """
+
         return BatcherType.SINGLE
 
-    def batch(self, files: List[CachedFile]) -> List[Batch]:
-        """Takes in a list of input files and produces a single Batch from them.
-        Uses the metadata stored in params as the metadata for the Batch.
+    def batch(self, items: Sequence[Item]) -> List[Batch]:
+        """Takes in a list Items and batches them together in to a single Batch.
 
         Args:
-            files (List[CachedFile]): The filtered input files.
+            items (Sequence[Item]): The filtered Items to separate.
 
         Returns:
-            List[Batch]: A list containing a single batch for the input
+            List[Batch]: A list containing a single Batch for all Items.
         """
+
         batch: Batch = {
-            "files": files,
-            "metadata": self.params["metadata"],
+            "items": items,
+            "title": self._params["title"],
         }
+        if "metadata" in self._params:
+            batch["metadata"] = self._params["metadata"]
         return [batch]
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> SingleBatcher:
-        """Takes in decoded param data and produces a SingleBatcher component after
-        validating the data.
+        """Produces a SingleBatcher from the provided data.
 
         Args:
             data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
 
         Returns:
-            SingleBatcher: An instance of the SingleBatcher
+            SingleBatcher: An instance of the SingleBatcher with the provided params.
         """
 
-        assert isinstance(data["metadata"], Dict)
-        assert isinstance(data["metadata"]["title"], str)
+        title = data["title"]
+        assert isinstance(title, str)
+        params: SingleBatcherParams = {
+            "title": title,
+        }
+        metadata = data.get("metadata", None)
+        if metadata is not None:
+            assert isinstance(metadata, Dict)
+            params["metadata"] = metadata
 
-        return SingleBatcher(data)  # type: ignore
+        return SingleBatcher(params)

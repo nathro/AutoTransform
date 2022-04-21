@@ -44,6 +44,7 @@ class GithubRunner(Runner[GithubRunnerParams]):
         Returns:
             RunnerType: The unique type associated with this Runner.
         """
+
         return RunnerType.GITHUB
 
     def run(self, schema: AutoTransformSchema) -> None:
@@ -53,23 +54,31 @@ class GithubRunner(Runner[GithubRunnerParams]):
         Args:
             schema (AutoTransformSchema): The schema that will be run.
         """
+
         event_handler = EventHandler.get()
         repo = schema.repo
+
         # May add support for cross-repo usage but enforce that the workflow being invoked exists
         # in the target repo for now
         assert isinstance(
             repo, GithubRepo
         ), "GithubRunner can only run using schemas that have Github repos"
+
+        # Get the Workflow object
         github_repo = repo.github_repo
         workflow = github_repo.get_workflow(self._params["workflow"])
         event_handler.handle(DebugEvent({"message": f"Workflow found: {workflow.name}"}))
+
+        # Dispatch a Workflow run
         dispatch_success = workflow.create_dispatch(
             repo.params["base_branch_name"],
             {"schema": schema.to_json()},
         )
         assert dispatch_success, "Failed to dispatch workflow request"
         event_handler.handle(DebugEvent({"message": "Successfully dispatched workflow run"}))
-        # We wait a bit to make sure Github's API is updated
+
+        # We wait a bit to make sure Github's API is updated before printing a best guess of the
+        # Workflow run's URL
         time.sleep(5)
         event_handler.handle(DebugEvent({"message": "Checking for workflow run URL"}))
         workflow_runs = workflow.get_runs()
@@ -96,6 +105,7 @@ class GithubRunner(Runner[GithubRunnerParams]):
         Returns:
             GithubRunner: An instance of the GithubRunner.
         """
+
         workflow = data["workflow"]
         assert isinstance(workflow, (int, str))
         return GithubRunner({"workflow": workflow})

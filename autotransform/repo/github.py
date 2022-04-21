@@ -88,19 +88,19 @@ class GithubRepo(GitRepo):
         Args:
             batch (Batch): The Batch for which the changes were made
         """
-        title = GitRepo.get_commit_message(batch["metadata"])
+        title = GitRepo.get_commit_message(batch["title"])
 
-        self.commit(batch["metadata"])
+        self.commit(batch["title"])
 
-        commit_branch = GitRepo.get_branch_name(batch["metadata"]["title"])
+        commit_branch = GitRepo.get_branch_name(batch["title"])
         remote = self.local_repo.remote()
         self.local_repo.git.push(remote.name, "-u", commit_branch)
 
-        body = str(batch["metadata"].get("body"))
+        body = batch["metadata"].get("body", None)
         assert body is not None, "All pull requests must have a body."
         pull_request = self.github_repo.create_pull(
             title=title,
-            body=body,
+            body=str(body),
             base=self.base_branch.name,
             head=commit_branch,
         )

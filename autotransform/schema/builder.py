@@ -56,7 +56,7 @@ class SchemaBuilder(ABC):
 
         # pylint: disable=no-self-use
 
-        return SingleBatcher({"metadata": {"title": ""}})
+        return SingleBatcher({"title": ""})
 
     @abstractmethod
     def get_transformer(self) -> Transformer:
@@ -116,6 +116,7 @@ class SchemaBuilder(ABC):
         Returns:
             AutoTransformSchema: The Schema produced by this SchemaBuilder.
         """
+
         return AutoTransformSchema(
             self.get_input(),
             self.get_batcher(),

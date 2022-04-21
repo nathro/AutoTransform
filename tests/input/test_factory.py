@@ -13,6 +13,7 @@ from autotransform.input.type import InputType
 
 def test_all_enum_values_present():
     """Ensures that all values from the enum are present in the factory map."""
+
     missing_values = []
     for input_type in InputType:
         # pylint: disable=protected-access

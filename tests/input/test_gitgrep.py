@@ -19,9 +19,8 @@ def test_pattern_present() -> None:
     test_file = __file__.lower().replace("\\", "/")
     assert found_files[0].get_path().lower() == test_file, "The test file should be found."
 
-
 def test_pattern_not_present() -> None:
-    """Tests running git grep when no match is present"""
+    """Tests running git grep when no match is present."""
 
     inp = GitGrepInput({"pattern": "foobar" + "fizzbuzz" + "barfoo" + "buzzfizz" + "notpresent"})
     found_files = inp.get_items()

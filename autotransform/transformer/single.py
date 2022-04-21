@@ -12,8 +12,8 @@ from abc import abstractmethod
 from typing import Any, Generic, Mapping, TypeVar
 
 from autotransform.batcher.base import Batch
+from autotransform.item.base import Item
 from autotransform.transformer.base import Transformer
-from autotransform.util.cachedfile import CachedFile
 
 TParams = TypeVar("TParams", bound=Mapping[str, Any])
 
@@ -22,11 +22,11 @@ class SingleTransformer(Generic[TParams], Transformer[TParams]):
     """A simple interface for writing a transformer that operates on an individual file level."""
 
     @abstractmethod
-    def _transform_file(self, file: CachedFile) -> None:
-        """Executes a transformation on a single file.
+    def _transform_item(self, item: Item) -> None:
+        """Executes a transformation on a single Item.
 
         Args:
-            file (CachedFile): The file that is being transformed
+            item (Item): The Item that is being transformed.
         """
 
     def transform(self, batch: Batch) -> None:
@@ -36,6 +36,5 @@ class SingleTransformer(Generic[TParams], Transformer[TParams]):
             batch (Batch): The batch being transformed
         """
 
-        # pylint: disable=unspecified-encoding
-        for file in batch["files"]:
-            self._transform_file(file)
+        for item in batch["items"]:
+            self._transform_item(item)

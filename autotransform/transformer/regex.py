@@ -12,9 +12,10 @@ from __future__ import annotations
 import re
 from typing import Any, Mapping, TypedDict
 
+from autotransform.item.base import Item
+from autotransform.item.file import FileItem
 from autotransform.transformer.single import SingleTransformer
 from autotransform.transformer.type import TransformerType
-from autotransform.util.cachedfile import CachedFile
 
 
 class RegexTransformerParams(TypedDict):
@@ -42,18 +43,19 @@ class RegexTransformer(SingleTransformer[RegexTransformerParams]):
         """
         return TransformerType.REGEX
 
-    def _transform_file(self, file: CachedFile) -> None:
+    def _transform_item(self, item: Item) -> None:
         """Replaces all instances of pattern in the file with the replacement string.
 
         Args:
-            file (CachedFile): The file that will be transformed
+            item (Item): The file that will be transformed
         """
 
         # pylint: disable=unspecified-encoding
 
-        content = file.get_content()
+        assert isinstance(item, FileItem)
+        content = item.get_content()
         new_content = re.sub(self.params["pattern"], self.params["replacement"], content)
-        file.write_content(new_content)
+        item.write_content(new_content)
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> RegexTransformer:

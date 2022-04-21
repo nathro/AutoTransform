@@ -20,5 +20,6 @@ def run_filter_tests(filt: Filter, test_cases: List[Tuple[Item, bool]]) -> None:
         filt (Filter): The Filter being tests.
         test_cases (List[Tuple[Item, bool]]): A list of test Items with their expected result.
     """
+
     for item, result in test_cases:
         assert filt.is_valid(item) == result

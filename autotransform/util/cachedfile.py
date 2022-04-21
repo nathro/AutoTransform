@@ -33,6 +33,7 @@ class CachedFile:
         Args:
             path (str): The path of the file being cached.
         """
+
         self.path = path
 
     @staticmethod
@@ -60,6 +61,7 @@ class CachedFile:
         Returns:
             str: The contents of the file represented by this object.
         """
+
         if self.path not in FILE_CACHE:
             FILE_CACHE[self.path] = self._read(self.path)
         return FILE_CACHE[self.path]

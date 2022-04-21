@@ -45,6 +45,7 @@ class Filter(Generic[TParams], ABC):
         Args:
             params (TParams): The paramaters used to set up the Filter.
         """
+
         self._inverted = False
         self._params = params
 
@@ -54,6 +55,7 @@ class Filter(Generic[TParams], ABC):
         Returns:
             TParams: The paramaters used to set up the Filter.
         """
+
         return self._params
 
     @staticmethod
@@ -72,6 +74,7 @@ class Filter(Generic[TParams], ABC):
         Returns:
             Filter: The Filter after setting the inversion.
         """
+
         self._inverted = not self._inverted
         return self
 
@@ -84,6 +87,7 @@ class Filter(Generic[TParams], ABC):
         Returns:
             bool: Returns True if the Item is eligible for transformation
         """
+
         return self._inverted != self._is_valid(item)
 
     @abstractmethod
@@ -105,6 +109,7 @@ class Filter(Generic[TParams], ABC):
         Returns:
             FilterBundle: The encodable bundle.
         """
+
         return {
             "inverted": self._inverted,
             "params": self._params,
@@ -124,6 +129,7 @@ class Filter(Generic[TParams], ABC):
         Returns:
             Filter: An instance of the Filter.
         """
+
         unbundled_filter = cls._from_data(data)
         if inverted:
             unbundled_filter.invert()

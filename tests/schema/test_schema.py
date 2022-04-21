@@ -10,12 +10,12 @@
 # pylint: disable=too-many-arguments
 
 import pathlib
-from typing import List
+from typing import List, Sequence
 
 from git import Repo as GitPython
 from mock import patch
 
-from autotransform.batcher.base import Batch, BatchMetadata
+from autotransform.batcher.base import Batch
 from autotransform.batcher.single import SingleBatcher
 from autotransform.filter.regex import RegexFilter
 from autotransform.input.directory import DirectoryInput
@@ -23,8 +23,11 @@ from autotransform.item.base import Item
 from autotransform.repo.github import GithubRepo
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.transformer.regex import RegexTransformer
-from autotransform.util.cachedfile import CachedFile
 
+ALLOWED_ITEMS = [Item("allowed")]
+ALL_ITEMS = [Item("allowed"), Item("not_allowed")]
+EXPECTED_METADATA = {"summary": "", "tests": ""}
+EXPECTED_TITLE = "test"
 
 def get_sample_schema() -> AutoTransformSchema:
     """Gets the sample schema being used for testing."""
@@ -32,17 +35,11 @@ def get_sample_schema() -> AutoTransformSchema:
     repo_root = str(pathlib.Path(__file__).parent.parent.parent.resolve()).replace("\\", "/")
     return AutoTransformSchema(
         DirectoryInput({"path": repo_root}),
-        SingleBatcher({"metadata": {"title": "test", "summary": "", "tests": ""}}),
+        SingleBatcher({"title": EXPECTED_TITLE, "metadata": EXPECTED_METADATA}),
         RegexTransformer({"pattern": "input", "replacement": "inputsource"}),
         filters=[RegexFilter({"pattern": ".*\\.py$"})],
         repo=GithubRepo({"base_branch_name": "master", "full_github_name": "nathro/AutoTransform"}),
     )
-
-
-ALLOWED_ITEMS = [Item("allowed")]
-ALL_ITEMS = [Item("allowed"), Item("not_allowed")]
-EXPECTED_METADATA = BatchMetadata({"title": "", "summary": "", "tests": ""})
-
 
 def mock_input(mocked_get_items) -> None:
     """Sets up the Input mock."""
@@ -61,8 +58,8 @@ def mock_filter(mocked_is_valid) -> None:
 def mock_batcher(mocked_batch) -> None:
     """Sets up the batcher mock."""
 
-    def batch(files: List[CachedFile]) -> List[Batch]:
-        return [{"files": files, "metadata": EXPECTED_METADATA}]
+    def batch(items: Sequence[Item]) -> List[Batch]:
+        return [{"title": EXPECTED_TITLE, "items": items, "metadata": EXPECTED_METADATA}]
 
     mocked_batch.side_effect = batch
 
@@ -134,12 +131,14 @@ def test_get_batches(
 
     # Check batcher called
     mocked_batch.assert_called_once()
-    batched_paths = [file.path for file in mocked_batch.call_args.args[0]]
-    assert batched_paths == [item.get_key() for item in ALLOWED_ITEMS]
+    batched_keys = [item.get_key() for item in mocked_batch.call_args.args[0]]
+    assert batched_keys == [item.get_key() for item in ALLOWED_ITEMS]
 
     # Check end result
-    assert [file.path for file in actual_batch["files"]] == [item.get_key() for item in ALLOWED_ITEMS]
+    actual_keys = [item.get_key() for item in actual_batch["items"]]
+    assert actual_keys == [item.get_key() for item in ALLOWED_ITEMS]
     assert actual_batch["metadata"] == EXPECTED_METADATA
+    assert actual_batch["title"] == EXPECTED_TITLE
 
 
 # patches are in reverse order
@@ -185,13 +184,13 @@ def test_run_with_changes(
 
     # Check batcher called
     mocked_batch.assert_called_once()
-    batched_paths = [file.path for file in mocked_batch.call_args.args[0]]
-    assert batched_paths == [item.get_key() for item in ALLOWED_ITEMS]
+    batched_keys = [item.get_key() for item in mocked_batch.call_args.args[0]]
+    assert batched_keys == [item.get_key() for item in ALLOWED_ITEMS]
 
     # Check transformer called
     mocked_transform.assert_called_once()
-    transformed_path = mocked_transform.call_args.args[0]["files"][0].path
-    assert [transformed_path] == [item.get_key() for item in ALLOWED_ITEMS]
+    transformed_key = mocked_transform.call_args.args[0]["items"][0].get_key()
+    assert [transformed_key] == [item.get_key() for item in ALLOWED_ITEMS]
 
     # Check repo calls
     mocked_clean.assert_called_once()
@@ -243,13 +242,13 @@ def test_run_with_no_changes(
 
     # Check batcher called
     mocked_batch.assert_called_once()
-    batched_paths = [file.path for file in mocked_batch.call_args.args[0]]
-    assert batched_paths == [item.get_key() for item in ALLOWED_ITEMS]
+    batched_keys = [item.get_key() for item in mocked_batch.call_args.args[0]]
+    assert batched_keys == [item.get_key() for item in ALLOWED_ITEMS]
 
     # Check transformer called
     mocked_transform.assert_called_once()
-    transformed_path = mocked_transform.call_args.args[0]["files"][0].path
-    assert [transformed_path] == [item.get_key() for item in ALLOWED_ITEMS]
+    transformed_key = mocked_transform.call_args.args[0]["items"][0].get_key()
+    assert [transformed_key] == [item.get_key() for item in ALLOWED_ITEMS]
 
     # Check repo calls
     mocked_clean.assert_called_once()
@@ -297,7 +296,7 @@ def test_json_decoding(mocked_active_branch):
     # Check batcher
     assert type(actual_schema.batcher) is type(expected_schema.batcher), "Batchers are not the same"
     assert (
-        actual_schema.batcher.params == expected_schema.batcher.params
+        actual_schema.batcher.get_params() == expected_schema.batcher.get_params()
     ), "Batchers do not have the same params"
 
     # Check transformer

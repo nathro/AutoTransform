@@ -41,6 +41,7 @@ class FilterFactory:
         Returns:
             Filter: An instance of the associated Filter.
         """
+
         inverted = bool(bundle.get("inverted", False))
         if bundle["type"] in FilterFactory._map:
             return FilterFactory._map[bundle["type"]](inverted, bundle["params"])

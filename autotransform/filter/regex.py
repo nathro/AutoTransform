@@ -41,6 +41,7 @@ class RegexFilter(Filter[RegexFilterParams]):
         Returns:
             FilterType: The unique type associated with this Filter.
         """
+
         return FilterType.REGEX
 
     def _is_valid(self, item: Item) -> bool:
@@ -52,6 +53,7 @@ class RegexFilter(Filter[RegexFilterParams]):
         Returns:
             bool: Returns True if the pattern is found within the key.
         """
+
         return re.search(self._params["pattern"], item.get_key()) is not None
 
     @staticmethod
@@ -64,6 +66,7 @@ class RegexFilter(Filter[RegexFilterParams]):
         Returns:
             RegexFilter: An instance of the RegexFilter with the provided params.
         """
+
         pattern = data["pattern"]
         assert isinstance(pattern, str)
         return RegexFilter({"pattern": pattern})
@@ -92,6 +95,7 @@ class FileContentRegexFilter(Filter[FileContentRegexFilterParams]):
         Returns:
             FilterType: The unique type associated with this Filter.
         """
+
         return FilterType.FILE_CONTENT_REGEX
 
     def _is_valid(self, item: Item) -> bool:
@@ -103,6 +107,7 @@ class FileContentRegexFilter(Filter[FileContentRegexFilterParams]):
         Returns:
             bool: Returns True if the pattern is found within the file's content.
         """
+
         assert isinstance(item, FileItem)
         return re.search(self._params["pattern"], item.get_content()) is not None
 
@@ -117,6 +122,7 @@ class FileContentRegexFilter(Filter[FileContentRegexFilterParams]):
             FileContentRegexFilter: An instance of the FileContentRegexFilter with the provided
                 params.
         """
+
         pattern = data["pattern"]
         assert isinstance(pattern, str)
         return FileContentRegexFilter({"pattern": pattern})

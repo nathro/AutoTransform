@@ -7,8 +7,8 @@
     },
     "batcher": {
         "params": {
+            "title": "test",
             "metadata": {
-                "title": "test",
                 "summary": "",
                 "tests": ""
             }

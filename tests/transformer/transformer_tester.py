@@ -11,8 +11,8 @@ import pathlib
 
 import mock
 
+from autotransform.item.file import FileItem
 from autotransform.transformer.base import Transformer
-from autotransform.util.cachedfile import CachedFile
 
 
 class TransformerTester:
@@ -44,10 +44,10 @@ class TransformerTester:
         with open(self.path + ".output", "r") as output_file:
             output_content = output_file.read()
 
-        mock_file = mock.create_autospec(CachedFile)
+        mock_file = mock.create_autospec(FileItem)
         mock_file.get_content.return_value = input_content
         self.transformer.transform(
-            {"files": [mock_file], "metadata": {"title": "Foo", "summary": "Bar", "tests": "Baz"}}
+            {"items": [mock_file], "metadata": {"title": "Foo", "summary": "Bar", "tests": "Baz"}}
         )
         mock_file.write_content.assert_called_once_with(output_content)
 
@@ -61,10 +61,10 @@ class TransformerTester:
         with open(self.path + ".input", "r") as input_file:
             input_content = input_file.read()
 
-        mock_file = mock.create_autospec(CachedFile)
+        mock_file = mock.create_autospec(FileItem)
         mock_file.get_content.return_value = input_content
         self.transformer.transform(
-            {"files": [mock_file], "metadata": {"title": "Foo", "summary": "Bar", "tests": "Baz"}}
+            {"items": [mock_file], "metadata": {"title": "Foo", "summary": "Bar", "tests": "Baz"}}
         )
         output_content = [
             args[0] for name, args, _ in mock_file.mock_calls if name == "write_content"

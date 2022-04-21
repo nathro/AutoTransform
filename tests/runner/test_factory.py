@@ -12,7 +12,8 @@ from autotransform.runner.type import RunnerType
 
 
 def test_all_enum_values_present():
-    """Ensures that all values from the enum are present in the factory getters."""
+    """Ensures that all values from the enum are present in the factory map."""
+
     missing_values = []
     for remote_type in RunnerType:
         # pylint: disable=protected-access

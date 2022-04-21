@@ -12,6 +12,7 @@ from autotransform.item.file import FileItem
 
 def test_get_content(tmpdir):
     """Tests getting content from a file using FileItem's get_content function."""
+
     root_dir = tmpdir.mkdir("root_dir")
     test_file = root_dir.join("test.txt")
     test_content = "test"
@@ -20,6 +21,7 @@ def test_get_content(tmpdir):
 
 def test_write_content(tmpdir):
     """Tests writing content to a file using FileItem's write_content function."""
+
     root_dir = tmpdir.mkdir("root_dir")
     test_file = root_dir.join("test.txt")
     test_content = "test"

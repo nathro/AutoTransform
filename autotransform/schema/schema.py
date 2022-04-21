@@ -30,7 +30,6 @@ from autotransform.repo.factory import RepoFactory
 from autotransform.schema.config import Config
 from autotransform.transformer.base import Transformer
 from autotransform.transformer.factory import TransformerFactory
-from autotransform.util.cachedfile import CachedFile
 from autotransform.validator.base import ValidationError, Validator
 from autotransform.validator.factory import ValidatorFactory
 
@@ -93,6 +92,7 @@ class AutoTransformSchema:
             config (Config, optional): The Schema's Config. Defaults to None which is converted
                 in to a default configuration.
         """
+
         # pylint: disable=too-many-arguments
 
         self.input = inp
@@ -112,13 +112,18 @@ class AutoTransformSchema:
         Returns:
             List[Batch]: The Batches for the change
         """
+
         event_handler = EventHandler.get()
         event_handler.handle(DebugEvent({"message": "Begin get_batches"}))
+
+        # Get Items
         event_handler.handle(DebugEvent({"message": "Begin get_items"}))
         all_items = self.input.get_items()
         event_handler.handle(DebugEvent(
             {"message": f"Keys: {json.dumps([item.bundle() for item in all_items])}"}
         ))
+
+        # Filter Items
         event_handler.handle(DebugEvent({"message": "Begin filters"}))
         valid_items: List[Item] = []
         for item in all_items:
@@ -137,14 +142,16 @@ class AutoTransformSchema:
         event_handler.handle(DebugEvent(
             {"message": f"Valid items: {json.dumps([item.bundle() for item in valid_items])}"}
         ))
-        event_handler.handle(DebugEvent({"message": "Begin batching"}))
-        batches = self.batcher.batch([CachedFile(item.get_key()) for item in valid_items])
 
+        # Batch Items
+        event_handler.handle(DebugEvent({"message": "Begin batching"}))
+        batches = self.batcher.batch(valid_items)
         encodable_batches = [
-            {"items": [inp.path for inp in batch["files"]], "metadata": batch["metadata"]}
+            {"items": [item.bundle() for item in batch["items"]], "metadata": batch["metadata"]}
             for batch in batches
         ]
         event_handler.handle(DebugEvent({"message": f"Batches: {json.dumps(encodable_batches)}"}))
+
         return batches
 
     def execute_batch(self, batch: Batch) -> None:
@@ -158,19 +165,26 @@ class AutoTransformSchema:
         Raises:
             ValidationError: If one of the Schema's Validators fails raises an exception.
         """
+
         event_handler = EventHandler.get()
         encodable_batch = {
-            "items": [inp.path for inp in batch["files"]],
+            "items": [item.bundle() for item in batch["items"]],
             "metadata": batch["metadata"],
         }
         event_handler.handle(
             DebugEvent({"message": f"Begin execute_batch: {json.dumps(encodable_batch)}"})
         )
+
+        # Make sure repo is clean before executing
         repo = self.repo
         if repo is not None:
             event_handler.handle(DebugEvent({"message": "Clean repo"}))
             repo.clean(batch)
+
+        # Execute transformation
         self.transformer.transform(batch)
+
+        # Validate the changes
         for validator in self.validators:
             validation_result = validator.validate(batch)
             if validation_result["level"] > self.config.allowed_validation_level:
@@ -183,9 +197,13 @@ class AutoTransformSchema:
                     )
                 )
                 raise ValidationError(validation_result)
+
+        # Run post-change commands
         for command in self.commands:
             event_handler.handle(DebugEvent({"message": f"Running command {command.get_type()}"}))
             command.run(batch)
+
+        # Handle repo state, submitting changes if present and reseting the repo
         if repo is not None:
             event_handler.handle(DebugEvent({"message": "Checking for changes"}))
             if repo.has_changes(batch):
@@ -200,6 +218,7 @@ class AutoTransformSchema:
 
     def run(self):
         """Fully run a given Schema including getting and executing all Batches."""
+
         batches = self.get_batches()
         for batch in batches:
             self.execute_batch(batch)
@@ -210,6 +229,7 @@ class AutoTransformSchema:
         Returns:
             Dict[str, Any]: The bundled data of the Schema.
         """
+
         bundle = {
             "input": self.input.bundle(),
             "batcher": self.batcher.bundle(),
@@ -233,6 +253,7 @@ class AutoTransformSchema:
         Returns:
             str: The JSON representing the Schema
         """
+
         bundle = self.bundle()
         if pretty:
             return json.dumps(bundle, indent=4)
@@ -248,6 +269,7 @@ class AutoTransformSchema:
         Returns:
             AutoTransformSchema: The Schema represented by the JSON
         """
+
         return AutoTransformSchema.from_bundle(json.loads(json_bundle))
 
     @staticmethod
@@ -260,6 +282,7 @@ class AutoTransformSchema:
         Returns:
             AutoTransformSchema: The Schema represented by the bundle.
         """
+
         inp = InputFactory.get(bundle["input"])
         batcher = BatcherFactory.get(bundle["batcher"])
         transformer = TransformerFactory.get(bundle["transformer"])

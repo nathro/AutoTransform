@@ -41,6 +41,7 @@ class ItemFactory:
         Returns:
             Item: An instance of the associated Item.
         """
+
         if bundle["type"] in ItemFactory._map:
             return ItemFactory._map[bundle["type"]](bundle)
 

@@ -65,7 +65,7 @@ class Input(Generic[TParams], ABC):
     @abstractmethod
     def get_items(self) -> Sequence[Item]:
         """Get a list of Items to be used by the transformation based on the Input criteria. Usually
-        files.
+        returns FileItems.
 
         Returns:
             Sequence[Item]: The eligible Items for transformation.

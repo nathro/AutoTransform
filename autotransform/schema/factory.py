@@ -37,6 +37,7 @@ class SchemaBuilderFactory:
         Returns:
             SchemaBuilder: An instance of the associated SchemaBuilder.
         """
+
         if builder_type in SchemaBuilderFactory._map:
             return SchemaBuilderFactory._map[builder_type]()
 
