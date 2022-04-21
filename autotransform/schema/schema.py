@@ -120,7 +120,7 @@ class AutoTransformSchema:
         event_handler.handle(DebugEvent({"message": "Begin get_items"}))
         all_items = self.input.get_items()
         event_handler.handle(DebugEvent(
-            {"message": f"Keys: {json.dumps([item.bundle() for item in all_items])}"}
+            {"message": f"Items: {json.dumps([item.bundle() for item in all_items])}"}
         ))
 
         # Filter Items
