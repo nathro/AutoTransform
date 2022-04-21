@@ -77,7 +77,7 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
         if extra_data is None:
             extra_data = {}
         arg_replacements = {
-            "<<ITEM>>": item.get_key(),
+            "<<KEY>>": item.get_key(),
             "<<EXTRA_DATA>>": json.dumps(extra_data),
         }
         for arg in self.params["args"]:

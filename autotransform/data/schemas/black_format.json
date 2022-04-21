@@ -16,8 +16,9 @@
     ],
     "batcher": {
         "params": {
+            "title": "Black Format",
             "metadata": {
-                "title": "Black Format",
+                
                 "body": "Apply Black formatting to all python files with @black_format"
             }
         },
