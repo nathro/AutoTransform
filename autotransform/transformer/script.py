@@ -12,7 +12,9 @@ from __future__ import annotations
 import json
 import subprocess
 from tempfile import NamedTemporaryFile as TmpFile
-from typing import Any, List, Mapping, Optional, TypedDict
+from typing import Any, List, Mapping, TypedDict
+
+from typing_extensions import NotRequired
 
 from autotransform.batcher.base import Batch
 from autotransform.transformer.base import Transformer
@@ -27,7 +29,7 @@ class ScriptTransformerParams(TypedDict):
     script: str
     args: List[str]
     timeout: int
-    per_key: Optional[bool]
+    per_key: NotRequired[bool]
 
 
 class ScriptTransformer(Transformer[ScriptTransformerParams]):

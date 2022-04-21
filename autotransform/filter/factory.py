@@ -5,13 +5,7 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""A simple factory for producing Filters from type and param information
-
-Note:
-    Imports for custom Filters should be in the CUSTOM IMPORTS section.
-    This will reduce merge conflicts when merging in upstream changes.
-    Do not auto organize imports when using custom imports to avoid merge conflicts
-"""
+"""A simple factory for producing Filters from type and param information."""
 
 import importlib
 from typing import Any, Callable, Dict, Mapping

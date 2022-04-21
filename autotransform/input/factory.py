@@ -18,7 +18,7 @@ from autotransform.input.type import InputType
 
 
 class InputFactory:
-    """The factory class for Inputs. Maps a type to a Input.
+    """The factory class for Inputs. Maps a type to an Input.
 
     Attributes:
         _map (Dict[InputType, Callable[[Mapping[str, Any]], Input]]): A mapping from
