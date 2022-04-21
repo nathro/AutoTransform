@@ -12,6 +12,7 @@ from typing import Any, Callable, Dict, Mapping
 
 from autotransform.config import fetcher as Config
 from autotransform.item.base import Item, ItemBundle
+from autotransform.item.file import FileItem
 from autotransform.item.type import ItemType
 
 
@@ -26,6 +27,8 @@ class ItemFactory:
     # pylint: disable=too-few-public-methods
 
     _map: Dict[ItemType, Callable[[Mapping[str, Any]], Item]] = {
+        ItemType.FILE: FileItem.from_data,
+        ItemType.GENERIC: Item.from_data,
     }
 
     @staticmethod
