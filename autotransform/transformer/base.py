@@ -1,7 +1,7 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
@@ -26,40 +26,50 @@ class TransformerBundle(TypedDict):
 
 
 class Transformer(Generic[TParams], ABC):
-    """The base for Transformer components.
+    """The base for Transformer components. Transformers are used to execute changes to a codebase.
+    A Transformer takes in a Batch and then executes all changes associated with the Batch.
 
     Attributes:
-        params (TParams): The paramaters that control operation of the Transformer.
+        _params (TParams): The paramaters that control operation of the Transformer.
             Should be defined using a TypedDict in subclasses
     """
 
-    params: TParams
+    _params: TParams
 
     def __init__(self, params: TParams):
         """A simple constructor.
 
         Args:
-            params (TParams): The paramaters used to set up the Transformer
+            params (TParams): The paramaters used to set up the Transformer.
         """
-        self.params = params
+
+        self._params = params
+
+    def get_params(self) -> TParams:
+        """Gets the paramaters used to set up the Transformer.
+
+        Returns:
+            TParams: The paramaters used to set up the Transformer.
+        """
+
+        return self._params
 
     @abstractmethod
     def get_type(self) -> TransformerType:
         """Used to map Transformer components 1:1 with an enum, allowing construction from JSON.
 
         Returns:
-            TransformerType: The unique type associated with this Transformer
+            TransformerType: The unique type associated with this Transformer.
         """
 
     @abstractmethod
     def transform(self, batch: Batch) -> None:
-        """Execute a transformation against the provided batch. Additional files may be modified
-        based on these changes (i.e. as part of a rename) and should be done as part of this
-        transform rather than using separate calls to transform. All writing should be done via
-        CachedFile's write_content method to ensure operations are easily accessible to testing.
+        """Execute a transformation against the provided Batch. All writing should be done via
+        CachedFile's write_content method or FileItem's write_content method to ensure operations
+        are easily accessible to testing and file content cache's are kept accurate.
 
         Args:
-            batch (Batch): The batch that will be transformed
+            batch (Batch): The Batch that will be transformed.
         """
 
     def bundle(self) -> TransformerBundle:
@@ -68,10 +78,11 @@ class Transformer(Generic[TParams], ABC):
         an encodable version.
 
         Returns:
-            TransformerBundle: The encodable bundle
+            TransformerBundle: The encodable bundle.
         """
+
         return {
-            "params": self.params,
+            "params": self._params,
             "type": self.get_type(),
         }
 
@@ -82,8 +93,8 @@ class Transformer(Generic[TParams], ABC):
         assert that the data provided matches expected types and is valid.
 
         Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
+            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
 
         Returns:
-            Transformer: An instance of the Transformer
+            Transformer: An instance of the Transformer.
         """

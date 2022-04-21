@@ -1,11 +1,11 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""An interface for transformers that operate on single files with no metadata needs."""
+"""An interface for Transformers that operate on single Items with no metadata needs."""
 
 
 from abc import abstractmethod
@@ -19,7 +19,7 @@ TParams = TypeVar("TParams", bound=Mapping[str, Any])
 
 
 class SingleTransformer(Generic[TParams], Transformer[TParams]):
-    """A simple interface for writing a transformer that operates on an individual file level."""
+    """A simple interface for writing a Transformer that operates on an individual Item level."""
 
     @abstractmethod
     def _transform_item(self, item: Item) -> None:
@@ -30,10 +30,10 @@ class SingleTransformer(Generic[TParams], Transformer[TParams]):
         """
 
     def transform(self, batch: Batch) -> None:
-        """Splits out all files to be transformed.
+        """Splits out all Items to be transformed.
 
         Args:
-            batch (Batch): The batch being transformed
+            batch (Batch): The Batch being transformed.
         """
 
         for item in batch["items"]:

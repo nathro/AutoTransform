@@ -304,7 +304,7 @@ def test_json_decoding(mocked_active_branch):
         expected_schema.transformer
     ), "Transformers are not the same"
     assert (
-        actual_schema.transformer.params == expected_schema.transformer.params
+        actual_schema.transformer.get_params() == expected_schema.transformer.get_params()
     ), "Transformers do not have the same params"
 
     # Check repo

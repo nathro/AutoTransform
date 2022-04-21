@@ -1,7 +1,7 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
@@ -27,34 +27,36 @@ class RegexTransformerParams(TypedDict):
 
 class RegexTransformer(SingleTransformer[RegexTransformerParams]):
     """A Transformer that makes regex based changes, replacing instances of the provided
-    pattern with the provided replacement. Useful for simple transformations.
+    pattern with the provided replacement. Useful for simple transformations. Operates on
+    FileItems.
 
     Attributes:
-        params (RegexTransformerParams): Contains the pattern and replacement
+        _params (RegexTransformerParams): Contains the pattern and replacement.
     """
 
-    params: RegexTransformerParams
+    _params: RegexTransformerParams
 
     def get_type(self) -> TransformerType:
         """Used to map Transformer components 1:1 with an enum, allowing construction from JSON.
 
         Returns:
-            TransformerType: The unique type associated with this Transformer
+            TransformerType: The unique type associated with this Transformer.
         """
+
         return TransformerType.REGEX
 
     def _transform_item(self, item: Item) -> None:
-        """Replaces all instances of pattern in the file with the replacement string.
+        """Replaces all instances of a pattern in the file with the replacement string.
 
         Args:
-            item (Item): The file that will be transformed
+            item (Item): The file that will be transformed.
         """
 
         # pylint: disable=unspecified-encoding
 
         assert isinstance(item, FileItem)
         content = item.get_content()
-        new_content = re.sub(self.params["pattern"], self.params["replacement"], content)
+        new_content = re.sub(self._params["pattern"], self._params["replacement"], content)
         item.write_content(new_content)
 
     @staticmethod
@@ -62,11 +64,12 @@ class RegexTransformer(SingleTransformer[RegexTransformerParams]):
         """Produces a RegexTransformer from the provided data.
 
         Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
+            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
 
         Returns:
-            RegexTransformer: An instance of the RegexTransformer
+            RegexTransformer: An instance of the RegexTransformer.
         """
+
         pattern = data["pattern"]
         assert isinstance(pattern, str)
         replacement = data["replacement"]

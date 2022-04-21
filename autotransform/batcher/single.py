@@ -67,7 +67,7 @@ class SingleBatcher(Batcher[SingleBatcherParams]):
         """Produces a SingleBatcher from the provided data.
 
         Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
+            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
 
         Returns:
             SingleBatcher: An instance of the SingleBatcher with the provided params.
