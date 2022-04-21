@@ -50,4 +50,4 @@ class InputFactory:
             module = importlib.import_module(module_string)
             if hasattr(module, "INPUTS") and bundle["type"] in module.INPUTS:
                 return module.INPUTS[bundle["type"]](bundle["params"])
-        raise ValueError(f"No input found for type {bundle['type']}")
+        raise ValueError(f"No Input found for type {bundle['type']}")

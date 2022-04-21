@@ -6,4 +6,4 @@
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
 """Filters are used by AutoTransform to take keys provided by Inputs and check them for
-eligibility. Input keys that pass filters will get passed along to Batchers."""
+eligibility. Input keys that pass Filters will get passed along to Batchers."""

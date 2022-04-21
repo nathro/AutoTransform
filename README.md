@@ -63,9 +63,9 @@ The core of AutoTransform is the [schema](https://github.com/nathro/AutoTransfor
     * **Name** - A unique name to identify the change in PRs and scheduling
     * **Owner** - An owner to notify about actions taken by the schema
     * **Allowed Validation Level** - The level of validation errors allowed by the schema (none vs warning vs error)
-* **[Input](https://github.com/nathro/AutoTransform/blob/master/autotransform/input/base.py)** - The input component returns a list of inputs that are potential targets of the change (i.e. code files)
-* **[Filters](https://github.com/nathro/AutoTransform/blob/master/autotransform/filter/base.py)** - Filters take a set of inputs and apply criteria to the inputs that were not applied by the input, such as checking file extensions.
-* **[Batcher](https://github.com/nathro/AutoTransform/blob/master/autotransform/batcher/base.py)** - A batcher takes a set of filtered inputs and breaks it into groups that can be executed independently. This component also generates metadata for this grouping used for things like the body of a pull request.
+* **[Input](https://github.com/nathro/AutoTransform/blob/master/autotransform/input/base.py)** - The input component returns a list of keys that are potential targets of the change (i.e. file paths)
+* **[Filters](https://github.com/nathro/AutoTransform/blob/master/autotransform/filter/base.py)** - Filters take a set of keys and apply criteria to the keys that were not applied by the Input, such as checking if it matches a regex pattern.
+* **[Batcher](https://github.com/nathro/AutoTransform/blob/master/autotransform/batcher/base.py)** - A batcher takes a set of filtered keys and breaks it into groups that can be executed independently. This component also generates metadata for this grouping used for things like the body of a pull request.
 * **[Transformer](https://github.com/nathro/AutoTransform/blob/master/autotransform/transformer/base.py)** - The core of any change, takes a batch and actually makes changes to files based on the batch provided.
 * **[Validators](https://github.com/nathro/AutoTransform/blob/master/autotransform/validator/base.py)** - Validators are run after transformation to check the health of a codebase after the transformation and ensure no issues are present. Things like typing, testing, etc...
 * **[Commands](https://github.com/nathro/AutoTransform/blob/master/autotransform/command/base.py)** - Post run processes that need to be executed. Could involve updating databases, generating code, etc...
@@ -87,7 +87,7 @@ The config fetcher allows for configuration of AutoTransform as a whole. This in
 
 ### **Data Store**
 
-**[DataStore](https://github.com/nathro/AutoTransform/blob/master/autotransform/common/datastore.py)** provides a unique dictionary that can map inputs to extra data that may be needed for some transformations. Examples could include when removing experiments, information on the current state of the experiment. This information should be populated by the Input component and can be accessed by any component in the chain.
+**[DataStore](https://github.com/nathro/AutoTransform/blob/master/autotransform/common/datastore.py)** provides a unique dictionary that can map keys to extra data that may be needed for some transformations. Examples could include when removing experiments, information on the current state of the experiment. This information should be populated by the Input component and can be accessed by any component in the chain.
 
 ## **Data Flow**
 
@@ -95,7 +95,7 @@ The config fetcher allows for configuration of AutoTransform as a whole. This in
 
 **[A visual representation](https://lucid.app/lucidchart/eca43a3d-175f-416f-bb4f-4363d56f951b/edit?invitationId=inv_f44ed708-8c4a-4998-96f2-8b860aba8ebc)**
 
-The input component of the schema will get a list of strings representing inputs, these are then passed through the filters where only those that pass the is_valid check make it through. This filtered set of inputs is then passed to a batcher which breaks the input into groups called batches. Batches will be executed sequentially as independent changes going through a multi-step process. First, the batch goes to a transformer which makes the actual changes to the codebase. Next, validators are invoked which check to ensure the codebase is still healthy. After this, commands are run which perform post-change processing, such as code generation. Finally, the repo object will check for changes, commit them if present and submit them (i.e. as a Pull Request). Once this is done, the repo object will return the repository to a clean state in preparation for the next batch.
+The Input component of the schema will get a list of string keys that represent items needing that may be transformed, these are then passed through the Filters where only those that pass the is_valid check make it through. This filtered set of keys is then passed to a Batcher which breaks the keys into groups called Batches. Batches will be executed sequentially as independent changes going through a multi-step process. First, the Batch goes to a Transformer which makes the actual changes to the codebase. Next, Validators are invoked which check to ensure the codebase is still healthy. After this, Commands are run which perform post-change processing, such as code generation. Finally, the Repo object will check for changes, commit them if present, and submit them (i.e. as a Pull Request). Once this is done, the Repo object will return the repository to a clean state in preparation for the next Batch.
 
 # **Upcoming Milestones**
 

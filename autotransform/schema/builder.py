@@ -24,7 +24,7 @@ from autotransform.validator.base import Validator
 
 class SchemaBuilder(ABC):
     """The base for SchemaBuilders. SchemaBuilders are used for programatic Schema generation.
-    This can be used in conjunction with input params or configuration to customize Schemas run
+    This can be used in conjunction with params or configuration to customize Schemas run
     through automation. Can also be used to generate JSON Schemas that can be utilized.
     """
 

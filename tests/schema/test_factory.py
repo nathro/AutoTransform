@@ -1,11 +1,11 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""Tests that the schema factory has all types included."""
+"""Tests that the SchemaBuilderFactory has all types included."""
 
 from autotransform.schema.factory import SchemaBuilderFactory
 from autotransform.schema.type import SchemaBuilderType

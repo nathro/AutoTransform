@@ -39,11 +39,11 @@ class AutoTransformSchema:
     a transformation.
 
     Attributes:
-        input (Input): The Input which gets eligible files.
+        input (Input): The Input which gets eligible keys.
         batcher (Batcher): The Batcher which batches eligible filtered Files
             in to logical groups.
         transformer (Transformer): The Transformer which actually modifies files.
-        filters (List[Filter]): A list of Filters to apply to eligible files.
+        filters (List[Filter]): A list of Filters to apply to eligible keys.
         validators (List[Validator]): A list of Validators to ensure the changes
             did not break anything.
         commands (List[Command]): A list of Commands that run post-processing on
@@ -107,7 +107,7 @@ class AutoTransformSchema:
         self.config = config if isinstance(config, Config) else Config()
 
     def get_batches(self) -> List[Batch]:
-        """Runs the Input to get eligible inputs, filters them, then batches them.
+        """Runs the Input to get eligible keys, filters them, then batches them.
 
         Returns:
             List[Batch]: The Batches for the change
@@ -158,7 +158,7 @@ class AutoTransformSchema:
         """
         event_handler = EventHandler.get()
         encodable_batch = {
-            "inputs": [inp.path for inp in batch["files"]],
+            "keys": [inp.path for inp in batch["files"]],
             "metadata": batch["metadata"],
         }
         event_handler.handle(
@@ -212,7 +212,7 @@ class AutoTransformSchema:
             "input": self.input.bundle(),
             "batcher": self.batcher.bundle(),
             "transformer": self.transformer.bundle(),
-            "filters": [filter.bundle() for filter in self.filters],
+            "filters": [f.bundle() for f in self.filters],
             "validators": [validator.bundle() for validator in self.validators],
             "commands": [command.bundle() for command in self.commands],
             "config": self.config.bundle(),
@@ -262,7 +262,7 @@ class AutoTransformSchema:
         batcher = BatcherFactory.get(bundle["batcher"])
         transformer = TransformerFactory.get(bundle["transformer"])
 
-        filters = [FilterFactory.get(filter) for filter in bundle["filters"]]
+        filters = [FilterFactory.get(f) for f in bundle["filters"]]
         validators = [ValidatorFactory.get(validator) for validator in bundle["validators"]]
         commands = [CommandFactory.get(command) for command in bundle["commands"]]
 

@@ -56,4 +56,4 @@ class FilterFactory:
             module = importlib.import_module(module_string)
             if hasattr(module, "FILTERS") and bundle["type"] in module.FILTERS:
                 return module.FILTERS[bundle["type"]](inverted, bundle["params"])
-        raise ValueError(f"No filter found for type {bundle['type']}")
+        raise ValueError(f"No Filter found for type {bundle['type']}")

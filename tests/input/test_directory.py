@@ -1,7 +1,7 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
@@ -13,7 +13,7 @@ from autotransform.input.directory import DirectoryInput
 
 
 def assert_directory_content(directory: str, expected_files: List[str]):
-    """Helper function that handles the logic of actually testing given inputs and expected results.
+    """Helper function that handles the logic of actually testing given Inputs and expected results.
 
     Args:
         directory (str): The directory within the tests data to search

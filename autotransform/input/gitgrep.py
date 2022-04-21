@@ -23,7 +23,7 @@ class GitGrepInputParams(TypedDict):
 
 
 class GitGrepInput(Input[GitGrepInputParams]):
-    """An input that uses git grep to search a repository for a pattern and returns all files
+    """An Input that uses git grep to search a repository for a pattern and returns all files
     that contain a match of the supplied pattern.
 
     Attributes:

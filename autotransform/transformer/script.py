@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 import subprocess
 from tempfile import NamedTemporaryFile as TmpFile
-from typing import Any, List, Mapping, TypedDict
+from typing import Any, List, Mapping, Optional, TypedDict
 
 from autotransform.batcher.base import Batch
 from autotransform.transformer.base import Transformer
@@ -27,7 +27,7 @@ class ScriptTransformerParams(TypedDict):
     script: str
     args: List[str]
     timeout: int
-    per_file: bool
+    per_key: Optional[bool]
 
 
 class ScriptTransformer(Transformer[ScriptTransformerParams]):
@@ -54,7 +54,7 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
         return TransformerType.SCRIPT
 
     def transform(self, batch: Batch) -> None:
-        if self.params["per_file"]:
+        if self.params["per_key"]:
             for file in batch["files"]:
                 self._transform_single(file)
         else:
@@ -142,8 +142,8 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
         args = [str(arg) for arg in args]
         timeout = data["timeout"]
         assert isinstance(timeout, int)
-        per_file = bool(data.get("per_file", False))
+        per_key = bool(data.get("per_key", False))
 
         return ScriptTransformer(
-            {"script": script, "args": args, "timeout": timeout, "per_file": per_file}
+            {"script": script, "args": args, "timeout": timeout, "per_key": per_key}
         )

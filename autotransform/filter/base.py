@@ -32,7 +32,7 @@ class Filter(Generic[TParams], ABC):
     Attributes:
         _params (TParams): The paramaters that control operation of the Filter.
             Should be defined using a TypedDict in subclasses.
-        _inverted (bool): Whether to invert the results of the filter.
+        _inverted (bool): Whether to invert the results of the Filter.
     """
 
     _inverted: bool
@@ -65,7 +65,7 @@ class Filter(Generic[TParams], ABC):
         """
 
     def invert(self) -> Filter:
-        """Inverts the results that the filter will provide. Inverting an already inverted Filter
+        """Inverts the results that the Filter will provide. Inverting an already inverted Filter
         will return it to normal operation.
 
         Returns:
@@ -118,7 +118,7 @@ class Filter(Generic[TParams], ABC):
 
         Args:
             data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-            inverted (Optional[bool]): Whether the filter was inverted before encoding.
+            inverted (Optional[bool]): Whether the Filter was inverted before encoding.
 
         Returns:
             Filter: An instance of the Filter.

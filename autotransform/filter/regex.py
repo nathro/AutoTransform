@@ -28,7 +28,7 @@ class RegexFilter(Filter[RegexFilterParams]):
     Uses re.search rather than re.match.
 
     Attributes:
-        params (RegexFilterParams): Contains the pattern to check against the file name
+        params (RegexFilterParams): Contains the pattern to check against the key.
     """
 
     _params: RegexFilterParams

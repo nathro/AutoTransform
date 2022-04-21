@@ -32,7 +32,7 @@
                 "<<INPUT>>"
             ],
             "timeout": 360,
-            "per_file": 1
+            "per_key": true
         },
         "type": "script"
     },

@@ -26,8 +26,8 @@ class InputBundle(TypedDict):
 
 class Input(Generic[TParams], ABC):
     """The base for Input components. Used by AutoTransform to get string keys that
-    represent the inputs for a Schema. Usually returns file paths but any string can be
-    returned as long as Schema components work with it.
+    represent potentially transformable items for a Schema. Usually returns file paths but
+    any string can be returned as long as Schema components work with it.
 
     Attributes:
         _params (TParams): The paramaters that control operation of the Input.
@@ -63,7 +63,7 @@ class Input(Generic[TParams], ABC):
 
     @abstractmethod
     def get_keys(self) -> List[str]:
-        """Get a list of keys to be used by the transformation based on the input criteria. Usually
+        """Get a list of keys to be used by the transformation based on the Input criteria. Usually
         file paths, but any string can be used.
 
         Returns:

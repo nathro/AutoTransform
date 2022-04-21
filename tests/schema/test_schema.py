@@ -1,7 +1,7 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
@@ -44,12 +44,12 @@ EXPECTED_METADATA = BatchMetadata({"title": "", "summary": "", "tests": ""})
 
 
 def mock_input(mocked_get_keys) -> None:
-    """Sets up the input mock."""
+    """Sets up the Input mock."""
     mocked_get_keys.return_value = ALL_KEYS
 
 
 def mock_filter(mocked_is_valid) -> None:
-    """Sets up the filter mock."""
+    """Sets up the Filter mock."""
 
     def mock_is_valid(key: str) -> bool:
         return key in ALLOWED_KEYS
@@ -123,13 +123,13 @@ def test_get_batches(
     schema = get_sample_schema()
     actual_batch = schema.get_batches()[0]
 
-    # Check input called
+    # Check Input called
     mocked_get_keys.assert_called_once()
 
-    # Check filter called
+    # Check Filter called
     assert mocked_is_valid.call_count == 2
-    filtered_inputs = [mock_call.args[0] for mock_call in mocked_is_valid.call_args_list]
-    assert filtered_inputs == ALL_KEYS
+    filtered_keys = [mock_call.args[0] for mock_call in mocked_is_valid.call_args_list]
+    assert filtered_keys == ALL_KEYS
 
     # Check batcher called
     mocked_batch.assert_called_once()
@@ -174,13 +174,13 @@ def test_run_with_changes(
     schema = get_sample_schema()
     schema.run()
 
-    # Check input called
+    # Check Input called
     mocked_get_keys.assert_called_once()
 
-    # Check filter called
+    # Check Filter called
     assert mocked_is_valid.call_count == 2
-    filtered_inputs = [mock_call.args[0] for mock_call in mocked_is_valid.call_args_list]
-    assert filtered_inputs == ALL_KEYS
+    filtered_keys = [mock_call.args[0] for mock_call in mocked_is_valid.call_args_list]
+    assert filtered_keys == ALL_KEYS
 
     # Check batcher called
     mocked_batch.assert_called_once()
@@ -232,13 +232,13 @@ def test_run_with_no_changes(
     schema = get_sample_schema()
     schema.run()
 
-    # Check input called
+    # Check Input called
     mocked_get_keys.assert_called_once()
 
-    # Check filter called
+    # Check Filter called
     assert mocked_is_valid.call_count == 2
-    filtered_inputs = [mock_call.args[0] for mock_call in mocked_is_valid.call_args_list]
-    assert filtered_inputs == ALL_KEYS
+    filtered_keys = [mock_call.args[0] for mock_call in mocked_is_valid.call_args_list]
+    assert filtered_keys == ALL_KEYS
 
     # Check batcher called
     mocked_batch.assert_called_once()
@@ -287,7 +287,7 @@ def test_json_decoding(mocked_active_branch):
     actual_json = actual_json.replace("<<REPO ROOT>>", repo_root)
     actual_schema = AutoTransformSchema.from_json(actual_json)
 
-    # Check input
+    # Check Input
     assert type(actual_schema.input) is type(expected_schema.input), "Inputs are not the same"
     assert (
         actual_schema.input.get_params() == expected_schema.input.get_params()
@@ -315,9 +315,9 @@ def test_json_decoding(mocked_active_branch):
         actual_schema.repo.params == expected_schema.repo.params
     ), "Repos do not have the same params"
 
-    # Check filters
+    # Check Filters
     for i in range(len(actual_schema.filters)):
-        assert i < len(expected_schema.filters), "More filters present than expected"
+        assert i < len(expected_schema.filters), "More Filters present than expected"
         assert type(actual_schema.filters[i]) is type(
             expected_schema.filters[i]
         ), "Filters are not the same"
