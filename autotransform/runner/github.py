@@ -65,13 +65,13 @@ class GithubRunner(Runner[GithubRunnerParams]):
         ), "GithubRunner can only run using schemas that have Github repos"
 
         # Get the Workflow object
-        github_repo = repo.github_repo
+        github_repo = repo.get_github_repo()
         workflow = github_repo.get_workflow(self._params["workflow"])
         event_handler.handle(DebugEvent({"message": f"Workflow found: {workflow.name}"}))
 
         # Dispatch a Workflow run
         dispatch_success = workflow.create_dispatch(
-            repo.params["base_branch_name"],
+            repo.get_params()["base_branch_name"],
             {"schema": schema.to_json()},
         )
         assert dispatch_success, "Failed to dispatch workflow request"

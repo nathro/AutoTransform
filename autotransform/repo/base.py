@@ -1,7 +1,7 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
@@ -26,29 +26,41 @@ class RepoBundle(TypedDict):
 
 
 class Repo(Generic[TParams], ABC):
-    """The base for Repo components.
+    """The base for Repo components. Used by AutoTransform to interact with version
+    control and code review systems.
 
     Attributes:
-        params (TParams): The paramaters that control operation of the Repo.
-            Should be defined using a TypedDict in subclasses
+        _params (TParams): The paramaters that control operation of the Repo.
+            Should be defined using a TypedDict in subclasses.
     """
 
-    params: TParams
+    _params: TParams
 
     def __init__(self, params: TParams):
         """A simple constructor.
 
         Args:
-            params (TParams): The paramaters used to set up the Repo
+            params (TParams): The paramaters used to set up the Repo.
         """
-        self.params = params
 
+        self._params = params
+
+    def get_params(self) -> TParams:
+        """Gets the paramaters used to set up the Repo.
+
+        Returns:
+            TParams: The paramaters used to set up the Repo.
+        """
+
+        return self._params
+
+    @staticmethod
     @abstractmethod
-    def get_type(self) -> RepoType:
+    def get_type() -> RepoType:
         """Used to map Repo components 1:1 with an enum, allowing construction from JSON.
 
         Returns:
-            RepoType: The unique type associated with this Repo
+            RepoType: The unique type associated with this Repo.
         """
 
     @abstractmethod
@@ -56,11 +68,10 @@ class Repo(Generic[TParams], ABC):
         """Check whether any changes have been made to the underlying code based on the Batch.
 
         Args:
-            batch (Batch): The Batch that was used for the transformation
+            batch (Batch): The Batch that was used for the transformation.
 
         Returns:
-            bool: Returns True if there are any changes to either the files in the Batch or other
-                files.
+            bool: Returns True if there are any changes to the codebase.
         """
 
     @abstractmethod
@@ -69,7 +80,7 @@ class Repo(Generic[TParams], ABC):
         Only called when changes are present.
 
         Args:
-            batch (Batch): The Batch for which the changes were made
+            batch (Batch): The Batch for which the changes were made.
         """
 
     @abstractmethod
@@ -77,7 +88,7 @@ class Repo(Generic[TParams], ABC):
         """Clean any changes present in the Repo that have not been submitted.
 
         Args:
-            batch (Batch): The Batch for which we are cleaning the repo
+            batch (Batch): The Batch for which we are cleaning the repo.
         """
 
     @abstractmethod
@@ -87,7 +98,7 @@ class Repo(Generic[TParams], ABC):
         submit has been done.
 
         Args:
-            batch (Batch): The Batch for which changes were submitted
+            batch (Batch): The Batch for which changes were submitted.
         """
 
     def bundle(self) -> RepoBundle:
@@ -96,10 +107,11 @@ class Repo(Generic[TParams], ABC):
         an encodable version.
 
         Returns:
-            RepoBundle: The encodable bundle
+            RepoBundle: The encodable bundle.
         """
+
         return {
-            "params": self.params,
+            "params": self._params,
             "type": self.get_type(),
         }
 
@@ -110,8 +122,8 @@ class Repo(Generic[TParams], ABC):
         assert that the data provided matches expected types and is valid.
 
         Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
+            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
 
         Returns:
-            Repo: An instance of the Repo
+            Repo: An instance of the Repo.
         """

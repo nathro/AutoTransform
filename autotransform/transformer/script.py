@@ -53,7 +53,8 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
 
     _params: ScriptTransformerParams
 
-    def get_type(self) -> TransformerType:
+    @staticmethod
+    def get_type() -> TransformerType:
         """Used to map Transformer components 1:1 with an enum, allowing construction from JSON.
 
         Returns:

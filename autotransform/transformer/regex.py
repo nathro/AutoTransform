@@ -36,7 +36,8 @@ class RegexTransformer(SingleTransformer[RegexTransformerParams]):
 
     _params: RegexTransformerParams
 
-    def get_type(self) -> TransformerType:
+    @staticmethod
+    def get_type() -> TransformerType:
         """Used to map Transformer components 1:1 with an enum, allowing construction from JSON.
 
         Returns:

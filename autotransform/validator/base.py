@@ -137,8 +137,9 @@ class Validator(Generic[TParams], ABC):
 
         return self._params
 
+    @staticmethod
     @abstractmethod
-    def get_type(self) -> ValidatorType:
+    def get_type() -> ValidatorType:
         """Used to map Validator components 1:1 with an enum, allowing construction from JSON.
 
         Returns:

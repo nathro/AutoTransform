@@ -54,8 +54,9 @@ class Transformer(Generic[TParams], ABC):
 
         return self._params
 
+    @staticmethod
     @abstractmethod
-    def get_type(self) -> TransformerType:
+    def get_type() -> TransformerType:
         """Used to map Transformer components 1:1 with an enum, allowing construction from JSON.
 
         Returns:

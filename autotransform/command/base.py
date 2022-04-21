@@ -54,8 +54,9 @@ class Command(Generic[TParams], ABC):
 
         return self._params
 
+    @staticmethod
     @abstractmethod
-    def get_type(self) -> CommandType:
+    def get_type() -> CommandType:
         """Used to map Command components 1:1 with an enum, allowing construction from JSON.
 
         Returns:
@@ -91,8 +92,8 @@ class Command(Generic[TParams], ABC):
         assert that the data provided matches expected types and is valid.
 
         Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
+            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
 
         Returns:
-            Command: An instance of the Command
+            Command: An instance of the Command.
         """

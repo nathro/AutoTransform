@@ -312,7 +312,7 @@ def test_json_decoding(mocked_active_branch):
         assert expected_schema.repo is None, "Repo missing from decoded schema"
     assert type(actual_schema.repo) is type(expected_schema.repo), "Repos are not the same"
     assert (
-        actual_schema.repo.params == expected_schema.repo.params
+        actual_schema.repo.get_params() == expected_schema.repo.get_params()
     ), "Repos do not have the same params"
 
     # Check Filters

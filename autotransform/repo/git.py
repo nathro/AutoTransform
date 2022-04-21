@@ -1,7 +1,7 @@
 # AutoTransform
 # Large scale, component based code modification library
 #
-# Licensed under the MIT License <http://opensource.org/licenses/MIT
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
@@ -30,75 +30,82 @@ class GitRepo(Repo[GitRepoParams]):
     """A Repo that provides support for commiting changes to git.
 
     Attributes:
-        params (GitRepoParams): Contains the root path to the git repo
-        local_repo (GitPython): An object representing the repo used for git operations
-        base_branch (Head): The base branch to use for changes
+        _params (GitRepoParams): Contains tthe base branch name that the changes will be
+            made on top of.
+        _local_repo (GitPython): An object representing the repo used for git operations.
+        _base_branch (Head): The base branch to use for changes.
     """
 
-    params: GitRepoParams
-    local_repo: GitPython
-    base_branch: Head
+    _params: GitRepoParams
+    _local_repo: GitPython
+    _base_branch: Head
 
-    COMMIT_BRANCH_BASE: str = "AUTO_TRANSFORM"
+    BRANCH_NAME_PREFIX: str = "AUTO_TRANSFORM"
+    COMMIT_MESSAGE_PREFIX: str = "[AutoTransform]"
 
     @staticmethod
     def get_branch_name(title: str) -> str:
-        """Gets a unique name identified with a change using the provided title.
+        """Gets a unique name for a git branch using the title from the Batch.
 
         Args:
-            title (str): The title of the change
+            title (str): The title of the change.
 
         Returns:
-            str: The name of the branch for this change
+            str: The name of the branch for this change.
         """
-        return GitRepo.COMMIT_BRANCH_BASE + "_" + title.replace(" ", "_")
+
+        return GitRepo.BRANCH_NAME_PREFIX + "_" + title.replace(" ", "_")
 
     @staticmethod
     def get_commit_message(title: str) -> str:
-        """Gets a commit message for the change based on the Batch title
+        """Gets a commit message for the change based on the Batch title.
 
         Args:
-            title (str): The metadata of the batch the commit message is for
+            title (str): The title of the change.
 
         Returns:
-            str: The commit message
+            str: The commit message for this change.
         """
-        return "[AutoTransform] " + title
+
+        return GitRepo.COMMIT_MESSAGE_PREFIX + title
 
     def __init__(self, params: GitRepoParams):
         """Gets the local repo object for future operations and attains the initial active branch.
 
         Args:
-            params (GitRepoParams): The paramaters used to set up the GitRepo
+            params (GitRepoParams): The paramaters used to set up the GitRepo.
         """
 
         Repo.__init__(self, params)
         dir_cmd = ["git", "rev-parse", "--show-toplevel"]
         repo_dir = subprocess.check_output(dir_cmd, encoding="UTF-8").replace("\\", "/").strip()
-        self.local_repo = GitPython(repo_dir)
-        for branch in self.local_repo.heads:
-            if branch.name == self.params["base_branch_name"]:
+        self._local_repo = GitPython(repo_dir)
+        for branch in self._local_repo.heads:
+            if branch.name == self._params["base_branch_name"]:
                 branch.checkout()
-                self.base_branch = branch
+                self._base_branch = branch
+                break
 
-    def get_type(self) -> RepoType:
+    @staticmethod
+    def get_type() -> RepoType:
         """Used to map Repo components 1:1 with an enum, allowing construction from JSON.
 
         Returns:
             RepoType: The unique type associated with this Repo
         """
+
         return RepoType.GIT
 
     def has_changes(self, _: Batch) -> bool:
-        """Checks the dirty status of the repo, including untracked changes
+        """Checks the dirty status of the repo, including untracked changes.
 
         Args:
-            _ (Batch): Unused Batch object used to match signature to base
+            _ (Batch): Unused Batch object used to match signature to base.
 
         Returns:
-            bool: Returns True if there are any changes to the repo either staged or unstaged
+            bool: Returns True if there are any changes to the repo either staged or unstaged.
         """
-        return self.local_repo.is_dirty(untracked_files=True)
+        return self._local_repo.is_dirty(untracked_files=True)
 
     def submit(self, batch: Batch) -> None:
         """Stages all changes and commits them in a new branch.
@@ -106,39 +113,8 @@ class GitRepo(Repo[GitRepoParams]):
         Args:
             batch (Batch): The Batch for which the changes were made
         """
+
         self.commit(batch["title"])
-
-    def clean(self, _: Batch) -> None:
-        """Performs `git reset --hard` to remove any changes.
-
-        Args:
-            _ (Batch): Unused Batch object used to match signature to base
-        """
-        self.local_repo.git.reset("--hard")
-
-    def rewind(self, batch: Batch) -> None:
-        """First eliminates any uncommitted changes using the clean function than checks out
-        the initial active branch.
-
-        Args:
-            batch (Batch): The Batch for the submitted changes that is being rewound
-        """
-        self.clean(batch)
-        self.base_branch.checkout()
-
-    @staticmethod
-    def from_data(data: Mapping[str, Any]) -> GitRepo:
-        """Produces a GitRepo from the provided data.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
-
-        Returns:
-            GitRepo: An instance of the GitRepo
-        """
-        base_branch_name = data["base_branch_name"]
-        assert isinstance(base_branch_name, str)
-        return GitRepo({"base_branch_name": base_branch_name})
 
     def commit(self, title: str) -> None:
         """Creates a new branch for all changes, stages them, and commits them.
@@ -147,6 +123,41 @@ class GitRepo(Repo[GitRepoParams]):
             title (str): The title of the Batch being commited.
         """
 
-        self.local_repo.git.checkout("-b", GitRepo.get_branch_name(title))
-        self.local_repo.git.add(all=True)
-        self.local_repo.index.commit(GitRepo.get_commit_message(title))
+        self._local_repo.git.checkout("-b", GitRepo.get_branch_name(title))
+        self._local_repo.git.add(all=True)
+        self._local_repo.index.commit(GitRepo.get_commit_message(title))
+
+    def clean(self, _: Batch) -> None:
+        """Performs `git reset --hard` to remove any changes.
+
+        Args:
+            _ (Batch): Unused Batch object used to match signature to base
+        """
+
+        self._local_repo.git.reset("--hard")
+
+    def rewind(self, batch: Batch) -> None:
+        """First eliminates any uncommitted changes using the clean function then checks out
+        the initial active branch.
+
+        Args:
+            batch (Batch): The Batch for the submitted changes that is being rewound.
+        """
+
+        self.clean(batch)
+        self._base_branch.checkout()
+
+    @staticmethod
+    def from_data(data: Mapping[str, Any]) -> GitRepo:
+        """Produces a GitRepo from the provided data.
+
+        Args:
+            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
+
+        Returns:
+            GitRepo: An instance of the GitRepo.
+        """
+
+        base_branch_name = data["base_branch_name"]
+        assert isinstance(base_branch_name, str)
+        return GitRepo({"base_branch_name": base_branch_name})
