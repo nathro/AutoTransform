@@ -1,7 +1,7 @@
-Welcome to AutoTransform!
+AutoTransform
 =========================================
 
-AutoTransform is a tool for large scale code modification
+AutoTransform is a tool for simple, automatic large-scale code modification. It allows organizations to dramatically improve the efficiency of their codebase maintainence and upkeep. Check out the readme to learn more.
 
 .. toctree::
    :maxdepth: 2
