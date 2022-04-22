@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>autotransform.command package &mdash; AutoTransform 0.1.0 documentation</title>
+  <title>Command Package (autotransform.command) &mdash; AutoTransform 0.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="autotransform.config package" href="autotransform.config.html" />
-    <link rel="prev" title="autotransform.batcher package" href="autotransform.batcher.html" /> 
+    <link rel="next" title="Command (autotransform.command.base)" href="autotransform.command.base.html" />
+    <link rel="prev" title="ValidatorFactory (autotransform.validator.factory)" href="autotransform.validator.factory.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -37,7 +37,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Readme:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Readme</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="README.html"><strong>Overview</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#core-functionality"><strong>Core Functionality</strong></a></li>
@@ -45,29 +45,22 @@
 <li class="toctree-l1"><a class="reference internal" href="README.html#security-best-practices"><strong>Security Best Practices</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#schema-best-practices"><strong>Schema Best Practices</strong></a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Code</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">autotransform</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="autotransform.html">autotransform package</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="autotransform.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="autotransform.batcher.html">autotransform.batcher package</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">autotransform.command package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.config.html">autotransform.config package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.event.html">autotransform.event package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.filter.html">autotransform.filter package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.input.html">autotransform.input package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.item.html">autotransform.item package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.repo.html">autotransform.repo package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.runner.html">autotransform.runner package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.schema.html">autotransform.schema package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.scripts.html">autotransform.scripts package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.thirdparty.html">autotransform.thirdparty package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.transformer.html">autotransform.transformer package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.util.html">autotransform.util package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.validator.html">autotransform.validator package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="autotransform.html">AutoTransform (autotransform)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="autotransform.html#core">Core</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="autotransform.html#schema-components">Schema Components</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="autotransform.input.html">Input Package (autotransform.input)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.filter.html">Filter Package (autotransform.filter)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.batcher.html">Batcher Package (autotransform.batcher)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.transformer.html">Transformer Package (autotransform.transformer)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.validator.html">Validator Package (autotransform.validator)</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Command Package (autotransform.command)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#components">Components</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#core">Core</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="autotransform.html#module-autotransform">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.repo.html">Repo Package (autotransform.repo)</a></li>
 </ul>
 </li>
 </ul>
@@ -88,9 +81,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="modules.html">autotransform</a> &raquo;</li>
-          <li><a href="autotransform.html">autotransform package</a> &raquo;</li>
-      <li>autotransform.command package</li>
+          <li><a href="autotransform.html">AutoTransform (autotransform)</a> &raquo;</li>
+      <li>Command Package (autotransform.command)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/autotransform.command.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -100,180 +92,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="autotransform-command-package">
-<h1>autotransform.command package<a class="headerlink" href="#autotransform-command-package" title="Permalink to this headline"></a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
-</section>
-<section id="module-autotransform.command.base">
-<span id="autotransform-command-base-module"></span><h2>autotransform.command.base module<a class="headerlink" href="#module-autotransform.command.base" title="Permalink to this headline"></a></h2>
-<p>The base class and associated classes for Command components.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="autotransform.command.base.Command">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.command.base.</span></span><span class="sig-name descname"><span class="pre">Command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autotransform.command.base.TParams</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.command.base.Command" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">autotransform.command.base.TParams</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
-<p>The base for Command components. Used by AutoTransform to perform post-processing
-operations after validation, such as code generation.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.command.base.Command._params">
-<span class="sig-name descname"><span class="pre">_params</span></span><a class="headerlink" href="#autotransform.command.base.Command._params" title="Permalink to this definition"></a></dt>
-<dd><p>The paramaters that control operation of the Command.
-Should be defined using a TypedDict in subclasses</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>TParams</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.command.base.Command.bundle">
-<span class="sig-name descname"><span class="pre">bundle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.command.base.CommandBundle" title="autotransform.command.base.CommandBundle"><span class="pre">autotransform.command.base.CommandBundle</span></a></span></span><a class="headerlink" href="#autotransform.command.base.Command.bundle" title="Permalink to this definition"></a></dt>
-<dd><p>Generates a JSON encodable bundle.
-If a component’s params are not JSON encodable this method should be overridden to provide
-an encodable version.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The encodable bundle.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#autotransform.command.base.CommandBundle" title="autotransform.command.base.CommandBundle">CommandBundle</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.command.base.Command.from_data">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.command.base.Command" title="autotransform.command.base.Command"><span class="pre">autotransform.command.base.Command</span></a></span></span><a class="headerlink" href="#autotransform.command.base.Command.from_data" title="Permalink to this definition"></a></dt>
-<dd><p>Produces an instance of the component from decoded params. Implementations should
-assert that the data provided matches expected types and is valid.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – The JSON decoded params from an encoded bundle.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An instance of the Command.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#autotransform.command.base.Command" title="autotransform.command.base.Command">Command</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.command.base.Command.get_params">
-<span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">autotransform.command.base.TParams</span></span></span><a class="headerlink" href="#autotransform.command.base.Command.get_params" title="Permalink to this definition"></a></dt>
-<dd><p>Gets the paramaters used to set up the Command.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The paramaters used to set up the Command.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>TParams</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.command.base.Command.get_type">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.command.type.CommandType" title="autotransform.command.type.CommandType"><span class="pre">autotransform.command.type.CommandType</span></a></span></span><a class="headerlink" href="#autotransform.command.base.Command.get_type" title="Permalink to this definition"></a></dt>
-<dd><p>Used to map Command components 1:1 with an enum, allowing construction from JSON.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The unique type associated with this Command.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#autotransform.command.type.CommandType" title="autotransform.command.type.CommandType">CommandType</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.command.base.Command.run">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.command.base.Command.run" title="Permalink to this definition"></a></dt>
-<dd><p>Performs the post-processing steps represented by the Command.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>batch</strong> (<a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><em>Batch</em></a>) – The Batch for which this Command is run.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="autotransform.command.base.CommandBundle">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.command.base.</span></span><span class="sig-name descname"><span class="pre">CommandBundle</span></span><a class="headerlink" href="#autotransform.command.base.CommandBundle" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
-<p>A bundled version of the Command object used for JSON encoding.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.command.base.CommandBundle.params">
-<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#autotransform.command.base.CommandBundle.params" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.command.base.CommandBundle.type">
-<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#autotransform.command.type.CommandType" title="autotransform.command.type.CommandType"><span class="pre">autotransform.command.type.CommandType</span></a></em><a class="headerlink" href="#autotransform.command.base.CommandBundle.type" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="module-autotransform.command.factory">
-<span id="autotransform-command-factory-module"></span><h2>autotransform.command.factory module<a class="headerlink" href="#module-autotransform.command.factory" title="Permalink to this headline"></a></h2>
-<p>A simple factory for producing Commands from type and param information.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="autotransform.command.factory.CommandFactory">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.command.factory.</span></span><span class="sig-name descname"><span class="pre">CommandFactory</span></span><a class="headerlink" href="#autotransform.command.factory.CommandFactory" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>The factory class for Commands. Maps a type to a Command.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.command.factory.CommandFactory._map">
-<span class="sig-name descname"><span class="pre">_map</span></span><a class="headerlink" href="#autotransform.command.factory.CommandFactory._map" title="Permalink to this definition"></a></dt>
-<dd><p>A mapping from
-CommandType to the from_data function of the appropriate Command.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>Dict[<a class="reference internal" href="#autotransform.command.type.CommandType" title="autotransform.command.type.CommandType">CommandType</a>, Callable[[Mapping[str, Any]], <a class="reference internal" href="#autotransform.command.base.Command" title="autotransform.command.base.Command">Command</a>]]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.command.factory.CommandFactory.get">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bundle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#autotransform.command.base.CommandBundle" title="autotransform.command.base.CommandBundle"><span class="pre">autotransform.command.base.CommandBundle</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.command.base.Command" title="autotransform.command.base.Command"><span class="pre">autotransform.command.base.Command</span></a></span></span><a class="headerlink" href="#autotransform.command.factory.CommandFactory.get" title="Permalink to this definition"></a></dt>
-<dd><p>Simple get method using the _map attribute.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>bundle</strong> (<a class="reference internal" href="#autotransform.command.base.CommandBundle" title="autotransform.command.base.CommandBundle"><em>CommandBundle</em></a>) – The bundled Command type and params.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An instance of the associated Command.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#autotransform.command.base.Command" title="autotransform.command.base.Command">Command</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="module-autotransform.command.type">
-<span id="autotransform-command-type-module"></span><h2>autotransform.command.type module<a class="headerlink" href="#module-autotransform.command.type" title="Permalink to this headline"></a></h2>
-<p>The type of Command, used create a 1:1 mapping.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="autotransform.command.type.CommandType">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.command.type.</span></span><span class="sig-name descname"><span class="pre">CommandType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.command.type.CommandType" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
-<p>A simple enum for 1:1 Command to type mapping.</p>
-</dd></dl>
-
-</section>
-<section id="module-autotransform.command">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-autotransform.command" title="Permalink to this headline"></a></h2>
+  <section id="module-autotransform.command">
+<span id="command-package-autotransform-command"></span><h1>Command Package (autotransform.command)<a class="headerlink" href="#module-autotransform.command" title="Permalink to this headline"></a></h1>
 <p>Commands take a Batch that has already been transformed and validated and perform
 post-processing steps before the Batch is submitted, such as code generation.</p>
+<section id="components">
+<h2>Components<a class="headerlink" href="#components" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+<section id="core">
+<h2>Core<a class="headerlink" href="#core" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.command.base.html">Command (autotransform.command.base)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.command.type.html">CommandType (autotransform.command.type)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.command.factory.html">CommandFactory (autotransform.command.factory)</a></li>
+</ul>
+</div>
 </section>
 </section>
 
@@ -281,8 +117,8 @@ post-processing steps before the Batch is submitted, such as code generation.</p
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="autotransform.batcher.html" class="btn btn-neutral float-left" title="autotransform.batcher package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="autotransform.config.html" class="btn btn-neutral float-right" title="autotransform.config package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="autotransform.validator.factory.html" class="btn btn-neutral float-left" title="ValidatorFactory (autotransform.validator.factory)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="autotransform.command.base.html" class="btn btn-neutral float-right" title="Command (autotransform.command.base)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

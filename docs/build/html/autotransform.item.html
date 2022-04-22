@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>autotransform.item package &mdash; AutoTransform 0.1.0 documentation</title>
+  <title>Item Package (autotransform.item) &mdash; AutoTransform 0.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="autotransform.repo package" href="autotransform.repo.html" />
-    <link rel="prev" title="autotransform.input package" href="autotransform.input.html" /> 
+    <link rel="next" title="FileItem (autotransform.item.file)" href="autotransform.item.file.html" />
+    <link rel="prev" title="RunnerFactory (autotransform.runner.factory)" href="autotransform.runner.factory.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -37,7 +37,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Readme:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Readme</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="README.html"><strong>Overview</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#core-functionality"><strong>Core Functionality</strong></a></li>
@@ -45,31 +45,25 @@
 <li class="toctree-l1"><a class="reference internal" href="README.html#security-best-practices"><strong>Security Best Practices</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#schema-best-practices"><strong>Schema Best Practices</strong></a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Code</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">autotransform</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="autotransform.html">autotransform package</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="autotransform.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="autotransform.batcher.html">autotransform.batcher package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.command.html">autotransform.command package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.config.html">autotransform.config package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.event.html">autotransform.event package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.filter.html">autotransform.filter package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.input.html">autotransform.input package</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">autotransform.item package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.repo.html">autotransform.repo package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.runner.html">autotransform.runner package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.schema.html">autotransform.schema package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.scripts.html">autotransform.scripts package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.thirdparty.html">autotransform.thirdparty package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.transformer.html">autotransform.transformer package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.util.html">autotransform.util package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.validator.html">autotransform.validator package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="autotransform.html">AutoTransform (autotransform)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="autotransform.html#core">Core</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="autotransform.schema.html">Schema Package (autotransform.schema)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.scripts.html">Scripts (autotransform.scripts)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.config.html">Config Package (autotransform.config)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.runner.html">Runner Package (autotransform.runner)</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Item Package (autotransform.item)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#components">Components</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#core">Core</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="autotransform.html#module-autotransform">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.event.html">Event Package (autotransform.event)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.thirdparty.html">Third Party Example (autotransform.thirdparty)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.util.html">Utilities (autotransform.util)</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.html#schema-components">Schema Components</a></li>
 </ul>
 </li>
 </ul>
@@ -88,9 +82,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="modules.html">autotransform</a> &raquo;</li>
-          <li><a href="autotransform.html">autotransform package</a> &raquo;</li>
-      <li>autotransform.item package</li>
+          <li><a href="autotransform.html">AutoTransform (autotransform)</a> &raquo;</li>
+      <li>Item Package (autotransform.item)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/autotransform.item.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -100,296 +93,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="autotransform-item-package">
-<h1>autotransform.item package<a class="headerlink" href="#autotransform-item-package" title="Permalink to this headline"></a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
-</section>
-<section id="module-autotransform.item.base">
-<span id="autotransform-item-base-module"></span><h2>autotransform.item.base module<a class="headerlink" href="#module-autotransform.item.base" title="Permalink to this headline"></a></h2>
-<p>The base class and associated classes for Item components. Can be used as a generic Item.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="autotransform.item.base.Item">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.item.base.</span></span><span class="sig-name descname"><span class="pre">Item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.item.base.Item" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
-<p>The base for Item components. Returned by Input components and act as the units on which
-AutoTransform operates.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.item.base.Item._extra_data">
-<span class="sig-name descname"><span class="pre">_extra_data</span></span><a class="headerlink" href="#autotransform.item.base.Item._extra_data" title="Permalink to this definition"></a></dt>
-<dd><p>Any extra data that needs to be associated with
-this Item.Should be JSON encodable.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>Optional[Mapping[str, Any]]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.item.base.Item._key">
-<span class="sig-name descname"><span class="pre">_key</span></span><a class="headerlink" href="#autotransform.item.base.Item._key" title="Permalink to this definition"></a></dt>
-<dd><p>A unique key used to represent this item, such as a file path.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.item.base.Item.bundle">
-<span class="sig-name descname"><span class="pre">bundle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.item.base.ItemBundle" title="autotransform.item.base.ItemBundle"><span class="pre">autotransform.item.base.ItemBundle</span></a></span></span><a class="headerlink" href="#autotransform.item.base.Item.bundle" title="Permalink to this definition"></a></dt>
-<dd><p>Generates a JSON encodable bundle.
-If a component’s params are not JSON encodable this method should be overridden to provide
-an encodable version.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The encodable bundle.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#autotransform.item.base.ItemBundle" title="autotransform.item.base.ItemBundle">ItemBundle</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.item.base.Item.from_data">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.item.base.Item" title="autotransform.item.base.Item"><span class="pre">autotransform.item.base.Item</span></a></span></span><a class="headerlink" href="#autotransform.item.base.Item.from_data" title="Permalink to this definition"></a></dt>
-<dd><p>Produces an instance of the component from decoded data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – The JSON decoded params from an encoded bundle.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An instance of the Item.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#autotransform.item.base.Item" title="autotransform.item.base.Item">Item</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.item.base.Item.get_extra_data">
-<span class="sig-name descname"><span class="pre">get_extra_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autotransform.item.base.Item.get_extra_data" title="Permalink to this definition"></a></dt>
-<dd><p>Gets the extra data associated with the Item.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The extra data associated with the Item.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Optional[Mapping[str, Any]]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.item.base.Item.get_key">
-<span class="sig-name descname"><span class="pre">get_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#autotransform.item.base.Item.get_key" title="Permalink to this definition"></a></dt>
-<dd><p>Gets the unique key that represents the Item.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The unique key representing the Item.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.item.base.Item.get_type">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.item.type.ItemType" title="autotransform.item.type.ItemType"><span class="pre">autotransform.item.type.ItemType</span></a></span></span><a class="headerlink" href="#autotransform.item.base.Item.get_type" title="Permalink to this definition"></a></dt>
-<dd><p>Used to map Item components 1:1 with an enum, allowing construction from JSON.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The unique type associated with this Item.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#autotransform.item.type.ItemType" title="autotransform.item.type.ItemType">ItemType</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="autotransform.item.base.ItemBundle">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.item.base.</span></span><span class="sig-name descname"><span class="pre">ItemBundle</span></span><a class="headerlink" href="#autotransform.item.base.ItemBundle" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
-<p>A bundled version of the Item object used for JSON encoding.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.item.base.ItemBundle.extra_data">
-<span class="sig-name descname"><span class="pre">extra_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">typing_extensions.NotRequired</span><span class="p"><span class="pre">[</span></span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#autotransform.item.base.ItemBundle.extra_data" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.item.base.ItemBundle.key">
-<span class="sig-name descname"><span class="pre">key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#autotransform.item.base.ItemBundle.key" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.item.base.ItemBundle.type">
-<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#autotransform.item.type.ItemType" title="autotransform.item.type.ItemType"><span class="pre">autotransform.item.type.ItemType</span></a></em><a class="headerlink" href="#autotransform.item.base.ItemBundle.type" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="module-autotransform.item.factory">
-<span id="autotransform-item-factory-module"></span><h2>autotransform.item.factory module<a class="headerlink" href="#module-autotransform.item.factory" title="Permalink to this headline"></a></h2>
-<p>A simple factory for producing Items from type and param information.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="autotransform.item.factory.ItemFactory">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.item.factory.</span></span><span class="sig-name descname"><span class="pre">ItemFactory</span></span><a class="headerlink" href="#autotransform.item.factory.ItemFactory" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>The factory class for Items. Maps a type to an Item.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.item.factory.ItemFactory._map">
-<span class="sig-name descname"><span class="pre">_map</span></span><a class="headerlink" href="#autotransform.item.factory.ItemFactory._map" title="Permalink to this definition"></a></dt>
-<dd><p>A mapping from
-ItemType to the from_data function of the appropriate Item.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>Dict[<a class="reference internal" href="#autotransform.item.type.ItemType" title="autotransform.item.type.ItemType">ItemType</a>, Callable[[Mapping[str, Any]], <a class="reference internal" href="#autotransform.item.base.Item" title="autotransform.item.base.Item">Item</a>]]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.item.factory.ItemFactory.get">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bundle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#autotransform.item.base.ItemBundle" title="autotransform.item.base.ItemBundle"><span class="pre">autotransform.item.base.ItemBundle</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.item.base.Item" title="autotransform.item.base.Item"><span class="pre">autotransform.item.base.Item</span></a></span></span><a class="headerlink" href="#autotransform.item.factory.ItemFactory.get" title="Permalink to this definition"></a></dt>
-<dd><p>Simple get method using the _map attribute.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>bundle</strong> (<a class="reference internal" href="#autotransform.item.base.ItemBundle" title="autotransform.item.base.ItemBundle"><em>ItemBundle</em></a>) – The bundled Item type and params.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An instance of the associated Item.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#autotransform.item.base.Item" title="autotransform.item.base.Item">Item</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="module-autotransform.item.file">
-<span id="autotransform-item-file-module"></span><h2>autotransform.item.file module<a class="headerlink" href="#module-autotransform.item.file" title="Permalink to this headline"></a></h2>
-<p>The base class and associated classes for Item components.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="autotransform.item.file.FileItem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.item.file.</span></span><span class="sig-name descname"><span class="pre">FileItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.item.file.FileItem" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#autotransform.item.base.Item" title="autotransform.item.base.Item"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.item.base.Item</span></code></a></p>
-<p>An item representing a file that can be used by AutoTransform. Provides some utility methods
-for interacting with the file.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.item.file.FileItem._extra_data">
-<span class="sig-name descname"><span class="pre">_extra_data</span></span><a class="headerlink" href="#autotransform.item.file.FileItem._extra_data" title="Permalink to this definition"></a></dt>
-<dd><p>Any extra data that needs to be associated with this Item.
-Should be JSON encodable.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>Mapping[str, Any]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.item.file.FileItem._key">
-<span class="sig-name descname"><span class="pre">_key</span></span><a class="headerlink" href="#autotransform.item.file.FileItem._key" title="Permalink to this definition"></a></dt>
-<dd><p>A unique key used to represent this item, such as a file path.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.item.file.FileItem.get_content">
-<span class="sig-name descname"><span class="pre">get_content</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#autotransform.item.file.FileItem.get_content" title="Permalink to this definition"></a></dt>
-<dd><p>Gets the content of the file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The file’s content.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.item.file.FileItem.get_path">
-<span class="sig-name descname"><span class="pre">get_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#autotransform.item.file.FileItem.get_path" title="Permalink to this definition"></a></dt>
-<dd><p>Gets the path of the file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The file’s path.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.item.file.FileItem.get_type">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.item.type.ItemType" title="autotransform.item.type.ItemType"><span class="pre">autotransform.item.type.ItemType</span></a></span></span><a class="headerlink" href="#autotransform.item.file.FileItem.get_type" title="Permalink to this definition"></a></dt>
-<dd><p>Used to map Item components 1:1 with an enum, allowing construction from JSON.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The unique type associated with this Item.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#autotransform.item.type.ItemType" title="autotransform.item.type.ItemType">ItemType</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.item.file.FileItem.write_content">
-<span class="sig-name descname"><span class="pre">write_content</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.item.file.FileItem.write_content" title="Permalink to this definition"></a></dt>
-<dd><p>Writes new content to the file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>content</strong> (<em>str</em>) – The new content for the File.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="module-autotransform.item.type">
-<span id="autotransform-item-type-module"></span><h2>autotransform.item.type module<a class="headerlink" href="#module-autotransform.item.type" title="Permalink to this headline"></a></h2>
-<p>The type of Item, used create a 1:1 mapping.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="autotransform.item.type.ItemType">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.item.type.</span></span><span class="sig-name descname"><span class="pre">ItemType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.item.type.ItemType" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
-<p>A simple enum for 1:1 Type to type mapping.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.item.type.ItemType.FILE">
-<span class="sig-name descname"><span class="pre">FILE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'file'</span></em><a class="headerlink" href="#autotransform.item.type.ItemType.FILE" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.item.type.ItemType.GENERIC">
-<span class="sig-name descname"><span class="pre">GENERIC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'generic'</span></em><a class="headerlink" href="#autotransform.item.type.ItemType.GENERIC" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="module-autotransform.item">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-autotransform.item" title="Permalink to this headline"></a></h2>
+  <section id="module-autotransform.item">
+<span id="item-package-autotransform-item"></span><h1>Item Package (autotransform.item)<a class="headerlink" href="#module-autotransform.item" title="Permalink to this headline"></a></h1>
 <p>Items are used by AutoTransform as the things upon which a Schema acts. They can represent things
 like files. Input components generate the list of Items for a transformation.</p>
+<section id="components">
+<h2>Components<a class="headerlink" href="#components" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.item.file.html">FileItem (autotransform.item.file)</a></li>
+</ul>
+</div>
+</section>
+<section id="core">
+<h2>Core<a class="headerlink" href="#core" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.item.base.html">Item (autotransform.item.base)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.item.type.html">ItemType (autotransform.item.type)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.item.factory.html">ItemFactory (autotransform.item.factory)</a></li>
+</ul>
+</div>
 </section>
 </section>
 
@@ -397,8 +121,8 @@ like files. Input components generate the list of Items for a transformation.</p
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="autotransform.input.html" class="btn btn-neutral float-left" title="autotransform.input package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="autotransform.repo.html" class="btn btn-neutral float-right" title="autotransform.repo package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="autotransform.runner.factory.html" class="btn btn-neutral float-left" title="RunnerFactory (autotransform.runner.factory)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="autotransform.item.file.html" class="btn btn-neutral float-right" title="FileItem (autotransform.item.file)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -1,21 +1,12 @@
-autotransform.thirdparty package
-================================
-
-Submodules
-----------
-
-autotransform.thirdparty.components module
-------------------------------------------
-
-.. automodule:: autotransform.thirdparty.components
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
+Third Party Example (autotransform.thirdparty)
+==============================================
 
 .. automodule:: autotransform.thirdparty
-   :members:
-   :undoc-members:
-   :show-inheritance:
+
+Example
+-------
+
+.. toctree::
+   :maxdepth: 4
+
+   autotransform.thirdparty.components

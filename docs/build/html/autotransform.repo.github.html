@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GithubRepo (autotransform.repo.github) &mdash; AutoTransform 0.1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Repo (autotransform.repo.base)" href="autotransform.repo.base.html" />
+    <link rel="prev" title="GitRepo (autotransform.repo.git)" href="autotransform.repo.git.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> AutoTransform
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Readme</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html"><strong>Overview</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#core-functionality"><strong>Core Functionality</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#upcoming-milestones"><strong>Upcoming Milestones</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#security-best-practices"><strong>Security Best Practices</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#schema-best-practices"><strong>Schema Best Practices</strong></a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Code</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="autotransform.html">AutoTransform (autotransform)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="autotransform.html#core">Core</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="autotransform.html#schema-components">Schema Components</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="autotransform.input.html">Input Package (autotransform.input)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.filter.html">Filter Package (autotransform.filter)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.batcher.html">Batcher Package (autotransform.batcher)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.transformer.html">Transformer Package (autotransform.transformer)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.validator.html">Validator Package (autotransform.validator)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.command.html">Command Package (autotransform.command)</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="autotransform.repo.html">Repo Package (autotransform.repo)</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="autotransform.repo.html#components">Components</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.repo.html#core">Core</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AutoTransform</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="autotransform.html">AutoTransform (autotransform)</a> &raquo;</li>
+          <li><a href="autotransform.repo.html">Repo Package (autotransform.repo)</a> &raquo;</li>
+      <li>GithubRepo (autotransform.repo.github)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/autotransform.repo.github.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-autotransform.repo.github">
+<span id="githubrepo-autotransform-repo-github"></span><h1>GithubRepo (autotransform.repo.github)<a class="headerlink" href="#module-autotransform.repo.github" title="Permalink to this headline"></a></h1>
+<p>The implementation for the GithubRepo.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.repo.github.</span></span><span class="sig-name descname"><span class="pre">GithubRepo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#autotransform.repo.github.GithubRepoParams" title="autotransform.repo.github.GithubRepoParams"><span class="pre">autotransform.repo.github.GithubRepoParams</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.repo.github.GithubRepo" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="autotransform.repo.git.html#autotransform.repo.git.GitRepo" title="autotransform.repo.git.GitRepo"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.repo.git.GitRepo</span></code></a></p>
+<p>A Repo that provides support for submitting changes as a pull request against
+a Github repo.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepo._params">
+<span class="sig-name descname"><span class="pre">_params</span></span><a class="headerlink" href="#autotransform.repo.github.GithubRepo._params" title="Permalink to this definition"></a></dt>
+<dd><p>Contains all git params as well as the Github repo
+name and any required labels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.repo.github.GithubRepoParams" title="autotransform.repo.github.GithubRepoParams">GithubRepoParams</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepo._github_repo">
+<span class="sig-name descname"><span class="pre">_github_repo</span></span><a class="headerlink" href="#autotransform.repo.github.GithubRepo._github_repo" title="Permalink to this definition"></a></dt>
+<dd><p>The Github Repository being interacted with.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Repository.Repository</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepo.from_data">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.repo.github.GithubRepo" title="autotransform.repo.github.GithubRepo"><span class="pre">autotransform.repo.github.GithubRepo</span></a></span></span><a class="headerlink" href="#autotransform.repo.github.GithubRepo.from_data" title="Permalink to this definition"></a></dt>
+<dd><p>Produces a GithubRepo from the provided data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – The JSON decoded params from an encoded bundle</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of the GithubRepo</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.repo.github.GithubRepo" title="autotransform.repo.github.GithubRepo">GithubRepo</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepo.get_github_object">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_github_object</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">github.MainClass.Github</span></span></span><a class="headerlink" href="#autotransform.repo.github.GithubRepo.get_github_object" title="Permalink to this definition"></a></dt>
+<dd><p>Authenticates with Github to allow API access via a token provided by AutoTransform
+configuration. If no token is provided a username + password will be used. Also allows
+use of a base URL for enterprise use cases.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>An object allowing interaction with the Github API.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Github</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepo.get_github_repo">
+<span class="sig-name descname"><span class="pre">get_github_repo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">github.Repository.Repository</span></span></span><a class="headerlink" href="#autotransform.repo.github.GithubRepo.get_github_repo" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the Github repository being interacted with.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The Github repository being interacted with.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Repository.Repository</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepo.get_type">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="autotransform.repo.type.html#autotransform.repo.type.RepoType" title="autotransform.repo.type.RepoType"><span class="pre">autotransform.repo.type.RepoType</span></a></span></span><a class="headerlink" href="#autotransform.repo.github.GithubRepo.get_type" title="Permalink to this definition"></a></dt>
+<dd><p>Used to map Repo components 1:1 with an enum, allowing construction from JSON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The unique type associated with this Repo</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="autotransform.repo.type.html#autotransform.repo.type.RepoType" title="autotransform.repo.type.RepoType">RepoType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepo.submit">
+<span class="sig-name descname"><span class="pre">submit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.batcher.base.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.repo.github.GithubRepo.submit" title="Permalink to this definition"></a></dt>
+<dd><p>Performs the normal submit for a git repo then submits a pull request
+against the provided Github repo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>batch</strong> (<a class="reference internal" href="autotransform.batcher.base.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><em>Batch</em></a>) – The Batch for which the changes were made.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepoParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.repo.github.</span></span><span class="sig-name descname"><span class="pre">GithubRepoParams</span></span><a class="headerlink" href="#autotransform.repo.github.GithubRepoParams" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<p>The param type for a GithubRepo.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepoParams.base_branch_name">
+<span class="sig-name descname"><span class="pre">base_branch_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#autotransform.repo.github.GithubRepoParams.base_branch_name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepoParams.full_github_name">
+<span class="sig-name descname"><span class="pre">full_github_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#autotransform.repo.github.GithubRepoParams.full_github_name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.repo.github.GithubRepoParams.required_labels">
+<span class="sig-name descname"><span class="pre">required_labels</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">typing_extensions.NotRequired</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#autotransform.repo.github.GithubRepoParams.required_labels" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="autotransform.repo.git.html" class="btn btn-neutral float-left" title="GitRepo (autotransform.repo.git)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="autotransform.repo.base.html" class="btn btn-neutral float-right" title="Repo (autotransform.repo.base)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Nathan Rockenbach.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

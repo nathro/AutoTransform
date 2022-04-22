@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>autotransform.validator package &mdash; AutoTransform 0.1.0 documentation</title>
+  <title>Validator Package (autotransform.validator) &mdash; AutoTransform 0.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,7 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="autotransform.util package" href="autotransform.util.html" /> 
+    <link rel="next" title="Validator (autotransform.validator.base)" href="autotransform.validator.base.html" />
+    <link rel="prev" title="TransformerFactory (autotransform.transformer.factory)" href="autotransform.transformer.factory.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -36,7 +37,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Readme:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Readme</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="README.html"><strong>Overview</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#core-functionality"><strong>Core Functionality</strong></a></li>
@@ -44,29 +45,22 @@
 <li class="toctree-l1"><a class="reference internal" href="README.html#security-best-practices"><strong>Security Best Practices</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#schema-best-practices"><strong>Schema Best Practices</strong></a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Code</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">autotransform</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="autotransform.html">autotransform package</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="autotransform.html#subpackages">Subpackages</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="autotransform.batcher.html">autotransform.batcher package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.command.html">autotransform.command package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.config.html">autotransform.config package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.event.html">autotransform.event package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.filter.html">autotransform.filter package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.input.html">autotransform.input package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.item.html">autotransform.item package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.repo.html">autotransform.repo package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.runner.html">autotransform.runner package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.schema.html">autotransform.schema package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.scripts.html">autotransform.scripts package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.thirdparty.html">autotransform.thirdparty package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.transformer.html">autotransform.transformer package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.util.html">autotransform.util package</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">autotransform.validator package</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="autotransform.html">AutoTransform (autotransform)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="autotransform.html#core">Core</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="autotransform.html#schema-components">Schema Components</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="autotransform.input.html">Input Package (autotransform.input)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.filter.html">Filter Package (autotransform.filter)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.batcher.html">Batcher Package (autotransform.batcher)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.transformer.html">Transformer Package (autotransform.transformer)</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Validator Package (autotransform.validator)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#components">Components</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#core">Core</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="autotransform.html#module-autotransform">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.command.html">Command Package (autotransform.command)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.repo.html">Repo Package (autotransform.repo)</a></li>
 </ul>
 </li>
 </ul>
@@ -87,9 +81,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="modules.html">autotransform</a> &raquo;</li>
-          <li><a href="autotransform.html">autotransform package</a> &raquo;</li>
-      <li>autotransform.validator package</li>
+          <li><a href="autotransform.html">AutoTransform (autotransform)</a> &raquo;</li>
+      <li>Validator Package (autotransform.validator)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/autotransform.validator.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -99,304 +92,25 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="autotransform-validator-package">
-<h1>autotransform.validator package<a class="headerlink" href="#autotransform-validator-package" title="Permalink to this headline"></a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
-</section>
-<section id="module-autotransform.validator.base">
-<span id="autotransform-validator-base-module"></span><h2>autotransform.validator.base module<a class="headerlink" href="#module-autotransform.validator.base" title="Permalink to this headline"></a></h2>
-<p>The base class and associated classes for Validator components.</p>
-<dl class="py exception">
-<dt class="sig sig-object py" id="autotransform.validator.base.ValidationError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.validator.base.</span></span><span class="sig-name descname"><span class="pre">ValidationError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">issue</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#autotransform.validator.base.ValidationResult" title="autotransform.validator.base.ValidationResult"><span class="pre">autotransform.validator.base.ValidationResult</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.validator.base.ValidationError" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-<p>An error raised by validation failing on a run.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.validator.base.ValidationError._issue">
-<span class="sig-name descname"><span class="pre">_issue</span></span><a class="headerlink" href="#autotransform.validator.base.ValidationError._issue" title="Permalink to this definition"></a></dt>
-<dd><p>The validation result that triggered the error.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#autotransform.validator.base.ValidationResult" title="autotransform.validator.base.ValidationResult">ValidationResult</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.validator.base.ValidationError._message">
-<span class="sig-name descname"><span class="pre">_message</span></span><a class="headerlink" href="#autotransform.validator.base.ValidationError._message" title="Permalink to this definition"></a></dt>
-<dd><p>A message representing why the validation failed.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="autotransform.validator.base.ValidationResult">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.validator.base.</span></span><span class="sig-name descname"><span class="pre">ValidationResult</span></span><a class="headerlink" href="#autotransform.validator.base.ValidationResult" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
-<p>Represents the result of an attempt at validation.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.validator.base.ValidationResult.level">
-<span class="sig-name descname"><span class="pre">level</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#autotransform.validator.base.ValidationResultLevel" title="autotransform.validator.base.ValidationResultLevel"><span class="pre">autotransform.validator.base.ValidationResultLevel</span></a></em><a class="headerlink" href="#autotransform.validator.base.ValidationResult.level" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.validator.base.ValidationResult.message">
-<span class="sig-name descname"><span class="pre">message</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#autotransform.validator.base.ValidationResult.message" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.validator.base.ValidationResult.validator">
-<span class="sig-name descname"><span class="pre">validator</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#autotransform.validator.type.ValidatorType" title="autotransform.validator.type.ValidatorType"><span class="pre">autotransform.validator.type.ValidatorType</span></a></em><a class="headerlink" href="#autotransform.validator.base.ValidationResult.validator" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="autotransform.validator.base.ValidationResultLevel">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.validator.base.</span></span><span class="sig-name descname"><span class="pre">ValidationResultLevel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.validator.base.ValidationResultLevel" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
-<p>The result level of a validation indicating how bad a validation failure is.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.validator.base.ValidationResultLevel.ERROR">
-<span class="sig-name descname"><span class="pre">ERROR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#autotransform.validator.base.ValidationResultLevel.ERROR" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.validator.base.ValidationResultLevel.NONE">
-<span class="sig-name descname"><span class="pre">NONE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#autotransform.validator.base.ValidationResultLevel.NONE" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.validator.base.ValidationResultLevel.WARNING">
-<span class="sig-name descname"><span class="pre">WARNING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#autotransform.validator.base.ValidationResultLevel.WARNING" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.validator.base.ValidationResultLevel.from_name">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">enum.Enum</span></span></span><a class="headerlink" href="#autotransform.validator.base.ValidationResultLevel.from_name" title="Permalink to this definition"></a></dt>
-<dd><p>Gets the enum value associated with a name.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – The name of a member of the enum.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The associated enum value.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#autotransform.validator.base.ValidationResultLevel" title="autotransform.validator.base.ValidationResultLevel">ValidationResultLevel</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.validator.base.ValidationResultLevel.has_value">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#autotransform.validator.base.ValidationResultLevel.has_value" title="Permalink to this definition"></a></dt>
-<dd><p>Checks is the provided value is a valid value for this enum.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>value</strong> (<em>Any</em>) – An unknown value.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Whether the value is present in the enum.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>[bool]</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="autotransform.validator.base.Validator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.validator.base.</span></span><span class="sig-name descname"><span class="pre">Validator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autotransform.validator.base.TParams</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.validator.base.Validator" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Generic</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">autotransform.validator.base.TParams</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
-<p>The base for Validator components. Validators test that the codebase is still
-healthy after a transformation.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.validator.base.Validator._params">
-<span class="sig-name descname"><span class="pre">_params</span></span><a class="headerlink" href="#autotransform.validator.base.Validator._params" title="Permalink to this definition"></a></dt>
-<dd><p>The paramaters that control operation of the Validator.
-Should be defined using a TypedDict in subclasses.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>TParams</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.validator.base.Validator.bundle">
-<span class="sig-name descname"><span class="pre">bundle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.validator.base.ValidatorBundle" title="autotransform.validator.base.ValidatorBundle"><span class="pre">autotransform.validator.base.ValidatorBundle</span></a></span></span><a class="headerlink" href="#autotransform.validator.base.Validator.bundle" title="Permalink to this definition"></a></dt>
-<dd><p>Generates a JSON encodable bundle.
-If a component’s params are not JSON encodable this method should be overridden to provide
-an encodable version.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The encodable bundle.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#autotransform.validator.base.ValidatorBundle" title="autotransform.validator.base.ValidatorBundle">ValidatorBundle</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.validator.base.Validator.from_data">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.validator.base.Validator" title="autotransform.validator.base.Validator"><span class="pre">autotransform.validator.base.Validator</span></a></span></span><a class="headerlink" href="#autotransform.validator.base.Validator.from_data" title="Permalink to this definition"></a></dt>
-<dd><p>Produces an instance of the component from decoded params. Implementations should
-assert that the data provided matches expected types and is valid.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>Mapping</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – The JSON decoded params from an encoded bundle.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An instance of the Validator.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#autotransform.validator.base.Validator" title="autotransform.validator.base.Validator">Validator</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.validator.base.Validator.get_params">
-<span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">autotransform.validator.base.TParams</span></span></span><a class="headerlink" href="#autotransform.validator.base.Validator.get_params" title="Permalink to this definition"></a></dt>
-<dd><p>Gets the paramaters used to set up the Validator.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The paramaters used to set up the Validator.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>TParams</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.validator.base.Validator.get_type">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.validator.type.ValidatorType" title="autotransform.validator.type.ValidatorType"><span class="pre">autotransform.validator.type.ValidatorType</span></a></span></span><a class="headerlink" href="#autotransform.validator.base.Validator.get_type" title="Permalink to this definition"></a></dt>
-<dd><p>Used to map Validator components 1:1 with an enum, allowing construction from JSON.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The unique type associated with this Validator.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#autotransform.validator.type.ValidatorType" title="autotransform.validator.type.ValidatorType">ValidatorType</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.validator.base.Validator.params">
-<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">autotransform.validator.base.TParams</span></em><a class="headerlink" href="#autotransform.validator.base.Validator.params" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.validator.base.Validator.validate">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.validator.base.ValidationResult" title="autotransform.validator.base.ValidationResult"><span class="pre">autotransform.validator.base.ValidationResult</span></a></span></span><a class="headerlink" href="#autotransform.validator.base.Validator.validate" title="Permalink to this definition"></a></dt>
-<dd><p>Validate that a Batch that has undergone transformation does not produce any issues
-such as test failures or type errors.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>batch</strong> (<a class="reference internal" href="autotransform.batcher.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><em>Batch</em></a>) – The transformed Batch to validate.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><dl class="simple">
-<dt>The result of the validation check indicating the severity of any</dt><dd><p>validation failures as well as an associated message</p>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#autotransform.validator.base.ValidationResult" title="autotransform.validator.base.ValidationResult">ValidationResult</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="autotransform.validator.base.ValidatorBundle">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.validator.base.</span></span><span class="sig-name descname"><span class="pre">ValidatorBundle</span></span><a class="headerlink" href="#autotransform.validator.base.ValidatorBundle" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
-<p>A bundled version of the Validator object used for JSON encoding.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.validator.base.ValidatorBundle.params">
-<span class="sig-name descname"><span class="pre">params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#autotransform.validator.base.ValidatorBundle.params" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.validator.base.ValidatorBundle.type">
-<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#autotransform.validator.type.ValidatorType" title="autotransform.validator.type.ValidatorType"><span class="pre">autotransform.validator.type.ValidatorType</span></a></em><a class="headerlink" href="#autotransform.validator.base.ValidatorBundle.type" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="module-autotransform.validator.factory">
-<span id="autotransform-validator-factory-module"></span><h2>autotransform.validator.factory module<a class="headerlink" href="#module-autotransform.validator.factory" title="Permalink to this headline"></a></h2>
-<p>A simple factory for producing Validators from type and param information.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="autotransform.validator.factory.ValidatorFactory">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.validator.factory.</span></span><span class="sig-name descname"><span class="pre">ValidatorFactory</span></span><a class="headerlink" href="#autotransform.validator.factory.ValidatorFactory" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>The factory class for Validators. Maps a type to a Validator.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.validator.factory.ValidatorFactory._map">
-<span class="sig-name descname"><span class="pre">_map</span></span><a class="headerlink" href="#autotransform.validator.factory.ValidatorFactory._map" title="Permalink to this definition"></a></dt>
-<dd><p>A mapping from
-ValidatorType to the from_data function of the appropriate Validator.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>Dict[<a class="reference internal" href="#autotransform.validator.type.ValidatorType" title="autotransform.validator.type.ValidatorType">ValidatorType</a>, Callable[[Mapping[str, Any]], <a class="reference internal" href="#autotransform.validator.base.Validator" title="autotransform.validator.base.Validator">Validator</a>]]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="autotransform.validator.factory.ValidatorFactory.get">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bundle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#autotransform.validator.base.ValidatorBundle" title="autotransform.validator.base.ValidatorBundle"><span class="pre">autotransform.validator.base.ValidatorBundle</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#autotransform.validator.base.Validator" title="autotransform.validator.base.Validator"><span class="pre">autotransform.validator.base.Validator</span></a></span></span><a class="headerlink" href="#autotransform.validator.factory.ValidatorFactory.get" title="Permalink to this definition"></a></dt>
-<dd><p>Simple get method using the _map attribute.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>bundle</strong> (<a class="reference internal" href="#autotransform.validator.base.ValidatorBundle" title="autotransform.validator.base.ValidatorBundle"><em>ValidatorBundle</em></a>) – The bundled Validator type and params.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An instance of the associated Validator.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#autotransform.validator.base.Validator" title="autotransform.validator.base.Validator">Validator</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="module-autotransform.validator.type">
-<span id="autotransform-validator-type-module"></span><h2>autotransform.validator.type module<a class="headerlink" href="#module-autotransform.validator.type" title="Permalink to this headline"></a></h2>
-<p>The type of Validator, used create a 1:1 mapping.</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="autotransform.validator.type.ValidatorType">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.validator.type.</span></span><span class="sig-name descname"><span class="pre">ValidatorType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.validator.type.ValidatorType" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
-<p>A simple enum for 1:1 Validator to type mapping.</p>
-</dd></dl>
-
-</section>
-<section id="module-autotransform.validator">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-autotransform.validator" title="Permalink to this headline"></a></h2>
+  <section id="module-autotransform.validator">
+<span id="validator-package-autotransform-validator"></span><h1>Validator Package (autotransform.validator)<a class="headerlink" href="#module-autotransform.validator" title="Permalink to this headline"></a></h1>
 <p>Validators take in a Batch that has undergone transformation and validate that the
 changes do not produce any issues/errors. They may run test cases or check linting or
 type checking.</p>
+<section id="components">
+<h2>Components<a class="headerlink" href="#components" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+<section id="core">
+<h2>Core<a class="headerlink" href="#core" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.validator.base.html">Validator (autotransform.validator.base)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.validator.type.html">ValidatorType (autotransform.validator.type)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.validator.factory.html">ValidatorFactory (autotransform.validator.factory)</a></li>
+</ul>
+</div>
 </section>
 </section>
 
@@ -404,7 +118,8 @@ type checking.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="autotransform.util.html" class="btn btn-neutral float-left" title="autotransform.util package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="autotransform.transformer.factory.html" class="btn btn-neutral float-left" title="TransformerFactory (autotransform.transformer.factory)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="autotransform.validator.base.html" class="btn btn-neutral float-right" title="Validator (autotransform.validator.base)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

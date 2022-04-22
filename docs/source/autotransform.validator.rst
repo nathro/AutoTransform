@@ -1,37 +1,20 @@
-autotransform.validator package
-===============================
-
-Submodules
-----------
-
-autotransform.validator.base module
------------------------------------
-
-.. automodule:: autotransform.validator.base
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-autotransform.validator.factory module
---------------------------------------
-
-.. automodule:: autotransform.validator.factory
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-autotransform.validator.type module
------------------------------------
-
-.. automodule:: autotransform.validator.type
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
+Validator Package (autotransform.validator)
+===========================================
 
 .. automodule:: autotransform.validator
-   :members:
-   :undoc-members:
-   :show-inheritance:
+
+Components
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+Core
+----
+
+.. toctree::
+   :maxdepth: 4
+
+   autotransform.validator.base
+   autotransform.validator.type
+   autotransform.validator.factory

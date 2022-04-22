@@ -1,37 +1,12 @@
-autotransform.util package
-==========================
-
-Submodules
-----------
-
-autotransform.util.cachedfile module
-------------------------------------
-
-.. automodule:: autotransform.util.cachedfile
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-autotransform.util.dataobject module
-------------------------------------
-
-.. automodule:: autotransform.util.dataobject
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-autotransform.util.datastore module
------------------------------------
-
-.. automodule:: autotransform.util.datastore
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
+Utilities (autotransform.util)
+==============================
 
 .. automodule:: autotransform.util
-   :members:
-   :undoc-members:
-   :show-inheritance:
+
+Utilities
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   autotransform.util.cachedfile

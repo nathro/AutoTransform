@@ -4,21 +4,11 @@ autotransform.scripts.commands package
 Submodules
 ----------
 
-autotransform.scripts.commands.config module
---------------------------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: autotransform.scripts.commands.config
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-autotransform.scripts.commands.run module
------------------------------------------
-
-.. automodule:: autotransform.scripts.commands.run
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   autotransform.scripts.commands.config
+   autotransform.scripts.commands.run
 
 Module contents
 ---------------

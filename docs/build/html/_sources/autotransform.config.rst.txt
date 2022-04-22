@@ -1,45 +1,27 @@
-autotransform.config package
-============================
-
-Submodules
-----------
-
-autotransform.config.console module
------------------------------------
-
-.. automodule:: autotransform.config.console
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-autotransform.config.default module
------------------------------------
-
-.. automodule:: autotransform.config.default
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-autotransform.config.envvar module
-----------------------------------
-
-.. automodule:: autotransform.config.envvar
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-autotransform.config.fetcher module
------------------------------------
-
-.. automodule:: autotransform.config.fetcher
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
+Config Package (autotransform.config)
+=====================================
 
 .. automodule:: autotransform.config
    :members:
    :undoc-members:
    :show-inheritance:
+
+
+Fetchers
+--------
+
+.. toctree::
+   :maxdepth: 4
+
+   autotransform.config.console
+   autotransform.config.default
+   autotransform.config.envvar
+   autotransform.config.fetcher
+
+Core
+----
+
+.. toctree::
+   :maxdepth: 4
+
+   autotransform.config.fetcher

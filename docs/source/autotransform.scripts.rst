@@ -1,29 +1,21 @@
-autotransform.scripts package
-=============================
+Scripts (autotransform.scripts)
+===============================
 
-Subpackages
------------
+.. automodule:: autotransform.scripts
+
+Commands
+--------
 
 .. toctree::
    :maxdepth: 4
 
-   autotransform.scripts.commands
+   autotransform.scripts.commands.config
+   autotransform.scripts.commands.run
 
-Submodules
+Script
 ----------
 
-autotransform.scripts.main module
----------------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: autotransform.scripts.main
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: autotransform.scripts
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   autotransform.scripts.main

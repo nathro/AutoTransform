@@ -1,0 +1,7 @@
+autotransform.util.dataobject module
+====================================
+
+.. automodule:: autotransform.util.dataobject
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,61 +1,24 @@
-autotransform.batcher package
-=============================
-
-Submodules
-----------
-
-autotransform.batcher.base module
----------------------------------
-
-.. automodule:: autotransform.batcher.base
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-autotransform.batcher.chunk module
-----------------------------------
-
-.. automodule:: autotransform.batcher.chunk
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-autotransform.batcher.directory module
---------------------------------------
-
-.. automodule:: autotransform.batcher.directory
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-autotransform.batcher.factory module
-------------------------------------
-
-.. automodule:: autotransform.batcher.factory
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-autotransform.batcher.single module
------------------------------------
-
-.. automodule:: autotransform.batcher.single
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-autotransform.batcher.type module
----------------------------------
-
-.. automodule:: autotransform.batcher.type
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
+Batcher Package (autotransform.batcher)
+=======================================
 
 .. automodule:: autotransform.batcher
-   :members:
-   :undoc-members:
-   :show-inheritance:
+
+Components
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   autotransform.batcher.chunk
+   autotransform.batcher.directory
+   autotransform.batcher.single
+
+Core
+----
+
+.. toctree::
+   :maxdepth: 4
+
+   autotransform.batcher.base
+   autotransform.batcher.type
+   autotransform.batcher.factory

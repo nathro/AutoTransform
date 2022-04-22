@@ -1,45 +1,22 @@
-autotransform.item package
-==========================
-
-Submodules
-----------
-
-autotransform.item.base module
-------------------------------
-
-.. automodule:: autotransform.item.base
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-autotransform.item.factory module
----------------------------------
-
-.. automodule:: autotransform.item.factory
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-autotransform.item.file module
-------------------------------
-
-.. automodule:: autotransform.item.file
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-autotransform.item.type module
-------------------------------
-
-.. automodule:: autotransform.item.type
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
+Item Package (autotransform.item)
+=================================
 
 .. automodule:: autotransform.item
-   :members:
-   :undoc-members:
-   :show-inheritance:
+
+Components
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   autotransform.item.file
+
+Core
+----
+
+.. toctree::
+   :maxdepth: 4
+
+   autotransform.item.base
+   autotransform.item.type
+   autotransform.item.factory

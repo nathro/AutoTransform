@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>autotransform package &mdash; AutoTransform 0.1.0 documentation</title>
+  <title>AutoTransform (autotransform) &mdash; AutoTransform 0.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="autotransform.batcher package" href="autotransform.batcher.html" />
-    <link rel="prev" title="autotransform" href="modules.html" /> 
+    <link rel="next" title="Schema Package (autotransform.schema)" href="autotransform.schema.html" />
+    <link rel="prev" title="Overview" href="README.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -37,7 +37,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Readme:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Readme</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="README.html"><strong>Overview</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#core-functionality"><strong>Core Functionality</strong></a></li>
@@ -45,29 +45,28 @@
 <li class="toctree-l1"><a class="reference internal" href="README.html#security-best-practices"><strong>Security Best Practices</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#schema-best-practices"><strong>Schema Best Practices</strong></a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Code</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">autotransform</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">autotransform package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.batcher.html">autotransform.batcher package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.command.html">autotransform.command package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.config.html">autotransform.config package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.event.html">autotransform.event package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.filter.html">autotransform.filter package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.input.html">autotransform.input package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.item.html">autotransform.item package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.repo.html">autotransform.repo package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.runner.html">autotransform.runner package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.schema.html">autotransform.schema package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.scripts.html">autotransform.scripts package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.thirdparty.html">autotransform.thirdparty package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.transformer.html">autotransform.transformer package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.util.html">autotransform.util package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.validator.html">autotransform.validator package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">AutoTransform (autotransform)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#core">Core</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.schema.html">Schema Package (autotransform.schema)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.scripts.html">Scripts (autotransform.scripts)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.config.html">Config Package (autotransform.config)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.runner.html">Runner Package (autotransform.runner)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.item.html">Item Package (autotransform.item)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.event.html">Event Package (autotransform.event)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.thirdparty.html">Third Party Example (autotransform.thirdparty)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.util.html">Utilities (autotransform.util)</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#module-autotransform">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#schema-components">Schema Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.input.html">Input Package (autotransform.input)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.filter.html">Filter Package (autotransform.filter)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.batcher.html">Batcher Package (autotransform.batcher)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.transformer.html">Transformer Package (autotransform.transformer)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.validator.html">Validator Package (autotransform.validator)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.command.html">Command Package (autotransform.command)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.repo.html">Repo Package (autotransform.repo)</a></li>
 </ul>
 </li>
 </ul>
@@ -88,8 +87,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="modules.html">autotransform</a> &raquo;</li>
-      <li>autotransform package</li>
+      <li>AutoTransform (autotransform)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/autotransform.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -99,168 +97,220 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="autotransform-package">
-<h1>autotransform package<a class="headerlink" href="#autotransform-package" title="Permalink to this headline"></a></h1>
-<section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline"></a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="autotransform.batcher.html">autotransform.batcher package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.batcher.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.batcher.html#module-autotransform.batcher.base">autotransform.batcher.base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.batcher.html#module-autotransform.batcher.chunk">autotransform.batcher.chunk module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.batcher.html#module-autotransform.batcher.directory">autotransform.batcher.directory module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.batcher.html#module-autotransform.batcher.factory">autotransform.batcher.factory module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.batcher.html#module-autotransform.batcher.single">autotransform.batcher.single module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.batcher.html#module-autotransform.batcher.type">autotransform.batcher.type module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.batcher.html#module-autotransform.batcher">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="autotransform.command.html">autotransform.command package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.command.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.command.html#module-autotransform.command.base">autotransform.command.base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.command.html#module-autotransform.command.factory">autotransform.command.factory module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.command.html#module-autotransform.command.type">autotransform.command.type module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.command.html#module-autotransform.command">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="autotransform.config.html">autotransform.config package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.config.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.config.html#module-autotransform.config.console">autotransform.config.console module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.config.html#module-autotransform.config.default">autotransform.config.default module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.config.html#module-autotransform.config.envvar">autotransform.config.envvar module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.config.html#module-autotransform.config.fetcher">autotransform.config.fetcher module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.config.html#module-autotransform.config">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="autotransform.event.html">autotransform.event package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.event.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.event.html#module-autotransform.event.base">autotransform.event.base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.event.html#module-autotransform.event.debug">autotransform.event.debug module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.event.html#module-autotransform.event.handler">autotransform.event.handler module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.event.html#module-autotransform.event.logginglevel">autotransform.event.logginglevel module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.event.html#module-autotransform.event.run">autotransform.event.run module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.event.html#module-autotransform.event.type">autotransform.event.type module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.event.html#module-autotransform.event">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="autotransform.filter.html">autotransform.filter package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.filter.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.filter.html#module-autotransform.filter.base">autotransform.filter.base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.filter.html#module-autotransform.filter.factory">autotransform.filter.factory module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.filter.html#module-autotransform.filter.regex">autotransform.filter.regex module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.filter.html#module-autotransform.filter.type">autotransform.filter.type module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.filter.html#module-autotransform.filter">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="autotransform.input.html">autotransform.input package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.input.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.input.html#module-autotransform.input.base">autotransform.input.base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.input.html#module-autotransform.input.directory">autotransform.input.directory module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.input.html#module-autotransform.input.factory">autotransform.input.factory module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.input.html#module-autotransform.input.gitgrep">autotransform.input.gitgrep module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.input.html#module-autotransform.input.type">autotransform.input.type module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.input.html#module-autotransform.input">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="autotransform.item.html">autotransform.item package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.item.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.item.html#module-autotransform.item.base">autotransform.item.base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.item.html#module-autotransform.item.factory">autotransform.item.factory module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.item.html#module-autotransform.item.file">autotransform.item.file module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.item.html#module-autotransform.item.type">autotransform.item.type module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.item.html#module-autotransform.item">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="autotransform.repo.html">autotransform.repo package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.repo.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.repo.html#module-autotransform.repo.base">autotransform.repo.base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.repo.html#module-autotransform.repo.factory">autotransform.repo.factory module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.repo.html#module-autotransform.repo.git">autotransform.repo.git module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.repo.html#module-autotransform.repo.github">autotransform.repo.github module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.repo.html#module-autotransform.repo.type">autotransform.repo.type module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.repo.html#module-autotransform.repo">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="autotransform.runner.html">autotransform.runner package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.runner.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.runner.html#module-autotransform.runner.base">autotransform.runner.base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.runner.html#module-autotransform.runner.factory">autotransform.runner.factory module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.runner.html#module-autotransform.runner.github">autotransform.runner.github module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.runner.html#module-autotransform.runner.local">autotransform.runner.local module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.runner.html#module-autotransform.runner.type">autotransform.runner.type module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.runner.html#module-autotransform.runner">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="autotransform.schema.html">autotransform.schema package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.schema.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.schema.html#module-autotransform.schema.builder">autotransform.schema.builder module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.schema.html#module-autotransform.schema.config">autotransform.schema.config module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.schema.html#module-autotransform.schema.factory">autotransform.schema.factory module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.schema.html#module-autotransform.schema.schema">autotransform.schema.schema module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.schema.html#module-autotransform.schema.type">autotransform.schema.type module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.schema.html#module-autotransform.schema">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="autotransform.scripts.html">autotransform.scripts package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.scripts.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="autotransform.scripts.commands.html">autotransform.scripts.commands package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.scripts.commands.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.scripts.commands.html#module-autotransform.scripts.commands.config">autotransform.scripts.commands.config module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.scripts.commands.html#module-autotransform.scripts.commands.run">autotransform.scripts.commands.run module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="autotransform.scripts.commands.html#module-autotransform.scripts.commands">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.scripts.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.scripts.html#module-autotransform.scripts.main">autotransform.scripts.main module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.scripts.html#module-autotransform.scripts">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="autotransform.thirdparty.html">autotransform.thirdparty package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.thirdparty.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.thirdparty.html#module-autotransform.thirdparty.components">autotransform.thirdparty.components module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.thirdparty.html#module-autotransform.thirdparty">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="autotransform.transformer.html">autotransform.transformer package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.transformer.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.transformer.html#module-autotransform.transformer.base">autotransform.transformer.base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.transformer.html#module-autotransform.transformer.factory">autotransform.transformer.factory module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.transformer.html#module-autotransform.transformer.regex">autotransform.transformer.regex module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.transformer.html#module-autotransform.transformer.script">autotransform.transformer.script module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.transformer.html#module-autotransform.transformer.single">autotransform.transformer.single module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.transformer.html#module-autotransform.transformer.type">autotransform.transformer.type module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.transformer.html#module-autotransform.transformer">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="autotransform.util.html">autotransform.util package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.util.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.util.html#module-autotransform.util.cachedfile">autotransform.util.cachedfile module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.util.html#module-autotransform.util.dataobject">autotransform.util.dataobject module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.util.html#module-autotransform.util.datastore">autotransform.util.datastore module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.util.html#module-autotransform.util">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="autotransform.validator.html">autotransform.validator package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.validator.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.validator.html#module-autotransform.validator.base">autotransform.validator.base module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.validator.html#module-autotransform.validator.factory">autotransform.validator.factory module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.validator.html#module-autotransform.validator.type">autotransform.validator.type module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="autotransform.validator.html#module-autotransform.validator">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</section>
-<section id="module-autotransform">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-autotransform" title="Permalink to this headline"></a></h2>
+  <section id="module-autotransform">
+<span id="autotransform-autotransform"></span><h1>AutoTransform (autotransform)<a class="headerlink" href="#module-autotransform" title="Permalink to this headline"></a></h1>
 <p>AutoTransform is a framework for defining and running code transformations.
 It can be used by organizations looking to update/change/cleanup their codebases
 as well as by library authors to provide transformations to end users that can
 be used to update code for changes to the library (i.e. moving to new APIs).</p>
 <p>For more information, see the README.</p>
+<section id="core">
+<h2>Core<a class="headerlink" href="#core" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.schema.html">Schema Package (autotransform.schema)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.schema.html#schemas">Schemas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.schema.schema.html">AutoTransformSchema (autotransform.schema.schema)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.schema.config.html">Config (autotransform.schema.config)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.schema.html#builders">Builders</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.schema.html#core">Core</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.schema.builder.html">SchemaBuilder (autotransform.schema.builder)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.schema.type.html">SchemaBuilderType (autotransform.schema.type)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.schema.factory.html">SchemaBuilderFactory (autotransform.schema.factory)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.scripts.html">Scripts (autotransform.scripts)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.scripts.html#commands">Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.scripts.commands.config.html">Config Command (autotransform.scripts.commands.config)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.scripts.commands.run.html">Run Command (autotransform.scripts.commands.run)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.scripts.html#script">Script</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.scripts.main.html">Main Script (autotransform.scripts.main)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.config.html">Config Package (autotransform.config)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.config.html#fetchers">Fetchers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.config.console.html">ConsoleConfigFetcher (autotransform.config.console)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.config.default.html">DefaultConfigFetcher (autotransform.config.default)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.config.envvar.html">EnvironmentVariableConfigFetcher (autotransform.config.envvar)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.config.fetcher.html">ConfigFetcher (autotransform.config.fetcher)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.config.html#core">Core</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.config.fetcher.html">ConfigFetcher (autotransform.config.fetcher)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.runner.html">Runner Package (autotransform.runner)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.runner.html#components">Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.runner.github.html">GithubRunner (autotransform.runner.github)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.runner.local.html">LocalRunner (autotransform.runner.local)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.runner.html#core">Core</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.runner.base.html">Runner (autotransform.runner.base)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.runner.type.html">RunnerType (autotransform.runner.type)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.runner.factory.html">RunnerFactory (autotransform.runner.factory)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.item.html">Item Package (autotransform.item)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.item.html#components">Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.item.file.html">FileItem (autotransform.item.file)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.item.html#core">Core</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.item.base.html">Item (autotransform.item.base)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.item.type.html">ItemType (autotransform.item.type)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.item.factory.html">ItemFactory (autotransform.item.factory)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.event.html">Event Package (autotransform.event)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.event.html#events">Events</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.event.debug.html">DebugEvent (autotransform.event.debug)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.event.run.html">ScriptRunEvent (autotransform.event.run)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.event.html#core">Core</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.event.base.html">Event (autotransform.event.base)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.event.handler.html">EventHandler (autotransform.event.handler)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.event.logginglevel.html">LoggingLevel (autotransform.event.logginglevel)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.event.type.html">EventType (autotransform.event.type)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.thirdparty.html">Third Party Example (autotransform.thirdparty)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.thirdparty.html#example">Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.thirdparty.components.html">Third Party Components (autotransform.thirdparty.components)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.util.html">Utilities (autotransform.util)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.util.html#utilities">Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.util.cachedfile.html">CachedFile (autotransform.util.cachedfile)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="schema-components">
+<h2>Schema Components<a class="headerlink" href="#schema-components" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.input.html">Input Package (autotransform.input)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.input.html#components">Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.input.directory.html">DirectoryInput (autotransform.input.directory)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.input.gitgrep.html">GitgrepInput (autotransform.input.gitgrep)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.input.html#core">Core</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.input.base.html">Input (autotransform.input.base)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.input.type.html">InputType (autotransform.input.type)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.input.factory.html">InputFactory (autotransform.input.factory)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.filter.html">Filter Package (autotransform.filter)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.filter.html#components">Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.filter.regex.html">RegexFilter (autotransform.filter.regex)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.filter.html#core">Core</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.filter.base.html">Filter (autotransform.filter.base)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.filter.type.html">FilterType (autotransform.filter.type)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.filter.factory.html">FilterFactory (autotransform.filter.factory)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.batcher.html">Batcher Package (autotransform.batcher)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.batcher.html#components">Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.batcher.chunk.html">ChunkBatcher (autotransform.batcher.chunk)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.batcher.directory.html">DirectoryBatcher (autotransform.batcher.directory)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.batcher.single.html">SingleBatcher (autotransform.batcher.single)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.batcher.html#core">Core</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.batcher.base.html">Batcher (autotransform.batcher.base)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.batcher.type.html">BatcherType (autotransform.batcher.type)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.batcher.factory.html">BatcherFactory (autotransform.batcher.factory)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.transformer.html">Transformer Package (autotransform.transformer)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.transformer.html#components">Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.transformer.regex.html">RegexTransformer (autotransform.transformer.regex)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.transformer.script.html">ScriptTransformer (autotransform.transformer.script)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.transformer.html#core">Core</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.transformer.base.html">Transformer (autotransform.transformer.base)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.transformer.single.html">SingleTransformer (autotransform.transformer.single)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.transformer.type.html">TransformerType (autotransform.transformer.type)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.transformer.factory.html">TransformerFactory (autotransform.transformer.factory)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.validator.html">Validator Package (autotransform.validator)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.validator.html#components">Components</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.validator.html#core">Core</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.validator.base.html">Validator (autotransform.validator.base)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.validator.type.html">ValidatorType (autotransform.validator.type)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.validator.factory.html">ValidatorFactory (autotransform.validator.factory)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.command.html">Command Package (autotransform.command)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.command.html#components">Components</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.command.html#core">Core</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.command.base.html">Command (autotransform.command.base)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.command.type.html">CommandType (autotransform.command.type)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.command.factory.html">CommandFactory (autotransform.command.factory)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.repo.html">Repo Package (autotransform.repo)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.repo.html#components">Components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.repo.git.html">GitRepo (autotransform.repo.git)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.repo.github.html">GithubRepo (autotransform.repo.github)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="autotransform.repo.html#core">Core</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.repo.base.html">Repo (autotransform.repo.base)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.repo.type.html">RepoType (autotransform.repo.type)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.repo.factory.html">RepoFactory (autotransform.repo.factory)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
 </section>
 </section>
 
@@ -268,8 +318,8 @@ be used to update code for changes to the library (i.e. moving to new APIs).</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="modules.html" class="btn btn-neutral float-left" title="autotransform" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="autotransform.batcher.html" class="btn btn-neutral float-right" title="autotransform.batcher package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="README.html" class="btn btn-neutral float-left" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="autotransform.schema.html" class="btn btn-neutral float-right" title="Schema Package (autotransform.schema)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
