@@ -23,39 +23,21 @@ jobs:
       with:
         python-version: "3.10"
     - name: Install Dependencies
-      run: |
-        pip install GitPython
-        pip install PyGithub
-        pip install typing-extensions
-        pip install colorama
-        pip install types-colorama
-
-        pip install mypy
-        pip install pytest
-        pip install mock
-        pip install pylint
-
-        pip install build
-        pip install twine
+      run: pip install -r build_requirements.txt
     - name: Check mypy
-      run: |
-        mypy autotransform/
+      run: mypy autotransform/
     - name: Check pytest
-      run: |
-        pytest tests/
+      run: pytest tests/
       env:
         PYTHONPATH: /home/runner/work/AutoTransform/AutoTransform/
         AUTO_TRANSFORM_CONFIG: environment
         AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ github.token }}
     - name: Check pylint
-      run: |
-        pylint autotransform/ --enable=W0611,R0201,R0902,R0903,R0913,R1732 --disable=R0801
+      run: pylint autotransform/ --enable=W0611,R0201,R0902,R0903,R0913,R1732 --disable=R0801
     - name: Build
-      run: |
-        python3 -m build
+      run: python3 -m build
     - name: Publish
-      run: |
-        python3 -m twine upload dist/*
+      run: python3 -m twine upload dist/*
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.TWINE_TOKEN }}

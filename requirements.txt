@@ -1,0 +1,4 @@
+GitPython
+PyGithub
+typing-extensions
+colorama

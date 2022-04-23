@@ -1,0 +1,7 @@
+types-colorama
+mypy
+pylint
+pytest
+mock
+
+-r requirements.txt

@@ -20,14 +20,6 @@ jobs:
       with:
         python-version: "3.10"
     - name: Install Dependencies
-      run: |
-        pip install GitPython
-        pip install PyGithub
-        pip install typing-extensions
-        pip install colorama
-        pip install types-colorama
-
-        pip install mypy
+      run: pip install -r ci_requirements.txt
     - name: Check mypy
-      run: |
-        mypy autotransform/
+      run: mypy autotransform/
