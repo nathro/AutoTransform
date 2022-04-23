@@ -37,20 +37,20 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Documents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="README.html"><strong>Overview</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#core-functionality"><strong>Core Functionality</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#upcoming-milestones"><strong>Upcoming Milestones</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#security-best-practices"><strong>Security Best Practices</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#schema-best-practices"><strong>Schema Best Practices</strong></a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Extending For Your Organization</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#remote-runs">Remote Runs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><strong>Extending For Your Organization</strong></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configuration"><strong>Configuration</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#remote-runs"><strong>Remote Runs</strong></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing To AutoTransform</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html#what-should-i-know-when-developing-for-autotransform">What Should I Know When Developing For AutoTransform?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html"><strong>Contributing To AutoTransform</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html#what-should-i-know-when-developing-for-autotransform"><strong>What Should I Know When Developing For AutoTransform?</strong></a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Code</span></p>
 <ul>
@@ -71,7 +71,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Extending For Your Organization</li>
+      <li><strong>Extending For Your Organization</strong></li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/CUSTOM_DEPLOYMENT.md.txt" rel="nofollow"> View page source</a>
       </li>
@@ -82,15 +82,15 @@
            <div itemprop="articleBody">
              
   <section id="extending-for-your-organization">
-<h1>Extending For Your Organization<a class="headerlink" href="#extending-for-your-organization" title="Permalink to this headline"></a></h1>
+<h1><strong>Extending For Your Organization</strong><a class="headerlink" href="#extending-for-your-organization" title="Permalink to this headline"></a></h1>
 <p>AutoTransform is a generic framework for defining automated code transformations, but may not provide all components needed by your specific organization. Fret not, AutoTransform is built to be extended!</p>
 <p>Custom components can be added through config based importing. The custom_components setting in the IMPORTS section of sample_config.ini shows how to import the modules, with an example module shown in <code class="docutils literal notranslate"><span class="pre">autotransform.thirdparty.components</span></code>. If changes are required beyond simply importing new modules, feel free to fork the repo! The recommendation, however, is to attempt to use custom imports as much as possible and avoid forking. Feel free to additionally push improvements upstream, think about what changes might make sense to AutoTransform to support your use case and submit a pull request!</p>
 <section id="configuration">
-<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline"></a></h2>
+<h2><strong>Configuration</strong><a class="headerlink" href="#configuration" title="Permalink to this headline"></a></h2>
 <p>When deploying AutoTransform to production, it is highly recommend to handle configuration through the EnvironmentVariableConfigFetcher. Leveraging this, along with setup scripts for developer machines, will allow easy deployment across developer machines as well as CI systems.</p>
 </section>
 <section id="remote-runs">
-<h2>Remote Runs<a class="headerlink" href="#remote-runs" title="Permalink to this headline"></a></h2>
+<h2><strong>Remote Runs</strong><a class="headerlink" href="#remote-runs" title="Permalink to this headline"></a></h2>
 <p>In larger team settings, local runs are likely not the ideal solution. For these cases, it is strongly advised to create a Runner component that integrates with your systems so that work can be be run on remote machines. If your codebase uses Github, the GithubRunner component can be used with the example workflow in data/workflows/autotransform_runner.yml. This will allow you to leverage Github Actions for your remote run needs. For extremely large codebases, you may additionally need to set up a Runner that uses a queueing system to distrubute work across multiple machines.</p>
 </section>
 </section>
