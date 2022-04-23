@@ -53,4 +53,4 @@ class ScriptRunEvent(Event[ScriptRunEventData]):
         Returns:
             str: The message for the event.
         """
-        return f"Running script {self.data['script']}"
+        return f"Running script command {self.data['script']}"

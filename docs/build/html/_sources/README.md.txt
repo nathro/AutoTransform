@@ -78,7 +78,6 @@ The core of AutoTransform is the [schema](https://github.com/nathro/AutoTransfor
 The config fetcher allows for configuration of AutoTransform as a whole. This includes things like specifying custom component imports as well as providing credentials, such as a github token. There are three config fetchers provided as part of AutoTransform that can be selected based on the AUTO_TRANSFORM_CONFIG environment variable:
 
 * **[Default](https://github.com/nathro/AutoTransform/blob/master/autotransform/config/default.py)** - Pulls configuration from data/config.ini, a[ sample_config.ini](https://github.com/nathro/AutoTransform/blob/master/autotransform/data/sample_config.ini) file provides an example. This is the easiest choice for local use cases on a developers machine.
-* **[Console](https://github.com/nathro/AutoTransform/blob/master/autotransform/config/console.py)** - Prompts the user to input configuration values when they are needed via console input. This is occasionally useful for CLI use cases.
 * **[Environment Variable](https://github.com/nathro/AutoTransform/blob/master/autotransform/config/envvar.py)** - Pulls configuration from environment variables, using names that match the pattern: AUTO_TRANSFORM_&lt;SECTION>_&lt;SETTING> where section and setting represent the section and setting that would be used in a config.ini file, such as AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN. This is the preferred option for production use cases.
 
 ### **Runner**

@@ -17,6 +17,7 @@ from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.run import ScriptRunEvent
+from autotransform.runner.base import Runner
 from autotransform.runner.factory import RunnerFactory
 from autotransform.runner.local import LocalRunner
 from autotransform.schema.factory import SchemaBuilderFactory
@@ -142,15 +143,20 @@ def run_command_main(args: Namespace) -> None:
 
     if args.run_local:
         event_handler.handle(DebugEvent({"message": "Running locally"}))
-        event_handler.handle(ScriptRunEvent({"script": "local run", "args": event_args}))
-        runner = LocalRunner({})
-        runner.run(schema)
+        event_args["remote"] = False
+        runner_str = Config.get_runner_local()
+        if runner_str is None:
+            event_handler.handle(DebugEvent({"message": "No runner defined, using default"}))
+            runner: Runner = LocalRunner({})
+        else:
+            runner = RunnerFactory.get(json.loads(runner_str))
     else:
-        remote_str = Config.get_remote_runner()
-        assert remote_str is not None, "Remote not specified in config"
-        event_handler.handle(DebugEvent({"message": f"Remote: {remote_str}"}))
-        event_args["remote"] = remote_str
-        event_handler.handle(ScriptRunEvent({"script": "remote run", "args": event_args}))
-        remote = RunnerFactory.get(json.loads(remote_str))
-        remote_ref = remote.run(schema)
-        event_handler.handle(DebugEvent({"message": f"Remote ref: {remote_ref}"}))
+        event_handler.handle(DebugEvent({"message": "Running remote"}))
+        event_args["remote"] = True
+        runner_str = Config.get_runner_remote()
+        assert runner_str is not None, "Remote not specified in config"
+        runner = RunnerFactory.get(json.loads(runner_str))
+
+    event_args["runner"] = json.dumps(runner.bundle())
+    event_handler.handle(ScriptRunEvent({"script": "run", "args": event_args}))
+    runner.run(schema)

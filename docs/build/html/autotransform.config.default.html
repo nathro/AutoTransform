@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="EnvironmentVariableConfigFetcher (autotransform.config.envvar)" href="autotransform.config.envvar.html" />
-    <link rel="prev" title="ConsoleConfigFetcher (autotransform.config.console)" href="autotransform.config.console.html" /> 
+    <link rel="prev" title="Config Package (autotransform.config)" href="autotransform.config.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -37,13 +37,16 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Readme</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="README.html"><strong>Overview</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#core-functionality"><strong>Core Functionality</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#upcoming-milestones"><strong>Upcoming Milestones</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#security-best-practices"><strong>Security Best Practices</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#schema-best-practices"><strong>Schema Best Practices</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="CUSTOM_DEPLOYMENT.html">Extending For Your Organization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing To AutoTransform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html#what-should-i-know-when-developing-for-autotransform">What Should I Know When Developing For AutoTransform?</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Code</span></p>
 <ul class="current">
@@ -214,12 +217,26 @@ autotransform.thirdparty.components.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="autotransform.config.default.DefaultConfigFetcher.get_remote_runner">
-<span class="sig-name descname"><span class="pre">get_remote_runner</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autotransform.config.default.DefaultConfigFetcher.get_remote_runner" title="Permalink to this definition"></a></dt>
-<dd><p>Gets the JSON encoded Remote component to use.</p>
+<dt class="sig sig-object py" id="autotransform.config.default.DefaultConfigFetcher.get_runner_local">
+<span class="sig-name descname"><span class="pre">get_runner_local</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autotransform.config.default.DefaultConfigFetcher.get_runner_local" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the JSON encoded Runner component to use for local runs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The JSON encoded Remote component to use.</p>
+<dd class="field-odd"><p>The JSON encoded Runner component to use for local runs.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.config.default.DefaultConfigFetcher.get_runner_remote">
+<span class="sig-name descname"><span class="pre">get_runner_remote</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autotransform.config.default.DefaultConfigFetcher.get_runner_remote" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the JSON encoded Runner component to use for remote runs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The JSON encoded Runner component to use for remote runs.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>str</p>
@@ -235,7 +252,7 @@ autotransform.thirdparty.components.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="autotransform.config.console.html" class="btn btn-neutral float-left" title="ConsoleConfigFetcher (autotransform.config.console)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="autotransform.config.html" class="btn btn-neutral float-left" title="Config Package (autotransform.config)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="autotransform.config.envvar.html" class="btn btn-neutral float-right" title="EnvironmentVariableConfigFetcher (autotransform.config.envvar)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

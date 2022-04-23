@@ -28,6 +28,7 @@ class DefaultConfigFetcher(ConfigFetcher):
 
     def __init__(self):
         """A simple constructor that parses the default config file."""
+
         config = ConfigParser()
         config.read(self.get_config_path())
         self.config = config
@@ -39,6 +40,7 @@ class DefaultConfigFetcher(ConfigFetcher):
         Returns:
             str: The path to the config file.
         """
+
         return (
             str(pathlib.Path(__file__).parent.parent.resolve()).replace("\\", "/")
             + "/data/config.ini"
@@ -50,6 +52,7 @@ class DefaultConfigFetcher(ConfigFetcher):
         Returns:
             Optional[str]: The github authentication token if present.
         """
+
         if "CREDENTIALS" not in self.config:
             return None
         credentials = self.config["CREDENTIALS"]
@@ -61,6 +64,7 @@ class DefaultConfigFetcher(ConfigFetcher):
         Returns:
             Optional[str]: The github username if present.
         """
+
         if "CREDENTIALS" not in self.config:
             return None
         credentials = self.config["CREDENTIALS"]
@@ -72,6 +76,7 @@ class DefaultConfigFetcher(ConfigFetcher):
         Returns:
             Optional[str]: The github password if present.
         """
+
         if "CREDENTIALS" not in self.config:
             return None
         credentials = self.config["CREDENTIALS"]
@@ -83,6 +88,7 @@ class DefaultConfigFetcher(ConfigFetcher):
         Returns:
             Optional[str]: The github base URL if present.
         """
+
         if "CREDENTIALS" not in self.config:
             return None
         credentials = self.config["CREDENTIALS"]
@@ -96,19 +102,33 @@ class DefaultConfigFetcher(ConfigFetcher):
             List[str]: A list of the modules containing custom components that are not part base
                 AutoTransform.
         """
+
         if "IMPORTS" not in self.config:
             return []
         imports = self.config["IMPORTS"]
         module_list = imports.get("components", None)
         return [module.strip() for module in module_list.split(",")]
 
-    def get_remote_runner(self) -> Optional[str]:
-        """Gets the JSON encoded Remote component to use.
+    def get_runner_local(self) -> Optional[str]:
+        """Gets the JSON encoded Runner component to use for local runs.
 
         Returns:
-            str: The JSON encoded Remote component to use.
+            str: The JSON encoded Runner component to use for local runs.
         """
-        if "REMOTE" not in self.config:
+
+        if "RUNNER" not in self.config:
             return None
-        remote = self.config["REMOTE"]
-        return remote.get("runner", None)
+        runner = self.config["RUNNER"]
+        return runner.get("local", None)
+
+    def get_runner_remote(self) -> Optional[str]:
+        """Gets the JSON encoded Runner component to use for remote runs.
+
+        Returns:
+            str: The JSON encoded Runner component to use for remote runs.
+        """
+
+        if "RUNNER" not in self.config:
+            return None
+        runner = self.config["RUNNER"]
+        return runner.get("remote", None)

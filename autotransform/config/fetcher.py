@@ -58,9 +58,17 @@ class ConfigFetcher(ABC):
         """
 
     @abstractmethod
-    def get_remote_runner(self) -> Optional[str]:
-        """Gets the JSON encoded Remote component to use.
+    def get_runner_local(self) -> Optional[str]:
+        """Gets the JSON encoded Runner component to use for local runs.
 
         Returns:
-            str: The JSON encoded Remote component to use.
+            str: The JSON encoded Runner component to use for local runs.
+        """
+
+    @abstractmethod
+    def get_runner_remote(self) -> Optional[str]:
+        """Gets the JSON encoded Runner component to use for remote runs.
+
+        Returns:
+            str: The JSON encoded Runner component to use for remote runs.
         """

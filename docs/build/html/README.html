@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="autotransform" href="modules.html" />
-    <link rel="prev" title="Welcome to AutoTransform!" href="index.html" /> 
+    <link rel="next" title="Extending For Your Organization" href="CUSTOM_DEPLOYMENT.html" />
+    <link rel="prev" title="AutoTransform" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -37,7 +37,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Readme:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><strong>Overview</strong></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installing"><strong>Installing</strong></a></li>
@@ -91,10 +91,13 @@
 <li class="toctree-l2"><a class="reference internal" href="#create-a-council"><strong>Create A Council</strong></a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="CUSTOM_DEPLOYMENT.html">Extending For Your Organization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing To AutoTransform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html#what-should-i-know-when-developing-for-autotransform">What Should I Know When Developing For AutoTransform?</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Code</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">autotransform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.html">AutoTransform (autotransform)</a></li>
 </ul>
 
         </div>
@@ -216,7 +219,6 @@
 <p>The config fetcher allows for configuration of AutoTransform as a whole. This includes things like specifying custom component imports as well as providing credentials, such as a github token. There are three config fetchers provided as part of AutoTransform that can be selected based on the AUTO_TRANSFORM_CONFIG environment variable:</p>
 <ul class="simple">
 <li><p><strong><a class="reference external" href="https://github.com/nathro/AutoTransform/blob/master/autotransform/config/default.py">Default</a></strong> - Pulls configuration from data/config.ini, a<a class="reference external" href="https://github.com/nathro/AutoTransform/blob/master/autotransform/data/sample_config.ini"> sample_config.ini</a> file provides an example. This is the easiest choice for local use cases on a developers machine.</p></li>
-<li><p><strong><a class="reference external" href="https://github.com/nathro/AutoTransform/blob/master/autotransform/config/console.py">Console</a></strong> - Prompts the user to input configuration values when they are needed via console input. This is occasionally useful for CLI use cases.</p></li>
 <li><p><strong><a class="reference external" href="https://github.com/nathro/AutoTransform/blob/master/autotransform/config/envvar.py">Environment Variable</a></strong> - Pulls configuration from environment variables, using names that match the pattern: AUTO_TRANSFORM_&lt;SECTION&gt;_&lt;SETTING&gt; where section and setting represent the section and setting that would be used in a config.ini file, such as AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN. This is the preferred option for production use cases.</p></li>
 </ul>
 </section>
@@ -298,8 +300,8 @@ the same key, separate items of the same type must have unique keys. Subclasses 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to AutoTransform!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="modules.html" class="btn btn-neutral float-right" title="autotransform" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="AutoTransform" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="CUSTOM_DEPLOYMENT.html" class="btn btn-neutral float-right" title="Extending For Your Organization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

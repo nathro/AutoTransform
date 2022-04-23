@@ -13,7 +13,6 @@ Fetchers
 .. toctree::
    :maxdepth: 4
 
-   autotransform.config.console
    autotransform.config.default
    autotransform.config.envvar
    autotransform.config.fetcher

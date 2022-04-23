@@ -37,13 +37,16 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Readme</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="README.html"><strong>Overview</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#core-functionality"><strong>Core Functionality</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#upcoming-milestones"><strong>Upcoming Milestones</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#security-best-practices"><strong>Security Best Practices</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#schema-best-practices"><strong>Schema Best Practices</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="CUSTOM_DEPLOYMENT.html">Extending For Your Organization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html">Contributing To AutoTransform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html#what-should-i-know-when-developing-for-autotransform">What Should I Know When Developing For AutoTransform?</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Code</span></p>
 <ul class="current">
@@ -101,7 +104,7 @@
 <dt class="sig sig-object py" id="autotransform.config.envvar.EnvironmentVariableConfigFetcher">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.config.envvar.</span></span><span class="sig-name descname"><span class="pre">EnvironmentVariableConfigFetcher</span></span><a class="headerlink" href="#autotransform.config.envvar.EnvironmentVariableConfigFetcher" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="autotransform.config.fetcher.html#autotransform.config.fetcher.ConfigFetcher" title="autotransform.config.fetcher.ConfigFetcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.config.fetcher.ConfigFetcher</span></code></a></p>
-<p>An ConfigFetcher that utilizes environment variables as configuration storage.
+<p>A ConfigFetcher that utilizes environment variables as configuration storage.
 Environment variable names are of the form AUTO_TRANSFORM_&lt;SECTION&gt;_&lt;SETTING&gt;, using
 the sections and settings from data/sample_config.ini</p>
 <dl class="py method">
@@ -180,12 +183,26 @@ autotransform.thirdparty.components from AUTO_TRANSFORM_CREDENTIALS_IMPORTS_COMP
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="autotransform.config.envvar.EnvironmentVariableConfigFetcher.get_remote_runner">
-<span class="sig-name descname"><span class="pre">get_remote_runner</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autotransform.config.envvar.EnvironmentVariableConfigFetcher.get_remote_runner" title="Permalink to this definition"></a></dt>
-<dd><p>Gets the JSON encoded Remote component to use from AUTO_TRANSFORM_REMOTE_RUNNER.</p>
+<dt class="sig sig-object py" id="autotransform.config.envvar.EnvironmentVariableConfigFetcher.get_runner_local">
+<span class="sig-name descname"><span class="pre">get_runner_local</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autotransform.config.envvar.EnvironmentVariableConfigFetcher.get_runner_local" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the JSON encoded Runner component to use for local runs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The JSON encoded Remote component to use.</p>
+<dd class="field-odd"><p>The JSON encoded Runner component to use for local runs.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.config.envvar.EnvironmentVariableConfigFetcher.get_runner_remote">
+<span class="sig-name descname"><span class="pre">get_runner_remote</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autotransform.config.envvar.EnvironmentVariableConfigFetcher.get_runner_remote" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the JSON encoded Runner component to use for remote runs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The JSON encoded Runner component to use for remote runs.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>str</p>

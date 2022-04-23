@@ -14,7 +14,7 @@ from autotransform.config.fetcher import ConfigFetcher
 
 
 class EnvironmentVariableConfigFetcher(ConfigFetcher):
-    """An ConfigFetcher that utilizes environment variables as configuration storage.
+    """A ConfigFetcher that utilizes environment variables as configuration storage.
     Environment variable names are of the form AUTO_TRANSFORM_<SECTION>_<SETTING>, using
     the sections and settings from data/sample_config.ini"""
 
@@ -24,6 +24,7 @@ class EnvironmentVariableConfigFetcher(ConfigFetcher):
         Returns:
             Optional[str]: The github token,
         """
+
         return os.getenv("AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN")
 
     def get_credentials_github_username(self) -> Optional[str]:
@@ -32,6 +33,7 @@ class EnvironmentVariableConfigFetcher(ConfigFetcher):
         Returns:
             Optional[str]: The github username.
         """
+
         return os.getenv("AUTO_TRANSFORM_CREDENTIALS_GITHUB_USERNAME")
 
     def get_credentials_github_password(self) -> Optional[str]:
@@ -40,6 +42,7 @@ class EnvironmentVariableConfigFetcher(ConfigFetcher):
         Returns:
             Optional[str]: The github password.
         """
+
         return os.getenv("AUTO_TRANSFORM_CREDENTIALS_GITHUB_PASSWORD")
 
     def get_credentials_github_base_url(self) -> Optional[str]:
@@ -48,6 +51,7 @@ class EnvironmentVariableConfigFetcher(ConfigFetcher):
         Returns:
             Optional[str]: The github base URL.
         """
+
         return os.getenv("AUTO_TRANSFORM_CREDENTIALS_GITHUB_BASE_URL")
 
     def get_imports_components(self) -> List[str]:
@@ -58,15 +62,26 @@ class EnvironmentVariableConfigFetcher(ConfigFetcher):
             List[str]: A list of the modules containing custom components that are not part base
                 AutoTransform.
         """
+
         module_list = os.getenv("AUTO_TRANSFORM_IMPORTS_COMPONENTS")
         if module_list is None or module_list == "":
             return []
         return [module.strip() for module in module_list.split(",")]
 
-    def get_remote_runner(self) -> Optional[str]:
-        """Gets the JSON encoded Remote component to use from AUTO_TRANSFORM_REMOTE_RUNNER.
+    def get_runner_local(self) -> Optional[str]:
+        """Gets the JSON encoded Runner component to use for local runs.
 
         Returns:
-            str: The JSON encoded Remote component to use.
+            str: The JSON encoded Runner component to use for local runs.
         """
-        return os.getenv("AUTO_TRANSFORM_REMOTE_RUNNER")
+
+        return os.getenv("AUTO_TRANSFORM_RUNNER_LOCAL")
+
+    def get_runner_remote(self) -> Optional[str]:
+        """Gets the JSON encoded Runner component to use for remote runs.
+
+        Returns:
+            str: The JSON encoded Runner component to use for remote runs.
+        """
+
+        return os.getenv("AUTO_TRANSFORM_RUNNER_REMOTE")
