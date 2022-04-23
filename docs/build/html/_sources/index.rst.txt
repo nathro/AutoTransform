@@ -5,9 +5,11 @@ AutoTransform is a tool for simple, automatic large-scale code modification. It 
 
 .. toctree::
    :maxdepth: 2
-   :caption: Readme
+   :caption: Overview
 
    README.md
+   CUSTOM_DEPLOYMENT.md
+   CONTRIBUTING.md
 
 .. toctree::
    :maxdepth: 4

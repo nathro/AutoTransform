@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contributing To AutoTransform &mdash; AutoTransform 0.1.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="AutoTransform (autotransform)" href="autotransform.html" />
+    <link rel="prev" title="Extending For Your Organization" href="CUSTOM_DEPLOYMENT.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> AutoTransform
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="README.html"><strong>Overview</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#core-functionality"><strong>Core Functionality</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#upcoming-milestones"><strong>Upcoming Milestones</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#security-best-practices"><strong>Security Best Practices</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#schema-best-practices"><strong>Schema Best Practices</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="CUSTOM_DEPLOYMENT.html">Extending For Your Organization</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing To AutoTransform</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-should-push-upstream">What Should Push Upstream?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#what-should-i-know-when-developing-for-autotransform">What Should I Know When Developing For AutoTransform?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#i-want-to-contribute-what-should-i-do">I Want To Contribute, What Should I Do?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-about-the-docs">What About the Docs?</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Code</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="autotransform.html">AutoTransform (autotransform)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">AutoTransform</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Contributing To AutoTransform</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/CONTRIBUTING.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="contributing-to-autotransform">
+<h1>Contributing To AutoTransform<a class="headerlink" href="#contributing-to-autotransform" title="Permalink to this headline"></a></h1>
+<p>AutoTransform is a tool built by and for developers and welcomes developers pushing their components and improvements upstream. While new components are the easiest things to push upstream new functionality and improvements to existing functionality are welcome as well.</p>
+<section id="what-should-push-upstream">
+<h2>What Should Push Upstream?<a class="headerlink" href="#what-should-push-upstream" title="Permalink to this headline"></a></h2>
+<p>Upstream changes are intended to support the wider AutoTransform community. Bespoke components and changes unique to an organization should not be pushed upstream.</p>
+</section>
+</section>
+<section id="what-should-i-know-when-developing-for-autotransform">
+<h1>What Should I Know When Developing For AutoTransform?<a class="headerlink" href="#what-should-i-know-when-developing-for-autotransform" title="Permalink to this headline"></a></h1>
+<ul class="simple">
+<li><p><strong>Backwards compatability</strong>: Recognize that AutoTransform is intended to be a core part of an organization’s developer environment. If a change you are pushing upstream would break existing deployments of AutoTransform (i.e. by changing APIs), you should aim to provide a package that can be used to update existing deployments. Core developers MAY from time to time release breaking changes without providing a package for existing deployments but this will be heavily weighted against the cost of manual updates.</p></li>
+<li><p><strong>Test thoroughly</strong>: The nature of AutoTransform means large automated changes without human review may be landed using this tool. All components and changes to AutoTransform must be tested thoroughly to ensure maximum safety given the potential damage. Unit tests should be included with all components.</p></li>
+<li><p><strong>Follow style and practice</strong>: Because AutoTransform is expected to be extended often, it’s important that we follow consistent style and practice to ease developers extending AutoTransform.</p></li>
+<li><p><a class="reference external" href="https://pypi.org/project/mypy/"><strong>mypy</strong></a> is used for type checking of AutoTransform and type hints should always be provided.</p></li>
+<li><p><a class="reference external" href="https://pypi.org/project/black/"><strong>black</strong></a> is used for formatting AutoTransform with the following options:</p>
+<ul>
+<li><p>–line-length=100</p></li>
+</ul>
+</li>
+<li><p><a class="reference external" href="https://pypi.org/project/pylint/"><strong>pylint</strong></a> is used for linting with the following options:</p>
+<ul>
+<li><p>–enable=W0611,R0201,R0902,R0903,R0913,R1732</p></li>
+<li><p>–disable=R0801</p></li>
+</ul>
+</li>
+</ul>
+<section id="i-want-to-contribute-what-should-i-do">
+<h2>I Want To Contribute, What Should I Do?<a class="headerlink" href="#i-want-to-contribute-what-should-i-do" title="Permalink to this headline"></a></h2>
+<p>If after seing the above you still want to contribute to AutoTransform, follow standard Github practices by forking the repo, making changes, and submitting pull requests. If you are interested in becoming a frequent contributor with access to the repo reach out to nathro.software&#64;gmail.com</p>
+</section>
+<section id="what-about-the-docs">
+<h2>What About the Docs?<a class="headerlink" href="#what-about-the-docs" title="Permalink to this headline"></a></h2>
+<p>AutoTransform uses Sphinx for automating documentation updates. To update the docs, make sure you <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-U</span> <span class="pre">sphinx</span> <span class="pre">sphinx-rtd-theme</span> <span class="pre">myst_parser</span></code>. If you add new modules, you can get a headstart on adding docs to them using <code class="docutils literal notranslate"><span class="pre">sphinx-apidoc</span> <span class="pre">-o</span> <span class="pre">source</span> <span class="pre">&quot;../autotransform&quot;</span></code> from the docs/ directory. When adding or updating documentation, make sure to look at existing docs and maintain the same style. Most modules are documented using autodoc with Google format docstrings. Once your .rft files are good, run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> to get the html pages created. Any changes to documentation need to be pushed to readthedocs by &#64;nathro.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="CUSTOM_DEPLOYMENT.html" class="btn btn-neutral float-left" title="Extending For Your Organization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="autotransform.html" class="btn btn-neutral float-right" title="AutoTransform (autotransform)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Nathan Rockenbach.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
