@@ -80,22 +80,81 @@ The config fetcher allows for configuration of AutoTransform as a whole. This in
 * **[Default](https://github.com/nathro/AutoTransform/blob/master/autotransform/config/default.py)** - Pulls configuration from data/config.ini, a[ sample_config.ini](https://github.com/nathro/AutoTransform/blob/master/autotransform/data/sample_config.ini) file provides an example. This is the easiest choice for local use cases on a developers machine.
 * **[Environment Variable](https://github.com/nathro/AutoTransform/blob/master/autotransform/config/envvar.py)** - Pulls configuration from environment variables, using names that match the pattern: AUTO_TRANSFORM_&lt;SECTION>_&lt;SETTING> where section and setting represent the section and setting that would be used in a config.ini file, such as AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN. This is the preferred option for production use cases.
 
-### **Runner**
-
-**[Runner](https://github.com/nathro/AutoTransform/blob/master/autotransform/runner/base.py)** components are used to trigger a run of AutoTransform either locally or on an organization's remote infrastructure or job queue system. This allows organizations to set up integrations with their infrastructure to speed up developers by offloading the runs of AutoTransform. Additionally, remote infrastructure is used by scheduling logic when setting up scheduled runs of AutoTransform.
-
 ### **Item**
 
 **[Item](https://github.com/nathro/AutoTransform/blob/master/autotransform/item/base.py)** an item represents a potential input to a transformation. It can represent a file or any other logical object. All Items must have keys that uniquely identify them within their type. While items of different types can have
 the same key, separate items of the same type must have unique keys. Subclasses of Item can provide utility functionality, or support strongly typed extra data.
+### **Runner**
+
+**[Runner](https://github.com/nathro/AutoTransform/blob/master/autotransform/runner/base.py)** components are used to trigger a run of AutoTransform either locally or on an organization's remote infrastructure or job queue system. This allows organizations to set up integrations with their infrastructure to speed up developers by offloading the runs of AutoTransform. Additionally, remote infrastructure is used by scheduling logic when setting up scheduled runs of AutoTransform.
 
 ## **Data Flow**
-
-### **Schema**
 
 **[A visual representation](https://lucid.app/lucidchart/eca43a3d-175f-416f-bb4f-4363d56f951b/edit?invitationId=inv_f44ed708-8c4a-4998-96f2-8b860aba8ebc)**
 
 The Input component of the schema will get a list of Items that may serve as inputs to a transformation, these are then passed through the Filters where only those that pass the is_valid check make it through. This filtered set of Items is then passed to a Batcher which breaks the Items into groups called Batches. Batches will be executed sequentially as independent changes going through a multi-step process. First, the Batch goes to a Transformer which makes the actual changes to the codebase. Next, Validators are invoked which check to ensure the codebase is still healthy. After this, Commands are run which perform post-change processing, such as code generation. Finally, the Repo object will check for changes, commit them if present, and submit them (i.e. as a Pull Request). Once this is done, the Repo object will return the repository to a clean state in preparation for the next Batch.
+
+## **Scheduled Runs**
+
+AutoTransform provides a scheduling component for setting up automatically scheduled runs to maintain a codebase in to the future. Once set up, scheduled runs will ensure that an organization's codebase stays up-to-date.
+
+### **Schedule File**
+
+To get scheduled runs going, a JSON file with all scheduling information is required. The schedule format looks like the following:
+```
+{
+    "base_time": <int>,
+    "runner": {
+        "type": <RunnerType>,
+        "params": {
+            ...
+        }
+      },
+      "excluded_days": [<0-6>],
+      "schemas": [
+          "type": <builder, file>,
+          "schema": <string>,
+          "schedule": {
+              "repeats": <daily, weekly>,
+              "hour_of_day": <0-23>,
+              "day_of_week": <0-6>,
+              "sharding": {
+                  "num_shards": <int>,
+                  "shard_filter": {
+                      "type": FilterType,
+                      "params": {
+                          ...
+                      }
+                  }
+              }
+          }
+      ]
+}
+```
+To see an example, check out `data/autotransform_schedule.json`.
+
+### **Scheduling Params**
+
+The following params are used when scheduling schemas to run automatically.
+  * **Overall Params**
+    * **base_time**: This serves as the basis for determining hour of day and day of week. When scheduling is invoked, this time is subtracted from the current time to determine day of week and hour of day, with the base time treated as hour 0 on day 0.
+    * **runner**: This is an encoded runner object. All schemas that have been scheduled will be run using this object. It should trigger runs on the organization's CI infrastructure.
+    * **excluded_days**: A list of days of the week that schemas will not run. Defaults to empty.
+    * **schemas**: A list of schemas that are automatically scheduled.
+  * **Schema Params**
+    * **type**: Either the string "builder" or the string "file". This is used to determine whether the value of the schema param refers to a SchemaBuilderType or a file path.
+    * **schema**: Either a SchemaBuilderType or a file path.
+    * **Schedule**
+      * **repeats**: Either the string "daily" or the string "weekly". How often the schema will be run.
+      * **hour_of_day**: Which hour of the day, using the logic described for base_time, that the schema will be run. Defaults to 0.
+      * **day_of_week**: Which day of the week, using the logic described for base_time, that the schema will be run. Defaults to 0. Only applies to weekly runs.
+      * **Sharding**: A Sharded schema is run on a subset of it's input each time it is run. This subset is determined by the sharding params and can be used to break large runs over a codebase in to smaller pieces. Optional to include.
+        * **num_shards**: The total number of shards to spread the input across.
+        * **shard_filter**: A ShardFilter object that will be used to perform the actual sharding. It will get the num_shards and current_shard from the scheduler when constructed.
+
+### **Invoking Scheduled Runs**
+
+Scheduled runs are invoked using `autotransform schedule <path_to_schedule_file>`. If you use Github, you can see an example workflow at `data/workflows/autotransform_schedule.yml` that shows how to use Github actions for automating scheduled runs. If you do not use Github, you can set up a cron job on your organization's infrastructure to invoke the script on a schedule. Additionally, the `--time=<int>` option can be used to override the current timestamp when calculating hour/day. Using this may be useful if there is potential delay in your automation infrastructure.
 
 # **Upcoming Milestones**
 
@@ -103,7 +162,7 @@ The Input component of the schema will get a list of Items that may serve as inp
 
 An early beta with all core functionality, including scheduling and change management available with an initial set of core components. This represents a mostly locked down version of the code, APIs, etc. Breaking changes may still happen after this release, but they will be weighted heavily against potential existing adoption. Before this release, breaking changes will be far more likely.
 
-## **Milestone 2 - Release 1.0.0 - 7/29/2022**
+## **Milestone 2 - Release 1.0.0 - ETA 7/29/2022**
 
 This will include changes made as part of easing initial deployments. At this point AutoTransform will have been deployed to a production environment and the components will be considered production ready. Breaking changes after this release will be very unlikely and will coincide with new major versions of AutoTransform.
 
