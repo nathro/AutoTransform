@@ -29,7 +29,7 @@ class RegexFilter(Filter[RegexFilterParams]):
     Uses re.search rather than re.match.
 
     Attributes:
-        params (RegexFilterParams): Contains the pattern to check against the key.
+        _params (RegexFilterParams): Contains the pattern to check against the key.
     """
 
     _params: RegexFilterParams
@@ -82,7 +82,7 @@ class FileContentRegexFilter(Filter[FileContentRegexFilterParams]):
     provided regex pattern. Uses re.search rather than re.match.
 
     Attributes:
-        params (FileContentRegexFilterParams): Contains the pattern to check against the
+        _params (FileContentRegexFilterParams): Contains the pattern to check against the
             content of the file.
     """
 

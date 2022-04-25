@@ -10,6 +10,7 @@ Components
    :maxdepth: 4
 
    autotransform.filter.regex
+   autotransform.filter.key_hash_shard
 
 Core
 ----
@@ -18,5 +19,6 @@ Core
    :maxdepth: 4
 
    autotransform.filter.base
+   autotransform.filter.shard
    autotransform.filter.type
    autotransform.filter.factory

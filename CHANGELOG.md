@@ -13,6 +13,7 @@ Version 0.2.0 represents a production ready beta of AutoTransform. It includes a
  - ScriptTransformer as simple transformer that invokes a script
  - RegexFilter as a Filter which checks the Item's key against a regex pattern
  - FileContentRegexFilter as a Filter that checks a file's contents against a regex pattern
+ - Added ShardFilter concept and KeyHashShardFilter
 
  - Runner class added to provide an API for invoking runs
  - GithubRunner class added to use Github workflows for remote runs
@@ -23,6 +24,7 @@ Version 0.2.0 represents a production ready beta of AutoTransform. It includes a
  - Instance script and regexmod script eliminated
  - Config command added to main scripts for listing or updating config.ini values
  - Updated run script to allow remote runs
+ - Added schedule script
 
 #### API Changes
 
@@ -34,7 +36,7 @@ Version 0.2.0 represents a production ready beta of AutoTransform. It includes a
 
 #### Misc
 
-- Updated BatchMetadata to only require title
+- Updated BatchMetadata to not include title, while title becomes an element of batch
 - Add a generic to components for params so that type safety is improved
 - Changed how custom components are expected to be handled, now being imported through a config setting
 - GithubRepo now uses body param from metadata for PR body

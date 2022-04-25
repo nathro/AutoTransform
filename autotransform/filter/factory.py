@@ -12,6 +12,7 @@ from typing import Any, Callable, Dict, Mapping
 
 from autotransform.config import fetcher as Config
 from autotransform.filter.base import Filter, FilterBundle
+from autotransform.filter.key_hash_shard import KeyHashShardFilter
 from autotransform.filter.regex import FileContentRegexFilter, RegexFilter
 from autotransform.filter.type import FilterType
 
@@ -28,6 +29,7 @@ class FilterFactory:
 
     _map: Dict[FilterType, Callable[[bool, Mapping[str, Any]], Filter]] = {
         FilterType.FILE_CONTENT_REGEX: FileContentRegexFilter.from_data,
+        FilterType.KEY_HASH_SHARD: KeyHashShardFilter.from_data,
         FilterType.REGEX: RegexFilter.from_data,
     }
 

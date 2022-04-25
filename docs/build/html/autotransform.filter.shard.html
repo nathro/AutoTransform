@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FilterType (autotransform.filter.type) &mdash; AutoTransform 0.1.0 documentation</title>
+  <title>ShardFilter (autotransform.filter.shard) &mdash; AutoTransform 0.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="FilterFactory (autotransform.filter.factory)" href="autotransform.filter.factory.html" />
-    <link rel="prev" title="ShardFilter (autotransform.filter.shard)" href="autotransform.filter.shard.html" /> 
+    <link rel="next" title="FilterType (autotransform.filter.type)" href="autotransform.filter.type.html" />
+    <link rel="prev" title="Filter (autotransform.filter.base)" href="autotransform.filter.base.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -86,9 +86,9 @@
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="autotransform.html">AutoTransform (autotransform)</a> &raquo;</li>
           <li><a href="autotransform.filter.html">Filter Package (autotransform.filter)</a> &raquo;</li>
-      <li>FilterType (autotransform.filter.type)</li>
+      <li>ShardFilter (autotransform.filter.shard)</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/autotransform.filter.type.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/autotransform.filter.shard.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -96,27 +96,40 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-autotransform.filter.type">
-<span id="filtertype-autotransform-filter-type"></span><h1>FilterType (autotransform.filter.type)<a class="headerlink" href="#module-autotransform.filter.type" title="Permalink to this headline"></a></h1>
-<p>The type of Filter, used create a 1:1 mapping.</p>
+  <section id="module-autotransform.filter.shard">
+<span id="shardfilter-autotransform-filter-shard"></span><h1>ShardFilter (autotransform.filter.shard)<a class="headerlink" href="#module-autotransform.filter.shard" title="Permalink to this headline"></a></h1>
+<p>A base for sharding filters used by schedule runs to shard Input items.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="autotransform.filter.type.FilterType">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.filter.type.</span></span><span class="sig-name descname"><span class="pre">FilterType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.filter.type.FilterType" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
-<p>A simple enum for 1:1 Filter to type mapping.</p>
+<dt class="sig sig-object py" id="autotransform.filter.shard.ShardFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.filter.shard.</span></span><span class="sig-name descname"><span class="pre">ShardFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">autotransform.filter.base.TParams</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.filter.shard.ShardFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="autotransform.filter.base.html#autotransform.filter.base.Filter" title="autotransform.filter.base.Filter"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.filter.base.Filter</span></code></a>[<a class="reference internal" href="#autotransform.filter.shard.ShardFilterParams" title="autotransform.filter.shard.ShardFilterParams"><code class="xref py py-class docutils literal notranslate"><span class="pre">autotransform.filter.shard.ShardFilterParams</span></code></a>]</p>
+<p>A base for sharding filters that checks that an Item fits the current valid shard.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.filter.type.FilterType.FILE_CONTENT_REGEX">
-<span class="sig-name descname"><span class="pre">FILE_CONTENT_REGEX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'file_content_regex'</span></em><a class="headerlink" href="#autotransform.filter.type.FilterType.FILE_CONTENT_REGEX" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="autotransform.filter.shard.ShardFilter._params">
+<span class="sig-name descname"><span class="pre">_params</span></span><a class="headerlink" href="#autotransform.filter.shard.ShardFilter._params" title="Permalink to this definition"></a></dt>
+<dd><p>Contains the valid shard and num shards.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#autotransform.filter.shard.ShardFilterParams" title="autotransform.filter.shard.ShardFilterParams">ShardFilterParams</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="autotransform.filter.shard.ShardFilterParams">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.filter.shard.</span></span><span class="sig-name descname"><span class="pre">ShardFilterParams</span></span><a class="headerlink" href="#autotransform.filter.shard.ShardFilterParams" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TypedDict</span></code></p>
+<p>The param type for a ShardFilter.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="autotransform.filter.shard.ShardFilterParams.num_shards">
+<span class="sig-name descname"><span class="pre">num_shards</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#autotransform.filter.shard.ShardFilterParams.num_shards" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.filter.type.FilterType.KEY_HASH_SHARD">
-<span class="sig-name descname"><span class="pre">KEY_HASH_SHARD</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'key_hash_shard'</span></em><a class="headerlink" href="#autotransform.filter.type.FilterType.KEY_HASH_SHARD" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.filter.type.FilterType.REGEX">
-<span class="sig-name descname"><span class="pre">REGEX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'regex'</span></em><a class="headerlink" href="#autotransform.filter.type.FilterType.REGEX" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="autotransform.filter.shard.ShardFilterParams.valid_shard">
+<span class="sig-name descname"><span class="pre">valid_shard</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#autotransform.filter.shard.ShardFilterParams.valid_shard" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -127,8 +140,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="autotransform.filter.shard.html" class="btn btn-neutral float-left" title="ShardFilter (autotransform.filter.shard)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="autotransform.filter.factory.html" class="btn btn-neutral float-right" title="FilterFactory (autotransform.filter.factory)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="autotransform.filter.base.html" class="btn btn-neutral float-left" title="Filter (autotransform.filter.base)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="autotransform.filter.type.html" class="btn btn-neutral float-right" title="FilterType (autotransform.filter.type)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

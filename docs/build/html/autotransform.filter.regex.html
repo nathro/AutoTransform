@@ -18,7 +18,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Filter (autotransform.filter.base)" href="autotransform.filter.base.html" />
+    <link rel="next" title="KeyHashShardFilter (autotransform.filter.key_hash_shard)" href="autotransform.filter.key_hash_shard.html" />
     <link rel="prev" title="Filter Package (autotransform.filter)" href="autotransform.filter.html" /> 
 </head>
 
@@ -37,13 +37,16 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Readme</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Documents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="README.html"><strong>Overview</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#core-functionality"><strong>Core Functionality</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#upcoming-milestones"><strong>Upcoming Milestones</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#security-best-practices"><strong>Security Best Practices</strong></a></li>
 <li class="toctree-l1"><a class="reference internal" href="README.html#schema-best-practices"><strong>Schema Best Practices</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="CUSTOM_DEPLOYMENT.html"><strong>Extending For Your Organization</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html"><strong>Contributing To AutoTransform</strong></a></li>
+<li class="toctree-l1"><a class="reference internal" href="CONTRIBUTING.html#what-should-i-know-when-developing-for-autotransform"><strong>What Should I Know When Developing For AutoTransform?</strong></a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Code</span></p>
 <ul class="current">
@@ -103,8 +106,8 @@
 <p>A Filter which only passes FileItems where the file’s content contains a match to the
 provided regex pattern. Uses re.search rather than re.match.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.filter.regex.FileContentRegexFilter.params">
-<span class="sig-name descname"><span class="pre">params</span></span><a class="headerlink" href="#autotransform.filter.regex.FileContentRegexFilter.params" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="autotransform.filter.regex.FileContentRegexFilter._params">
+<span class="sig-name descname"><span class="pre">_params</span></span><a class="headerlink" href="#autotransform.filter.regex.FileContentRegexFilter._params" title="Permalink to this definition"></a></dt>
 <dd><p>Contains the pattern to check against the
 content of the file.</p>
 <dl class="field-list simple">
@@ -149,8 +152,8 @@ content of the file.</p>
 <p>A Filter which only passes Items where the Item’s key matches a provided regex pattern.
 Uses re.search rather than re.match.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.filter.regex.RegexFilter.params">
-<span class="sig-name descname"><span class="pre">params</span></span><a class="headerlink" href="#autotransform.filter.regex.RegexFilter.params" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="autotransform.filter.regex.RegexFilter._params">
+<span class="sig-name descname"><span class="pre">_params</span></span><a class="headerlink" href="#autotransform.filter.regex.RegexFilter._params" title="Permalink to this definition"></a></dt>
 <dd><p>Contains the pattern to check against the key.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -194,7 +197,7 @@ Uses re.search rather than re.match.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="autotransform.filter.html" class="btn btn-neutral float-left" title="Filter Package (autotransform.filter)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="autotransform.filter.base.html" class="btn btn-neutral float-right" title="Filter (autotransform.filter.base)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="autotransform.filter.key_hash_shard.html" class="btn btn-neutral float-right" title="KeyHashShardFilter (autotransform.filter.key_hash_shard)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
