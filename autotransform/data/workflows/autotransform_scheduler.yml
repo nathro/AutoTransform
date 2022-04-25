@@ -5,20 +5,19 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-name: Run AutoTransform
+# A sample workflow that can be used by a repo on Github to schedule automatic
+# AutoTransform runs
+
+name: Schedule AutoTransform
 
 on:
-  workflow_dispatch:
-    inputs:
-      schema:
-        description: "A JSON encoded schema to run"
-        required: true
-        type: string
+  schedule:
+    - cron: '0 * * * *'
 
 jobs:
-  run-autotransform:
+  schedule-autotransform:
     runs-on: ubuntu-latest
-    name: Run
+    name: Schedule
     steps:
     - uses: actions/checkout@v2
     - name: Set up git user
@@ -29,12 +28,15 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: "3.10"
-    - name: Install Dependencies
-      run: pip install -r schema_requirements.txt
-    - name: Run AutoTransform
-      run: python3 -m autotransform.scripts.main run --environment AUTO_TRANSFORM_SCHEMA
+    - name: Install AutoTransform
+      run: pip install AutoTransform
+    # Optionally install any custom components needed
+    - name: Install custom components
+      run: # Install your custom components here
+    - name: Schedule AutoTransform
+      run: autotransform schedule data/autotransform_schedule.json
       env:
-        PYTHONPATH: ${{ github.workspace }}
         AUTO_TRANSFORM_CONFIG: environment
         AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}
-        AUTO_TRANSFORM_SCHEMA: ${{ github.event.inputs.schema }}
+        # List your custom components, leave off if not using any
+        AUTO_TRANSFORM_IMPORTS_CUSTOM_COMPONENTS: <<custom.component.modules>>

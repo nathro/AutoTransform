@@ -5,20 +5,19 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-name: Run AutoTransform
+# A sample workflow that can be used by a repo on Github to schedule automatic
+# AutoTransform runs
+
+name: Schedule AutoTransform
 
 on:
-  workflow_dispatch:
-    inputs:
-      schema:
-        description: "A JSON encoded schema to run"
-        required: true
-        type: string
+  schedule:
+    - cron: '0 * * * *'
 
 jobs:
-  run-autotransform:
+  schedule-autotransform:
     runs-on: ubuntu-latest
-    name: Run
+    name: Schedule
     steps:
     - uses: actions/checkout@v2
     - name: Set up git user
@@ -32,7 +31,7 @@ jobs:
     - name: Install Dependencies
       run: pip install -r schema_requirements.txt
     - name: Run AutoTransform
-      run: python3 -m autotransform.scripts.main run --environment AUTO_TRANSFORM_SCHEMA
+      run: python3 -m autotransform.scripts.main schedule data/autotransform_schedule.json
       env:
         PYTHONPATH: ${{ github.workspace }}
         AUTO_TRANSFORM_CONFIG: environment

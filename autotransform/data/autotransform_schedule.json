@@ -1,0 +1,21 @@
+{
+    "base_time": 1650870000,
+    "runner": {
+        "type": "github",
+        "params": {
+            "workflow": "autotransform_runner.yml"
+        }
+    },
+    "excluded_days": [5,6],
+    "schemas": [
+        {
+            "type": "file",
+            "schema": "data/black_format.json",
+            "schedule": {
+                "repeats": "weekly",
+                "hour_of_day": 4,
+                "day_of_week": 0
+            }
+        }
+    ]
+}

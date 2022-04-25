@@ -109,26 +109,28 @@ To get scheduled runs going, a JSON file with all scheduling information is requ
         "params": {
             ...
         }
-      },
-      "excluded_days": [<0-6>],
-      "schemas": [
-          "type": <builder, file>,
-          "schema": <string>,
-          "schedule": {
-              "repeats": <daily, weekly>,
-              "hour_of_day": <0-23>,
-              "day_of_week": <0-6>,
-              "sharding": {
-                  "num_shards": <int>,
-                  "shard_filter": {
-                      "type": FilterType,
-                      "params": {
-                          ...
-                      }
-                  }
-              }
-          }
-      ]
+    },
+    "excluded_days": [<0-6>],
+    "schemas": [
+        {
+            "type": <builder, file>,
+            "schema": <string>,
+            "schedule": {
+                "repeats": <daily, weekly>,
+                "hour_of_day": <0-23>,
+                "day_of_week": <0-6>,
+                "sharding": {
+                    "num_shards": <int>,
+                    "shard_filter": {
+                        "type": FilterType,
+                        "params": {
+                            ...
+                        }
+                    }
+                }
+            }
+        }
+    ]
 }
 ```
 To see an example, check out `data/autotransform_schedule.json`.
@@ -154,7 +156,7 @@ The following params are used when scheduling schemas to run automatically.
 
 ### **Invoking Scheduled Runs**
 
-Scheduled runs are invoked using `autotransform schedule <path_to_schedule_file>`. If you use Github, you can see an example workflow at `data/workflows/autotransform_schedule.yml` that shows how to use Github actions for automating scheduled runs. If you do not use Github, you can set up a cron job on your organization's infrastructure to invoke the script on a schedule. Additionally, the `--time=<int>` option can be used to override the current timestamp when calculating hour/day. Using this may be useful if there is potential delay in your automation infrastructure.
+Scheduled runs are invoked using `autotransform schedule <path_to_schedule_file>`. If you use Github, you can see an example workflow at `data/workflows/autotransform_scheduler.yml` that shows how to use Github actions for automating scheduled runs. If you do not use Github, you can set up a cron job on your organization's infrastructure to invoke the script on a schedule. Additionally, the `--time=<int>` option can be used to override the current timestamp when calculating hour/day. Using this may be useful if there is potential delay in your automation infrastructure.
 
 # **Upcoming Milestones**
 

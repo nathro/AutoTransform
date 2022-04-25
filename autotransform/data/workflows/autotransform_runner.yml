@@ -40,7 +40,7 @@ jobs:
     - name: Install custom components
       run: # Install your custom components here
     - name: Run AutoTransform
-      run: autotransform r -e -w $WORKER AUTO_TRANSFORM_SCHEMA
+      run: autotransform run --environment AUTO_TRANSFORM_SCHEMA
       env:
         AUTO_TRANSFORM_CONFIG: environment
         AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}

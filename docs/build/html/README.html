@@ -253,26 +253,28 @@ the same key, separate items of the same type must have unique keys. Subclasses 
         <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="o">...</span>
         <span class="p">}</span>
-      <span class="p">},</span>
-      <span class="s2">&quot;excluded_days&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">&lt;</span><span class="mi">0</span><span class="o">-</span><span class="mi">6</span><span class="o">&gt;</span><span class="p">],</span>
-      <span class="s2">&quot;schemas&quot;</span><span class="p">:</span> <span class="p">[</span>
-          <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">builder</span><span class="p">,</span> <span class="n">file</span><span class="o">&gt;</span><span class="p">,</span>
-          <span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span><span class="p">,</span>
-          <span class="s2">&quot;schedule&quot;</span><span class="p">:</span> <span class="p">{</span>
-              <span class="s2">&quot;repeats&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">daily</span><span class="p">,</span> <span class="n">weekly</span><span class="o">&gt;</span><span class="p">,</span>
-              <span class="s2">&quot;hour_of_day&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">0</span><span class="o">-</span><span class="mi">23</span><span class="o">&gt;</span><span class="p">,</span>
-              <span class="s2">&quot;day_of_week&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">0</span><span class="o">-</span><span class="mi">6</span><span class="o">&gt;</span><span class="p">,</span>
-              <span class="s2">&quot;sharding&quot;</span><span class="p">:</span> <span class="p">{</span>
-                  <span class="s2">&quot;num_shards&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">int</span><span class="o">&gt;</span><span class="p">,</span>
-                  <span class="s2">&quot;shard_filter&quot;</span><span class="p">:</span> <span class="p">{</span>
-                      <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">FilterType</span><span class="p">,</span>
-                      <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span>
-                          <span class="o">...</span>
-                      <span class="p">}</span>
-                  <span class="p">}</span>
-              <span class="p">}</span>
-          <span class="p">}</span>
-      <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;excluded_days&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">&lt;</span><span class="mi">0</span><span class="o">-</span><span class="mi">6</span><span class="o">&gt;</span><span class="p">],</span>
+    <span class="s2">&quot;schemas&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">builder</span><span class="p">,</span> <span class="n">file</span><span class="o">&gt;</span><span class="p">,</span>
+            <span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span><span class="p">,</span>
+            <span class="s2">&quot;schedule&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;repeats&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">daily</span><span class="p">,</span> <span class="n">weekly</span><span class="o">&gt;</span><span class="p">,</span>
+                <span class="s2">&quot;hour_of_day&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">0</span><span class="o">-</span><span class="mi">23</span><span class="o">&gt;</span><span class="p">,</span>
+                <span class="s2">&quot;day_of_week&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="mi">0</span><span class="o">-</span><span class="mi">6</span><span class="o">&gt;</span><span class="p">,</span>
+                <span class="s2">&quot;sharding&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;num_shards&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">int</span><span class="o">&gt;</span><span class="p">,</span>
+                    <span class="s2">&quot;shard_filter&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">FilterType</span><span class="p">,</span>
+                        <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="o">...</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -313,7 +315,7 @@ the same key, separate items of the same type must have unique keys. Subclasses 
 </section>
 <section id="invoking-scheduled-runs">
 <h3><strong>Invoking Scheduled Runs</strong><a class="headerlink" href="#invoking-scheduled-runs" title="Permalink to this headline"></a></h3>
-<p>Scheduled runs are invoked using <code class="docutils literal notranslate"><span class="pre">autotransform</span> <span class="pre">schedule</span> <span class="pre">&lt;path_to_schedule_file&gt;</span></code>. If you use Github, you can see an example workflow at <code class="docutils literal notranslate"><span class="pre">data/workflows/autotransform_schedule.yml</span></code> that shows how to use Github actions for automating scheduled runs. If you do not use Github, you can set up a cron job on your organization’s infrastructure to invoke the script on a schedule. Additionally, the <code class="docutils literal notranslate"><span class="pre">--time=&lt;int&gt;</span></code> option can be used to override the current timestamp when calculating hour/day. Using this may be useful if there is potential delay in your automation infrastructure.</p>
+<p>Scheduled runs are invoked using <code class="docutils literal notranslate"><span class="pre">autotransform</span> <span class="pre">schedule</span> <span class="pre">&lt;path_to_schedule_file&gt;</span></code>. If you use Github, you can see an example workflow at <code class="docutils literal notranslate"><span class="pre">data/workflows/autotransform_scheduler.yml</span></code> that shows how to use Github actions for automating scheduled runs. If you do not use Github, you can set up a cron job on your organization’s infrastructure to invoke the script on a schedule. Additionally, the <code class="docutils literal notranslate"><span class="pre">--time=&lt;int&gt;</span></code> option can be used to override the current timestamp when calculating hour/day. Using this may be useful if there is potential delay in your automation infrastructure.</p>
 </section>
 </section>
 </section>
