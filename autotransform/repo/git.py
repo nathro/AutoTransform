@@ -60,7 +60,7 @@ class GitRepo(Repo[GitRepoParams]):
 
         # Handle titles of the format "[1/2] foo" that can come from chunk batching
         fixed_title = re.sub(r"\[(\d+)/(\d+)\]", r"\1_\2", title)
-        return f"{GitRepo.BRANCH_NAME_PREFIX}_{schema_name}_{fixed_title}".replace(" ", "_")
+        return f"{GitRepo.BRANCH_NAME_PREFIX}/{schema_name}/{fixed_title}".replace(" ", "_")
 
     @staticmethod
     def get_commit_message(title: str, schema_name: str) -> str:
