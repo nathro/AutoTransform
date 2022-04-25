@@ -70,11 +70,12 @@ class GithubRunner(Runner[GithubRunnerParams]):
         event_handler.handle(DebugEvent({"message": f"Workflow found: {workflow.name}"}))
 
         # Dispatch a Workflow run
-        dispatch_success = workflow.create_dispatch(
-            repo.get_params()["base_branch_name"],
-            {"schema": schema.to_json()},
+        status, a, b = workflow._requester.requestJson(
+            "POST", f"{workflow.url}/dispatches", input={"ref": repo.get_params()["base_branch_name"], "inputs": inputs}
         )
-        assert dispatch_success, "Failed to dispatch workflow request"
+        print(a)
+        print(b)
+        assert status == 204, "Failed to dispatch workflow request"
         event_handler.handle(DebugEvent({"message": "Successfully dispatched workflow run"}))
 
         # We wait a bit to make sure Github's API is updated before printing a best guess of the
