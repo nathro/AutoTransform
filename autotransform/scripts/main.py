@@ -37,12 +37,12 @@ def get_arg_parser() -> ArgumentParser:
     run.add_args(run_parser)
     
     # Add schedule command
-    run_parser = subparsers.add_parser(
+    schedule_parser = subparsers.add_parser(
         "schedule",
         help="Schedule runs of AutoTransform schemas",
         aliases=["s"],
     )
-    run.add_args(run_parser)
+    schedule.add_args(schedule_parser)
 
     # Add config command
     config_parser = subparsers.add_parser(
