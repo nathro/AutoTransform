@@ -90,7 +90,10 @@ def schedule_command_main(args: Namespace) -> None:
     elapsed_weeks = int(elapsed_days / 7)
 
     event_handler.handle(
-        DebugEvent({"message": f"Running on hour {hour_of_day} on day {day_of_week}"})
+        DebugEvent({"message": f"Running for hour {hour_of_day}, day {day_of_week}"})
+    )
+    event_handler.handle(
+        DebugEvent({"message": f"Elaphsed days {elapsed_days}, weeks {elapsed_weeks}"})
     )
 
     if day_of_week in excluded_days:
