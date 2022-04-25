@@ -122,7 +122,7 @@ def schedule_command_main(args: Namespace) -> None:
             event_handler.handle(
                 DebugEvent(
                     {
-                        "message": f"Skipping schema {schema.config.name}:"
+                        "message": f"Skipping schema {schema.get_config().get_name()}:"
                         + f" only runs on hour {schedule_info['hour_of_day']}",
                     }
                 )
@@ -132,7 +132,7 @@ def schedule_command_main(args: Namespace) -> None:
             event_handler.handle(
                 DebugEvent(
                     {
-                        "message": f"Skipping schema {schema.config.name}:"
+                        "message": f"Skipping schema {schema.get_config().get_name()}:"
                         + f" only runs on day {schedule_info['day_of_week']}",
                     }
                 )
@@ -159,7 +159,7 @@ def schedule_command_main(args: Namespace) -> None:
             filter_bundle["params"]["valid_shard"] = valid_shard
             shard_filter = FilterFactory.get(filter_bundle)
             assert isinstance(shard_filter, ShardFilter)
-            schema.filters.append(shard_filter)
+            schema.add_filter(shard_filter)
 
-        event_handler.handle(ScheduleRunEvent({"schema_name": schema.config.name}))
+        event_handler.handle(ScheduleRunEvent({"schema_name": schema.get_config().get_name()}))
         runner.run(schema)

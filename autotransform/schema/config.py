@@ -16,18 +16,18 @@ from typing import Any, Dict
 from autotransform.validator.base import ValidationResultLevel
 
 
-class Config:
+class SchemaConfig:
     """An object containing all configuration information for a Schema.
 
     Attributes:
-        allowed_validation_level (ValidationResultLevel): The allowed level of
+        _allowed_validation_level (ValidationResultLevel): The allowed level of
             validation issues. Any issues raised above this level will trigger
             exceptions.
-        name (str): The unique name of the schema.
+        _name (str): The unique name of the schema.
     """
 
-    allowed_validation_level: ValidationResultLevel
-    name: str
+    _allowed_validation_level: ValidationResultLevel
+    _name: str
 
     def __init__(
         self,
@@ -43,8 +43,24 @@ class Config:
                 exceptions. Defaults to ValidationResultLevel.NONE.
         """
 
-        self.name = name
-        self.allowed_validation_level = allowed_validation_level
+        self._name = name
+        self._allowed_validation_level = allowed_validation_level
+
+    def get_name(self) -> str:
+        """Gets the name of the Schema.
+
+        Returns:
+            str: The name of the Schema.
+        """
+
+        return self._name
+
+    def get_allowed_validation_level(self) -> ValidationResultLevel:
+        """Gets the allowed level of validation results for the Schema.
+
+        Returns:
+            ValidationResultLevel: The allowed level of validation results for the Schema.
+        """
 
     def bundle(self) -> Dict[str, Any]:
         """Bundles the configuration for JSON encoding.
@@ -54,12 +70,12 @@ class Config:
         """
 
         return {
-            "name": self.name,
-            "allowed_validation_level": self.allowed_validation_level,
+            "name": self._name,
+            "allowed_validation_level": self._allowed_validation_level,
         }
 
     @classmethod
-    def from_data(cls, data: Dict[str, Any]) -> Config:
+    def from_data(cls, data: Dict[str, Any]) -> SchemaConfig:
         """Produces a Config from supplied options.
 
         Args:

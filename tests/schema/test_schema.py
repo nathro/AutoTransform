@@ -23,7 +23,7 @@ from autotransform.filter.regex import RegexFilter
 from autotransform.input.directory import DirectoryInput
 from autotransform.item.base import Item
 from autotransform.repo.github import GithubRepo
-from autotransform.schema.config import Config
+from autotransform.schema.config import SchemaConfig
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.transformer.regex import RegexTransformer
 
@@ -41,7 +41,7 @@ def get_sample_schema() -> AutoTransformSchema:
         DirectoryInput({"path": repo_root}),
         SingleBatcher({"title": EXPECTED_TITLE, "metadata": EXPECTED_METADATA}),
         RegexTransformer({"pattern": "input", "replacement": "inputsource"}),
-        Config("Sample"),
+        SchemaConfig("Sample"),
         filters=[RegexFilter({"pattern": ".*\\.py$"})],
         repo=GithubRepo({"base_branch_name": "master", "full_github_name": "nathro/AutoTransform"}),
     )
@@ -294,67 +294,78 @@ def test_json_decoding(mocked_active_branch):
     actual_schema = AutoTransformSchema.from_json(actual_json)
 
     # Check Input
-    assert type(actual_schema.input) is type(expected_schema.input), "Inputs are not the same"
+    actual_input = actual_schema.get_input()
+    expected_input = expected_schema.get_input()
+    assert type(actual_input) is type(expected_input), "Inputs are not the same"
     assert (
-        actual_schema.input.get_params() == expected_schema.input.get_params()
+        actual_input.get_params() == expected_input.get_params()
     ), "Inputs do not have the same params"
 
     # Check batcher
-    assert type(actual_schema.batcher) is type(expected_schema.batcher), "Batchers are not the same"
+    actual_batcher = actual_schema.get_batcher()
+    expected_batcher = expected_schema.get_batcher()
+    assert type(actual_batcher) is type(expected_batcher), "Batchers are not the same"
     assert (
-        actual_schema.batcher.get_params() == expected_schema.batcher.get_params()
+        actual_batcher.get_params() == expected_batcher.get_params()
     ), "Batchers do not have the same params"
 
     # Check transformer
-    assert type(actual_schema.transformer) is type(
-        expected_schema.transformer
-    ), "Transformers are not the same"
+    actual_transformer = actual_schema.get_transformer()
+    expected_transformer = expected_schema.get_transformer()
+    assert type(actual_transformer) is type(expected_transformer), "Transformers are not the same"
     assert (
-        actual_schema.transformer.get_params() == expected_schema.transformer.get_params()
+        actual_transformer.get_params() == expected_transformer.get_params()
     ), "Transformers do not have the same params"
 
     # Check repo
-    if actual_schema.repo is None:
-        assert expected_schema.repo is None, "Repo missing from decoded schema"
-    assert type(actual_schema.repo) is type(expected_schema.repo), "Repos are not the same"
-    assert (
-        actual_schema.repo.get_params() == expected_schema.repo.get_params()
-    ), "Repos do not have the same params"
+    actual_repo = actual_schema.get_repo()
+    expected_repo = expected_schema.get_repo()
+    if actual_repo is None:
+        assert expected_repo is None, "Repo missing from decoded schema"
+    else:
+        assert type(actual_repo) is type(expected_repo), "Repos are not the same"
+        assert (
+            actual_repo.get_params() == expected_repo.get_params()
+        ), "Repos do not have the same params"
 
     # Check Filters
-    for i in range(len(actual_schema.filters)):
-        assert i < len(expected_schema.filters), "More Filters present than expected"
-        assert type(actual_schema.filters[i]) is type(
-            expected_schema.filters[i]
-        ), "Filters are not the same"
+    actual_filters = actual_schema.get_filters()
+    expected_filters = expected_schema.get_filters()
+    assert len(actual_filters) == len(expected_filters), "Filter length does not match"
+    for i in range(len(actual_filters)):
+        assert type(actual_filters[i]) is type(expected_filters[i]), "Filters are not the same"
         assert (
-            actual_schema.filters[i].get_params() == expected_schema.filters[i].get_params()
+            actual_filters[i].get_params() == expected_filters[i].get_params()
         ), "Filters do not have the same params"
 
     # Check validators
-    for i in range(len(actual_schema.validators)):
-        assert i < len(expected_schema.validators), "More Validators present than expected"
-        assert type(actual_schema.validators[i]) is type(
-            expected_schema.validators[i]
+    actual_validators = actual_schema.get_validators()
+    expected_validators = expected_schema.get_validators()
+    assert len(actual_validators) == len(expected_validators), "Validators length does not match"
+    for i in range(len(actual_validators)):
+        assert type(actual_validators[i]) is type(
+            expected_validators[i]
         ), "Validators are not the same"
         assert (
-            actual_schema.validators[i].get_params() == expected_schema.validators[i].get_params()
+            actual_validators[i].get_params() == expected_validators[i].get_params()
         ), "Validators do not have the same params"
 
     # Check commands
-    for i in range(len(actual_schema.commands)):
-        assert i < len(expected_schema.commands), "More Commands present than expected"
-        assert type(actual_schema.commands[i]) is type(
-            expected_schema.commands[i]
-        ), "Commands are not the same"
+    actual_commands = actual_schema.get_commands()
+    expected_commands = expected_schema.get_commands()
+    assert len(actual_commands) == len(expected_commands), "Commands length does not match"
+    for i in range(len(actual_commands)):
+        assert type(actual_commands[i]) is type(expected_commands[i]), "Commands are not the same"
         assert (
-            actual_schema.commands[i].get_params() == expected_schema.commands[i].get_params()
+            actual_commands[i].get_params() == expected_commands[i].get_params()
         ), "Commands do not have the same params"
 
     # Check config
-    assert type(actual_schema.config) is type(expected_schema.config), "Configs are not the same"
-    assert actual_schema.config.name == expected_schema.config.name, "Names do not match"
+    actual_config = actual_schema.get_config()
+    expected_config = expected_schema.get_config()
+    assert type(actual_config) is type(expected_config), "Configs are not the same"
+    assert actual_config.get_name() == expected_config.get_name(), "Names do not match"
     assert (
-        actual_schema.config.allowed_validation_level
-        == expected_schema.config.allowed_validation_level
+        actual_config.get_allowed_validation_level()
+        == expected_config.get_allowed_validation_level()
     ), "Allowed validation level does not match"

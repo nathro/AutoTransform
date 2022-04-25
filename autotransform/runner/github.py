@@ -59,7 +59,7 @@ class GithubRunner(Runner[GithubRunnerParams]):
         """
 
         event_handler = EventHandler.get()
-        repo = schema.repo
+        repo = schema.get_repo()
 
         # May add support for cross-repo usage but enforce that the workflow being invoked exists
         # in the target repo for now
@@ -94,7 +94,9 @@ class GithubRunner(Runner[GithubRunnerParams]):
             )
         )
         event_handler.handle(
-            RemoteRunEvent({"schema_name": schema.config.name, "ref": workflow_runs[0].html_url})
+            RemoteRunEvent(
+                {"schema_name": schema.get_config().get_name(), "ref": workflow_runs[0].html_url}
+            )
         )
 
     @staticmethod

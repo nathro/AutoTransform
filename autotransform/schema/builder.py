@@ -18,7 +18,7 @@ from autotransform.command.base import Command
 from autotransform.filter.base import Filter
 from autotransform.input.base import Input
 from autotransform.repo.base import Repo
-from autotransform.schema.config import Config
+from autotransform.schema.config import SchemaConfig
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.transformer.base import Transformer
 from autotransform.validator.base import Validator
@@ -101,16 +101,16 @@ class SchemaBuilder(ABC):
 
         return None
 
-    def get_config(self) -> Config:
-        """Get the Config for the Schema.
+    def get_config(self) -> SchemaConfig:
+        """Get the SchemaConfig for the Schema.
 
         Returns:
-            Config: The Config that will be used in the built Schema.
+            SchemaConfig: The SchemaConfig that will be used in the built Schema.
         """
 
         # pylint: disable=no-self-use
 
-        return Config(type(self).__name__)
+        return SchemaConfig(type(self).__name__)
 
     def build(self) -> AutoTransformSchema:
         """Builds a Schema based on the state of the SchemaBuilder.
