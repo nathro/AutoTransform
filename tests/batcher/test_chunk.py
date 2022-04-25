@@ -24,6 +24,7 @@ def test_with_no_items():
     batcher = ChunkBatcher({"title": title, "metadata": metadata, "chunk_size": 10})
     check_batcher(batcher, items, [{"metadata": metadata, "items": items, "title": title}])
 
+
 def test_with_one_item():
     """Checks that the batcher works with one Item."""
 
@@ -34,6 +35,7 @@ def test_with_one_item():
     batcher = ChunkBatcher({"title": title, "metadata": metadata, "chunk_size": 10})
     check_batcher(batcher, items, [{"metadata": metadata, "items": items, "title": expected_title}])
 
+
 def test_with_one_item_no_metadata():
     """Checks that the batcher works with one Item and no metadata."""
 
@@ -42,6 +44,7 @@ def test_with_one_item_no_metadata():
     items = [Item("foo.py")]
     batcher = ChunkBatcher({"title": title, "chunk_size": 10})
     check_batcher(batcher, items, [{"items": items, "title": expected_title}])
+
 
 def test_with_multiple_items():
     """Checks that the batcher works with multiple Items."""
@@ -52,6 +55,7 @@ def test_with_multiple_items():
     items = [Item("foo.py"), Item("bar.py")]
     batcher = ChunkBatcher({"title": title, "metadata": metadata, "chunk_size": 10})
     check_batcher(batcher, items, [{"metadata": metadata, "items": items, "title": expected_title}])
+
 
 def test_with_multiple_files_and_multiple_batches():
     """Checks that the batcher works with multiple Items separated in to multiple batches."""
@@ -70,6 +74,7 @@ def test_with_multiple_files_and_multiple_batches():
             {"metadata": metadata, "items": items[2:], "title": expected_title_2},
         ],
     )
+
 
 def test_with_multiple_files_and_max_batches():
     """Checks that the batcher works with multiple Items separated in to multiple Batches, with max

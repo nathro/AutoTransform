@@ -30,6 +30,7 @@ def test_regex():
     test_cases = [(FileItem(path), result) for path, result in test_cases.items()]
     run_filter_tests(filt, test_cases)
 
+
 def test_inverted_regex():
     """Runs simple tests on the Regex filter."""
 
@@ -44,6 +45,7 @@ def test_inverted_regex():
     }
     test_cases = [(FileItem(path), result) for path, result in test_cases.items()]
     run_filter_tests(filt, test_cases)
+
 
 def test_file_content_regex(tmpdir):
     """Runs simple tests on the Regex filter."""
@@ -60,6 +62,7 @@ def test_file_content_regex(tmpdir):
     }
     test_cases = [(FileItem(path), result) for path, result in test_cases.items()]
     run_filter_tests(filt, test_cases)
+
 
 def test_inverted_file_content_regex(tmpdir):
     """Runs simple tests on the Regex filter."""

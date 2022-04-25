@@ -21,6 +21,7 @@ def test_get_content(tmpdir):
     test_file.write(test_content)
     assert FileItem(str(test_file)).get_content() == test_content
 
+
 def test_write_content(tmpdir):
     """Tests writing content to a file using FileItem's write_content function."""
 

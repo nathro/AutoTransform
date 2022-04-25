@@ -40,12 +40,14 @@ def assert_directory_content(directory: str, expected_files: List[str]):
         extra_files
     )
 
+
 def test_empty_dir(tmpdir):
     """Tests running DirectoryInput against a directory with no files in it."""
 
     empty_dir = tmpdir.mkdir("empty_dir")
     expected_files = []
     assert_directory_content(str(empty_dir), expected_files)
+
 
 def test_non_empty_dir(tmpdir):
     """Tests running DirectoryInput against a directory with a single file in it."""
@@ -55,6 +57,7 @@ def test_non_empty_dir(tmpdir):
     test_file.write("test")
     expected_files = [str(test_file)]
     assert_directory_content(str(non_empty_dir), expected_files)
+
 
 def test_recursive_dir(tmpdir):
     """Tests running DirectoryInput against a directory that has files within a

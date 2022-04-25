@@ -34,9 +34,6 @@ class Event(Generic[TData], ABC):
     data: TData
     create_time: float
 
-
-
-
     def __init__(self, data: TData):
         """A simple constructor.
 

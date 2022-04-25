@@ -32,6 +32,7 @@ ALL_ITEMS = [Item("allowed"), Item("not_allowed")]
 EXPECTED_METADATA = {"summary": "", "tests": ""}
 EXPECTED_TITLE = "test"
 
+
 def get_sample_schema() -> AutoTransformSchema:
     """Gets the sample schema being used for testing."""
 
@@ -44,6 +45,7 @@ def get_sample_schema() -> AutoTransformSchema:
         filters=[RegexFilter({"pattern": ".*\\.py$"})],
         repo=GithubRepo({"base_branch_name": "master", "full_github_name": "nathro/AutoTransform"}),
     )
+
 
 def mock_input(mocked_get_items) -> None:
     """Sets up the Input mock."""
@@ -351,7 +353,7 @@ def test_json_decoding(mocked_active_branch):
 
     # Check config
     assert type(actual_schema.config) is type(expected_schema.config), "Configs are not the same"
-    assert (actual_schema.config.name == expected_schema.config.name), "Names do not match"
+    assert actual_schema.config.name == expected_schema.config.name, "Names do not match"
     assert (
         actual_schema.config.allowed_validation_level
         == expected_schema.config.allowed_validation_level

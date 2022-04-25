@@ -73,6 +73,7 @@ class RegexFilter(Filter[RegexFilterParams]):
         assert isinstance(pattern, str)
         return RegexFilter({"pattern": pattern})
 
+
 class FileContentRegexFilterParams(TypedDict):
     """The param type for a FileContentRegexFilter."""
 
