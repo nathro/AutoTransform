@@ -101,7 +101,7 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
         arg_replacements = {
             "<<KEY>>": item.get_key(),
             "<<EXTRA_DATA>>": json.dumps(extra_data),
-            "<<METADATA>>": json.dumps(metadata)
+            "<<METADATA>>": json.dumps(metadata),
         }
 
         with TmpFile(mode="w+") as inp, TmpFile(mode="w+") as meta, TmpFile(mode="w+") as extra:
@@ -153,7 +153,8 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
         item_keys = [item.get_key() for item in batch["items"]]
         extra_data = {
             item.get_key(): item.get_extra_data()
-            for item in batch["items"] if item.get_extra_data() is not None
+            for item in batch["items"]
+            if item.get_extra_data() is not None
         }
         metadata = batch.get("metadata", {})
         arg_replacements = {
@@ -208,7 +209,7 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
         timeout = data["timeout"]
         assert isinstance(timeout, int)
 
-        params: ScriptTransformerParams =  {"script": script, "args": args, "timeout": timeout}
+        params: ScriptTransformerParams = {"script": script, "args": args, "timeout": timeout}
 
         per_item = data.get("per_item", None)
         if per_item is not None:

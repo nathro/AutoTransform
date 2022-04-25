@@ -30,6 +30,7 @@ class ChunkBatcherParams(TypedDict):
     metadata: NotRequired[Mapping[str, Any]]
     title: str
 
+
 class ChunkBatcher(Batcher[ChunkBatcherParams]):
     """A batcher which chunks Items in to several Batches. A chunk size is supplied that
     determines the size of Batches. A maximum number of chunks can optionally be supplied. If

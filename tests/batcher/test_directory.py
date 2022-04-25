@@ -24,6 +24,7 @@ def test_with_no_items():
     batcher = DirectoryBatcher({"prefix": prefix, "metadata": metadata})
     check_batcher(batcher, items, [])
 
+
 def test_with_one_item():
     """Checks that the Batcher works with one Item."""
 
@@ -37,6 +38,7 @@ def test_with_one_item():
         [{"metadata": metadata, "items": items, "title": prefix + ": foo"}],
     )
 
+
 def test_with_one_item_no_metadata():
     """Checks that the Batcher works with one Item and no metadata."""
 
@@ -44,6 +46,7 @@ def test_with_one_item_no_metadata():
     items = [FileItem("foo/bar.py")]
     batcher = DirectoryBatcher({"prefix": prefix})
     check_batcher(batcher, items, [{"items": items, "title": prefix + ": foo"}])
+
 
 def test_with_multiple_items_single_directory():
     """Checks that the Batcher works with multiple Items in one directory."""
@@ -57,6 +60,7 @@ def test_with_multiple_items_single_directory():
         items,
         [{"metadata": metadata, "items": items, "title": prefix + ": foo"}],
     )
+
 
 def test_with_multiple_items_multiple_directories():
     """Checks that the Batcher works with Items in multiple directories."""
@@ -73,6 +77,7 @@ def test_with_multiple_items_multiple_directories():
             {"metadata": metadata, "items": items[1:], "title": prefix + ": fizz"},
         ],
     )
+
 
 def test_with_multiple_items_nested_directories():
     """Checks that the Batcher works with Items in nested directories."""

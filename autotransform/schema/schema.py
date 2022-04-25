@@ -119,9 +119,9 @@ class AutoTransformSchema:
         # Get Items
         event_handler.handle(DebugEvent({"message": "Begin get_items"}))
         all_items = self.input.get_items()
-        event_handler.handle(DebugEvent(
-            {"message": f"Items: {json.dumps([item.bundle() for item in all_items])}"}
-        ))
+        event_handler.handle(
+            DebugEvent({"message": f"Items: {json.dumps([item.bundle() for item in all_items])}"})
+        )
 
         # Filter Items
         event_handler.handle(DebugEvent({"message": "Begin filters"}))
@@ -139,9 +139,11 @@ class AutoTransformSchema:
                     break
             if is_valid:
                 valid_items.append(item)
-        event_handler.handle(DebugEvent(
-            {"message": f"Valid items: {json.dumps([item.bundle() for item in valid_items])}"}
-        ))
+        event_handler.handle(
+            DebugEvent(
+                {"message": f"Valid items: {json.dumps([item.bundle() for item in valid_items])}"}
+            )
+        )
 
         # Batch Items
         event_handler.handle(DebugEvent({"message": "Begin batching"}))
