@@ -12,7 +12,7 @@ Different CLI commands are handled as subparsers. Includes the following command
 
 from argparse import ArgumentParser
 
-from autotransform.scripts.commands import config, run
+from autotransform.scripts.commands import config, run, schedule
 
 
 def get_arg_parser() -> ArgumentParser:
@@ -33,6 +33,14 @@ def get_arg_parser() -> ArgumentParser:
         "run",
         help="Execute a full run of AutoTransform",
         aliases=["r"],
+    )
+    run.add_args(run_parser)
+    
+    # Add schedule command
+    run_parser = subparsers.add_parser(
+        "schedule",
+        help="Schedule runs of AutoTransform schemas",
+        aliases=["s"],
     )
     run.add_args(run_parser)
 

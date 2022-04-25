@@ -34,6 +34,7 @@
     "validators": [],
     "commands": [],
     "config": {
+        "name": "Sample",
         "allowed_validation_level": 0
     },
     "repo": {

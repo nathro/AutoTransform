@@ -108,7 +108,7 @@ class SchemaBuilder(ABC):
 
         # pylint: disable=no-self-use
 
-        return Config()
+        return Config(type(self).__name__)
 
     def build(self) -> AutoTransformSchema:
         """Builds a Schema based on the state of the SchemaBuilder.

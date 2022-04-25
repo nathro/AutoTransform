@@ -21,22 +21,27 @@ class Config:
         allowed_validation_level (ValidationResultLevel): The allowed level of
             validation issues. Any issues raised above this level will trigger
             exceptions.
+        name (str): The unique name of the schema.
     """
 
     allowed_validation_level: ValidationResultLevel
+    name: str
 
     def __init__(
         self,
+        name: str,
         allowed_validation_level: ValidationResultLevel = ValidationResultLevel.NONE,
     ):
         """A simple constructor.
 
         Args:
+            name (str): The unique name of the schema.
             allowed_validation_level (ValidationResultLevel, optional): The allowed level of
                 validation issues. Any issues raised above this level will trigger
                 exceptions. Defaults to ValidationResultLevel.NONE.
         """
 
+        self.name = name
         self.allowed_validation_level = allowed_validation_level
 
     def bundle(self) -> Dict[str, Any]:
@@ -47,6 +52,7 @@ class Config:
         """
 
         return {
+            "name": self.name,
             "allowed_validation_level": self.allowed_validation_level,
         }
 
@@ -67,4 +73,6 @@ class Config:
                 validation_level = ValidationResultLevel.from_name(validation_level)
         else:
             validation_level = ValidationResultLevel.NONE
-        return cls(validation_level)
+        name = data["name"]
+        assert isinstance(name, str)
+        return cls(name, validation_level)

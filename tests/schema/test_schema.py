@@ -21,6 +21,7 @@ from autotransform.filter.regex import RegexFilter
 from autotransform.input.directory import DirectoryInput
 from autotransform.item.base import Item
 from autotransform.repo.github import GithubRepo
+from autotransform.schema.config import Config
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.transformer.regex import RegexTransformer
 
@@ -37,6 +38,7 @@ def get_sample_schema() -> AutoTransformSchema:
         DirectoryInput({"path": repo_root}),
         SingleBatcher({"title": EXPECTED_TITLE, "metadata": EXPECTED_METADATA}),
         RegexTransformer({"pattern": "input", "replacement": "inputsource"}),
+        Config("Sample"),
         filters=[RegexFilter({"pattern": ".*\\.py$"})],
         repo=GithubRepo({"base_branch_name": "master", "full_github_name": "nathro/AutoTransform"}),
     )
@@ -347,6 +349,7 @@ def test_json_decoding(mocked_active_branch):
 
     # Check config
     assert type(actual_schema.config) is type(expected_schema.config), "Configs are not the same"
+    assert (actual_schema.config.name == expected_schema.config.name), "Names do not match"
     assert (
         actual_schema.config.allowed_validation_level
         == expected_schema.config.allowed_validation_level

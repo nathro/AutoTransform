@@ -70,11 +70,11 @@ class AutoTransformSchema:
         inp: Input,
         batcher: Batcher,
         transformer: Transformer,
+        config: Config,
         filters: List[Filter] = None,
         validators: List[Validator] = None,
         commands: List[Command] = None,
         repo: Optional[Repo] = None,
-        config: Config = None,
     ):
         """A simple constructor.
 
@@ -82,6 +82,7 @@ class AutoTransformSchema:
             inp (Input): The Schema's Input.
             batcher (Batcher): The Schema's Batcher.
             transformer (Transformer): The Schema's Transformer.
+            config (Config, optional): The Schema's Config.
             filters (List[Filter], optional): The Schema's Filters. Defaults to None which is
                 converted in to an empty list.
             validators (List[Validator], optional): The Schema's Validators. Defaults to None which
@@ -89,8 +90,6 @@ class AutoTransformSchema:
             commands (List[Command], optional): The Schema's Commands. Defaults to None which is
                 converted in to an empty list.
             repo (Optional[Repo], optional): The Schema's Repo. Defaults to None.
-            config (Config, optional): The Schema's Config. Defaults to None which is converted
-                in to a default configuration.
         """
 
         # pylint: disable=too-many-arguments
@@ -98,13 +97,12 @@ class AutoTransformSchema:
         self.input = inp
         self.batcher = batcher
         self.transformer = transformer
+        self.config = config
 
         self.filters = filters if isinstance(filters, List) else []
         self.validators = validators if isinstance(validators, List) else []
         self.commands = commands if isinstance(commands, List) else []
         self.repo = repo
-
-        self.config = config if isinstance(config, Config) else Config()
 
     def get_batches(self) -> List[Batch]:
         """Runs the Input to get eligible Items, filters them, then batches them.
@@ -286,6 +284,7 @@ class AutoTransformSchema:
         inp = InputFactory.get(bundle["input"])
         batcher = BatcherFactory.get(bundle["batcher"])
         transformer = TransformerFactory.get(bundle["transformer"])
+        config = Config.from_data(bundle["config"])
 
         filters = [FilterFactory.get(f) for f in bundle["filters"]]
         validators = [ValidatorFactory.get(validator) for validator in bundle["validators"]]
@@ -295,11 +294,6 @@ class AutoTransformSchema:
             repo = RepoFactory.get(bundle["repo"])
         else:
             repo = None
-
-        if "config" in bundle:
-            config = Config.from_data(bundle["config"])
-        else:
-            config = Config()
 
         return AutoTransformSchema(
             inp,

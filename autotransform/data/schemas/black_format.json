@@ -40,6 +40,7 @@
     "validators": [],
     "commands": [],
     "config": {
+        "name": "Black Format",
         "allowed_validation_level": 0
     }
 }
