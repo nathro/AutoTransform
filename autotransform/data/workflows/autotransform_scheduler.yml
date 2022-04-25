@@ -37,6 +37,6 @@ jobs:
       run: autotransform schedule data/autotransform_schedule.json
       env:
         AUTO_TRANSFORM_CONFIG: environment
-        AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}
+        AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_ADMIN_GITHUB_TOKEN }}
         # List your custom components, leave off if not using any
         AUTO_TRANSFORM_IMPORTS_CUSTOM_COMPONENTS: <<custom.component.modules>>

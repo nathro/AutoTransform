@@ -316,6 +316,7 @@ the same key, separate items of the same type must have unique keys. Subclasses 
 <section id="invoking-scheduled-runs">
 <h3><strong>Invoking Scheduled Runs</strong><a class="headerlink" href="#invoking-scheduled-runs" title="Permalink to this headline"></a></h3>
 <p>Scheduled runs are invoked using <code class="docutils literal notranslate"><span class="pre">autotransform</span> <span class="pre">schedule</span> <span class="pre">&lt;path_to_schedule_file&gt;</span></code>. If you use Github, you can see an example workflow at <code class="docutils literal notranslate"><span class="pre">data/workflows/autotransform_scheduler.yml</span></code> that shows how to use Github actions for automating scheduled runs. If you do not use Github, you can set up a cron job on your organization’s infrastructure to invoke the script on a schedule. Additionally, the <code class="docutils literal notranslate"><span class="pre">--time=&lt;int&gt;</span></code> option can be used to override the current timestamp when calculating hour/day. Using this may be useful if there is potential delay in your automation infrastructure.</p>
+<p>As a note, if using GithubActions, the github_token used must have admin access to the repo to trigger further github actions.</p>
 </section>
 </section>
 </section>

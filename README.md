@@ -158,6 +158,8 @@ The following params are used when scheduling schemas to run automatically.
 
 Scheduled runs are invoked using `autotransform schedule <path_to_schedule_file>`. If you use Github, you can see an example workflow at `data/workflows/autotransform_scheduler.yml` that shows how to use Github actions for automating scheduled runs. If you do not use Github, you can set up a cron job on your organization's infrastructure to invoke the script on a schedule. Additionally, the `--time=<int>` option can be used to override the current timestamp when calculating hour/day. Using this may be useful if there is potential delay in your automation infrastructure.
 
+As a note, if using GithubActions, the github_token used must have admin access to the repo to trigger further github actions.
+
 # **Upcoming Milestones**
 
 ## **Milestone 1 - Beta 0.2.0 - ETA 5/29/2022**
