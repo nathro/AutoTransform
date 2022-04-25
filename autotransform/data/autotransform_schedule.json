@@ -12,9 +12,8 @@
             "type": "file",
             "schema": "autotransform/data/schemas/black_format.json",
             "schedule": {
-                "repeats": "weekly",
-                "hour_of_day": 1,
-                "day_of_week": 0
+                "repeats": "daily",
+                "hour_of_day": 2
             }
         }
     ]
