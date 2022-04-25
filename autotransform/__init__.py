@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+# @black_format
+
 """AutoTransform is a framework for defining and running code transformations.
 It can be used by organizations looking to update/change/cleanup their codebases
 as well as by library authors to provide transformations to end users that can

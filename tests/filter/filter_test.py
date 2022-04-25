@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+# @black_format
+
 """Utility methods for testing Filter components."""
 
 from typing import List, Tuple

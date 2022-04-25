@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+# @black_format
+
 """Validators take in a Batch that has undergone transformation and validate that the
 changes do not produce any issues/errors. They may run test cases or check linting or
 type checking."""

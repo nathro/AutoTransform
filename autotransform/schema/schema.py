@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+# @black_format
+
 """The heart of AutoTransform, AutoTransformSchemas represent all information
 required to fully execute a change.
 """

@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+# @black_format
+
 """The EventHandler receives event dispatches and triggers appropriate behavior for
 the event, such as logging.
 """

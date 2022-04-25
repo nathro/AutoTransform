@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+# @black_format
+
 """Tests for the GitGrepInput component."""
 
 from autotransform.input.gitgrep import GitGrepInput

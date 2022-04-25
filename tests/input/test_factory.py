@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+# @black_format
+
 """Tests that the InputFactory has all types included."""
 
 from autotransform.input.factory import InputFactory

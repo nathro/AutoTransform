@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+# @black_format
+
 """A ConfigFetcher that uses the data/config.ini file to supply configuration."""
 
 import pathlib

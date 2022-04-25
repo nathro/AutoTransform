@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+# @black_format
+
 """The run command is used to execute a full run of a schema, either locally
 or by kicking off a remote job."""
 

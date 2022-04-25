@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+# @black_format
+
 """A base for sharding filters used by schedule runs to shard Input items."""
 
 from __future__ import annotations

@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+# @black_format
+
 """The AutoTransform script, responsible for handling AutoTransform CLI invocations.
 Different CLI commands are handled as subparsers. Includes the following commands
     Run: Executes a full run of AutoTransform.

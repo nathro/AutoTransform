@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+# @black_format
+
 """The ScriptRunEvent is triggered whenever an AutoTransform script is run and provides
 information on the run.
 """

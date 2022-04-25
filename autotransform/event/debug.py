@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+# @black_format
+
 """The DebugEvent is a simple, generic event used for logging debug information to
 the console. This information is not expected to be logged to long term storage and
 is used when debugging usage in production environments.

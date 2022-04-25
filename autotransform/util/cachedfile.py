@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+# @black_format
+
 """CachedFile is a utility class used by AutoTransform to cache file content on read/write to
 reduce excessive file reads and speed up processing. The FILE_CACHE variable stores cached
 file contents, while a CachedFile object is used to interact with the cache. All writes

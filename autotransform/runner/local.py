@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+# @black_format
+
 """A GithubberRunner component, which is used to trigger a workflow on Github which
 runs a schema."""
 

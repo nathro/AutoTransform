@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+# @black_format
+
 """The Event class represents an event happening in AutoTransform and
 serves as a base that can be used to provide consistent typing and
 messaging for similar events.

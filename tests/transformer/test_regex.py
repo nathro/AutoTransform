@@ -5,6 +5,8 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
+# @black_format
+
 """Test for the RegexTransformer component."""
 
 from autotransform.transformer.regex import RegexTransformer
