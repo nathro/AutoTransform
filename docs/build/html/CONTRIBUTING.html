@@ -47,9 +47,7 @@
 <li class="toctree-l1"><a class="reference internal" href="CUSTOM_DEPLOYMENT.html"><strong>Extending For Your Organization</strong></a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><strong>Contributing To AutoTransform</strong></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#what-should-push-upstream"><strong>What Should Push Upstream?</strong></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="#what-should-i-know-when-developing-for-autotransform"><strong>What Should I Know When Developing For AutoTransform?</strong></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#what-should-i-know-when-developing-for-autotransform"><strong>What Should I Know When Developing For AutoTransform?</strong></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#i-want-to-contribute-what-should-i-do"><strong>I Want To Contribute, What Should I Do?</strong></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#what-about-the-docs"><strong>What About the Docs?</strong></a></li>
 </ul>
@@ -91,9 +89,8 @@
 <h2><strong>What Should Push Upstream?</strong><a class="headerlink" href="#what-should-push-upstream" title="Permalink to this headline"></a></h2>
 <p>Upstream changes are intended to support the wider AutoTransform community. Bespoke components and changes unique to an organization should not be pushed upstream.</p>
 </section>
-</section>
 <section id="what-should-i-know-when-developing-for-autotransform">
-<h1><strong>What Should I Know When Developing For AutoTransform?</strong><a class="headerlink" href="#what-should-i-know-when-developing-for-autotransform" title="Permalink to this headline"></a></h1>
+<h2><strong>What Should I Know When Developing For AutoTransform?</strong><a class="headerlink" href="#what-should-i-know-when-developing-for-autotransform" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p><strong>Backwards compatability</strong>: Recognize that AutoTransform is intended to be a core part of an organization’s developer environment. If a change you are pushing upstream would break existing deployments of AutoTransform (i.e. by changing APIs), you should aim to provide a package that can be used to update existing deployments. Core developers MAY from time to time release breaking changes without providing a package for existing deployments but this will be heavily weighted against the cost of manual updates.</p></li>
 <li><p><strong>Test thoroughly</strong>: The nature of AutoTransform means large automated changes without human review may be landed using this tool. All components and changes to AutoTransform must be tested thoroughly to ensure maximum safety given the potential damage. Unit tests should be included with all components.</p></li>
@@ -111,6 +108,7 @@
 </ul>
 </li>
 </ul>
+</section>
 <section id="i-want-to-contribute-what-should-i-do">
 <h2><strong>I Want To Contribute, What Should I Do?</strong><a class="headerlink" href="#i-want-to-contribute-what-should-i-do" title="Permalink to this headline"></a></h2>
 <p>If after seing the above you still want to contribute to AutoTransform, follow standard Github practices by forking the repo, making changes, and submitting pull requests. If you are interested in becoming a frequent contributor with access to the repo reach out to nathro.software&#64;gmail.com</p>

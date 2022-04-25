@@ -6,7 +6,7 @@ AutoTransform is a tool built by and for developers and welcomes developers push
 
 Upstream changes are intended to support the wider AutoTransform community. Bespoke components and changes unique to an organization should not be pushed upstream.
 
-# **What Should I Know When Developing For AutoTransform?**
+## **What Should I Know When Developing For AutoTransform?**
 
 - **Backwards compatability**: Recognize that AutoTransform is intended to be a core part of an organization's developer environment. If a change you are pushing upstream would break existing deployments of AutoTransform (i.e. by changing APIs), you should aim to provide a package that can be used to update existing deployments. Core developers MAY from time to time release breaking changes without providing a package for existing deployments but this will be heavily weighted against the cost of manual updates.
 - **Test thoroughly**: The nature of AutoTransform means large automated changes without human review may be landed using this tool. All components and changes to AutoTransform must be tested thoroughly to ensure maximum safety given the potential damage. Unit tests should be included with all components.
