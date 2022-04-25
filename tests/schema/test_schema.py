@@ -84,19 +84,19 @@ def mock_repo(
 ) -> None:
     """Sets up the repo mock."""
 
-    def clean(_: Batch) -> None:
+    def clean(_batch: Batch) -> None:
         pass
 
     mocked_clean.side_effect = clean
 
     mocked_has_changes.return_value = should_have_changes
 
-    def submit(_: Batch) -> None:
+    def submit(_batch: Batch, _schema_name: str) -> None:
         pass
 
     mocked_submit.side_effect = submit
 
-    def rewind(_: Batch) -> None:
+    def rewind(_batch: Batch) -> None:
         pass
 
     mocked_rewind.side_effect = rewind

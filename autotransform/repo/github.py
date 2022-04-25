@@ -97,19 +97,20 @@ class GithubRepo(GitRepo):
             Config.get_credentials_github_username(), Config.get_credentials_github_password()
         )
 
-    def submit(self, batch: Batch) -> None:
+    def submit(self, batch: Batch, schema_name: str) -> None:
         """Performs the normal submit for a git repo then submits a pull request
         against the provided Github repo.
 
         Args:
             batch (Batch): The Batch for which the changes were made.
+            schema_name (str): The name of the schema for this change.
         """
 
-        title = GitRepo.get_commit_message(batch["title"])
+        title = GitRepo.get_commit_message(batch["title"], schema_name)
 
-        self.commit(batch["title"])
+        self.commit(batch["title"], schema_name)
 
-        commit_branch = GitRepo.get_branch_name(batch["title"])
+        commit_branch = GitRepo.get_branch_name(batch["title"], schema_name)
         remote = self._local_repo.remote()
         self._local_repo.git.push(remote.name, "-u", commit_branch)
 

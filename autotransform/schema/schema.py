@@ -207,7 +207,7 @@ class AutoTransformSchema:
             if repo.has_changes(batch):
                 event_handler.handle(DebugEvent({"message": "Changes found"}))
                 event_handler.handle(DebugEvent({"message": "Submitting changes"}))
-                repo.submit(batch)
+                repo.submit(batch, self.config.name)
                 event_handler.handle(DebugEvent({"message": "Rewinding repo"}))
                 repo.rewind(batch)
             else:
