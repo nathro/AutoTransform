@@ -35,7 +35,7 @@ def get_arg_parser() -> ArgumentParser:
         aliases=["r"],
     )
     run.add_args(run_parser)
-    
+
     # Add schedule command
     schedule_parser = subparsers.add_parser(
         "schedule",
