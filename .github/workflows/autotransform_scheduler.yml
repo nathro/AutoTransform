@@ -31,7 +31,7 @@ jobs:
     - name: Install Dependencies
       run: pip install -r schema_requirements.txt
     - name: Run AutoTransform
-      run: python3 -m autotransform.scripts.main schedule --verbose data/autotransform_schedule.json
+      run: python3 -m autotransform.scripts.main schedule --verbose autotransform/data/autotransform_schedule.json
       env:
         PYTHONPATH: ${{ github.workspace }}
         AUTO_TRANSFORM_CONFIG: environment

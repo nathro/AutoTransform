@@ -10,7 +10,7 @@
     "schemas": [
         {
             "type": "file",
-            "schema": "data/black_format.json",
+            "schema": "autotransform/data/black_format.json",
             "schedule": {
                 "repeats": "weekly",
                 "hour_of_day": 0,
