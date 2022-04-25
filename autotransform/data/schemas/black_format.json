@@ -42,5 +42,12 @@
     "config": {
         "name": "Black Format",
         "allowed_validation_level": 0
+    },
+    "repo": {
+        "params": {
+            "base_branch_name": "master",
+            "full_github_name": "nathro/AutoTransform"
+        },
+        "type": "github"
     }
 }

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Third Party Components (autotransform.thirdparty.components) &mdash; AutoTransform 0.1.0 documentation</title>
+  <title>Schedule Command (autotransform.scripts.commands.schedule) &mdash; AutoTransform 0.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Utilities (autotransform.util)" href="autotransform.util.html" />
-    <link rel="prev" title="Third Party Example (autotransform.thirdparty)" href="autotransform.thirdparty.html" /> 
+    <link rel="next" title="Main Script (autotransform.scripts.main)" href="autotransform.scripts.main.html" />
+    <link rel="prev" title="Run Command (autotransform.scripts.commands.run)" href="autotransform.scripts.commands.run.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,15 +53,16 @@
 <li class="toctree-l1 current"><a class="reference internal" href="autotransform.html">AutoTransform (autotransform)</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="autotransform.html#core">Core</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="autotransform.schema.html">Schema Package (autotransform.schema)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="autotransform.scripts.html">Scripts (autotransform.scripts)</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="autotransform.scripts.html">Scripts (autotransform.scripts)</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="autotransform.scripts.html#commands">Commands</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autotransform.scripts.html#script">Script</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="autotransform.config.html">Config Package (autotransform.config)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="autotransform.runner.html">Runner Package (autotransform.runner)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="autotransform.item.html">Item Package (autotransform.item)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="autotransform.event.html">Event Package (autotransform.event)</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="autotransform.thirdparty.html">Third Party Example (autotransform.thirdparty)</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="autotransform.thirdparty.html#example">Example</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="autotransform.thirdparty.html">Third Party Example (autotransform.thirdparty)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="autotransform.util.html">Utilities (autotransform.util)</a></li>
 </ul>
 </li>
@@ -85,10 +86,10 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="autotransform.html">AutoTransform (autotransform)</a> &raquo;</li>
-          <li><a href="autotransform.thirdparty.html">Third Party Example (autotransform.thirdparty)</a> &raquo;</li>
-      <li>Third Party Components (autotransform.thirdparty.components)</li>
+          <li><a href="autotransform.scripts.html">Scripts (autotransform.scripts)</a> &raquo;</li>
+      <li>Schedule Command (autotransform.scripts.commands.schedule)</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/autotransform.thirdparty.components.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/autotransform.scripts.commands.schedule.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -96,20 +97,39 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-autotransform.thirdparty.components">
-<span id="third-party-components-autotransform-thirdparty-components"></span><h1>Third Party Components (autotransform.thirdparty.components)<a class="headerlink" href="#module-autotransform.thirdparty.components" title="Permalink to this headline"></a></h1>
-<p>An example module containing custom imports. Used via the custom_components config setting.
-All custom component imports should follow this structure. Component types that do not have any
-custom implementations do not need to be included (i.e. if there are no custom batchers, the
-BATCHERS variable can be left out.</p>
+  <section id="module-autotransform.scripts.commands.schedule">
+<span id="schedule-command-autotransform-scripts-commands-schedule"></span><h1>Schedule Command (autotransform.scripts.commands.schedule)<a class="headerlink" href="#module-autotransform.scripts.commands.schedule" title="Permalink to this headline"></a></h1>
+<p>The schedule command is used to schedule runs of AutoTransform.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="autotransform.scripts.commands.schedule.add_args">
+<span class="sig-prename descclassname"><span class="pre">autotransform.scripts.commands.schedule.</span></span><span class="sig-name descname"><span class="pre">add_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">argparse.ArgumentParser</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.scripts.commands.schedule.add_args" title="Permalink to this definition"></a></dt>
+<dd><p>Adds the args to a subparser that are required to run a schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parser</strong> (<em>ArgumentParser</em>) – The parser for the schema run.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="autotransform.scripts.commands.schedule.schedule_command_main">
+<span class="sig-prename descclassname"><span class="pre">autotransform.scripts.commands.schedule.</span></span><span class="sig-name descname"><span class="pre">schedule_command_main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">argparse.Namespace</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.scripts.commands.schedule.schedule_command_main" title="Permalink to this definition"></a></dt>
+<dd><p>The main method for the schedule command, handles the actual execution of scheduling runs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>Namespace</em>) – The arguments supplied to the schedule command, such as the JSON file.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="autotransform.thirdparty.html" class="btn btn-neutral float-left" title="Third Party Example (autotransform.thirdparty)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="autotransform.util.html" class="btn btn-neutral float-right" title="Utilities (autotransform.util)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="autotransform.scripts.commands.run.html" class="btn btn-neutral float-left" title="Run Command (autotransform.scripts.commands.run)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="autotransform.scripts.main.html" class="btn btn-neutral float-right" title="Main Script (autotransform.scripts.main)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

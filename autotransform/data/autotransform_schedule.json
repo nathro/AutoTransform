@@ -13,7 +13,7 @@
             "schema": "data/black_format.json",
             "schedule": {
                 "repeats": "weekly",
-                "hour_of_day": 4,
+                "hour_of_day": 0,
                 "day_of_week": 0
             }
         }
