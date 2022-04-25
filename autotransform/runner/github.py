@@ -71,7 +71,7 @@ class GithubRunner(Runner[GithubRunnerParams]):
 
         # Dispatch a Workflow run
         status, a, b = workflow._requester.requestJson(
-            "POST", f"{workflow.url}/dispatches", input={"ref": repo.get_params()["base_branch_name"], "inputs": inputs}
+            "POST", f"{workflow.url}/dispatches", input={"ref": repo.get_params()["base_branch_name"], "inputs": {"schema": schema.to_json()}}
         )
         print(a)
         print(b)
