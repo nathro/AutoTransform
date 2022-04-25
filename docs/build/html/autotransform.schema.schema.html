@@ -104,13 +104,13 @@
 required to fully execute a change.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.schema.schema.</span></span><span class="sig-name descname"><span class="pre">AutoTransformSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.input.base.html#autotransform.input.base.Input" title="autotransform.input.base.Input"><span class="pre">autotransform.input.base.Input</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batcher</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.batcher.base.html#autotransform.batcher.base.Batcher" title="autotransform.batcher.base.Batcher"><span class="pre">autotransform.batcher.base.Batcher</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.transformer.base.html#autotransform.transformer.base.Transformer" title="autotransform.transformer.base.Transformer"><span class="pre">autotransform.transformer.base.Transformer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.schema.config.html#autotransform.schema.config.Config" title="autotransform.schema.config.Config"><span class="pre">autotransform.schema.config.Config</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.filter.base.html#autotransform.filter.base.Filter" title="autotransform.filter.base.Filter"><span class="pre">autotransform.filter.base.Filter</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validators</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.validator.base.html#autotransform.validator.base.Validator" title="autotransform.validator.base.Validator"><span class="pre">autotransform.validator.base.Validator</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commands</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.command.base.html#autotransform.command.base.Command" title="autotransform.command.base.Command"><span class="pre">autotransform.command.base.Command</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.repo.base.html#autotransform.repo.base.Repo" title="autotransform.repo.base.Repo"><span class="pre">autotransform.repo.base.Repo</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">autotransform.schema.schema.</span></span><span class="sig-name descname"><span class="pre">AutoTransformSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.input.base.html#autotransform.input.base.Input" title="autotransform.input.base.Input"><span class="pre">autotransform.input.base.Input</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batcher</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.batcher.base.html#autotransform.batcher.base.Batcher" title="autotransform.batcher.base.Batcher"><span class="pre">autotransform.batcher.base.Batcher</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.transformer.base.html#autotransform.transformer.base.Transformer" title="autotransform.transformer.base.Transformer"><span class="pre">autotransform.transformer.base.Transformer</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.schema.config.html#autotransform.schema.config.SchemaConfig" title="autotransform.schema.config.SchemaConfig"><span class="pre">autotransform.schema.config.SchemaConfig</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.filter.base.html#autotransform.filter.base.Filter" title="autotransform.filter.base.Filter"><span class="pre">autotransform.filter.base.Filter</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validators</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.validator.base.html#autotransform.validator.base.Validator" title="autotransform.validator.base.Validator"><span class="pre">autotransform.validator.base.Validator</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commands</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.command.base.html#autotransform.command.base.Command" title="autotransform.command.base.Command"><span class="pre">autotransform.command.base.Command</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.repo.base.html#autotransform.repo.base.Repo" title="autotransform.repo.base.Repo"><span class="pre">autotransform.repo.base.Repo</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>The heart of AutoTransform, pulls together all components required to execute
 a transformation.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.input">
-<span class="sig-name descname"><span class="pre">input</span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema.input" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema._input">
+<span class="sig-name descname"><span class="pre">_input</span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema._input" title="Permalink to this definition"></a></dt>
 <dd><p>The Input which gets Items.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -120,8 +120,8 @@ a transformation.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.batcher">
-<span class="sig-name descname"><span class="pre">batcher</span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema.batcher" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema._batcher">
+<span class="sig-name descname"><span class="pre">_batcher</span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema._batcher" title="Permalink to this definition"></a></dt>
 <dd><p>The Batcher which batches filtered Items in to logical groups.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -131,8 +131,8 @@ a transformation.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.transformer">
-<span class="sig-name descname"><span class="pre">transformer</span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema.transformer" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema._transformer">
+<span class="sig-name descname"><span class="pre">_transformer</span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema._transformer" title="Permalink to this definition"></a></dt>
 <dd><p>The Transformer which actually modifies files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -142,8 +142,8 @@ a transformation.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.filters">
-<span class="sig-name descname"><span class="pre">filters</span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema.filters" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema._filters">
+<span class="sig-name descname"><span class="pre">_filters</span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema._filters" title="Permalink to this definition"></a></dt>
 <dd><p>A list of Filters to apply to Items.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -153,8 +153,8 @@ a transformation.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.validators">
-<span class="sig-name descname"><span class="pre">validators</span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema.validators" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema._validators">
+<span class="sig-name descname"><span class="pre">_validators</span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema._validators" title="Permalink to this definition"></a></dt>
 <dd><p>A list of Validators to ensure the changes
 did not break anything.</p>
 <dl class="field-list simple">
@@ -165,8 +165,8 @@ did not break anything.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.commands">
-<span class="sig-name descname"><span class="pre">commands</span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema.commands" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema._commands">
+<span class="sig-name descname"><span class="pre">_commands</span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema._commands" title="Permalink to this definition"></a></dt>
 <dd><p>A list of Commands that run post-processing on
 the changes.</p>
 <dl class="field-list simple">
@@ -177,8 +177,8 @@ the changes.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.repo">
-<span class="sig-name descname"><span class="pre">repo</span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema.repo" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema._repo">
+<span class="sig-name descname"><span class="pre">_repo</span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema._repo" title="Permalink to this definition"></a></dt>
 <dd><p>A Repo to control submission of changes to version
 control or code review systems.</p>
 <dl class="field-list simple">
@@ -189,20 +189,26 @@ control or code review systems.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.config">
-<span class="sig-name descname"><span class="pre">config</span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema.config" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema._config">
+<span class="sig-name descname"><span class="pre">_config</span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema._config" title="Permalink to this definition"></a></dt>
 <dd><p>Any configuration needed by the schema so that it can run.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="autotransform.schema.config.html#autotransform.schema.config.Config" title="autotransform.schema.config.Config">Config</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="autotransform.schema.config.html#autotransform.schema.config.SchemaConfig" title="autotransform.schema.config.SchemaConfig">SchemaConfig</a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-name descname"><span class="pre">batcher</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="autotransform.batcher.base.html#autotransform.batcher.base.Batcher" title="autotransform.batcher.base.Batcher"><span class="pre">autotransform.batcher.base.Batcher</span></a></em><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.add_filter">
+<span class="sig-name descname"><span class="pre">add_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="autotransform.filter.base.html#autotransform.filter.base.Filter" title="autotransform.filter.base.Filter"><span class="pre">autotransform.filter.base.Filter</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema.add_filter" title="Permalink to this definition"></a></dt>
+<dd><p>Adds a filter to the list of filters for the Schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filt</strong> (<a class="reference internal" href="autotransform.filter.base.html#autotransform.filter.base.Filter" title="autotransform.filter.base.Filter"><em>Filter</em></a>) – The filter to add.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.bundle">
@@ -217,16 +223,6 @@ control or code review systems.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id1">
-<span class="sig-name descname"><span class="pre">commands</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.command.base.html#autotransform.command.base.Command" title="autotransform.command.base.Command"><span class="pre">autotransform.command.base.Command</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id1" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id2">
-<span class="sig-name descname"><span class="pre">config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="autotransform.schema.config.html#autotransform.schema.config.Config" title="autotransform.schema.config.Config"><span class="pre">autotransform.schema.config.Config</span></a></em><a class="headerlink" href="#id2" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.execute_batch">
@@ -243,11 +239,6 @@ the Repo if changes are submitted.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id3">
-<span class="sig-name descname"><span class="pre">filters</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.filter.base.html#autotransform.filter.base.Filter" title="autotransform.filter.base.Filter"><span class="pre">autotransform.filter.base.Filter</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id3" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.from_bundle">
@@ -284,6 +275,20 @@ the Repo if changes are submitted.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.get_batcher">
+<span class="sig-name descname"><span class="pre">get_batcher</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="autotransform.batcher.base.html#autotransform.batcher.base.Batcher" title="autotransform.batcher.base.Batcher"><span class="pre">autotransform.batcher.base.Batcher</span></a></span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema.get_batcher" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the Batcher object of the Schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The Batcher object of the Schema.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="autotransform.batcher.base.html#autotransform.batcher.base.Batcher" title="autotransform.batcher.base.Batcher">Batcher</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.get_batches">
 <span class="sig-name descname"><span class="pre">get_batches</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.batcher.base.html#autotransform.batcher.base.Batch" title="autotransform.batcher.base.Batch"><span class="pre">autotransform.batcher.base.Batch</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema.get_batches" title="Permalink to this definition"></a></dt>
 <dd><p>Runs the Input to get eligible Items, filters them, then batches them.</p>
@@ -297,15 +302,103 @@ the Repo if changes are submitted.</p>
 </dl>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4">
-<span class="sig-name descname"><span class="pre">input</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="autotransform.input.base.html#autotransform.input.base.Input" title="autotransform.input.base.Input"><span class="pre">autotransform.input.base.Input</span></a></em><a class="headerlink" href="#id4" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.get_commands">
+<span class="sig-name descname"><span class="pre">get_commands</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.command.base.html#autotransform.command.base.Command" title="autotransform.command.base.Command"><span class="pre">autotransform.command.base.Command</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema.get_commands" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the Command objects of the Schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The Command objects of the Schema.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List[<a class="reference internal" href="autotransform.command.base.html#autotransform.command.base.Command" title="autotransform.command.base.Command">Command</a>]</p>
+</dd>
+</dl>
+</dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id5">
-<span class="sig-name descname"><span class="pre">repo</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.repo.base.html#autotransform.repo.base.Repo" title="autotransform.repo.base.Repo"><span class="pre">autotransform.repo.base.Repo</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id5" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.get_config">
+<span class="sig-name descname"><span class="pre">get_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="autotransform.schema.config.html#autotransform.schema.config.SchemaConfig" title="autotransform.schema.config.SchemaConfig"><span class="pre">autotransform.schema.config.SchemaConfig</span></a></span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema.get_config" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the configuration of the Schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The configuration of the Schema.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="autotransform.schema.config.html#autotransform.schema.config.SchemaConfig" title="autotransform.schema.config.SchemaConfig">SchemaConfig</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.get_filters">
+<span class="sig-name descname"><span class="pre">get_filters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.filter.base.html#autotransform.filter.base.Filter" title="autotransform.filter.base.Filter"><span class="pre">autotransform.filter.base.Filter</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema.get_filters" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the Filter objects of the Schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The Filter objects of the Schema.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List[<a class="reference internal" href="autotransform.filter.base.html#autotransform.filter.base.Filter" title="autotransform.filter.base.Filter">Filter</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.get_input">
+<span class="sig-name descname"><span class="pre">get_input</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="autotransform.input.base.html#autotransform.input.base.Input" title="autotransform.input.base.Input"><span class="pre">autotransform.input.base.Input</span></a></span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema.get_input" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the Input object of the Schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The Input object of the Schema.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="autotransform.input.base.html#autotransform.input.base.Input" title="autotransform.input.base.Input">Input</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.get_repo">
+<span class="sig-name descname"><span class="pre">get_repo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.repo.base.html#autotransform.repo.base.Repo" title="autotransform.repo.base.Repo"><span class="pre">autotransform.repo.base.Repo</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema.get_repo" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the repo object of the Schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The Repo object of the Schema.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Optional[<a class="reference internal" href="autotransform.repo.base.html#autotransform.repo.base.Repo" title="autotransform.repo.base.Repo">Repo</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.get_transformer">
+<span class="sig-name descname"><span class="pre">get_transformer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="autotransform.transformer.base.html#autotransform.transformer.base.Transformer" title="autotransform.transformer.base.Transformer"><span class="pre">autotransform.transformer.base.Transformer</span></a></span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema.get_transformer" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the Transformer object of the Schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The Transformer object of the Schema.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="autotransform.transformer.base.html#autotransform.transformer.base.Transformer" title="autotransform.transformer.base.Transformer">Transformer</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.get_validators">
+<span class="sig-name descname"><span class="pre">get_validators</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.validator.base.html#autotransform.validator.base.Validator" title="autotransform.validator.base.Validator"><span class="pre">autotransform.validator.base.Validator</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#autotransform.schema.schema.AutoTransformSchema.get_validators" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the Validator objects of the Schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The Validator objects of the Schema.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List[<a class="reference internal" href="autotransform.validator.base.html#autotransform.validator.base.Validator" title="autotransform.validator.base.Validator">Validator</a>]</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="autotransform.schema.schema.AutoTransformSchema.run">
@@ -329,16 +422,6 @@ the Repo if changes are submitted.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id6">
-<span class="sig-name descname"><span class="pre">transformer</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="autotransform.transformer.base.html#autotransform.transformer.base.Transformer" title="autotransform.transformer.base.Transformer"><span class="pre">autotransform.transformer.base.Transformer</span></a></em><a class="headerlink" href="#id6" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id7">
-<span class="sig-name descname"><span class="pre">validators</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="autotransform.validator.base.html#autotransform.validator.base.Validator" title="autotransform.validator.base.Validator"><span class="pre">autotransform.validator.base.Validator</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id7" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
