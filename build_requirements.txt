@@ -1,4 +1,4 @@
 build
 twine
 
--r ci_requirements
+-r ci_requirements.txt
