@@ -89,14 +89,18 @@ def schedule_command_main(args: Namespace) -> None:
 
     elapsed_weeks = int(elapsed_days / 7)
 
-    event_handler.handle(DebugEvent({
-        "message": f"Running on hour {hour_of_day} on day {day_of_week}"
-    }))
+    event_handler.handle(
+        DebugEvent({"message": f"Running on hour {hour_of_day} on day {day_of_week}"})
+    )
 
     if day_of_week in excluded_days:
-        event_handler.handle(DebugEvent({
-            "message": f"Day {day_of_week} is excluded, skipping run",
-        }))
+        event_handler.handle(
+            DebugEvent(
+                {
+                    "message": f"Day {day_of_week} is excluded, skipping run",
+                }
+            )
+        )
         return
 
     for schema_data in schedule_data["schemas"]:
@@ -112,16 +116,24 @@ def schedule_command_main(args: Namespace) -> None:
         schedule_info = schema_data["schedule"]
         repeats = schedule_info["repeats"]
         if schedule_info["hour_of_day"] != hour_of_day:
-            event_handler.handle(DebugEvent({
-                "message": f"Skipping schema {schema.config.name}:"+
-                " only runs on hour {schedule_info['hour_of_day']}",
-            }))
+            event_handler.handle(
+                DebugEvent(
+                    {
+                        "message": f"Skipping schema {schema.config.name}:"
+                        + f" only runs on hour {schedule_info['hour_of_day']}",
+                    }
+                )
+            )
             continue
         if repeats == "weekly" and schedule_info["day_of_week"] != day_of_week:
-            event_handler.handle(DebugEvent({
-                "message": f"Skipping schema {schema.config.name}:"+
-                " only runs on day {schedule_info['day_of_week']}",
-            }))
+            event_handler.handle(
+                DebugEvent(
+                    {
+                        "message": f"Skipping schema {schema.config.name}:"
+                        + f" only runs on day {schedule_info['day_of_week']}",
+                    }
+                )
+            )
             continue
 
         # Handle sharding
@@ -132,9 +144,13 @@ def schedule_command_main(args: Namespace) -> None:
                 valid_shard = elapsed_days % num_shards
             else:
                 valid_shard = elapsed_weeks % num_shards
-            event_handler.handle(DebugEvent({
-                "message": f"Sharding: valid = {valid_shard}, num = {num_shards}",
-            }))
+            event_handler.handle(
+                DebugEvent(
+                    {
+                        "message": f"Sharding: valid = {valid_shard}, num = {num_shards}",
+                    }
+                )
+            )
             filter_bundle = shard_info["shard_filter"]
             filter_bundle["params"]["num_shards"] = num_shards
             filter_bundle["params"]["valid_shard"] = valid_shard
