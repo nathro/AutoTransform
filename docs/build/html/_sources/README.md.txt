@@ -75,18 +75,18 @@ The core of AutoTransform is the [schema](https://github.com/nathro/AutoTransfor
 
 ### **[Config Fetcher](https://github.com/nathro/AutoTransform/blob/master/autotransform/config/fetcher.py)**
 
-The config fetcher allows for configuration of AutoTransform as a whole. This includes things like specifying custom component imports as well as providing credentials, such as a github token. There are three config fetchers provided as part of AutoTransform that can be selected based on the AUTO_TRANSFORM_CONFIG environment variable:
+The ConfigFetcher allows for configuration of AutoTransform as a whole. This includes things like specifying custom component imports as well as providing credentials, such as a github token. There are three config fetchers provided as part of AutoTransform that can be selected based on the AUTO_TRANSFORM_CONFIG environment variable:
 
 * **[Default](https://github.com/nathro/AutoTransform/blob/master/autotransform/config/default.py)** - Pulls configuration from data/config.ini, a[ sample_config.ini](https://github.com/nathro/AutoTransform/blob/master/autotransform/data/sample_config.ini) file provides an example. This is the easiest choice for local use cases on a developers machine.
 * **[Environment Variable](https://github.com/nathro/AutoTransform/blob/master/autotransform/config/envvar.py)** - Pulls configuration from environment variables, using names that match the pattern: AUTO_TRANSFORM_&lt;SECTION>_&lt;SETTING> where section and setting represent the section and setting that would be used in a config.ini file, such as AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN. This is the preferred option for production use cases.
 
-### **Item**
+### **[Item](https://github.com/nathro/AutoTransform/blob/master/autotransform/item/base.py)**
 
-**[Item](https://github.com/nathro/AutoTransform/blob/master/autotransform/item/base.py)** an item represents a potential input to a transformation. It can represent a file or any other logical object. All Items must have keys that uniquely identify them within their type. While items of different types can have
+An item represents a potential input to a transformation. It can represent a file or any other logical object. All Items must have keys that uniquely identify them within their type. While items of different types can have
 the same key, separate items of the same type must have unique keys. Subclasses of Item can provide utility functionality, or support strongly typed extra data.
-### **Runner**
+### **[Runner](https://github.com/nathro/AutoTransform/blob/master/autotransform/runner/base.py)**
 
-**[Runner](https://github.com/nathro/AutoTransform/blob/master/autotransform/runner/base.py)** components are used to trigger a run of AutoTransform either locally or on an organization's remote infrastructure or job queue system. This allows organizations to set up integrations with their infrastructure to speed up developers by offloading the runs of AutoTransform. Additionally, remote infrastructure is used by scheduling logic when setting up scheduled runs of AutoTransform.
+Runner components are used to trigger a run of AutoTransform either locally or on an organization's remote infrastructure or job queue system. This allows organizations to set up integrations with their infrastructure to speed up developers by offloading the runs of AutoTransform. Additionally, remote infrastructure is used by scheduling logic when setting up scheduled runs of AutoTransform.
 
 ## **Data Flow**
 
