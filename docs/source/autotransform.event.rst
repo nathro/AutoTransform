@@ -10,7 +10,9 @@ Events
    :maxdepth: 4
 
    autotransform.event.debug
+   autotransform.event.remoterun
    autotransform.event.run
+   autotransform.event.schedulerun
 
 Core
 ----

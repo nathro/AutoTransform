@@ -16,4 +16,6 @@ class EventType(str, Enum):
     """A simple enum for Event naming"""
 
     DEBUG = "debug"
+    REMOTE_RUN = "remote_run"
+    SCHEDULE_RUN = "schedule_run"
     SCRIPT_RUN = "script_run"

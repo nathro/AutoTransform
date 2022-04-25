@@ -17,6 +17,7 @@ from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.run import ScriptRunEvent
+from autotransform.event.schedulerun import ScheduleRunEvent
 from autotransform.filter.factory import FilterFactory
 from autotransform.filter.shard import ShardFilter
 from autotransform.runner.factory import RunnerFactory
@@ -141,4 +142,5 @@ def schedule_command_main(args: Namespace) -> None:
             assert isinstance(shard_filter, ShardFilter)
             schema.filters.append(shard_filter)
 
+        event_handler.handle(ScheduleRunEvent({"schema_name": schema.config.name}))
         runner.run(schema)

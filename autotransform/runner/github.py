@@ -17,6 +17,7 @@ from typing import Any, Mapping, TypedDict, Union
 
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
+from autotransform.event.remoterun import RemoteRunEvent
 from autotransform.repo.github import GithubRepo
 from autotransform.runner.base import Runner
 from autotransform.runner.type import RunnerType
@@ -93,7 +94,7 @@ class GithubRunner(Runner[GithubRunnerParams]):
             )
         )
         event_handler.handle(
-            DebugEvent({"message": f"Best Guess URL: {workflow_runs[0].html_url}"})
+            RemoteRunEvent({"schema_name": schema.config.name, "ref": workflow_runs[0].html_url})
         )
 
     @staticmethod
