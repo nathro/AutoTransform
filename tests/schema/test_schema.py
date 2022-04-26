@@ -115,7 +115,7 @@ def test_get_batches(
     mocked_get_items,
     mocked_is_valid,
     mocked_batch,
-    mocked_active_branch,
+    _mocked_active_branch,
 ):
     """Checks that get_batches properly calls and uses components."""
     # Set up mocks
@@ -162,7 +162,7 @@ def test_run_with_changes(
     mocked_is_valid,
     mocked_batch,
     mocked_transform,
-    mocked_active_branch,
+    _mocked_active_branch,
     mocked_clean,
     mocked_has_changes,
     mocked_submit,
@@ -220,7 +220,7 @@ def test_run_with_no_changes(
     mocked_is_valid,
     mocked_batch,
     mocked_transform,
-    mocked_active_branch,
+    _mocked_active_branch,
     mocked_clean,
     mocked_has_changes,
     mocked_submit,
@@ -264,7 +264,7 @@ def test_run_with_no_changes(
 
 
 @patch.object(GitPython, "active_branch")
-def test_json_encoding(mocked_active_branch):
+def test_json_encoding(_mocked_active_branch):
     """Checks that the schema is encoded correctly."""
 
     # pylint: disable=unspecified-encoding
@@ -280,7 +280,7 @@ def test_json_encoding(mocked_active_branch):
 
 
 @patch.object(GitPython, "active_branch")
-def test_json_decoding(mocked_active_branch):
+def test_json_decoding(_mocked_active_branch):
     """Checks that the schema is decoded correctly."""
 
     # pylint: disable=unspecified-encoding,consider-using-enumerate

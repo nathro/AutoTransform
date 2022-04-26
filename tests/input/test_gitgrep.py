@@ -17,7 +17,7 @@ def test_pattern_present() -> None:
 
     inp = GitGrepInput({"pattern": "Tests for the GitGrepInput component."})
     found_files = inp.get_items()
-    assert len(found_files) is 1, "Only one file match expected."
+    assert len(found_files) == 1, "Only one file match expected."
     test_file = __file__.lower().replace("\\", "/")
     assert found_files[0].get_path().lower() == test_file, "The test file should be found."
 

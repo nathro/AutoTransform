@@ -25,7 +25,7 @@ jobs:
     - name: Install Dependencies
       run: pip install -r build_requirements.txt
     - name: Check mypy
-      run: mypy autotransform/
+      run: mypy autotransform tests
     - name: Check pytest
       run: pytest tests/
       env:
@@ -33,7 +33,7 @@ jobs:
         AUTO_TRANSFORM_CONFIG: environment
         AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ github.token }}
     - name: Check pylint
-      run: pylint autotransform/ --enable=W0611,R0201,R0902,R0903,R0913,R1732 --disable=R0801
+      run: pylint --enable=W0611,R0201,R0902,R0903,R0913,R1732 --disable=R0801,R0914,R0915 autotransform tests
     - name: Build
       run: python3 -m build
     - name: Publish

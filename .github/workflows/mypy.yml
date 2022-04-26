@@ -22,4 +22,4 @@ jobs:
     - name: Install Dependencies
       run: pip install -r ci_requirements.txt
     - name: Check mypy
-      run: mypy autotransform/
+      run: mypy autotransform tests
