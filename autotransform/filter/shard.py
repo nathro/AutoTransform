@@ -12,13 +12,12 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from typing import TypedDict
 
-from autotransform.filter.base import Filter
+from autotransform.filter.base import Filter, FilterParams
 from autotransform.item.base import Item
 
 
-class ShardFilterParams(TypedDict):
+class ShardFilterParams(FilterParams):
     """The param type for a ShardFilter."""
 
     num_shards: int

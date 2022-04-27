@@ -7,7 +7,6 @@
     },
     "filters": [
         {
-            "inverted": false,
             "params": {
                 "pattern": ".*\\.py$"
             },
@@ -18,7 +17,6 @@
         "params": {
             "title": "Format all python files",
             "metadata": {
-                
                 "body": "Apply Black formatting to all python files with @black_format"
             }
         },

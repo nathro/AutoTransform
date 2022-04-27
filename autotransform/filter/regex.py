@@ -12,15 +12,15 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Mapping, TypedDict
+from typing import Any, Mapping
 
-from autotransform.filter.base import Filter
+from autotransform.filter.base import Filter, FilterParams
 from autotransform.filter.type import FilterType
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
 
 
-class RegexFilterParams(TypedDict):
+class RegexFilterParams(FilterParams):
     """The param type for a RegexFilter."""
 
     pattern: str
@@ -74,7 +74,7 @@ class RegexFilter(Filter[RegexFilterParams]):
         return RegexFilter({"pattern": pattern})
 
 
-class FileContentRegexFilterParams(TypedDict):
+class FileContentRegexFilterParams(FilterParams):
     """The param type for a FileContentRegexFilter."""
 
     pattern: str

@@ -12,20 +12,28 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Generic, Mapping, Optional, TypedDict, TypeVar
+from typing import Any, Generic, Mapping, TypedDict, TypeVar
+
+from typing_extensions import NotRequired
 
 from autotransform.filter.type import FilterType
 from autotransform.item.base import Item
-
-TParams = TypeVar("TParams", bound=Mapping[str, Any])
 
 
 class FilterBundle(TypedDict):
     """A bundled version of the Filter object used for JSON encoding."""
 
-    inverted: Optional[bool]
     params: Mapping[str, Any]
     type: FilterType
+
+
+class FilterParams(TypedDict):
+    """The base param type for a Filter."""
+
+    inverted: NotRequired[bool]
+
+
+TParams = TypeVar("TParams", bound=FilterParams)
 
 
 class Filter(Generic[TParams], ABC):
@@ -35,10 +43,8 @@ class Filter(Generic[TParams], ABC):
     Attributes:
         _params (TParams): The paramaters that control operation of the Filter.
             Should be defined using a TypedDict in subclasses.
-        _inverted (bool): Whether to invert the results of the Filter.
     """
 
-    _inverted: bool
     _params: TParams
 
     def __init__(self, params: TParams):
@@ -48,7 +54,6 @@ class Filter(Generic[TParams], ABC):
             params (TParams): The paramaters used to set up the Filter.
         """
 
-        self._inverted = False
         self._params = params
 
     def get_params(self) -> TParams:
@@ -77,7 +82,7 @@ class Filter(Generic[TParams], ABC):
             Filter: The Filter after setting the inversion.
         """
 
-        self._inverted = not self._inverted
+        self._params["inverted"] = not bool(self._params.get("inverted", False))
         return self
 
     def is_valid(self, item: Item) -> bool:
@@ -90,7 +95,7 @@ class Filter(Generic[TParams], ABC):
             bool: Returns True if the Item is eligible for transformation
         """
 
-        return self._inverted != self._is_valid(item)
+        return bool(self._params.get("inverted", False)) != self._is_valid(item)
 
     @abstractmethod
     def _is_valid(self, item: Item) -> bool:
@@ -113,27 +118,25 @@ class Filter(Generic[TParams], ABC):
         """
 
         return {
-            "inverted": self._inverted,
             "params": self._params,
             "type": self.get_type(),
         }
 
     @classmethod
-    def from_data(cls, inverted: Optional[bool], data: Mapping[str, Any]) -> Filter:
+    def from_data(cls, data: Mapping[str, Any]) -> Filter:
         """Produces an instance of the component from decoded params. Implementations should
         assert that the data provided matches expected types and is valid. Handles the inversion
         capabilities of the Filter.
 
         Args:
             data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-            inverted (Optional[bool]): Whether the Filter was inverted before encoding.
 
         Returns:
             Filter: An instance of the Filter.
         """
 
         unbundled_filter = cls._from_data(data)
-        if inverted:
+        if bool(data.get("inverted", False)):
             unbundled_filter.invert()
         return unbundled_filter
 

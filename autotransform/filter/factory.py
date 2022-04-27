@@ -23,13 +23,13 @@ class FilterFactory:
     """The factory class for Filters. Maps a type to a Filter.
 
     Attributes:
-        _map (Dict[FilterType, Callable[[bool, Mapping[str, Any]], Filter]]): A mapping from
+        _map (Dict[FilterType, Callable[[Mapping[str, Any]], Filter]]): A mapping from
             FilterType to the from_data function of the appropriate Filter.
     """
 
     # pylint: disable=too-few-public-methods
 
-    _map: Dict[FilterType, Callable[[bool, Mapping[str, Any]], Filter]] = {
+    _map: Dict[FilterType, Callable[[Mapping[str, Any]], Filter]] = {
         FilterType.FILE_CONTENT_REGEX: FileContentRegexFilter.from_data,
         FilterType.KEY_HASH_SHARD: KeyHashShardFilter.from_data,
         FilterType.REGEX: RegexFilter.from_data,
@@ -46,13 +46,12 @@ class FilterFactory:
             Filter: An instance of the associated Filter.
         """
 
-        inverted = bool(bundle.get("inverted", False))
         if bundle["type"] in FilterFactory._map:
-            return FilterFactory._map[bundle["type"]](inverted, bundle["params"])
+            return FilterFactory._map[bundle["type"]](bundle["params"])
 
         custom_component_modules = Config.get_imports_components()
         for module_string in custom_component_modules:
             module = importlib.import_module(module_string)
             if hasattr(module, "FILTERS") and bundle["type"] in module.FILTERS:
-                return module.FILTERS[bundle["type"]](inverted, bundle["params"])
+                return module.FILTERS[bundle["type"]](bundle["params"])
         raise ValueError(f"No Filter found for type {bundle['type']}")
