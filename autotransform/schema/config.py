@@ -62,6 +62,8 @@ class SchemaConfig:
             ValidationResultLevel: The allowed level of validation results for the Schema.
         """
 
+        return self._allowed_validation_level
+
     def bundle(self) -> Dict[str, Any]:
         """Bundles the configuration for JSON encoding.
 
@@ -89,8 +91,11 @@ class SchemaConfig:
             validation_level = data["allowed_validation_level"]
             if not ValidationResultLevel.has_value(validation_level):
                 validation_level = ValidationResultLevel.from_name(validation_level)
+            else:
+                validation_level = ValidationResultLevel.from_value(validation_level)
         else:
             validation_level = ValidationResultLevel.NONE
+
         name = data["name"]
         assert isinstance(name, str)
         return cls(name, validation_level)

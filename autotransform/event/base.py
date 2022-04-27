@@ -89,6 +89,6 @@ class Event(Generic[TData], ABC):
         """
         type_str = "".join([w.capitalize() for w in self.get_type().split("_")])
         message = self._get_message()
-        if message[0] == "[":
+        if message.startswith("["):
             return f"[{type_str}]{message}"
         return f"[{type_str}] {message}"

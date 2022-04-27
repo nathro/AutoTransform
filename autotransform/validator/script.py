@@ -266,11 +266,14 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
         for arg in args:
             assert isinstance(arg, str)
         failure_level = data["failure_level"]
-        assert isinstance(failure_level, int)
+        if not ValidationResultLevel.has_value(failure_level):
+            failure_level = ValidationResultLevel.from_name(failure_level)
+        else:
+            failure_level = ValidationResultLevel.from_value(failure_level)
         params: ScriptValidatorParams = {
             "script": script,
             "args": args,
-            "failure_level": ValidationResultLevel.from_value(failure_level),  # type: ignore
+            "failure_level": failure_level,  # type: ignore
         }
 
         per_item = data.get("per_item", None)

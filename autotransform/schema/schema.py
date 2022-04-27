@@ -290,7 +290,8 @@ class AutoTransformSchema:
                     }
                 )
             )
-            if validation_result["level"] > self._config.get_allowed_validation_level():
+
+            if validation_result["level"].value > self._config.get_allowed_validation_level().value:
                 event_handler.handle(
                     DebugEvent({"message": f"[{validation_result['validator']}] Failed"})
                 )
