@@ -162,17 +162,17 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
 
             # Run script
             event_handler.handle(DebugEvent({"message": f"Running command: {str(cmd)}"}))
-            proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout, stderr = proc.communicate()
-        level = (
-            self._params["failure_level"] if proc.returncode != 0 else ValidationResultLevel.NONE
-        )
-        event_handler.handle(DebugEvent({"message": f"Script Output: {stdout.decode('utf-8')}"}))
-        return {
-            "level": level,
-            "message": f"[{self._params['script']}] {stderr.decode('utf-8')}",
-            "validator": self.get_type(),
-        }
+            with subprocess.Popen(cmd) as proc:
+                level = (
+                    self._params["failure_level"]
+                    if proc.returncode != 0
+                    else ValidationResultLevel.NONE
+                )
+                return {
+                    "level": level,
+                    "message": "",
+                    "validator": self.get_type(),
+                }
 
     def _validate_batch(self, batch: Batch) -> ValidationResult:
         """Executes a simple script to validate the given Batch. Sentinel values can be used
