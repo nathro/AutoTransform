@@ -14,10 +14,10 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Generic, Mapping, TypedDict, TypeVar
 
+from typing_extensions import NotRequired
+
 from autotransform.batcher.base import Batch
 from autotransform.command.type import CommandType
-
-TParams = TypeVar("TParams", bound=Mapping[str, Any])
 
 
 class CommandBundle(TypedDict):
@@ -27,13 +27,21 @@ class CommandBundle(TypedDict):
     type: CommandType
 
 
+class CommandParams(TypedDict):
+    """The base params for a Command."""
+
+    run_pre_validation: NotRequired[bool]
+
+
+TParams = TypeVar("TParams", bound=CommandParams)
+
+
 class Command(Generic[TParams], ABC):
     """The base for Command components. Used by AutoTransform to perform post-processing
     operations after validation, such as code generation.
 
     Attributes:
         _params (TParams): The paramaters that control operation of the Command.
-            Should be defined using a TypedDict in subclasses
     """
 
     _params: TParams
@@ -55,6 +63,21 @@ class Command(Generic[TParams], ABC):
         """
 
         return self._params
+
+    def run_pre_validation(self) -> Command:
+        """Makes the command run before validators are run."""
+
+        self._params["run_pre_validation"] = True
+        return self
+
+    def get_should_run_pre_validation(self) -> bool:
+        """Gets whether to run the command before validators run.
+
+        Returns:
+            bool: Whether to run the command before validators.
+        """
+
+        return bool(self._params.get("run_pre_validation", False))
 
     @staticmethod
     @abstractmethod
@@ -87,9 +110,27 @@ class Command(Generic[TParams], ABC):
             "type": self.get_type(),
         }
 
+    @classmethod
+    def from_data(cls, data: Mapping[str, Any]) -> Command:
+        """Produces an instance of the component from decoded params. Implementations should
+        assert that the data provided matches expected types and is valid. Handles the run before
+        validators capability of commands.
+
+        Args:
+            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
+
+        Returns:
+            Command: An instance of the Command.
+        """
+
+        unbundled_comand = cls._from_data(data)
+        if bool(data.get("run_pre_validation", False)):
+            unbundled_comand.run_pre_validation()
+        return unbundled_comand
+
     @staticmethod
     @abstractmethod
-    def from_data(data: Mapping[str, Any]) -> Command:
+    def _from_data(data: Mapping[str, Any]) -> Command:
         """Produces an instance of the component from decoded params. Implementations should
         assert that the data provided matches expected types and is valid.
 

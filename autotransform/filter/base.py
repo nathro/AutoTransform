@@ -42,7 +42,6 @@ class Filter(Generic[TParams], ABC):
 
     Attributes:
         _params (TParams): The paramaters that control operation of the Filter.
-            Should be defined using a TypedDict in subclasses.
     """
 
     _params: TParams

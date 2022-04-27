@@ -271,6 +271,14 @@ class AutoTransformSchema:
         # Execute transformation
         self._transformer.transform(batch)
 
+        # Run pre-validation commands
+        pre_validation_commands = [
+            command for command in self._commands if command.get_should_run_pre_validation()
+        ]
+        for command in pre_validation_commands:
+            event_handler.handle(DebugEvent({"message": f"Running command {command.get_type()}"}))
+            command.run(batch)
+
         # Validate the changes
         for validator in self._validators:
             validation_result = validator.validate(batch)
@@ -285,8 +293,11 @@ class AutoTransformSchema:
                 )
                 raise ValidationError(validation_result)
 
-        # Run post-change commands
-        for command in self._commands:
+        # Run post-validation commands
+        post_validation_commands = [
+            command for command in self._commands if not command.get_should_run_pre_validation()
+        ]
+        for command in post_validation_commands:
             event_handler.handle(DebugEvent({"message": f"Running command {command.get_type()}"}))
             command.run(batch)
 
