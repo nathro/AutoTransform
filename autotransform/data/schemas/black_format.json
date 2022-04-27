@@ -35,11 +35,22 @@
         },
         "type": "script"
     },
-    "validators": [],
+    "validators": [
+        {
+            "params": {
+                "script": "mypy",
+                "args": [
+                    "autotransform",
+                    "tests"
+                ],
+                "failure_level": 2
+            }
+        }
+    ],
     "commands": [],
     "config": {
         "name": "Black Format",
-        "allowed_validation_level": 0
+        "allowed_validation_level": 1
     },
     "repo": {
         "params": {
