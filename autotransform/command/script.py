@@ -146,7 +146,16 @@ class ScriptCommand(Command[ScriptCommandParams]):
 
             # Run script
             event_handler.handle(DebugEvent({"message": f"Running command: {str(cmd)}"}))
-            subprocess.check_output(cmd)
+            proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", check=False)
+        if proc.stdout.strip() != "":
+            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout}"}))
+        else:
+            event_handler.handle(DebugEvent({"message": "No STDOUT"}))
+        if proc.stderr.strip() != "":
+            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr}"}))
+        else:
+            event_handler.handle(DebugEvent({"message": "No STDERR"}))
+        proc.check_returncode()
 
     def _run_batch(self, batch: Batch) -> None:
         """Executes a simple script against the given Batch. Sentinel values can be used
@@ -213,7 +222,16 @@ class ScriptCommand(Command[ScriptCommandParams]):
 
             # Run script
             event_handler.handle(DebugEvent({"message": f"Running command: {str(cmd)}"}))
-            subprocess.check_output(cmd)
+            proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", check=False)
+        if proc.stdout.strip() != "":
+            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout}"}))
+        else:
+            event_handler.handle(DebugEvent({"message": "No STDOUT"}))
+        if proc.stderr.strip() != "":
+            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr}"}))
+        else:
+            event_handler.handle(DebugEvent({"message": "No STDERR"}))
+        proc.check_returncode()
 
     @staticmethod
     def _from_data(data: Mapping[str, Any]) -> ScriptCommand:

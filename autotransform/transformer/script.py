@@ -136,7 +136,22 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
 
             # Run Script
             event_handler.handle(DebugEvent({"message": f"Running command: {str(cmd)}"}))
-            subprocess.check_output(cmd, timeout=self._params["timeout"])
+            proc = subprocess.run(
+                cmd,
+                capture_output=True,
+                encoding="utf-8",
+                check=False,
+                timeout=self._params["timeout"],
+            )
+        if proc.stdout.strip() != "":
+            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout}"}))
+        else:
+            event_handler.handle(DebugEvent({"message": "No STDOUT"}))
+        if proc.stderr.strip() != "":
+            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr}"}))
+        else:
+            event_handler.handle(DebugEvent({"message": "No STDERR"}))
+        proc.check_returncode()
 
     def _transform_batch(self, batch: Batch) -> None:
         """Executes a simple script to transform the given Batch. Sentinel values can be used
@@ -195,7 +210,22 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
 
             # Run script
             event_handler.handle(DebugEvent({"message": f"Running command: {str(cmd)}"}))
-            subprocess.check_output(cmd, timeout=self._params["timeout"])
+            proc = subprocess.run(
+                cmd,
+                capture_output=True,
+                encoding="utf-8",
+                check=False,
+                timeout=self._params["timeout"],
+            )
+        if proc.stdout.strip() != "":
+            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout}"}))
+        else:
+            event_handler.handle(DebugEvent({"message": "No STDOUT"}))
+        if proc.stderr.strip() != "":
+            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr}"}))
+        else:
+            event_handler.handle(DebugEvent({"message": "No STDERR"}))
+        proc.check_returncode()
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> ScriptTransformer:
