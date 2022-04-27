@@ -119,7 +119,7 @@ class Validator(Generic[TParams], ABC):
             Should be defined using a TypedDict in subclasses.
     """
 
-    params: TParams
+    _params: TParams
 
     def __init__(self, params: TParams):
         """A simple constructor.
@@ -171,7 +171,7 @@ class Validator(Generic[TParams], ABC):
         """
 
         return {
-            "params": self.params,
+            "params": self._params,
             "type": self.get_type(),
         }
 

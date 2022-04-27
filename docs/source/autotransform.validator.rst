@@ -9,6 +9,8 @@ Components
 .. toctree::
    :maxdepth: 4
 
+   autotransform.validator.mypy
+
 Core
 ----
 

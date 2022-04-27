@@ -34,7 +34,7 @@ class GitRepo(Repo[GitRepoParams]):
     """A Repo that provides support for commiting changes to git.
 
     Attributes:
-        _params (GitRepoParams): Contains tthe base branch name that the changes will be
+        _params (GitRepoParams): Contains the base branch name that the changes will be
             made on top of.
         _local_repo (GitPython): An object representing the repo used for git operations.
         _base_branch (Head): The base branch to use for changes.
