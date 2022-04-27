@@ -124,7 +124,12 @@ class GitRepo(Repo[GitRepoParams]):
         """
 
         status = self._local_repo.git.status("-s", untracked_files=True)
-        return [re.sub(r"^(?:\?\?|M|A|D)", "", line.strip()).strip() for line in status.split("\n")]
+        if status.strip() == "":
+            return []
+        return [
+            re.sub(r"^(?:\?\?|M|A|D)", "", line.strip()).strip()
+            for line in status.strip().split("\n")
+        ]
 
     def submit(self, batch: Batch) -> None:
         """Stages all changes and commits them in a new branch.
