@@ -1,7 +1,0 @@
-autotransform.util.datastore module
-===================================
-
-.. automodule:: autotransform.util.datastore
-   :members:
-   :undoc-members:
-   :show-inheritance:
