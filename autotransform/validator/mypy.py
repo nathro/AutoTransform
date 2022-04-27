@@ -16,6 +16,7 @@ from typing import Any, List, Mapping, TypedDict
 from mypy import api
 from typing_extensions import NotRequired
 
+import autotransform.schema
 from autotransform.batcher.base import Batch
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
@@ -67,6 +68,11 @@ class MypyValidator(Validator[MypyValidatorParams]):
         targets: List[str] = []
         for target in self._params.get("targets", []):
             targets.append(target)
+        current_schema = autotransform.schema.current
+        repo = current_schema.get_repo() if current_schema is not None else None
+        if self._params.get("check_changed_files", False) and repo is not None:
+            for changed_file in repo.get_changed_files(batch):
+                targets.append(changed_file)
         sout, serr, code = api.run(targets)
 
         EventHandler.get().handle(DebugEvent({"message": f"Mypy validation stdout: {sout}"}))
