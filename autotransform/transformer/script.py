@@ -39,7 +39,7 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
     """A Transformer that makes changes using an invoked script. Sentinel values can be used in the
     args to supply information from the Batch.
     The available sentinel values for args are:
-        <<KEY>>: A json encoded list of the input files for a batch. If the per_item flag is set in
+        <<KEY>>: A json encoded list of the Items for a batch. If the per_item flag is set in
             params, this will simply be the key of an Item.
         <<EXTRA_DATA>>: A JSON encoded mapping from Item key to that Item's extra_data. If the
             per_item flag is set in params, this will simply be a JSON encoding of the Item's
@@ -142,7 +142,7 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
         """Executes a simple script to transform the given Batch. Sentinel values can be used
         in args that will be replaced when the script is invoked.
         The available sentinel values for args are:
-            <<KEY>>: A json encoded list of the input files for a batch.
+            <<KEY>>: A json encoded list of the Items for a batch.
             <<EXTRA_DATA>>: A JSON encoded mapping from Item key to that Item's extra_data. If
                 extra_data is not present for an item, it is treated as an empty Dict.
             <<METADATA>>: A JSON encoded version of the Batch's metadata.

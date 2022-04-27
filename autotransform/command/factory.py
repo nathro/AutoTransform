@@ -13,6 +13,7 @@ import importlib
 from typing import Any, Callable, Dict, Mapping
 
 from autotransform.command.base import Command, CommandBundle
+from autotransform.command.script import ScriptCommand
 from autotransform.command.type import CommandType
 from autotransform.config import fetcher as Config
 
@@ -27,7 +28,9 @@ class CommandFactory:
 
     # pylint: disable=too-few-public-methods
 
-    _map: Dict[CommandType, Callable[[Mapping[str, Any]], Command]] = {}
+    _map: Dict[CommandType, Callable[[Mapping[str, Any]], Command]] = {
+        CommandType.SCRIPT: ScriptCommand.from_data,
+    }
 
     @staticmethod
     def get(bundle: CommandBundle) -> Command:

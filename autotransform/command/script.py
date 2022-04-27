@@ -7,45 +7,43 @@
 
 # @black_format
 
-"""The implementation for the ScriptValidator."""
+"""The implementation for the ScriptCommand."""
 
 from __future__ import annotations
 
 import json
 import subprocess
 from tempfile import NamedTemporaryFile as TmpFile
-from typing import Any, List, Mapping, Optional, Sequence, TypedDict
+from typing import Any, List, Mapping, Optional, Sequence
 
 from typing_extensions import NotRequired
 
 import autotransform.schema
 from autotransform.batcher.base import Batch
+from autotransform.command.base import Command, CommandParams
+from autotransform.command.type import CommandType
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
-from autotransform.validator.base import ValidationResult, ValidationResultLevel, Validator
-from autotransform.validator.type import ValidatorType
 
 
-class ScriptValidatorParams(TypedDict):
-    """The param type for a ScriptValidator."""
+class ScriptCommandParams(CommandParams):
+    """The param type for a ScriptCommand."""
 
     script: str
     args: List[str]
-    failure_level: ValidationResultLevel
     per_item: NotRequired[bool]
     run_on_changes: NotRequired[bool]
 
 
-class ScriptValidator(Validator[ScriptValidatorParams]):
-    """Runs a script with the supplied arguments to perform validation. If the per_item flag is
+class ScriptCommand(Command[ScriptCommandParams]):
+    """Runs a script with the supplied arguments to perform a command. If the per_item flag is
     set to True, the script will be invoked on each Item. If run_on_changes is set to True, the
-    script will replace the Batch Items with FileItems for each changed file. The failure_level
-    indicates the result level if the script returns a non-zero exit code. Sentinel values can
+    script will replace the Batch Items with FileItems for each changed file. Sentinel values can
     be used in args to provide custom arguments for a run.
     The available sentinel values for args are:
-        <<KEY>>: A json encoded list of the Items for a batch. If the per_item flag is set in
+        <<KEY>>: A json encoded list of the Items for a Batch. If the per_item flag is set in
             params, this will simply be the key of an Item.
         <<EXTRA_DATA>>: A JSON encoded mapping from Item key to that Item's extra_data. If the
             per_item flag is set in params, this will simply be a JSON encoding of the Item's
@@ -55,32 +53,27 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
      with a path to a file containing the value.
 
     Attributes:
-        _params (ScriptValidatorParams): Contains the args and set-up for the script.
+        _params (ScriptCommandParams): Contains the args and set-up for the script.
     """
 
-    _params: ScriptValidatorParams
+    _params: ScriptCommandParams
 
     @staticmethod
-    def get_type() -> ValidatorType:
-        """Used to map Validator components 1:1 with an enum, allowing construction from JSON.
+    def get_type() -> CommandType:
+        """Used to map Command components 1:1 with an enum, allowing construction from JSON.
 
         Returns:
-            ValidatorType: The unique type associated with this Validator.
+            CommandType: The unique type associated with this Command.
         """
 
-        return ValidatorType.SCRIPT
+        return CommandType.SCRIPT
 
-    def validate(self, batch: Batch) -> ValidationResult:
-        """Runs the script validation against the Batch, either on each item individually or
-        on the entire Batch, based on the per_item flag. If the script returns a non-zero exit
-        code, the failure_level in params will be in the result.
+    def run(self, batch: Batch) -> None:
+        """Runs the script command against the Batch, either on each item individually or
+        on the entire Batch, based on the per_item flag.
 
         Args:
-            batch (Batch): The transformed Batch to validate.
-
-        Returns:
-            ValidationResult: The result of the validation check indicating the severity of any
-                validation failures as well as an associated message
+            batch (Batch): The transformed Batch to run against.
         """
 
         if self._params.get("per_item", False):
@@ -94,20 +87,11 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
                 items = batch["items"]
 
             for item in items:
-                result = self._validate_single(item, batch.get("metadata", None))
-                if result["level"] != ValidationResultLevel.NONE:
-                    return result
-            return {
-                "level": ValidationResultLevel.NONE,
-                "message": "",
-                "validator": self.get_type(),
-            }
-        return self._validate_batch(batch)
+                self._run_single(item, batch.get("metadata", None))
+        return self._run_batch(batch)
 
-    def _validate_single(
-        self, item: Item, batch_metadata: Optional[Mapping[str, Any]]
-    ) -> ValidationResult:
-        """Executes a simple script to validate a single Item. Sentinel values can be used
+    def _run_single(self, item: Item, batch_metadata: Optional[Mapping[str, Any]]) -> None:
+        """Executes a simple script to run a command on a single Item. Sentinel values can be used
         in args that will be replaced when the script is invoked.
         The available sentinel values for args are:
             <<KEY>>: The key of the Item being validated.
@@ -162,18 +146,10 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
 
             # Run script
             event_handler.handle(DebugEvent({"message": f"Running command: {str(cmd)}"}))
-            proc = subprocess.run(cmd, capture_output=True, encoding="ascii", check=False)
-        level = (
-            self._params["failure_level"] if proc.returncode != 0 else ValidationResultLevel.NONE
-        )
-        return {
-            "level": level,
-            "message": f"[{self._params['script']}] {proc.stderr}",
-            "validator": self.get_type(),
-        }
+            subprocess.check_output(cmd)
 
-    def _validate_batch(self, batch: Batch) -> ValidationResult:
-        """Executes a simple script to validate the given Batch. Sentinel values can be used
+    def _run_batch(self, batch: Batch) -> None:
+        """Executes a simple script against the given Batch. Sentinel values can be used
         in args that will be replaced when the script is invoked.
         The available sentinel values for args are:
             <<KEY>>: A json encoded list of the Items for a batch.
@@ -184,7 +160,7 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
         replaced with a path to a file containing the value.
 
         Args:
-            batch (Batch): The batch that will be transformed.
+            batch (Batch): The batch that will be run against.
         """
 
         event_handler = EventHandler.get()
@@ -237,18 +213,10 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
 
             # Run script
             event_handler.handle(DebugEvent({"message": f"Running command: {str(cmd)}"}))
-            proc = subprocess.run(cmd, capture_output=True, encoding="ascii", check=False)
-        level = (
-            self._params["failure_level"] if proc.returncode != 0 else ValidationResultLevel.NONE
-        )
-        return {
-            "level": level,
-            "message": f"[{self._params['script']}] {proc.stderr}",
-            "validator": self.get_type(),
-        }
+            subprocess.check_output(cmd)
 
     @staticmethod
-    def from_data(data: Mapping[str, Any]) -> ScriptValidator:
+    def _from_data(data: Mapping[str, Any]) -> ScriptCommand:
         """Produces an instance of the component from decoded params. Implementations should
         assert that the data provided matches expected types and is valid.
 
@@ -256,7 +224,7 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
             data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
 
         Returns:
-            ScriptValidator: An instance of the ScriptValidator.
+            ScriptCommand: An instance of the ScriptCommand.
         """
 
         script = data["script"]
@@ -265,12 +233,9 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
         assert isinstance(args, List)
         for arg in args:
             assert isinstance(arg, str)
-        failure_level = data["failure_level"]
-        assert isinstance(failure_level, int)
-        params: ScriptValidatorParams = {
+        params: ScriptCommandParams = {
             "script": script,
             "args": args,
-            "failure_level": ValidationResultLevel.from_value(failure_level),  # type: ignore
         }
 
         per_item = data.get("per_item", None)
@@ -283,4 +248,4 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
             assert isinstance(run_on_changes, bool)
             params["run_on_changes"] = run_on_changes
 
-        return ScriptValidator(params)
+        return ScriptCommand(params)

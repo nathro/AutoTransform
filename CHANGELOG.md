@@ -15,6 +15,7 @@ Version 0.2.0 represents a production ready beta of AutoTransform. It includes a
  - FileContentRegexFilter as a Filter that checks a file's contents against a regex pattern
  - Added ShardFilter concept and KeyHashShardFilter
  - ScriptValidator for handling validation using command line scripts like mypy or pytest
+ - ScriptCommand for running scripts like black for post-processing
 
  - Runner class added to provide an API for invoking runs
  - GithubRunner class added to use Github workflows for remote runs

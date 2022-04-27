@@ -14,3 +14,5 @@ from enum import Enum
 
 class CommandType(str, Enum):
     """A simple enum for 1:1 Command to type mapping."""
+
+    SCRIPT = "script"
