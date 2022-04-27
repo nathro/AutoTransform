@@ -166,6 +166,7 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
         level = (
             self._params["failure_level"] if proc.returncode != 0 else ValidationResultLevel.NONE
         )
+        event_handler.handle(DebugEvent({"message": f"Script Output: {proc.stdout}"}))
         return {
             "level": level,
             "message": f"[{self._params['script']}] {proc.stderr}",
