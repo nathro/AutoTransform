@@ -75,7 +75,7 @@ class MypyValidator(Validator[MypyValidatorParams]):
                 targets.append(changed_file)
         sout, serr, code = api.run(targets)
 
-        EventHandler.get().handle(DebugEvent({"message": f"Mypy validation stdout: {sout}"}))
+        EventHandler.get().handle(DebugEvent({"message": f"Mypy validation stdout:\n{sout}"}))
 
         return {
             "level": ValidationResultLevel.ERROR if code != 0 else ValidationResultLevel.NONE,
@@ -92,5 +92,21 @@ class MypyValidator(Validator[MypyValidatorParams]):
             data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
 
         Returns:
-            Validator: An instance of the MypyValidator.
+            MypyValidatorParams: An instance of the MypyValidator.
         """
+
+        params: MypyValidatorParams = {}
+
+        targets = data.get("targets", None)
+        if targets is not None:
+            assert isinstance(targets, List)
+            for target in targets:
+                assert isinstance(target, str)
+            params["targets"] = targets
+
+        check_changed_files = data.get("check_changed_files", None)
+        if check_changed_files is not None:
+            assert isinstance(check_changed_files, bool)
+            params["check_changed_files"] = check_changed_files
+
+        return MypyValidator(params)

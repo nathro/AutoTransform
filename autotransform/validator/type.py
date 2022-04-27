@@ -16,3 +16,4 @@ class ValidatorType(str, Enum):
     """A simple enum for 1:1 Validator to type mapping."""
 
     MYPY = "mypy"
+    PYTEST = "pytest"
