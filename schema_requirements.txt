@@ -1,4 +1,7 @@
 black
+
 mypy
+types-colorama
+types-mock
 
 -r requirements.txt
