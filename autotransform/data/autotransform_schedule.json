@@ -6,14 +6,17 @@
             "workflow": "autotransform_runner.yml"
         }
     },
-    "excluded_days": [5,6],
+    "excluded_days": [
+        5,
+        6
+    ],
     "schemas": [
         {
             "type": "file",
             "schema": "autotransform/data/schemas/black_format.json",
             "schedule": {
                 "repeats": "daily",
-                "hour_of_day": 4
+                "hour_of_day": 5
             }
         }
     ]
