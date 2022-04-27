@@ -285,8 +285,8 @@ class AutoTransformSchema:
             event_handler.handle(
                 DebugEvent(
                     {
-                        "message": f"[{validation_result['validator']}] Result "
-                        + f"({validation_result['level']}): {validation_result['message']}"
+                        "message": f"[{validation_result['validator']}] Result: "
+                        + validation_result["level"].name
                     }
                 )
             )
