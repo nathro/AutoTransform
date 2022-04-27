@@ -72,7 +72,8 @@ class MypyValidator(Validator[MypyValidatorParams]):
         repo = current_schema.get_repo() if current_schema is not None else None
         if self._params.get("check_changed_files", False) and repo is not None:
             for changed_file in repo.get_changed_files(batch):
-                targets.append(changed_file)
+                if changed_file.endswith(".py"):
+                    targets.append(changed_file)
         sout, serr, code = api.run(targets)
 
         EventHandler.get().handle(DebugEvent({"message": f"Mypy validation stdout:\n{sout}"}))
