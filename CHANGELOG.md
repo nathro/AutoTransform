@@ -31,6 +31,7 @@ Version 0.2.0 represents a production ready beta of AutoTransform. It includes a
  - Transformer: Transform now takes Batch instead of Cached File
  - Eliminated Worker concept and merged logic in to Runners, which can handle local and remote running
  - Replaced file path strings returned by Inputs with an Item concept that encapsulates extra data, removing the need for DataStore
+ - Added current to autotransform.schema to provide globally accessible instance of currently running schema
 
 #### Upgrade Packages
 
