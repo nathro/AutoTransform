@@ -18,6 +18,7 @@ from typing import Any, Mapping, TypedDict
 from git import Head
 from git import Repo as GitPython
 
+import autotransform.schema
 from autotransform.batcher.base import Batch
 from autotransform.repo.base import Repo
 from autotransform.repo.type import RepoType
@@ -47,12 +48,11 @@ class GitRepo(Repo[GitRepoParams]):
     COMMIT_MESSAGE_PREFIX: str = "[AutoTransform]"
 
     @staticmethod
-    def get_branch_name(title: str, schema_name: str) -> str:
+    def get_branch_name(title: str) -> str:
         """Gets a unique name for a git branch using the title from the Batch.
 
         Args:
             title (str): The title of the change.
-            schema_name (str): The name of the schema for this change.
 
         Returns:
             str: The name of the branch for this change.
@@ -60,15 +60,18 @@ class GitRepo(Repo[GitRepoParams]):
 
         # Handle titles of the format "[1/2] foo" that can come from chunk batching
         fixed_title = re.sub(r"\[(\d+)/(\d+)\]", r"\1_\2", title)
-        return f"{GitRepo.BRANCH_NAME_PREFIX}/{schema_name}/{fixed_title}".replace(" ", "_")
+        if autotransform.schema.current is not None:
+            schema_name = f"{autotransform.schema.current.get_config().get_name()}/"
+        else:
+            schema_name = ""
+        return f"{GitRepo.BRANCH_NAME_PREFIX}/{schema_name}{fixed_title}".replace(" ", "_")
 
     @staticmethod
-    def get_commit_message(title: str, schema_name: str) -> str:
+    def get_commit_message(title: str) -> str:
         """Gets a commit message for the change based on the Batch title.
 
         Args:
             title (str): The title of the change.
-            schema_name (str): The name of the schema for this change.
 
         Returns:
             str: The commit message for this change.
@@ -77,6 +80,10 @@ class GitRepo(Repo[GitRepoParams]):
         # Add a blank space before prefixes
         if not title.startswith("["):
             title = " " + title
+        if autotransform.schema.current is not None:
+            schema_name = f"[{autotransform.schema.current.get_config().get_name()}]"
+        else:
+            schema_name = ""
         return f"{GitRepo.COMMIT_MESSAGE_PREFIX}[{schema_name}]{title}"
 
     def __init__(self, params: GitRepoParams):
@@ -117,27 +124,25 @@ class GitRepo(Repo[GitRepoParams]):
         """
         return self._local_repo.is_dirty(untracked_files=True)
 
-    def submit(self, batch: Batch, schema_name: str) -> None:
+    def submit(self, batch: Batch) -> None:
         """Stages all changes and commits them in a new branch.
 
         Args:
             batch (Batch): The Batch for which the changes were made.
-            schema_name (str): The name of the schema for this change.
         """
 
-        self.commit(batch["title"], schema_name)
+        self.commit(batch["title"])
 
-    def commit(self, title: str, schema_name: str) -> None:
+    def commit(self, title: str) -> None:
         """Creates a new branch for all changes, stages them, and commits them.
 
         Args:
             title (str): The title of the Batch being commited.
-            schema_name (str): The name of the schema for this change.
         """
 
-        self._local_repo.git.checkout("-b", GitRepo.get_branch_name(title, schema_name))
+        self._local_repo.git.checkout("-b", GitRepo.get_branch_name(title))
         self._local_repo.git.add(all=True)
-        self._local_repo.index.commit(GitRepo.get_commit_message(title, schema_name))
+        self._local_repo.index.commit(GitRepo.get_commit_message(title))
 
     def clean(self, _: Batch) -> None:
         """Performs `git reset --hard` to remove any changes.

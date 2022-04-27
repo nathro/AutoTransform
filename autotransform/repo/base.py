@@ -77,13 +77,12 @@ class Repo(Generic[TParams], ABC):
         """
 
     @abstractmethod
-    def submit(self, batch: Batch, schema_name: str) -> None:
+    def submit(self, batch: Batch) -> None:
         """Submit the changes to the Repo (i.e. commit, submit pull request, etc...).
         Only called when changes are present.
 
         Args:
             batch (Batch): The Batch for which the changes were made.
-            schema_name (str): The name of the schema for this change.
         """
 
     @abstractmethod

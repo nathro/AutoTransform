@@ -16,6 +16,7 @@ from __future__ import annotations
 import json
 from typing import Any, Dict, List, Mapping, Optional
 
+import autotransform.schema
 from autotransform.batcher.base import Batch, Batcher
 from autotransform.batcher.factory import BatcherFactory
 from autotransform.command.base import Command
@@ -188,11 +189,13 @@ class AutoTransformSchema:
 
     def get_batches(self) -> List[Batch]:
         """Runs the Input to get eligible Items, filters them, then batches them.
+        Note: this function is not thread safe.
 
         Returns:
             List[Batch]: The Batches for the change
         """
 
+        autotransform.schema.current = self
         event_handler = EventHandler.get()
         event_handler.handle(DebugEvent({"message": "Begin get_batches"}))
 
@@ -233,13 +236,14 @@ class AutoTransformSchema:
             for batch in batches
         ]
         event_handler.handle(DebugEvent({"message": f"Batches: {json.dumps(encodable_batches)}"}))
+        autotransform.schema.current = None
 
         return batches
 
     def execute_batch(self, batch: Batch) -> None:
         """Executes changes for a batch, including setting up the Repo, running the Transformer,
         checking all Validators, running Commands, submitting changes if present, and rewinding
-        the Repo if changes are submitted.
+        the Repo if changes are submitted. Note: this function is not thread safe.
 
         Args:
             batch (Batch): The Batch to execute.
@@ -248,6 +252,7 @@ class AutoTransformSchema:
             ValidationError: If one of the Schema's Validators fails raises an exception.
         """
 
+        autotransform.schema.current = self
         event_handler = EventHandler.get()
         encodable_batch = {
             "items": [item.bundle() for item in batch["items"]],
@@ -291,19 +296,23 @@ class AutoTransformSchema:
             if repo.has_changes(batch):
                 event_handler.handle(DebugEvent({"message": "Changes found"}))
                 event_handler.handle(DebugEvent({"message": "Submitting changes"}))
-                repo.submit(batch, self._config.get_name())
+                repo.submit(batch)
                 event_handler.handle(DebugEvent({"message": "Rewinding repo"}))
                 repo.rewind(batch)
             else:
                 event_handler.handle(DebugEvent({"message": "No changes found"}))
         event_handler.handle(DebugEvent({"message": "Finish batch"}))
+        autotransform.schema.current = None
 
     def run(self):
-        """Fully run a given Schema including getting and executing all Batches."""
+        """Fully run a given Schema including getting and executing all Batches.
+        Note: this function is not thread safe."""
 
+        autotransform.schema.current = self
         batches = self.get_batches()
         for batch in batches:
             self.execute_batch(batch)
+        autotransform.schema.current = None
 
     def bundle(self) -> Dict[str, Any]:
         """Bundles the Schema in to a format that can be JSON encoded.

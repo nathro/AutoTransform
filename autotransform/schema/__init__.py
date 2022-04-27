@@ -10,3 +10,16 @@
 """Schemas are the heart of AutoTransform. They contain all necesary components and configuration
 to deploy a change.
 """
+
+# pylint: disable=invalid-name
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Optional
+
+if TYPE_CHECKING:
+    from autotransform.schema.schema import AutoTransformSchema
+
+# A variable to store the currently executing schema so that components can access it without
+# having to thread it.
+current: Optional[AutoTransformSchema] = None
