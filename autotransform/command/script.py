@@ -148,11 +148,11 @@ class ScriptCommand(Command[ScriptCommandParams]):
             event_handler.handle(DebugEvent({"message": f"Running command: {str(cmd)}"}))
             proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", check=False)
         if proc.stdout.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout}"}))
+            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
         else:
             event_handler.handle(DebugEvent({"message": "No STDOUT"}))
         if proc.stderr.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr}"}))
+            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
         else:
             event_handler.handle(DebugEvent({"message": "No STDERR"}))
         proc.check_returncode()
@@ -224,11 +224,11 @@ class ScriptCommand(Command[ScriptCommandParams]):
             event_handler.handle(DebugEvent({"message": f"Running command: {str(cmd)}"}))
             proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", check=False)
         if proc.stdout.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout}"}))
+            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
         else:
             event_handler.handle(DebugEvent({"message": "No STDOUT"}))
         if proc.stderr.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr}"}))
+            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
         else:
             event_handler.handle(DebugEvent({"message": "No STDERR"}))
         proc.check_returncode()

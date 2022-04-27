@@ -167,16 +167,17 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
             self._params["failure_level"] if proc.returncode != 0 else ValidationResultLevel.NONE
         )
         if proc.stdout.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout}"}))
+            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
         else:
             event_handler.handle(DebugEvent({"message": "No STDOUT"}))
         if proc.stderr.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr}"}))
+            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
         else:
             event_handler.handle(DebugEvent({"message": "No STDERR"}))
         return {
             "level": level,
-            "message": f"[{str(cmd)}]\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}",
+            "message": f"[{str(cmd)}]\n"
+            + f"STDOUT:\n{proc.stdout.strip()}\nSTDERR:\n{proc.stderr.strip()}",
             "validator": self.get_type(),
         }
 
@@ -250,16 +251,17 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
             self._params["failure_level"] if proc.returncode != 0 else ValidationResultLevel.NONE
         )
         if proc.stdout.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout}"}))
+            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
         else:
             event_handler.handle(DebugEvent({"message": "No STDOUT"}))
         if proc.stderr.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr}"}))
+            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
         else:
             event_handler.handle(DebugEvent({"message": "No STDERR"}))
         return {
             "level": level,
-            "message": f"[{str(cmd)}]\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}",
+            "message": f"[{str(cmd)}]\n"
+            + f"STDOUT:\n{proc.stdout.strip()}\nSTDERR:\n{proc.stderr.strip()}",
             "validator": self.get_type(),
         }
 

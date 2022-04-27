@@ -144,11 +144,11 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
                 timeout=self._params["timeout"],
             )
         if proc.stdout.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout}"}))
+            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
         else:
             event_handler.handle(DebugEvent({"message": "No STDOUT"}))
         if proc.stderr.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr}"}))
+            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
         else:
             event_handler.handle(DebugEvent({"message": "No STDERR"}))
         proc.check_returncode()
@@ -218,11 +218,11 @@ class ScriptTransformer(Transformer[ScriptTransformerParams]):
                 timeout=self._params["timeout"],
             )
         if proc.stdout.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout}"}))
+            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
         else:
             event_handler.handle(DebugEvent({"message": "No STDOUT"}))
         if proc.stderr.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr}"}))
+            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
         else:
             event_handler.handle(DebugEvent({"message": "No STDERR"}))
         proc.check_returncode()
