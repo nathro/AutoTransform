@@ -15,6 +15,7 @@ Version 0.2.0 represents a production ready beta of AutoTransform. It includes a
  - FileContentRegexFilter as a Filter that checks a file's contents against a regex pattern
  - Added ShardFilter concept and KeyHashShardFilter
  - MypyValidator for validating using mypy
+ - PytestValidator for validating using pytest
 
  - Runner class added to provide an API for invoking runs
  - GithubRunner class added to use Github workflows for remote runs

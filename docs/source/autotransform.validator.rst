@@ -10,6 +10,7 @@ Components
    :maxdepth: 4
 
    autotransform.validator.mypy
+   autotransform.validator.pytest
 
 Core
 ----
