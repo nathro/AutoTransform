@@ -162,6 +162,7 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
 
             # Run script
             event_handler.handle(DebugEvent({"message": f"Running command: {str(cmd)}"}))
+            subprocess.check_output(cmd)
             with subprocess.Popen(cmd) as proc:
                 level = (
                     self._params["failure_level"]
