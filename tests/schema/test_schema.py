@@ -95,7 +95,7 @@ def mock_repo(
 
     mocked_has_changes.return_value = should_have_changes
 
-    def submit(_batch: Batch, _schema_name: str) -> None:
+    def submit(_batch: Batch) -> None:
         pass
 
     mocked_submit.side_effect = submit
