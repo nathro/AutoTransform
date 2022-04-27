@@ -46,6 +46,16 @@
                 "failure_level": 2
             },
             "type": "script"
+        },
+        {
+            "params": {
+                "script": "pytest",
+                "args": [
+                    "tests/"
+                ],
+                "failure_level": 2
+            },
+            "type": "script"
         }
     ],
     "commands": [],
