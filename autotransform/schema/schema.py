@@ -282,14 +282,17 @@ class AutoTransformSchema:
         # Validate the changes
         for validator in self._validators:
             validation_result = validator.validate(batch)
+            event_handler.handle(
+                DebugEvent(
+                    {
+                        "message": f"[{validation_result['validator']}] Result "
+                        + f"({validation_result['level']}): {validation_result['message']}"
+                    }
+                )
+            )
             if validation_result["level"] > self._config.get_allowed_validation_level():
                 event_handler.handle(
-                    DebugEvent(
-                        {
-                            "message": f"[{validation_result['validator']}]"
-                            + f" Validation failed: {validation_result['message']}"
-                        }
-                    )
+                    DebugEvent({"message": f"[{validation_result['validator']}] Failed"})
                 )
                 raise ValidationError(validation_result)
 

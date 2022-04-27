@@ -56,8 +56,22 @@ class ValidationResultLevel(int, Enum):
 
         # pylint: disable=no-member
 
-        assert name in ValidationResultLevel._member_names_
         return ValidationResultLevel._member_map_[name]
+
+    @staticmethod
+    def from_value(value: int) -> Enum:
+        """Gets the enum value associated with an int value.
+
+        Args:
+            value (str): The value of a member of the enum.
+
+        Returns:
+            ValidationResultLevel: The associated enum value.
+        """
+
+        # pylint: disable=no-member
+
+        return ValidationResultLevel._value2member_map_[value]
 
 
 class ValidationResult(TypedDict):

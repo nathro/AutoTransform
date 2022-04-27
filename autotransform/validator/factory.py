@@ -14,8 +14,7 @@ from typing import Any, Callable, Dict, Mapping
 
 from autotransform.config import fetcher as Config
 from autotransform.validator.base import Validator, ValidatorBundle
-from autotransform.validator.mypy import MypyValidator
-from autotransform.validator.pytest import PytestValidator
+from autotransform.validator.script import ScriptValidator
 from autotransform.validator.type import ValidatorType
 
 
@@ -30,8 +29,7 @@ class ValidatorFactory:
     # pylint: disable=too-few-public-methods
 
     _map: Dict[ValidatorType, Callable[[Mapping[str, Any]], Validator]] = {
-        ValidatorType.MYPY: MypyValidator.from_data,
-        ValidatorType.PYTEST: PytestValidator.from_data,
+        ValidatorType.SCRIPT: ScriptValidator.from_data,
     }
 
     @staticmethod
