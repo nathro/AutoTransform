@@ -293,12 +293,7 @@ class AutoTransformSchema:
 
             if validation_result["level"].value > self._config.get_allowed_validation_level().value:
                 event_handler.handle(
-                    DebugEvent(
-                        {
-                            "message": f"[{validation_result['validator']}] Failed: "
-                            + f"{validation_result['message']}"
-                        }
-                    )
+                    DebugEvent({"message": f"[{validation_result['validator']}] Failed"})
                 )
                 raise ValidationError(validation_result)
 
