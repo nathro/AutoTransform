@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import re
 import subprocess
-from typing import Any, Mapping, TypedDict
+from typing import Any, List, Mapping, TypedDict
 
 from git import Head
 from git import Repo as GitPython
@@ -113,16 +113,18 @@ class GitRepo(Repo[GitRepoParams]):
 
         return RepoType.GIT
 
-    def has_changes(self, _: Batch) -> bool:
-        """Checks the dirty status of the repo, including untracked changes.
+    def get_changed_files(self, _: Batch) -> List[str]:
+        """Uses git status to get all changed files.
 
         Args:
             _ (Batch): Unused Batch object used to match signature to base.
 
         Returns:
-            bool: Returns True if there are any changes to the repo either staged or unstaged.
+            List[str]: All changed files, including untracked files.
         """
-        return self._local_repo.is_dirty(untracked_files=True)
+
+        status = self._local_repo.git.status("-s", untracked_files=True)
+        return [re.sub(r"^(?:\?\?|M|A|D)", "", line.strip()).strip() for line in status.split("\n")]
 
     def submit(self, batch: Batch) -> None:
         """Stages all changes and commits them in a new branch.

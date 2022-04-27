@@ -12,7 +12,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Generic, Mapping, TypedDict, TypeVar
+from typing import Any, Generic, List, Mapping, TypedDict, TypeVar
 
 from autotransform.batcher.base import Batch
 from autotransform.repo.type import RepoType
@@ -66,6 +66,16 @@ class Repo(Generic[TParams], ABC):
         """
 
     @abstractmethod
+    def get_changed_files(self, batch: Batch) -> List[str]:
+        """Gets all files in the repo that have been modified.
+
+        Args:
+            batch (Batch): The Batch that was used for the transformation
+
+        Returns:
+            List[str]: The list of files that have unsubmitted changes.
+        """
+
     def has_changes(self, batch: Batch) -> bool:
         """Check whether any changes have been made to the underlying code based on the Batch.
 
@@ -75,6 +85,8 @@ class Repo(Generic[TParams], ABC):
         Returns:
             bool: Returns True if there are any changes to the codebase.
         """
+
+        return len(self.get_changed_files(batch)) > 0
 
     @abstractmethod
     def submit(self, batch: Batch) -> None:
