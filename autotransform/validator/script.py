@@ -162,18 +162,23 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
 
             # Run script
             event_handler.handle(DebugEvent({"message": f"Running command: {str(cmd)}"}))
-            subprocess.check_output(cmd)
-            with subprocess.Popen(cmd) as proc:
-                level = (
-                    self._params["failure_level"]
-                    if proc.returncode != 0
-                    else ValidationResultLevel.NONE
-                )
-                return {
-                    "level": level,
-                    "message": "",
-                    "validator": self.get_type(),
-                }
+            proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", check=False)
+        level = (
+            self._params["failure_level"] if proc.returncode != 0 else ValidationResultLevel.NONE
+        )
+        if proc.stdout.strip() != "":
+            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout}"}))
+        else:
+            event_handler.handle(DebugEvent({"message": "No STDOUT"}))
+        if proc.stderr.strip() != "":
+            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr}"}))
+        else:
+            event_handler.handle(DebugEvent({"message": "No STDERR"}))
+        return {
+            "level": level,
+            "message": f"[{str(cmd)}]\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}",
+            "validator": self.get_type(),
+        }
 
     def _validate_batch(self, batch: Batch) -> ValidationResult:
         """Executes a simple script to validate the given Batch. Sentinel values can be used
@@ -240,13 +245,21 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
 
             # Run script
             event_handler.handle(DebugEvent({"message": f"Running command: {str(cmd)}"}))
-            proc = subprocess.run(cmd, capture_output=True, encoding="ascii", check=False)
+            proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", check=False)
         level = (
             self._params["failure_level"] if proc.returncode != 0 else ValidationResultLevel.NONE
         )
+        if proc.stdout.strip() != "":
+            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout}"}))
+        else:
+            event_handler.handle(DebugEvent({"message": "No STDOUT"}))
+        if proc.stderr.strip() != "":
+            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr}"}))
+        else:
+            event_handler.handle(DebugEvent({"message": "No STDERR"}))
         return {
             "level": level,
-            "message": f"[{self._params['script']}] {proc.stderr}",
+            "message": f"[{str(cmd)}]\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}",
             "validator": self.get_type(),
         }
 
