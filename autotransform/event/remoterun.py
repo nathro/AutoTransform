@@ -31,8 +31,6 @@ class RemoteRunEvent(Event[RemoteRunEventData]):
     on remote infrastructure.
     """
 
-
-
     @staticmethod
     def get_type() -> EventType:
         """Used to represent the type of Event, output to logs.
