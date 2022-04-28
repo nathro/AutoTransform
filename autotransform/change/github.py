@@ -164,7 +164,7 @@ class GithubChange(Change[GithubChangeParams]):
         return self._state
 
     def merge(self) -> bool:
-        """Merges an approved change in to main.
+        """Merges the pull request.
 
         Returns:
             bool: Whether the merge was completed successfully.
@@ -174,8 +174,7 @@ class GithubChange(Change[GithubChangeParams]):
         return merge_status.merged
 
     def abandon(self) -> bool:
-        """Close out and abandon a Change, removing it from the code review
-        and/or version control system.
+        """Close the pull request and delete the associated branch.
 
         Returns:
             bool: Whether the abandon was completed successfully.
