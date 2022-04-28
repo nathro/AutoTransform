@@ -11,11 +11,13 @@
 
 from __future__ import annotations
 
+import json
 from typing import Any, Dict, List, Mapping, Optional
 
 from github import Github, Repository
 from typing_extensions import NotRequired
 
+import autotransform.schema
 from autotransform.batcher.base import Batch
 from autotransform.config import fetcher as Config
 from autotransform.repo.git import GitRepo, GitRepoParams
@@ -139,6 +141,32 @@ class GithubRepo(GitRepo):
             head=commit_branch,
         )
 
+        # Create comment with information on replicating the change
+        comment_lines = [
+            "Automated pull request from AutoTransform. To replicate, see information below."
+        ]
+
+        # Add schema JSON
+        current_schema = autotransform.schema.current
+        if current_schema is not None:
+            comment_lines.append(GithubRepo.BEGIN_SCHEMA)
+            comment_lines.append(current_schema.to_json(pretty=True))
+            comment_lines.append(GithubRepo.END_SCHEMA)
+
+        # Add batch JSON
+        encodable_batch: Dict[str, Any] = {
+            "title": batch["title"],
+            "items": [item.bundle() for item in batch["items"]],
+        }
+        if "metadata" in batch:
+            encodable_batch["metadata"] = batch["metadata"]
+        comment_lines.append(GithubRepo.BEGIN_BATCH)
+        comment_lines.append(json.dumps(encodable_batch, indent=4))
+        comment_lines.append(GithubRepo.END_BATCH)
+
+        pull_request.create_issue_comment("\n".join(comment_lines))
+
+        # Add labels
         labels = batch["metadata"].get("labels", [])
         assert isinstance(labels, List)
         labels = labels + self._params.get("required_labels", [])
