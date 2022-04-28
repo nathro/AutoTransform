@@ -149,9 +149,15 @@ class GithubRepo(GitRepo):
         # Add schema JSON
         current_schema = autotransform.schema.current
         if current_schema is not None:
+            comment_lines.append("<details><summary>Schema JSON</summary>")
+            comment_lines.append("")
+            comment_lines.append("```")
             comment_lines.append(GithubRepo.BEGIN_SCHEMA)
             comment_lines.append(current_schema.to_json(pretty=True))
             comment_lines.append(GithubRepo.END_SCHEMA)
+            comment_lines.append("```")
+            comment_lines.append("")
+            comment_lines.append("</details>")
 
         # Add batch JSON
         encodable_batch: Dict[str, Any] = {
@@ -160,9 +166,15 @@ class GithubRepo(GitRepo):
         }
         if "metadata" in batch:
             encodable_batch["metadata"] = batch["metadata"]
+        comment_lines.append("<details><summary>Batch JSON</summary>")
+        comment_lines.append("")
+        comment_lines.append("```")
         comment_lines.append(GithubRepo.BEGIN_BATCH)
         comment_lines.append(json.dumps(encodable_batch, indent=4))
         comment_lines.append(GithubRepo.END_BATCH)
+        comment_lines.append("```")
+        comment_lines.append("")
+        comment_lines.append("</details>")
 
         pull_request.create_issue_comment("\n".join(comment_lines))
 

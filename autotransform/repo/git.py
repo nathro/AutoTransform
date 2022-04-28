@@ -84,7 +84,7 @@ class GitRepo(Repo[GitRepoParams]):
             schema_name = f"[{autotransform.schema.current.get_config().get_name()}]"
         else:
             schema_name = ""
-        return f"{GitRepo.COMMIT_MESSAGE_PREFIX}[{schema_name}]{title}"
+        return f"{GitRepo.COMMIT_MESSAGE_PREFIX}{schema_name}{title}"
 
     def __init__(self, params: GitRepoParams):
         """Gets the local repo object for future operations and attains the initial active branch.
