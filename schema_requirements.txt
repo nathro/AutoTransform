@@ -4,4 +4,7 @@ mypy
 types-colorama
 types-mock
 
+pytest
+mock
+
 -r requirements.txt
