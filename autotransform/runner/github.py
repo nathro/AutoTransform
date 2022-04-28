@@ -68,7 +68,8 @@ class GithubRunner(Runner[GithubRunnerParams]):
         ), "GithubRunner can only run using schemas that have Github repos"
 
         # Get the Workflow object
-        github_repo = repo.get_github_repo()
+        repo_name = str(repo.get_params().get("full_github_name"))
+        github_repo = GithubRepo.get_github_repo(repo_name)
         workflow = github_repo.get_workflow(self._params["workflow"])
         event_handler.handle(DebugEvent({"message": f"Workflow found: {workflow.name}"}))
 
