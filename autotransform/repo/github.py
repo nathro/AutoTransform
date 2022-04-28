@@ -206,9 +206,6 @@ class GithubRepo(GitRepo):
 
         return "\n".join(automation_info_lines)
 
-
-
-
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> GithubRepo:
         """Produces a GithubRepo from the provided data.
