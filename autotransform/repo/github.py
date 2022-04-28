@@ -170,7 +170,7 @@ class GithubRepo(GitRepo):
         automation_info_lines = ["ADDED AUTOMATICALLY BY AUTOTRANSFORM"]
         if not self._params.get("hide_autotransform_docs", False):
             automation_info_lines.append(
-                "Change from [AutoTransform](https://autotransform.readthedocs.io)"
+                "Learn more about AutoTransform [here](https://autotransform.readthedocs.io)"
             )
         automation_info_lines.append("Schema and batch information for the change below")
 
