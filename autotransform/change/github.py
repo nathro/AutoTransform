@@ -83,18 +83,9 @@ class GithubChange(Change[GithubChangeParams]):
     def _load_data(self) -> None:
         """Loads the Schema and Batch data for the GithubChange."""
 
-        expected_author = self._pull_request.user.login
-        comments = self._pull_request.get_issue_comments()
-        data_comment = None
-        for comment in comments:
-            if comment.user.login == expected_author:
-                data_comment = comment
-                break
-        assert data_comment is not None
-
         data: Dict[str, List[str]] = {"schema": [], "batch": []}
         cur_line_placement = None
-        for line in data_comment.body.splitlines():
+        for line in self._pull_request.body.splitlines():
             if line == GithubRepo.BEGIN_SCHEMA:
                 cur_line_placement = "schema"
             elif line == GithubRepo.END_SCHEMA:

@@ -29,6 +29,8 @@ class GithubRepoParams(GitRepoParams):
 
     full_github_name: str
     required_labels: NotRequired[List[str]]
+    hide_automation_info: NotRequired[bool]
+    hide_autotransform_docs: NotRequired[bool]
 
 
 class GithubRepo(GitRepo):
@@ -133,50 +135,19 @@ class GithubRepo(GitRepo):
         self._local_repo.git.push(remote.name, "-u", commit_branch)
 
         body = batch["metadata"].get("body", None)
+
+        if self._params.get("hide_automation_info", False):
+            automation_info = ""
+        else:
+            automation_info = self.get_automation_info(batch)
+
         assert body is not None, "All pull requests must have a body."
         pull_request = GithubRepo.get_github_repo(self._params["full_github_name"]).create_pull(
             title=title,
-            body=str(body),
+            body=f"{str(body)}{automation_info}",
             base=self._base_branch.name,
             head=commit_branch,
         )
-
-        # Create comment with information on replicating the change
-        comment_lines = [
-            "Automated pull request from AutoTransform. To replicate, see information below."
-        ]
-
-        # Add schema JSON
-        current_schema = autotransform.schema.current
-        if current_schema is not None:
-            comment_lines.append("<details><summary>Schema JSON</summary>")
-            comment_lines.append("")
-            comment_lines.append("```")
-            comment_lines.append(GithubRepo.BEGIN_SCHEMA)
-            comment_lines.append(current_schema.to_json(pretty=True))
-            comment_lines.append(GithubRepo.END_SCHEMA)
-            comment_lines.append("```")
-            comment_lines.append("")
-            comment_lines.append("</details>")
-
-        # Add batch JSON
-        encodable_batch: Dict[str, Any] = {
-            "title": batch["title"],
-            "items": [item.bundle() for item in batch["items"]],
-        }
-        if "metadata" in batch:
-            encodable_batch["metadata"] = batch["metadata"]
-        comment_lines.append("<details><summary>Batch JSON</summary>")
-        comment_lines.append("")
-        comment_lines.append("```")
-        comment_lines.append(GithubRepo.BEGIN_BATCH)
-        comment_lines.append(json.dumps(encodable_batch, indent=4))
-        comment_lines.append(GithubRepo.END_BATCH)
-        comment_lines.append("```")
-        comment_lines.append("")
-        comment_lines.append("</details>")
-
-        pull_request.create_issue_comment("\n".join(comment_lines))
 
         # Add labels
         labels = batch["metadata"].get("labels", [])
@@ -184,6 +155,59 @@ class GithubRepo(GitRepo):
         labels = labels + self._params.get("required_labels", [])
         if len(labels) > 0:
             pull_request.add_to_labels(*labels)
+
+    def get_automation_info(self, batch: Batch) -> str:
+        """Gets information on automating with AutoTransform.
+
+        Args:
+            batch (Batch): The Batch the change is being made for.
+
+        Returns:
+            str: The text for automating.
+        """
+
+        # Create body content with information on replicating the change
+        automation_info_lines = ["ADDED AUTOMATICALLY BY AUTOTRANSFORM"]
+        if not self._params.get("hide_autotransform_docs", False):
+            automation_info_lines.append(
+                "Change from [AutoTransform](https://autotransform.readthedocs.io)"
+            )
+        automation_info_lines.append("Schema and batch information for the change below")
+
+        # Add schema JSON
+        current_schema = autotransform.schema.current
+        if current_schema is not None:
+            automation_info_lines.append("<details><summary>Schema JSON</summary>")
+            automation_info_lines.append("")
+            automation_info_lines.append("```")
+            automation_info_lines.append(GithubRepo.BEGIN_SCHEMA)
+            automation_info_lines.append(current_schema.to_json(pretty=True))
+            automation_info_lines.append(GithubRepo.END_SCHEMA)
+            automation_info_lines.append("```")
+            automation_info_lines.append("")
+            automation_info_lines.append("</details>")
+
+            # Add batch JSON
+        encodable_batch: Dict[str, Any] = {
+            "title": batch["title"],
+            "items": [item.bundle() for item in batch["items"]],
+        }
+        if "metadata" in batch:
+            encodable_batch["metadata"] = batch["metadata"]
+        automation_info_lines.append("<details><summary>Batch JSON</summary>")
+        automation_info_lines.append("")
+        automation_info_lines.append("```")
+        automation_info_lines.append(GithubRepo.BEGIN_BATCH)
+        automation_info_lines.append(json.dumps(encodable_batch, indent=4))
+        automation_info_lines.append(GithubRepo.END_BATCH)
+        automation_info_lines.append("```")
+        automation_info_lines.append("")
+        automation_info_lines.append("</details>")
+
+        return "\n".join(automation_info_lines)
+
+
+
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> GithubRepo:
@@ -209,5 +233,15 @@ class GithubRepo(GitRepo):
         if required_labels is not None:
             assert isinstance(required_labels, List)
             params["required_labels"] = required_labels
+
+        hide_automation_info = data.get("hide_automation_info")
+        if hide_automation_info is not None:
+            assert isinstance(hide_automation_info, bool)
+            params["hide_automation_info"] = hide_automation_info
+
+        hide_autotransform_docs = data.get("hide_autotransform_docs")
+        if hide_autotransform_docs is not None:
+            assert isinstance(hide_autotransform_docs, bool)
+            params["hide_autotransform_docs"] = hide_autotransform_docs
 
         return GithubRepo(params)
