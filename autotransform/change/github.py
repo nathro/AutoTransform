@@ -11,7 +11,8 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Mapping, TypedDict
+import json
+from typing import Any, Dict, List, Mapping, TypedDict
 
 from github.PullRequest import PullRequest
 
@@ -19,10 +20,9 @@ from autotransform.batcher.base import Batch
 from autotransform.change.base import Change
 from autotransform.change.state import ChangeState
 from autotransform.change.type import ChangeType
+from autotransform.item.factory import ItemFactory
 from autotransform.repo.github import GithubRepo
-
-if TYPE_CHECKING:
-    from autotransform.schema.schema import AutoTransformSchema
+from autotransform.schema.schema import AutoTransformSchema
 
 
 class GithubChangeParams(TypedDict):
@@ -39,10 +39,15 @@ class GithubChange(Change[GithubChangeParams]):
         _params (GithubChangeParams): The paramaters for the github change, including the
             pull request number and the full github name of the repo.
         _pull_request (PullRequest): The PullRequest object for the change.
+        _state (Optional[ChangeState]): The cached state of the Change. Used to prevent excessive
+            Github API requests.
     """
 
     _params: GithubChangeParams
     _pull_request: PullRequest
+    _state: ChangeState
+    _batch: Batch
+    _schema: AutoTransformSchema
 
     def __init__(self, params: GithubChangeParams):
         """A simple constructor.
@@ -75,7 +80,41 @@ class GithubChange(Change[GithubChangeParams]):
 
         return ChangeType.GITHUB
 
-    @abstractmethod
+    def _load_data(self) -> None:
+        """Loads the Schema and Batch data for the GithubChange."""
+
+        expected_author = self._pull_request.user.login
+        comments = self._pull_request.get_issue_comments()
+        data_comment = None
+        for comment in comments:
+            if comment.user.login == expected_author:
+                data_comment = comment
+                break
+        assert data_comment is not None
+
+        data: Dict[str, List[str]] = {"schema": [], "batch": []}
+        cur_line_placement = None
+        for line in data_comment.body.splitlines():
+            if line == GithubRepo.BEGIN_SCHEMA:
+                cur_line_placement = "schema"
+            elif line == GithubRepo.END_SCHEMA:
+                cur_line_placement = None
+            elif line == GithubRepo.BEGIN_BATCH:
+                cur_line_placement = "batch"
+            elif line == GithubRepo.END_BATCH:
+                cur_line_placement = None
+            elif cur_line_placement is not None:
+                data[cur_line_placement].append(line)
+
+        self._schema = AutoTransformSchema.from_json("\n".join(data["schema"]))
+        batch = json.loads("\n".join(data["batch"]))
+        items = [ItemFactory.get(item) for item in batch["items"]]
+        self._batch = {
+            "items": items,
+            "metadata": batch["metadata"],
+            "title": str(batch["title"]),
+        }
+
     def get_batch(self) -> Batch:
         """Gets the Batch that was used to produce the Change.
 
@@ -83,7 +122,11 @@ class GithubChange(Change[GithubChangeParams]):
             Batch: The Batch used to produce the Change.
         """
 
-    @abstractmethod
+        if not hasattr(self, "_batch"):
+            self._load_data()
+
+        return self._batch
+
     def get_schema(self) -> AutoTransformSchema:
         """Gets the Schema that was used to produce the Change.
 
@@ -91,22 +134,34 @@ class GithubChange(Change[GithubChangeParams]):
             AutoTransformSchema: The Schema used to produce the Change.
         """
 
+        if not hasattr(self, "_schema"):
+            self._load_data()
+        return self._schema
+
     def get_state(self) -> ChangeState:
-        """Gets the current state of the Change.
+        """Gets the current state of the Change. Caches the state in _state to prevent
+        excessive use of Github API.
 
         Returns:
             ChangeState: The current state of the Change.
         """
+        if not hasattr(self, "_state"):
+            if self._pull_request.is_merged():
+                self._state = ChangeState.MERGED
+            elif self._pull_request.state == "closed":
+                self._state = ChangeState.CLOSED
+            else:
+                for review in self._pull_request.get_reviews().reversed:
+                    if review.state == "APPROVED":
+                        self._state = ChangeState.APPROVED
+                        break
 
-        if self._pull_request.state == "closed":
-            return ChangeState.CLOSED
-
-        for review in self._pull_request.get_reviews():
-            if review.state == "APPROVED":
-                return ChangeState.ACCEPTED
-
-        if self._pull_request.is_merged():
-            return ChangeState.MERGED
+                    if review.state == "CHANGES_REQUESTED":
+                        self._state = ChangeState.CHANGES_REQUESTED
+                        break
+        if not hasattr(self, "_state"):
+            self._state = ChangeState.OPEN
+        return self._state
 
     def merge(self) -> bool:
         """Merges an approved change in to main.
@@ -118,7 +173,6 @@ class GithubChange(Change[GithubChangeParams]):
         merge_status = self._pull_request.merge()
         return merge_status.merged
 
-    @abstractmethod
     def abandon(self) -> bool:
         """Close out and abandon a Change, removing it from the code review
         and/or version control system.
@@ -127,9 +181,17 @@ class GithubChange(Change[GithubChangeParams]):
             bool: Whether the abandon was completed successfully.
         """
 
+        self._pull_request.edit(state="closed")
+        branch_name = self._pull_request.head.ref
+        ref = GithubRepo.get_github_repo(self._params["full_github_name"]).get_git_ref(
+            f"heads/{branch_name}"
+        )
+        ref.delete()
+
+        return True
+
     @staticmethod
-    @abstractmethod
-    def from_data(data: Mapping[str, Any]) -> Change:
+    def from_data(data: Mapping[str, Any]) -> GithubChange:
         """Produces an instance of the component from decoded params. Implementations should
         assert that the data provided matches expected types and is valid.
 
@@ -137,5 +199,14 @@ class GithubChange(Change[GithubChangeParams]):
             data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
 
         Returns:
-            Change: An instance of the Change.
+            GithubChange: An instance of the GithubChange.
         """
+
+        full_github_name = data["full_github_name"]
+        assert isinstance(full_github_name, str)
+        pull_request_number = data["pull_request_number"]
+        assert isinstance(pull_request_number, int)
+
+        return GithubChange(
+            {"full_github_name": full_github_name, "pull_request_number": pull_request_number}
+        )

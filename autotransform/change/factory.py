@@ -13,6 +13,7 @@ import importlib
 from typing import Any, Callable, Dict, Mapping
 
 from autotransform.change.base import Change, ChangeBundle
+from autotransform.change.github import GithubChange
 from autotransform.change.type import ChangeType
 from autotransform.config import fetcher as Config
 
@@ -27,7 +28,9 @@ class ChangeFactory:
 
     # pylint: disable=too-few-public-methods
 
-    _map: Dict[ChangeType, Callable[[Mapping[str, Any]], Change]] = {}
+    _map: Dict[ChangeType, Callable[[Mapping[str, Any]], Change]] = {
+        ChangeType.GITHUB: GithubChange.from_data,
+    }
 
     @staticmethod
     def get(bundle: ChangeBundle) -> Change:

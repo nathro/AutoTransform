@@ -15,10 +15,12 @@ BATCHERS variable can be left out."""
 from typing import Any, Callable, Dict, List, Mapping, Type
 
 from autotransform.batcher.base import Batcher
+from autotransform.change.base import Change
 from autotransform.command.base import Command
 from autotransform.event.base import Event
 from autotransform.filter.base import Filter
 from autotransform.input.base import Input
+from autotransform.item.base import Item
 from autotransform.runner.base import Runner
 from autotransform.schema.builder import SchemaBuilder
 from autotransform.transformer.base import Transformer
@@ -26,6 +28,8 @@ from autotransform.validator.base import Validator
 
 # See autotransform.batcher.factory
 BATCHERS: Dict[str, Callable[[Mapping[str, Any]], Batcher]] = {}
+# See autotransform.change.factory
+CHANGES: Dict[str, Callable[[Mapping[str, Any]], Change]] = {}
 # See autotransform.command.factory
 COMMANDS: Dict[str, Callable[[Mapping[str, Any]], Command]] = {}
 # See autotransform.event.handler
@@ -34,6 +38,8 @@ EVENT_CALLBACKS: List[Callable[[Event], None]] = []
 FILTERS: Dict[str, Callable[[Mapping[str, Any]], Filter]] = {}
 # See autotransform.input.factory
 INPUTS: Dict[str, Callable[[Mapping[str, Any]], Input]] = {}
+# See autotransform.item.factory
+ITEMS: Dict[str, Callable[[Mapping[str, Any]], Item]] = {}
 # See autotransform.runner.factory
 RUNNERS: Dict[str, Callable[[Mapping[str, Any]], Runner]] = {}
 # See autotransform.schema.builder

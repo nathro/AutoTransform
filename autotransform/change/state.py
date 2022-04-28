@@ -16,7 +16,8 @@ class ChangeState(str, Enum):
     """A simple enum for the state of a given Change in code review or version
     control systems."""
 
-    ACCEPTED = "accepted"
+    APPROVED = "approved"
+    CHANGES_REQUESTED = "changes_requested"
     CLOSED = "closed"
     MERGED = "merged"
     OPEN = "open"

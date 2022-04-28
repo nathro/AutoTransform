@@ -45,6 +45,12 @@ class GithubRepo(GitRepo):
     __github_repos: Dict[str, Repository.Repository] = {}
     __github_object: Optional[Github] = None
 
+    BEGIN_SCHEMA: str = "<<<<BEGIN SCHEMA>>>>"
+    END_SCHEMA: str = "<<<<END SCHEMA>>>>"
+
+    BEGIN_BATCH: str = "<<<<BEGIN BATCH>>>>"
+    END_BATCH: str = "<<<<END BATCH>>>>"
+
     def __init__(self, params: GithubRepoParams):
         """Establishes the Github object to enable API access.
 

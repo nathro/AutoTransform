@@ -14,7 +14,7 @@
 import pathlib
 from typing import List, Sequence
 
-from git import Repo as GitPython
+from git import Head
 from mock import patch
 
 from autotransform.batcher.base import Batch
@@ -107,7 +107,7 @@ def mock_repo(
 
 
 # patches are in reverse order
-@patch.object(GitPython, "active_branch")
+@patch.object(Head, "checkout")
 @patch.object(SingleBatcher, "batch")
 @patch.object(RegexFilter, "_is_valid")
 @patch.object(DirectoryInput, "get_items")
@@ -115,7 +115,7 @@ def test_get_batches(
     mocked_get_items,
     mocked_is_valid,
     mocked_batch,
-    _mocked_active_branch,
+    _mocked_checkout,
 ):
     """Checks that get_batches properly calls and uses components."""
     # Set up mocks
@@ -152,7 +152,7 @@ def test_get_batches(
 @patch.object(GithubRepo, "submit")
 @patch.object(GithubRepo, "has_changes")
 @patch.object(GithubRepo, "clean")
-@patch.object(GitPython, "active_branch")
+@patch.object(Head, "checkout")
 @patch.object(RegexTransformer, "transform")
 @patch.object(SingleBatcher, "batch")
 @patch.object(RegexFilter, "_is_valid")
@@ -162,7 +162,7 @@ def test_run_with_changes(
     mocked_is_valid,
     mocked_batch,
     mocked_transform,
-    _mocked_active_branch,
+    _mocked_checkout,
     mocked_clean,
     mocked_has_changes,
     mocked_submit,
@@ -210,7 +210,7 @@ def test_run_with_changes(
 @patch.object(GithubRepo, "submit")
 @patch.object(GithubRepo, "has_changes")
 @patch.object(GithubRepo, "clean")
-@patch.object(GitPython, "active_branch")
+@patch.object(Head, "checkout")
 @patch.object(RegexTransformer, "transform")
 @patch.object(SingleBatcher, "batch")
 @patch.object(RegexFilter, "_is_valid")
@@ -220,7 +220,7 @@ def test_run_with_no_changes(
     mocked_is_valid,
     mocked_batch,
     mocked_transform,
-    _mocked_active_branch,
+    _mocked_checkout,
     mocked_clean,
     mocked_has_changes,
     mocked_submit,
@@ -263,8 +263,8 @@ def test_run_with_no_changes(
     assert mocked_rewind.call_count == 0
 
 
-@patch.object(GitPython, "active_branch")
-def test_json_encoding(_mocked_active_branch):
+@patch.object(Head, "checkout")
+def test_json_encoding(_mocked_checkout):
     """Checks that the schema is encoded correctly."""
 
     # pylint: disable=unspecified-encoding
@@ -279,8 +279,8 @@ def test_json_encoding(_mocked_active_branch):
     assert schema_json == actual_json
 
 
-@patch.object(GitPython, "active_branch")
-def test_json_decoding(_mocked_active_branch):
+@patch.object(Head, "checkout")
+def test_json_decoding(_mocked_checkout):
     """Checks that the schema is decoded correctly."""
 
     # pylint: disable=unspecified-encoding,consider-using-enumerate

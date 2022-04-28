@@ -64,7 +64,7 @@ class GitGrepInput(Input[GitGrepInputParams]):
             repo_dir,
         ]
         try:
-            files = subprocess.check_output(git_grep_cmd, encoding="UTF-8").strip().split("\n")
+            files = subprocess.check_output(git_grep_cmd, encoding="UTF-8").strip().splitlines()
         except subprocess.CalledProcessError:
             return []
         return [FileItem(repo_dir + "/" + file.replace("\\", "/")) for file in files]
