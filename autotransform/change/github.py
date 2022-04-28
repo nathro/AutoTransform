@@ -164,14 +164,24 @@ class GithubChange(Change[GithubChangeParams]):
         return self._state
 
     def merge(self) -> bool:
-        """Merges the pull request.
+        """Merges the pull request and deletes the branch.
 
         Returns:
             bool: Whether the merge was completed successfully.
         """
 
         merge_status = self._pull_request.merge()
+        if merge_status.merged:
+            branch_name = self._pull_request.head.ref
+            ref = GithubRepo.get_github_repo(self._params["full_github_name"]).get_git_ref(
+                f"heads/{branch_name}"
+            )
+            ref.delete()
+
         return merge_status.merged
+
+
+
 
     def abandon(self) -> bool:
         """Close the pull request and delete the associated branch.
