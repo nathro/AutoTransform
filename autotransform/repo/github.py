@@ -11,7 +11,7 @@
 
 from __future__ import annotations
 
-from typing import Any, List, Mapping
+from typing import Any, Dict, List, Mapping, Optional
 
 from github import Github, Repository
 from typing_extensions import NotRequired
@@ -36,11 +36,14 @@ class GithubRepo(GitRepo):
     Attributes:
         _params (GithubRepoParams): Contains all git params as well as the Github repo
             name and any required labels.
-        _github_repo (Repository.Repository): The Github Repository being interacted with.
+        __github_repos (Dict[str, Repository.Repository]): A mapping of repo names to repos. Used
+            for caching.
+        __github_object (Optional[Github]): An instance of the Github object of PyGithub.
     """
 
     _params: GithubRepoParams
-    _github_repo: Repository.Repository
+    __github_repos: Dict[str, Repository.Repository] = {}
+    __github_object: Optional[Github] = None
 
     def __init__(self, params: GithubRepoParams):
         """Establishes the Github object to enable API access.
@@ -50,18 +53,50 @@ class GithubRepo(GitRepo):
         """
 
         GitRepo.__init__(self, params)
-        self._github_repo = GithubRepo.get_github_object().get_repo(
-            self._params["full_github_name"],
-        )
 
-    def get_github_repo(self) -> Repository.Repository:
+    @staticmethod
+    def get_github_object() -> Github:
+        """Authenticates with Github to allow API access via a token provided by AutoTransform
+        configuration. If no token is provided a username + password will be used. Also allows
+        use of a base URL for enterprise use cases. Stores the Github object for future use.
+
+        Returns:
+            Github: An object allowing interaction with the Github API.
+        """
+
+        if GithubRepo.__github_object is None:
+            url = Config.get_credentials_github_base_url()
+            token = Config.get_credentials_github_token()
+            if token is not None:
+                if url is not None:
+                    GithubRepo.__github_object = Github(token, base_url=url)
+                GithubRepo.__github_object = Github(token)
+            elif url is not None:
+                GithubRepo.__github_object = Github(
+                    Config.get_credentials_github_username(),
+                    Config.get_credentials_github_password(),
+                    base_url=url,
+                )
+            else:
+                GithubRepo.__github_object = Github(
+                    Config.get_credentials_github_username(),
+                    Config.get_credentials_github_password(),
+                )
+        return GithubRepo.__github_object
+
+    @staticmethod
+    def get_github_repo(repo_name: str) -> Repository.Repository:
         """Gets the Github repository being interacted with.
 
         Returns:
             Repository.Repository: The Github repository being interacted with.
         """
 
-        return self._github_repo
+        if repo_name not in GithubRepo.__github_repos:
+            GithubRepo.__github_repos[repo_name] = GithubRepo.get_github_object().get_repo(
+                repo_name,
+            )
+        return GithubRepo.__github_repos[repo_name]
 
     @staticmethod
     def get_type() -> RepoType:
@@ -72,32 +107,6 @@ class GithubRepo(GitRepo):
         """
 
         return RepoType.GITHUB
-
-    @staticmethod
-    def get_github_object() -> Github:
-        """Authenticates with Github to allow API access via a token provided by AutoTransform
-        configuration. If no token is provided a username + password will be used. Also allows
-        use of a base URL for enterprise use cases.
-
-        Returns:
-            Github: An object allowing interaction with the Github API.
-        """
-
-        url = Config.get_credentials_github_base_url()
-        token = Config.get_credentials_github_token()
-        if token is not None:
-            if url is not None:
-                return Github(token, base_url=url)
-            return Github(token)
-        if url is not None:
-            return Github(
-                Config.get_credentials_github_username(),
-                Config.get_credentials_github_password(),
-                base_url=url,
-            )
-        return Github(
-            Config.get_credentials_github_username(), Config.get_credentials_github_password()
-        )
 
     def submit(self, batch: Batch) -> None:
         """Performs the normal submit for a git repo then submits a pull request
@@ -117,7 +126,7 @@ class GithubRepo(GitRepo):
 
         body = batch["metadata"].get("body", None)
         assert body is not None, "All pull requests must have a body."
-        pull_request = self._github_repo.create_pull(
+        pull_request = GithubRepo.get_github_repo(self._params["full_github_name"]).create_pull(
             title=title,
             body=str(body),
             base=self._base_branch.name,
