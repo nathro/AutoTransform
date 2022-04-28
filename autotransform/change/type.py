@@ -14,3 +14,5 @@ from enum import Enum
 
 class ChangeType(str, Enum):
     """A simple enum for 1:1 Change to type mapping."""
+
+    GITHUB = "github"

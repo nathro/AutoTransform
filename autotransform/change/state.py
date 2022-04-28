@@ -18,4 +18,5 @@ class ChangeState(str, Enum):
 
     ACCEPTED = "accepted"
     CLOSED = "closed"
+    MERGED = "merged"
     OPEN = "open"
