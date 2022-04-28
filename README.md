@@ -90,6 +90,9 @@ the same key, separate items of the same type must have unique keys. Subclasses 
 
 Runner components are used to trigger a run of AutoTransform either locally or on an organization's remote infrastructure or job queue system. This allows organizations to set up integrations with their infrastructure to speed up developers by offloading the runs of AutoTransform. Additionally, remote infrastructure is used by scheduling logic when setting up scheduled runs of AutoTransform.
 
+### **[Change](https://github.com/nathro/AutoTransform/blob/master/autotransform/change/base.py)**
+
+A Change represents a submission to a code review and/or source control system. They are used by AutoTransform to manage these submissions to do things like land approved code, abandon stale changes, etc...
 ## **Data Flow**
 
 **[A visual representation](https://lucid.app/lucidchart/eca43a3d-175f-416f-bb4f-4363d56f951b/edit?invitationId=inv_f44ed708-8c4a-4998-96f2-8b860aba8ebc)**

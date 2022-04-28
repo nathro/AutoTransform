@@ -17,6 +17,7 @@ Core
    autotransform.config
    autotransform.runner
    autotransform.item
+   autotransform.change
    autotransform.event
    autotransform.thirdparty
    autotransform.util
