@@ -139,7 +139,7 @@ class GithubRepo(GitRepo):
         if self._params.get("hide_automation_info", False):
             automation_info = ""
         else:
-            automation_info = self.get_automation_info(batch)
+            automation_info = "\n\n" + self.get_automation_info(batch)
 
         assert body is not None, "All pull requests must have a body."
         pull_request = GithubRepo.get_github_repo(self._params["full_github_name"]).create_pull(
