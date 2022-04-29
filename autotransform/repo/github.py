@@ -20,6 +20,8 @@ from typing_extensions import NotRequired
 import autotransform.schema
 from autotransform.batcher.base import Batch
 from autotransform.config import fetcher as Config
+from autotransform.event.debug import DebugEvent
+from autotransform.event.handler import EventHandler
 from autotransform.repo.git import GitRepo, GitRepoParams
 from autotransform.repo.type import RepoType
 
@@ -147,6 +149,10 @@ class GithubRepo(GitRepo):
             body=f"{str(body)}{automation_info}",
             base=self._base_branch.name,
             head=commit_branch,
+        )
+
+        EventHandler.get().handle(
+            DebugEvent({"message": f"Pull request created: {pull_request.number}"})
         )
 
         # Add labels
