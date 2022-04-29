@@ -154,7 +154,7 @@ class GithubChange(Change[GithubChangeParams]):
             self._state = ChangeState.OPEN
         return self._state
 
-    def merge(self) -> bool:
+    def _merge(self) -> bool:
         """Merges the pull request and deletes the branch.
 
         Returns:
@@ -171,7 +171,7 @@ class GithubChange(Change[GithubChangeParams]):
 
         return merge_status.merged
 
-    def abandon(self) -> bool:
+    def _abandon(self) -> bool:
         """Close the pull request and delete the associated branch.
 
         Returns:

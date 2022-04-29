@@ -18,6 +18,7 @@ Core
    autotransform.runner
    autotransform.item
    autotransform.change
+   autotransform.step
    autotransform.event
    autotransform.thirdparty
    autotransform.util

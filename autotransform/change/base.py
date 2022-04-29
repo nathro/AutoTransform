@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING, Any, Generic, Mapping, TypedDict, TypeVar
 from autotransform.batcher.base import Batch
 from autotransform.change.state import ChangeState
 from autotransform.change.type import ChangeType
+from autotransform.step.action import ActionType
 
 if TYPE_CHECKING:
     from autotransform.schema.schema import AutoTransformSchema
@@ -94,8 +95,26 @@ class Change(Generic[TParams], ABC):
             ChangeState: The current state of the Change.
         """
 
+    def take_action(self, action_type: ActionType) -> bool:
+        """Tells the Change to take an action based on the results of a Step run.
+
+        Args:
+            action_type (ActionType): The action to take
+
+        Returns:
+            bool: Whether the action was taken successfully.
+        """
+        if action_type == ActionType.MERGE:
+            return self._merge()
+
+        if action_type == ActionType.ABANDON:
+            return self._abandon()
+
+        # No known way to handle the Action, so treat it as failed
+        return False
+
     @abstractmethod
-    def merge(self) -> bool:
+    def _merge(self) -> bool:
         """Merges an approved change in to main.
 
         Returns:
@@ -103,7 +122,7 @@ class Change(Generic[TParams], ABC):
         """
 
     @abstractmethod
-    def abandon(self) -> bool:
+    def _abandon(self) -> bool:
         """Close out and abandon a Change, removing it from the code review
         and/or version control system.
 

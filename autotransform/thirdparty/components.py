@@ -23,6 +23,7 @@ from autotransform.input.base import Input
 from autotransform.item.base import Item
 from autotransform.runner.base import Runner
 from autotransform.schema.builder import SchemaBuilder
+from autotransform.step.base import Step
 from autotransform.transformer.base import Transformer
 from autotransform.validator.base import Validator
 
@@ -42,8 +43,10 @@ INPUTS: Dict[str, Callable[[Mapping[str, Any]], Input]] = {}
 ITEMS: Dict[str, Callable[[Mapping[str, Any]], Item]] = {}
 # See autotransform.runner.factory
 RUNNERS: Dict[str, Callable[[Mapping[str, Any]], Runner]] = {}
-# See autotransform.schema.builder
+# See autotransform.schema.factory
 SCHEMAS: Dict[str, Type[SchemaBuilder]] = {}
+# See autotransform.step.factory
+STEPS: Dict[str, Callable[[Mapping[str, Any]], Step]] = {}
 # See autotransform.transformer.factory
 TRANSFORMERS: Dict[str, Callable[[Mapping[str, Any]], Transformer]] = {}
 # See autotransform.validator.factory
