@@ -30,7 +30,7 @@ jobs:
       with:
         python-version: "3.10"
     - name: Install Dependencies
-      run: pip install -r schema_requirements.txt
+      run: pip install -r requirements.txt
     - name: Run AutoTransform
       run: python3 -m autotransform.scripts.main run --verbose --environment AUTO_TRANSFORM_SCHEMA
       env:

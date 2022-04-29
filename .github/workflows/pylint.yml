@@ -20,6 +20,6 @@ jobs:
       with:
         python-version: "3.10"
     - name: Install Dependencies
-      run: pip install -r ci_requirements.txt
+      run: pip install -r requirements.txt
     - name: Check pylint
       run: pylint --enable=W0611,R0201,R0902,R0903,R0913,R1732 --disable=R0801,R0914,R0915 autotransform tests

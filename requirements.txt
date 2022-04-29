@@ -1,4 +1,26 @@
+# Requirements for core AutoTransform
 GitPython
 PyGithub
 typing-extensions
 colorama
+
+# Requirements for Schemas
+
+# Formatting
+black
+
+# Type Checking
+mypy
+types-colorama
+types-mock
+
+# Linting
+pylint
+
+# Unit Tests
+pytest
+mock
+
+# Build Requirements
+build
+twine

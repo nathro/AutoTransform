@@ -1,9 +1,9 @@
 include LICENSE, README.md, pyproject.toml
 include CHANGELOG.md CONTRIBUTING.md CUSTOM_DEPLOYMENT.md
 include requirements.txt ci_requirements.txt schema_requirements.txt
-include autotransform/data/sample_config.ini
-include autotransform/data/autotransform_schedule.json
-include autotransform/data/schemas/black_format.json
-include autotransform/data/schemas/sample_schema.json
-include autotransform/data/workflows/autotransform_runner.yml
-include autotransform/data/workflows/autotransform_scheduler.yml
+include data/sample_config.ini
+include data/autotransform_schedule.json
+include data/schemas/black_format.json
+include data/schemas/sample_schema.json
+include data/workflows/autotransform_runner.yml
+include data/workflows/autotransform_scheduler.yml

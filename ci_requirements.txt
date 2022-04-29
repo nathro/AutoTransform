@@ -1,9 +1,0 @@
-mypy
-pylint
-pytest
-mock
-
-types-colorama
-types-mock
-
--r requirements.txt

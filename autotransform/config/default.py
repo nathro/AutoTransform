@@ -44,7 +44,7 @@ class DefaultConfigFetcher(ConfigFetcher):
         """
 
         return (
-            str(pathlib.Path(__file__).parent.parent.resolve()).replace("\\", "/")
+            str(pathlib.Path(__file__).parent.parent.parent.resolve()).replace("\\", "/")
             + "/data/config.ini"
         )
 

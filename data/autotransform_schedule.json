@@ -13,7 +13,7 @@
     "schemas": [
         {
             "type": "file",
-            "schema": "autotransform/data/schemas/black_format.json",
+            "schema": "data/schemas/black_format.json",
             "schedule": {
                 "repeats": "daily",
                 "hour_of_day": 5
