@@ -18,3 +18,4 @@ class ConditionType(str, Enum):
     CHANGE_STATE = "change_state"
     CREATED_AGO = "created_ago"
     SCHEMA_NAME = "schema_name"
+    UPDATED_AGO = "updated_ago"

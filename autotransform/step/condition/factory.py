@@ -18,6 +18,7 @@ from autotransform.step.condition.created import CreatedAgoCondition
 from autotransform.step.condition.schema import SchemaNameCondition
 from autotransform.step.condition.state import ChangeStateCondition
 from autotransform.step.condition.type import ConditionType
+from autotransform.step.condition.updated import UpdatedAgoCondition
 
 
 class ConditionFactory:
@@ -34,6 +35,7 @@ class ConditionFactory:
         ConditionType.CHANGE_STATE: ChangeStateCondition.from_data,
         ConditionType.CREATED_AGO: CreatedAgoCondition.from_data,
         ConditionType.SCHEMA_NAME: SchemaNameCondition.from_data,
+        ConditionType.UPDATED_AGO: UpdatedAgoCondition.from_data,
     }
 
     @staticmethod

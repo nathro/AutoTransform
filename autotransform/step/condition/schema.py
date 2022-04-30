@@ -68,7 +68,7 @@ class SchemaNameCondition(Condition[SchemaNameConditionParams]):
         )
 
     @staticmethod
-    def from_data(data: Mapping[str, Any]) -> Condition:
+    def from_data(data: Mapping[str, Any]) -> SchemaNameCondition:
         """Produces an instance of the component from decoded params. Implementations should
         assert that the data provided matches expected types and is valid.
 
@@ -76,7 +76,7 @@ class SchemaNameCondition(Condition[SchemaNameConditionParams]):
             data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
 
         Returns:
-            Condition: An instance of the Condition.
+            SchemaNameCondition: An instance of the SchemaNameCondition.
         """
 
         comparison = data["comparison"]

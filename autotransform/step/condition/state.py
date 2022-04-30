@@ -65,7 +65,7 @@ class ChangeStateCondition(Condition[ChangeStateConditionParams]):
         return compare(change.get_state(), self._params["state"], self._params["comparison"])
 
     @staticmethod
-    def from_data(data: Mapping[str, Any]) -> Condition:
+    def from_data(data: Mapping[str, Any]) -> ChangeStateCondition:
         """Produces an instance of the component from decoded params. Implementations should
         assert that the data provided matches expected types and is valid.
 
@@ -73,7 +73,7 @@ class ChangeStateCondition(Condition[ChangeStateConditionParams]):
             data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
 
         Returns:
-            Condition: An instance of the Condition.
+            ChangeStateCondition: An instance of the ChangeStateCondition.
         """
 
         comparison = data["comparison"]

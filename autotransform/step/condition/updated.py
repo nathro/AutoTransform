@@ -7,7 +7,7 @@
 
 # @black_format
 
-"""The implementation for all conditions handling when a Change was created."""
+"""The implementation for all conditions handling when a Change was updated."""
 
 from __future__ import annotations
 
@@ -20,15 +20,15 @@ from autotransform.step.condition.comparison import ComparisonType, compare
 from autotransform.step.condition.type import ConditionType
 
 
-class CreatedAgoConditionParams(TypedDict):
-    """The param type for a CreatedAgoCondition."""
+class UpdatedAgoConditionParams(TypedDict):
+    """The param type for a UpdatedAgoCondition."""
 
     comparison: ComparisonType
     time: int
 
 
-class CreatedAgoCondition(Condition[CreatedAgoConditionParams]):
-    """A condition which checks how long ago a Change was created against the supplied time, all
+class UpdatedAgoCondition(Condition[UpdatedAgoConditionParams]):
+    """A condition which checks how long ago a Change was updated against the supplied time, all
     in seconds, using the supplied comparison. Note: only equals and not equals are valid, all
     others will result in an error.
 
@@ -36,7 +36,7 @@ class CreatedAgoCondition(Condition[CreatedAgoConditionParams]):
         _params (TParams): The comparison type and time to compare against.
     """
 
-    _params: CreatedAgoConditionParams
+    _params: UpdatedAgoConditionParams
 
     @staticmethod
     def get_type() -> ConditionType:
@@ -46,10 +46,10 @@ class CreatedAgoCondition(Condition[CreatedAgoConditionParams]):
             ConditionType: The unique type associated with this Condition.
         """
 
-        return ConditionType.CREATED_AGO
+        return ConditionType.UPDATED_AGO
 
     def check(self, change: Change) -> bool:
-        """Checks whether how long ago the Change was created passes the comparison.
+        """Checks whether how long ago the Change was updated passes the comparison.
 
         Args:
             change (Change): The Change the Condition is checking.
@@ -58,11 +58,11 @@ class CreatedAgoCondition(Condition[CreatedAgoConditionParams]):
             bool: Whether the Change passes the Condition.
         """
 
-        time_since_created = time.time() - change.get_created_timestamp()
-        return compare(time_since_created, self._params["time"], self._params["comparison"])
+        time_since_updated = time.time() - change.get_last_updated_timestamp()
+        return compare(time_since_updated, self._params["time"], self._params["comparison"])
 
     @staticmethod
-    def from_data(data: Mapping[str, Any]) -> CreatedAgoCondition:
+    def from_data(data: Mapping[str, Any]) -> UpdatedAgoCondition:
         """Produces an instance of the component from decoded params. Implementations should
         assert that the data provided matches expected types and is valid.
 
@@ -70,7 +70,7 @@ class CreatedAgoCondition(Condition[CreatedAgoConditionParams]):
             data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
 
         Returns:
-            CreatedAgoCondition: An instance of the CreatedAgoCondition.
+            UpdatedAgoCondition: An instance of the UpdatedAgoCondition.
         """
 
         comparison = data["comparison"]
@@ -82,4 +82,4 @@ class CreatedAgoCondition(Condition[CreatedAgoConditionParams]):
         time_param = data["time"]
         assert isinstance(time_param, int)
 
-        return CreatedAgoCondition({"comparison": comparison, "time": time_param})
+        return UpdatedAgoCondition({"comparison": comparison, "time": time_param})

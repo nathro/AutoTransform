@@ -102,6 +102,13 @@ class Change(Generic[TParams], ABC):
             int: The timestamp in seconds when the Change was created.
         """
 
+    def get_last_updated_timestamp(self) -> int:
+        """Returns the timestamp when the Change was last updated.
+
+        Returns:
+            int: The timestamp in seconds when the Change was last updated.
+        """
+
     def take_action(self, action_type: ActionType) -> bool:
         """Tells the Change to take an action based on the results of a Step run.
 

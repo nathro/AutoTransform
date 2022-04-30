@@ -165,6 +165,16 @@ class GithubChange(Change[GithubChangeParams]):
         utc_datetime = pytz.utc.localize(self._pull_request.created_at)
         return int(utc_datetime.timestamp())
 
+    def get_last_updated_timestamp(self) -> int:
+        """Returns the timestamp when the pull request was last updated.
+
+        Returns:
+            int: The timestamp in seconds when the pull request was last updated.
+        """
+
+        utc_datetime = pytz.utc.localize(self._pull_request.updated_at)
+        return int(utc_datetime.timestamp())
+
     def _merge(self) -> bool:
         """Merges the pull request and deletes the branch.
 
