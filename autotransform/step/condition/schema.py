@@ -7,36 +7,35 @@
 
 # @black_format
 
-"""The implementation for the ChangeStateCondition."""
+"""The implementation for the SchemaNameCondition."""
 
 from __future__ import annotations
 
 from typing import Any, Mapping, TypedDict
 
 from autotransform.change.base import Change
-from autotransform.change.state import ChangeState
 from autotransform.step.condition.base import Condition
 from autotransform.step.condition.comparison import ComparisonType
 from autotransform.step.condition.type import ConditionType
 
 
-class ChangeStateConditionParams(TypedDict):
-    """The param type for a ChangeStateCondition."""
+class SchemaNameConditionParams(TypedDict):
+    """The param type for a SchemaNameCondition."""
 
     comparison: ComparisonType
-    state: ChangeState
+    name: str
 
 
-class ChangeStateCondition(Condition[ChangeStateConditionParams]):
-    """A condition which checks the ChangeState against the state supplied in the params,
-    using the supplied comparison. Note: only equals and not equals are valid, all others will
+class SchemaNameCondition(Condition[SchemaNameConditionParams]):
+    """A condition which checks the name of the Schema that produced a change against the supplied
+    name, using the supplied comparison. Note: only equals and not equals are valid, all others will
     result in an error.
 
     Attributes:
-        _params (TParams): The comparison type and state to compare against.
+        _params (TParams): The comparison type and name to compare against.
     """
 
-    _params: ChangeStateConditionParams
+    _params: SchemaNameConditionParams
 
     @staticmethod
     def get_type() -> ConditionType:
@@ -46,7 +45,7 @@ class ChangeStateCondition(Condition[ChangeStateConditionParams]):
             ConditionType: The unique type associated with this Condition.
         """
 
-        return ConditionType.CHANGE_STATE
+        return ConditionType.SCHEMA_NAME
 
     def check(self, change: Change) -> bool:
         """Checks whether the Change passes the Condition.
@@ -61,10 +60,10 @@ class ChangeStateCondition(Condition[ChangeStateConditionParams]):
         assert comparison in [
             ComparisonType.EQUAL,
             ComparisonType.NOT_EQUAL,
-        ], "ChangeStateCondition may only use equal or not_equal comparison"
+        ], "SchemaNameCondition may only use equal or not_equal comparison"
         if comparison == ComparisonType.EQUAL:
-            return change.get_state() == self._params["state"]
-        return change.get_state() != self._params["state"]
+            return change.get_schema().get_config().get_name() == self._params["name"]
+        return change.get_schema().get_config().get_name() != self._params["name"]
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> Condition:
@@ -84,10 +83,7 @@ class ChangeStateCondition(Condition[ChangeStateConditionParams]):
         else:
             comparison = ComparisonType.from_value(comparison)
 
-        state = data["state"]
-        if not ChangeState.has_value(state):
-            state = ChangeState.from_name(state)
-        else:
-            state = ChangeState.from_value(state)
+        name = data["name"]
+        assert isinstance(name, str)
 
-        return ChangeStateCondition({"comparison": comparison, "state": state})
+        return SchemaNameCondition({"comparison": comparison, "name": name})
