@@ -14,6 +14,7 @@ from typing import Any, Callable, Dict, Mapping
 
 from autotransform.config import fetcher as Config
 from autotransform.step.base import Step, StepBundle
+from autotransform.step.conditional import ConditionalStep
 from autotransform.step.type import StepType
 
 
@@ -27,7 +28,9 @@ class StepFactory:
 
     # pylint: disable=too-few-public-methods
 
-    _map: Dict[StepType, Callable[[Mapping[str, Any]], Step]] = {}
+    _map: Dict[StepType, Callable[[Mapping[str, Any]], Step]] = {
+        StepType.CONDITIONAL: ConditionalStep.from_data,
+    }
 
     @staticmethod
     def get(bundle: StepBundle) -> Step:

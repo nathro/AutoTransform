@@ -29,8 +29,7 @@ class CreatedAgoConditionParams(TypedDict):
 
 class CreatedAgoCondition(Condition[CreatedAgoConditionParams]):
     """A condition which checks how long ago a Change was created against the supplied time, all
-    in seconds, using the supplied comparison. Note: only equals and not equals are valid, all
-    others will result in an error.
+    in seconds, using the supplied comparison.
 
     Attributes:
         _params (TParams): The comparison type and time to compare against.

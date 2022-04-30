@@ -16,7 +16,7 @@ Upstream changes are intended to support the wider AutoTransform community. Besp
    - --line-length=100
  - [**pylint**](https://pypi.org/project/pylint/) is used for linting with the following options:
    - --enable=W0611,R0201,R0902,R0903,R0913,R1732
-   - --disable=R0801,R0914,R0915
+   - --disable=R0401,R0801,R0914,R0915
 
 ## **I Want To Contribute, What Should I Do?**
 

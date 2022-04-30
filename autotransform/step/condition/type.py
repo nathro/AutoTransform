@@ -15,6 +15,7 @@ from enum import Enum
 class ConditionType(str, Enum):
     """A simple enum for 1:1 Condition to type mapping."""
 
+    AGGREGATE = "aggregate"
     CHANGE_STATE = "change_state"
     CREATED_AGO = "created_ago"
     SCHEMA_NAME = "schema_name"
