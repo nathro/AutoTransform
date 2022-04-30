@@ -14,3 +14,5 @@ from enum import Enum
 
 class StepType(str, Enum):
     """A simple enum for 1:1 Step to type mapping."""
+
+    CONDITIONAL = "conditional"
