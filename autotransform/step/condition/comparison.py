@@ -17,7 +17,7 @@ from typing import Any
 class ComparisonType(str, Enum):
     """A list of possible comparisons."""
 
-    EQUALS = "eq"
+    EQUAL = "eq"
     GREATER_THAN = "gt"
     GREATER_THAN_OR_EQUAL = "gte"
     LESS_THAN = "lt"

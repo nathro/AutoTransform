@@ -14,3 +14,5 @@ from enum import Enum
 
 class ConditionType(str, Enum):
     """A simple enum for 1:1 Condition to type mapping."""
+
+    CHANGE_STATE = "change_state"
