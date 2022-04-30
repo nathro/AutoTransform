@@ -14,6 +14,7 @@ from typing import Any, Callable, Dict, Mapping
 
 from autotransform.config import fetcher as Config
 from autotransform.step.condition.base import Condition, ConditionBundle
+from autotransform.step.condition.state import ChangeStateCondition
 from autotransform.step.condition.type import ConditionType
 
 
@@ -27,7 +28,9 @@ class ConditionFactory:
 
     # pylint: disable=too-few-public-methods
 
-    _map: Dict[ConditionType, Callable[[Mapping[str, Any]], Condition]] = {}
+    _map: Dict[ConditionType, Callable[[Mapping[str, Any]], Condition]] = {
+        ConditionType.CHANGE_STATE: ChangeStateCondition.from_data,
+    }
 
     @staticmethod
     def get(bundle: ConditionBundle) -> Condition:

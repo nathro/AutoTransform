@@ -59,7 +59,10 @@ class ChangeStateCondition(Condition[ChangeStateConditionParams]):
             bool: Whether the Change passes the condition.
         """
         comparison = self._params["comparison"]
-        assert comparison in [ComparisonType.EQUAL, ComparisonType.NOT_EQUAL]
+        assert comparison in [
+            ComparisonType.EQUAL,
+            ComparisonType.NOT_EQUAL,
+        ], "ChangeStateCondition may only use equal or not_equal comparison"
         if comparison == ComparisonType.EQUAL:
             return change.get_state() == self._params["state"]
         return change.get_state() != self._params["state"]
