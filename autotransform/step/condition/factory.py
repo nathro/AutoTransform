@@ -14,6 +14,7 @@ from typing import Any, Callable, Dict, Mapping
 
 from autotransform.config import fetcher as Config
 from autotransform.step.condition.base import Condition, ConditionBundle
+from autotransform.step.condition.created import CreatedAgoCondition
 from autotransform.step.condition.schema import SchemaNameCondition
 from autotransform.step.condition.state import ChangeStateCondition
 from autotransform.step.condition.type import ConditionType
@@ -31,6 +32,7 @@ class ConditionFactory:
 
     _map: Dict[ConditionType, Callable[[Mapping[str, Any]], Condition]] = {
         ConditionType.CHANGE_STATE: ChangeStateCondition.from_data,
+        ConditionType.CREATED_AGO: CreatedAgoCondition.from_data,
         ConditionType.SCHEMA_NAME: SchemaNameCondition.from_data,
     }
 

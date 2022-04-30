@@ -7,36 +7,36 @@
 
 # @black_format
 
-"""The implementation for the ChangeStateCondition."""
+"""The implementation for all conditions handling when a Change was created."""
 
 from __future__ import annotations
 
+import time
 from typing import Any, Mapping, TypedDict
 
 from autotransform.change.base import Change
-from autotransform.change.state import ChangeState
 from autotransform.step.condition.base import Condition
 from autotransform.step.condition.comparison import ComparisonType, compare
 from autotransform.step.condition.type import ConditionType
 
 
-class ChangeStateConditionParams(TypedDict):
-    """The param type for a ChangeStateCondition."""
+class CreatedAgoConditionParams(TypedDict):
+    """The param type for a CreatedAgoCondition."""
 
     comparison: ComparisonType
-    state: ChangeState
+    time: int
 
 
-class ChangeStateCondition(Condition[ChangeStateConditionParams]):
-    """A condition which checks the ChangeState against the state supplied in the params,
-    using the supplied comparison. Note: only equals and not equals are valid, all others will
-    result in an error.
+class CreatedAgoCondition(Condition[CreatedAgoConditionParams]):
+    """A condition which checks how long ago a Change was created against the supplied time, all
+    in seconds, using the supplied comparison. Note: only equals and not equals are valid, all
+    others will result in an error.
 
     Attributes:
-        _params (TParams): The comparison type and state to compare against.
+        _params (TParams): The comparison type and time to compare against.
     """
 
-    _params: ChangeStateConditionParams
+    _params: CreatedAgoConditionParams
 
     @staticmethod
     def get_type() -> ConditionType:
@@ -46,10 +46,10 @@ class ChangeStateCondition(Condition[ChangeStateConditionParams]):
             ConditionType: The unique type associated with this Condition.
         """
 
-        return ConditionType.CHANGE_STATE
+        return ConditionType.CREATED_AGO
 
     def check(self, change: Change) -> bool:
-        """Checks whether the Change's state passes the comparison.
+        """Checks whether how long ago the Change was created passes the comparison.
 
         Args:
             change (Change): The Change the Condition is checking.
@@ -57,12 +57,9 @@ class ChangeStateCondition(Condition[ChangeStateConditionParams]):
         Returns:
             bool: Whether the Change passes the Condition.
         """
-        comparison = self._params["comparison"]
-        assert comparison in [
-            ComparisonType.EQUAL,
-            ComparisonType.NOT_EQUAL,
-        ], "ChangeStateCondition may only use equal or not_equal comparison"
-        return compare(change.get_state(), self._params["state"], self._params["comparison"])
+
+        time_since_created = time.time() - change.get_created_timestamp()
+        return compare(time_since_created, self._params["time"], self._params["comparison"])
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> Condition:
@@ -82,10 +79,7 @@ class ChangeStateCondition(Condition[ChangeStateConditionParams]):
         else:
             comparison = ComparisonType.from_value(comparison)
 
-        state = data["state"]
-        if not ChangeState.has_value(state):
-            state = ChangeState.from_name(state)
-        else:
-            state = ChangeState.from_value(state)
+        time_param = data["time"]
+        assert isinstance(time_param, int)
 
-        return ChangeStateCondition({"comparison": comparison, "state": state})
+        return CreatedAgoCondition({"comparison": comparison, "time": time_param})

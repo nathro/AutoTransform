@@ -95,6 +95,13 @@ class Change(Generic[TParams], ABC):
             ChangeState: The current state of the Change.
         """
 
+    def get_created_timestamp(self) -> int:
+        """Returns the timestamp when the Change was created.
+
+        Returns:
+            int: The timestamp in seconds when the Change was created.
+        """
+
     def take_action(self, action_type: ActionType) -> bool:
         """Tells the Change to take an action based on the results of a Step run.
 

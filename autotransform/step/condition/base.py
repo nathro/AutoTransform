@@ -71,7 +71,7 @@ class Condition(Generic[TParams], ABC):
         """Checks whether the Change passes the Condition.
 
         Args:
-            change (Change): The Change the Condition checking.
+            change (Change): The Change the Condition is checking.
 
         Returns:
             bool: Whether the Change passes the condition.

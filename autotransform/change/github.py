@@ -14,6 +14,7 @@ from __future__ import annotations
 import json
 from typing import Any, Dict, List, Mapping, TypedDict
 
+import pytz
 from github.PullRequest import PullRequest
 
 from autotransform.batcher.base import Batch
@@ -153,6 +154,16 @@ class GithubChange(Change[GithubChangeParams]):
         if not hasattr(self, "_state"):
             self._state = ChangeState.OPEN
         return self._state
+
+    def get_created_timestamp(self) -> int:
+        """Returns the timestamp when the pull request was created.
+
+        Returns:
+            int: The timestamp in seconds when the pull request was created.
+        """
+
+        utc_datetime = pytz.utc.localize(self._pull_request.created_at)
+        return int(utc_datetime.timestamp())
 
     def _merge(self) -> bool:
         """Merges the pull request and deletes the branch.

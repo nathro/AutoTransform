@@ -8,7 +8,7 @@
 # @black_format
 
 """An enum representing a type of comparison. Used by Conditions to make determinations
-on the type of check to perform."""
+on the type of check to perform. Includes a compare function those Conditions will use."""
 
 from enum import Enum
 from typing import Any
@@ -68,3 +68,33 @@ class ComparisonType(str, Enum):
         # pylint: disable=no-member
 
         return ComparisonType._value2member_map_[value]
+
+
+def compare(first_val: Any, second_val: Any, comparison: ComparisonType) -> bool:
+    """Performs the comparison specified by a ComparisonType
+
+    Args:
+        first_val (Any): The first value of the comparison.
+        second_val (Any): The second value of the comparison.
+        comparison (ComparisonType): The type of comparison to perform.
+
+    Raises:
+        ValueError: Raised when the comparison is not a valid type.
+
+    Returns:
+        bool: The results of the comparison.
+    """
+
+    if comparison == ComparisonType.EQUAL:
+        return first_val == second_val
+    if comparison == ComparisonType.NOT_EQUAL:
+        return first_val != second_val
+    if comparison == ComparisonType.GREATER_THAN:
+        return first_val > second_val
+    if comparison == ComparisonType.GREATER_THAN_OR_EQUAL:
+        return first_val >= second_val
+    if comparison == ComparisonType.LESS_THAN:
+        return first_val < second_val
+    if comparison == ComparisonType.LESS_THAN_OR_EQUAL:
+        return first_val <= second_val
+    raise ValueError(f"{comparison} is not a valid ComparisonType")

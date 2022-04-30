@@ -3,6 +3,7 @@ GitPython
 PyGithub
 typing-extensions
 colorama
+pytz
 
 # Requirements for Schemas
 
@@ -13,6 +14,7 @@ black
 mypy
 types-colorama
 types-mock
+types-pytz
 
 # Linting
 pylint

@@ -15,7 +15,7 @@ from typing import Any, Mapping, TypedDict
 
 from autotransform.change.base import Change
 from autotransform.step.condition.base import Condition
-from autotransform.step.condition.comparison import ComparisonType
+from autotransform.step.condition.comparison import ComparisonType, compare
 from autotransform.step.condition.type import ConditionType
 
 
@@ -48,22 +48,24 @@ class SchemaNameCondition(Condition[SchemaNameConditionParams]):
         return ConditionType.SCHEMA_NAME
 
     def check(self, change: Change) -> bool:
-        """Checks whether the Change passes the Condition.
+        """Checks whether the the schema name passes the comparison.
 
         Args:
-            change (Change): The Change the Condition checking.
+            change (Change): The Change the Condition is checking.
 
         Returns:
-            bool: Whether the Change passes the condition.
+            bool: Whether the Change passes the Condition.
         """
         comparison = self._params["comparison"]
         assert comparison in [
             ComparisonType.EQUAL,
             ComparisonType.NOT_EQUAL,
         ], "SchemaNameCondition may only use equal or not_equal comparison"
-        if comparison == ComparisonType.EQUAL:
-            return change.get_schema().get_config().get_name() == self._params["name"]
-        return change.get_schema().get_config().get_name() != self._params["name"]
+        return compare(
+            change.get_schema().get_config().get_name(),
+            self._params["name"],
+            self._params["comparison"],
+        )
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> Condition:

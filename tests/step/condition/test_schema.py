@@ -19,62 +19,6 @@ from autotransform.step.condition.comparison import ComparisonType
 from autotransform.step.condition.schema import SchemaNameCondition
 
 
-def test_equal_when_true():
-    """Tests an equal comparison that is True."""
-
-    mock_config = mock.create_autospec(SchemaConfig)
-    mock_config.get_name.return_value = "foo"
-    mock_schema = mock.create_autospec(AutoTransformSchema)
-    mock_schema.get_config.return_value = mock_config
-    mock_change = mock.create_autospec(Change)
-    mock_change.get_schema.return_value = mock_schema
-
-    condition = SchemaNameCondition({"name": "foo", "comparison": ComparisonType.EQUAL})
-    assert condition.check(mock_change) is True
-
-
-def test_equal_when_false():
-    """Tests an equal comparison that is False."""
-
-    mock_config = mock.create_autospec(SchemaConfig)
-    mock_config.get_name.return_value = "foo"
-    mock_schema = mock.create_autospec(AutoTransformSchema)
-    mock_schema.get_config.return_value = mock_config
-    mock_change = mock.create_autospec(Change)
-    mock_change.get_schema.return_value = mock_schema
-
-    condition = SchemaNameCondition({"name": "bar", "comparison": ComparisonType.EQUAL})
-    assert condition.check(mock_change) is False
-
-
-def test_not_equal_when_true():
-    """Tests a not equal comparison that is True."""
-
-    mock_config = mock.create_autospec(SchemaConfig)
-    mock_config.get_name.return_value = "foo"
-    mock_schema = mock.create_autospec(AutoTransformSchema)
-    mock_schema.get_config.return_value = mock_config
-    mock_change = mock.create_autospec(Change)
-    mock_change.get_schema.return_value = mock_schema
-    condition = SchemaNameCondition({"name": "bar", "comparison": ComparisonType.NOT_EQUAL})
-
-    assert condition.check(mock_change) is True
-
-
-def test_not_equal_when_false():
-    """Tests a not equal comparison that is False."""
-
-    mock_config = mock.create_autospec(SchemaConfig)
-    mock_config.get_name.return_value = "foo"
-    mock_schema = mock.create_autospec(AutoTransformSchema)
-    mock_schema.get_config.return_value = mock_config
-    mock_change = mock.create_autospec(Change)
-    mock_change.get_schema.return_value = mock_schema
-    condition = SchemaNameCondition({"name": "foo", "comparison": ComparisonType.NOT_EQUAL})
-
-    assert condition.check(mock_change) is False
-
-
 def test_non_used_comparisons():
     """Checks that all unused comparisons assert as expected."""
 
