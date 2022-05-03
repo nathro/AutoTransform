@@ -27,6 +27,7 @@ from autotransform.util.github import GithubUtils
 if TYPE_CHECKING:
     from autotransform.schema.schema import AutoTransformSchema
 
+
 class GithubChangeParams(TypedDict):
     """The param type for a GithubChange."""
 
@@ -59,9 +60,9 @@ class GithubChange(Change[GithubChangeParams]):
         """
 
         Change.__init__(self, params)
-        self._pull_request = GithubUtils.get_github_repo(
-            params["full_github_name"]
-        ).get_pull(params["pull_request_number"])
+        self._pull_request = GithubUtils.get_github_repo(params["full_github_name"]).get_pull(
+            params["pull_request_number"]
+        )
 
     def get_params(self) -> GithubChangeParams:
         """Gets the paramaters used to set up the GithubChange.
@@ -189,9 +190,9 @@ class GithubChange(Change[GithubChangeParams]):
         merge_status = self._pull_request.merge()
         if merge_status.merged:
             branch_name = self._pull_request.head.ref
-            ref = GithubUtils.get_github_repo(
-                self._params["full_github_name"]
-            ).get_git_ref(f"heads/{branch_name}")
+            ref = GithubUtils.get_github_repo(self._params["full_github_name"]).get_git_ref(
+                f"heads/{branch_name}"
+            )
             ref.delete()
 
         return merge_status.merged

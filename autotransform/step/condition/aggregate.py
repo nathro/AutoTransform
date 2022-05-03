@@ -146,9 +146,6 @@ class AggregateCondition(Condition[AggregateConditionParams]):
         conditions = [str(condition) for condition in self._params["conditions"]]
         return f"{self._params['aggregator']} {json.dumps(conditions)}"
 
-
-
-
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> AggregateCondition:
         """Produces an instance of the component from decoded params. Implementations should
