@@ -12,36 +12,31 @@
 import importlib
 from typing import Any, Callable, Dict, Mapping
 
-import autotransform.step.condition.aggregate as aggregate_condition
+import autotransform.step.condition.type as condition_type
 from autotransform.config import fetcher as Config
-from autotransform.step.condition.base import Condition, ConditionBundle
-from autotransform.step.condition.created import CreatedAgoCondition
-from autotransform.step.condition.schema import SchemaNameCondition
-from autotransform.step.condition.state import ChangeStateCondition
-from autotransform.step.condition.type import ConditionType
-from autotransform.step.condition.updated import UpdatedAgoCondition
+from autotransform.step.condition import aggregate, base, created, schema, state, updated
 
 
 class ConditionFactory:
     """The factory class for Conditions. Maps a type to a Condition.
 
     Attributes:
-        _map (Dict[ConditionType, Callable[[Mapping[str, Any]], Condition]]): A mapping from
-            ConditionType to the from_data function of the appropriate Condition.
+        _map (Dict[condition_type.ConditionType, Callable[[Mapping[str, Any]], base.Condition]]):
+            A mapping from ConditionType to the from_data function of the appropriate Condition.
     """
 
     # pylint: disable=too-few-public-methods
 
-    _map: Dict[ConditionType, Callable[[Mapping[str, Any]], Condition]] = {
-        ConditionType.AGGREGATE: aggregate_condition.AggregateCondition.from_data,
-        ConditionType.CHANGE_STATE: ChangeStateCondition.from_data,
-        ConditionType.CREATED_AGO: CreatedAgoCondition.from_data,
-        ConditionType.SCHEMA_NAME: SchemaNameCondition.from_data,
-        ConditionType.UPDATED_AGO: UpdatedAgoCondition.from_data,
+    _map: Dict[condition_type.ConditionType, Callable[[Mapping[str, Any]], base.Condition]] = {
+        condition_type.ConditionType.AGGREGATE: aggregate.AggregateCondition.from_data,
+        condition_type.ConditionType.CHANGE_STATE: state.ChangeStateCondition.from_data,
+        condition_type.ConditionType.CREATED_AGO: created.CreatedAgoCondition.from_data,
+        condition_type.ConditionType.SCHEMA_NAME: schema.SchemaNameCondition.from_data,
+        condition_type.ConditionType.UPDATED_AGO: updated.UpdatedAgoCondition.from_data,
     }
 
     @staticmethod
-    def get(bundle: ConditionBundle) -> Condition:
+    def get(bundle: base.ConditionBundle) -> base.Condition:
         """Simple get method using the _map attribute.
 
         Args:
