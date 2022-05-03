@@ -80,13 +80,9 @@ def manage_command_main(args: Namespace) -> None:
     changes = repo.get_outstanding_changes()
 
     for change in changes:
-        event_handler.handle(
-            DebugEvent({"message": f"Running steps for {str(change)}"})
-        )
+        event_handler.handle(DebugEvent({"message": f"Running steps for {str(change)}"}))
         for step in steps:
-            event_handler.handle(
-                DebugEvent({"message": f"Running step {str(step)}"})
-            )
+            event_handler.handle(DebugEvent({"message": f"Running step {str(step)}"}))
             action = step.get_action(change)
             if action["type"] != ActionType.NONE:
                 event_handler.handle(
