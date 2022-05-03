@@ -94,6 +94,11 @@ class ConditionalStep(Step):
             "type": self.get_type(),
         }
 
+    def __str__(self) -> str:
+        return (
+            f"Condition: {str(self._params['condition'])} - Action: {self._params['action_type']}"
+        )
+
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> ConditionalStep:
         """Produces an instance of the component from decoded params. Implementations should

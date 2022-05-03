@@ -20,6 +20,7 @@ from git import Repo as GitPython
 
 import autotransform.schema
 from autotransform.batcher.base import Batch
+from autotransform.change.base import Change
 from autotransform.repo.base import Repo
 from autotransform.repo.type import RepoType
 
@@ -170,6 +171,15 @@ class GitRepo(Repo[GitRepoParams]):
 
         self.clean(batch)
         self._base_branch.checkout()
+
+    def get_outstanding_changes(self) -> List[Change]:
+        """Gets all outstanding Changes for the Repo.
+
+        Returns:
+            List[Change]: The outstanding Changes against the Repo.
+        """
+
+        return []
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> GitRepo:

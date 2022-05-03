@@ -11,6 +11,7 @@
 
 from __future__ import annotations
 
+import json
 from enum import Enum
 from typing import Any, Dict, List, Mapping, TypedDict
 
@@ -140,6 +141,10 @@ class AggregateCondition(Condition[AggregateConditionParams]):
             "params": bundled_params,
             "type": self.get_type(),
         }
+
+    def __str__(self) -> str:
+        conditions = [str(condition) for condition in self._params["conditions"]]
+        return f"{self._params['aggregator']} {json.dumps(conditions)}"
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> AggregateCondition:

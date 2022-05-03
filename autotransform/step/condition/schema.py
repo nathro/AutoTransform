@@ -67,6 +67,9 @@ class SchemaNameCondition(Condition[SchemaNameConditionParams]):
             self._params["comparison"],
         )
 
+    def __str__(self) -> str:
+        return f"Schema Name {self._params['comparison'].name.lower()} {self._params['name']}"
+
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> SchemaNameCondition:
         """Produces an instance of the component from decoded params. Implementations should

@@ -15,6 +15,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Generic, List, Mapping, TypedDict, TypeVar
 
 from autotransform.batcher.base import Batch
+from autotransform.change.base import Change
 from autotransform.repo.type import RepoType
 
 TParams = TypeVar("TParams", bound=Mapping[str, Any])
@@ -113,6 +114,14 @@ class Repo(Generic[TParams], ABC):
 
         Args:
             batch (Batch): The Batch for which changes were submitted.
+        """
+
+    @abstractmethod
+    def get_outstanding_changes(self) -> List[Change]:
+        """Gets all outstanding Changes for the Repo.
+
+        Returns:
+            List[Change]: The outstanding Changes against the Repo.
         """
 
     def bundle(self) -> RepoBundle:

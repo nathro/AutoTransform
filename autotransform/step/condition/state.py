@@ -64,6 +64,9 @@ class ChangeStateCondition(Condition[ChangeStateConditionParams]):
         ], "ChangeStateCondition may only use equal or not_equal comparison"
         return compare(change.get_state(), self._params["state"], self._params["comparison"])
 
+    def __str__(self) -> str:
+        return f"Change State {self._params['comparison'].name.lower()} {self._params['state']}"
+
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> ChangeStateCondition:
         """Produces an instance of the component from decoded params. Implementations should

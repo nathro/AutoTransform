@@ -60,6 +60,9 @@ class UpdatedAgoCondition(Condition[UpdatedAgoConditionParams]):
         time_since_updated = time.time() - change.get_last_updated_timestamp()
         return compare(time_since_updated, self._params["time"], self._params["comparison"])
 
+    def __str__(self) -> str:
+        return f"Updated Ago {self._params['comparison'].name.lower()} {self._params['time']}"
+
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> UpdatedAgoCondition:
         """Produces an instance of the component from decoded params. Implementations should

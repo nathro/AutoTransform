@@ -20,6 +20,7 @@ from autotransform.change.type import ChangeType
 from autotransform.step.action import ActionType
 
 if TYPE_CHECKING:
+    from autotransform.runner.base import Runner
     from autotransform.schema.schema import AutoTransformSchema
 
 
@@ -109,15 +110,20 @@ class Change(Generic[TParams], ABC):
             int: The timestamp in seconds when the Change was last updated.
         """
 
-    def take_action(self, action_type: ActionType) -> bool:
+    def take_action(self, action_type: ActionType, _runner: Runner) -> bool:
         """Tells the Change to take an action based on the results of a Step run.
 
         Args:
-            action_type (ActionType): The action to take
+            action_type (ActionType): The action to take.
+            runner (Runner): A Runner which can be used to take an action.
 
         Returns:
             bool: Whether the action was taken successfully.
         """
+
+        if action_type == ActionType.NONE:
+            return True
+
         if action_type == ActionType.MERGE:
             return self._merge()
 

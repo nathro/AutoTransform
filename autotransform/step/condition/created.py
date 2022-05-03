@@ -60,6 +60,9 @@ class CreatedAgoCondition(Condition[CreatedAgoConditionParams]):
         time_since_created = time.time() - change.get_created_timestamp()
         return compare(time_since_created, self._params["time"], self._params["comparison"])
 
+    def __str__(self) -> str:
+        return f"Created Ago {self._params['comparison'].name.lower()} {self._params['time']}"
+
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> CreatedAgoCondition:
         """Produces an instance of the component from decoded params. Implementations should

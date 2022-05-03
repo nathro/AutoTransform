@@ -19,6 +19,7 @@ from typing_extensions import NotRequired
 
 import autotransform.schema
 from autotransform.batcher.base import Batch
+from autotransform.change.base import Change
 from autotransform.config import fetcher as Config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
@@ -211,6 +212,15 @@ class GithubRepo(GitRepo):
         automation_info_lines.append("</details>")
 
         return "\n".join(automation_info_lines)
+
+    def get_outstanding_changes(self) -> List[Change]:
+        """Gets all outstanding Changes for the Repo.
+
+        Returns:
+            List[Change]: The outstanding Changes against the Repo.
+        """
+
+        return []
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> GithubRepo:
