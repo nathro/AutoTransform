@@ -12,14 +12,14 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Dict, List, Mapping, Optional
+from typing import Any, Dict, List, Mapping, Optional, Sequence
 
 from github import Github, Repository
 from typing_extensions import NotRequired
 
 import autotransform.schema
 from autotransform.batcher.base import Batch
-from autotransform.change.base import Change
+from autotransform.change.github import GithubChange
 from autotransform.config import fetcher as Config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
@@ -213,14 +213,33 @@ class GithubRepo(GitRepo):
 
         return "\n".join(automation_info_lines)
 
-    def get_outstanding_changes(self) -> List[Change]:
-        """Gets all outstanding Changes for the Repo.
+
+
+
+
+    def get_outstanding_changes(self) -> Sequence[GithubChange]:
+        """Gets all outstanding pull requests for the Repo.
 
         Returns:
-            List[Change]: The outstanding Changes against the Repo.
+            Sequence[GithubChange]: The outstanding Changes against the Repo.
         """
 
-        return []
+        repo = GithubRepo.get_github_repo(self._params["full_github_name"])
+        pulls = repo.get_pulls(
+            "open", sort="created", direction="desc", base=self._params["base_branch_name"]
+        )
+        changes: List[GithubChange] = []
+        for pull in pulls:
+            changes.append(
+                GithubChange(
+                    {
+                        "full_github_name": self._params["full_github_name"],
+                        "pull_request_number": pull.number,
+                    }
+                )
+            )
+
+        return changes
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> GithubRepo:

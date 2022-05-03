@@ -12,7 +12,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Generic, List, Mapping, TypedDict, TypeVar
+from typing import Any, Generic, List, Mapping, Sequence, TypedDict, TypeVar
 
 from autotransform.batcher.base import Batch
 from autotransform.change.base import Change
@@ -117,11 +117,11 @@ class Repo(Generic[TParams], ABC):
         """
 
     @abstractmethod
-    def get_outstanding_changes(self) -> List[Change]:
+    def get_outstanding_changes(self) -> Sequence[Change]:
         """Gets all outstanding Changes for the Repo.
 
         Returns:
-            List[Change]: The outstanding Changes against the Repo.
+            Sequence[Change]: The outstanding Changes against the Repo.
         """
 
     def bundle(self) -> RepoBundle:

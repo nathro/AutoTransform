@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import re
 import subprocess
-from typing import Any, List, Mapping, TypedDict
+from typing import Any, List, Mapping, Sequence, TypedDict
 
 from git import Head
 from git import Repo as GitPython
@@ -172,11 +172,11 @@ class GitRepo(Repo[GitRepoParams]):
         self.clean(batch)
         self._base_branch.checkout()
 
-    def get_outstanding_changes(self) -> List[Change]:
+    def get_outstanding_changes(self) -> Sequence[Change]:
         """Gets all outstanding Changes for the Repo.
 
         Returns:
-            List[Change]: The outstanding Changes against the Repo.
+            Sequence[Change]: The outstanding Changes against the Repo.
         """
 
         return []
