@@ -1,0 +1,39 @@
+# AutoTransform
+# Large scale, component based code modification library
+#
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
+
+# A sample workflow that can be used by a repo on Github to schedule automatic
+# AutoTransform runs
+
+name: Manage AutoTransform
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  manage-autotransform:
+    runs-on: ubuntu-latest
+    name: Manage
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up git user
+      run: |
+        git config --global user.name "AutoTransform Bot"
+        git config --global user.email "nathro.autotransform@gmail.com"
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install Dependencies
+      run: pip install -r requirements.txt
+    - name: Manage AutoTransform
+      run: python3 -m autotransform.scripts.main manage --verbose data/autotransform_manage.json
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+        AUTO_TRANSFORM_CONFIG: environment
+        AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}

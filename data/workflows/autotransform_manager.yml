@@ -1,0 +1,43 @@
+# AutoTransform
+# Large scale, component based code modification library
+#
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
+
+# A sample workflow that can be used by a repo on Github to manage outstanding
+# Changes for AutoTransform
+
+name: Manage AutoTransform
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+
+jobs:
+  manage-autotransform:
+    runs-on: ubuntu-latest
+    name: Manage
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up git user
+      run: |
+        git config --global user.name "AutoTransform Bot"
+        git config --global user.email "nathro.autotransform@gmail.com"
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install AutoTransform
+      run: pip install AutoTransform
+    # Optionally install any custom components needed
+    - name: Install custom components
+      run: # Install your custom components here
+    - name: Schedule AutoTransform
+      run: autotransform manage data/autotransform_manage.json
+      env:
+        AUTO_TRANSFORM_CONFIG: environment
+        # This token must have admin access to repo to dispatch workflow events
+        AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}
+        # List your custom components, leave off if not using any
+        AUTO_TRANSFORM_IMPORTS_CUSTOM_COMPONENTS: <<custom.component.modules>>
