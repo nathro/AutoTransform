@@ -61,7 +61,7 @@ Each codemod that can change code can benefit from all other codemods. As run ti
 
 **[A visual representation](https://lucid.app/lucidchart/eca43a3d-175f-416f-bb4f-4363d56f951b/edit?invitationId=inv_f44ed708-8c4a-4998-96f2-8b860aba8ebc)**
 
-The Input component of the schema will get a list of Items that may serve as inputs to a transformation, these are then passed through the Filters where only those that pass the is_valid check make it through. This filtered set of Items is then passed to a Batcher which breaks the Items into groups called Batches. Batches will be executed sequentially as independent changes going through a multi-step process. First, the Batch goes to a Transformer which makes the actual changes to the codebase. At this point, some Commands that have set run_pre_validation set to true may run, handling things like code generation or formatting. Next, Validators are invoked which check to ensure the codebase is still healthy. After this, remaining Commands are run which perform post-change processing. Finally, the Repo object will check for changes, commit them if present, and submit them (i.e. as a Pull Request). Once this is done, the Repo object will return the repository to a clean state in preparation for the next Batch.
+The Input component of the schema will get a list of Items that may serve as inputs to a transformation, these are then passed through the Filters where only those that pass the is_valid check make it through. This filtered set of Items is then passed to a Batcher which breaks the Items into groups called Batches. Batches will be executed sequentially as independent changes going through a multi-step process. First, the Batch goes to a Transformer which makes the actual changes to the codebase. At this point, some Commands that have run_pre_validation set to true may run, handling things like code generation or formatting. Next, Validators are invoked which check to ensure the codebase is still healthy. After this, remaining Commands are run which perform post-change processing. Finally, the Repo object will check for changes, commit them if present, and submit them (i.e. as a Pull Request). Once this is done, the Repo object will return the repository to a clean state in preparation for the next Batch.
 
 ## **Scheduled Runs**
 
@@ -152,7 +152,7 @@ To manage outstanding Changes, a JSON file with all manager information is requi
     },
     "steps": [
         {
-            "type": <RunnerType>,
+            "type": <StepType>,
             "params": {
                 ...
             }
@@ -169,6 +169,12 @@ To see an example, check out `data/autotransform_manage.json`.
 * **Repo**: The Repo to fetch outstanding Changes for.
 * **Runner**: The Runner to use for updating outstanding Changes.
 * **Steps**: The Steps to check against the outstanding Changes.
+
+### **Invoking Management**
+
+Management is invoked using `autotransform manage <path_to_manager_file>`. If you use Github, you can see an example workflow at `data/workflows/autotransform_manager.yml` that shows how to use Github actions for automating manager runs. If you do not use Github, you can set up a cron job on your organization's infrastructure to invoke the script on a schedule.
+
+As a note, if using GithubActions, the github_token used must have admin access to the repo to trigger further github actions.
 
 ## **Schema Components**
 
@@ -190,7 +196,7 @@ The core of AutoTransform is the [schema](https://github.com/nathro/AutoTransfor
 
 * **[Change](https://github.com/nathro/AutoTransform/blob/master/autotransform/change/base.py)** - A Change represents a submission to a code review and/or source control system. They are used by AutoTransform to manage these submissions to do things like land approved code, abandon stale changes, etc...
 
-* **[Step](https://github.com/nathro/AutoTransform/blob/master/autotransform/step/base.py)** - A Step is used by AutoTransform to determine what actions to take for a given Change. They evaluate criteria and determine what should be done for handling an outstanding Change.
+* **[Step](https://github.com/nathro/AutoTransform/blob/master/autotransform/step/base.py)** - A Step is used by AutoTransform to determine what actions to take for a given Change. They evaluate criteria and determine what should be done for handling an outstanding Change. Most Step logic can be handled through the use of the ConditionalStep, requiring only the creation of new Conditions.
 
 ## **Other Components**
 

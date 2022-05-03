@@ -38,7 +38,15 @@ def add_args(parser: ArgumentParser) -> None:
         type=str,
         help="A file path to the JSON encoded schedule of schema runs to execute.",
     )
-
+    parser.add_argument(
+        "-t",
+        "--time",
+        metavar="time",
+        type=int,
+        required=False,
+        help="The timestamp to use in place of the current time, used in cases where delays in "
+        + "scheduling are likely.",
+    )
     parser.add_argument(
         "-v",
         "--verbose",
@@ -59,7 +67,10 @@ def schedule_command_main(args: Namespace) -> None:
 
     # pylint: disable=unspecified-encoding
 
-    start_time = int(time.time())
+    if args.time is not None:
+        start_time = int(args.time)
+    else:
+        start_time = int(time.time())
     event_args = {}
     event_handler = EventHandler.get()
     if args.verbose:
