@@ -16,7 +16,6 @@ from __future__ import annotations
 import json
 from typing import Any, Dict, List, Mapping, Optional
 
-import autotransform.repo.factory as repo_factory
 import autotransform.schema
 from autotransform.batcher.base import Batch, Batcher
 from autotransform.batcher.factory import BatcherFactory
@@ -30,6 +29,7 @@ from autotransform.input.base import Input
 from autotransform.input.factory import InputFactory
 from autotransform.item.base import Item
 from autotransform.repo.base import Repo
+from autotransform.repo.factory import RepoFactory
 from autotransform.schema.config import SchemaConfig
 from autotransform.transformer.base import Transformer
 from autotransform.transformer.factory import TransformerFactory
@@ -399,7 +399,7 @@ class AutoTransformSchema:
         commands = [CommandFactory.get(command) for command in bundle["commands"]]
 
         if "repo" in bundle:
-            repo = repo_factory.RepoFactory.get(bundle["repo"])
+            repo = RepoFactory.get(bundle["repo"])
         else:
             repo = None
 

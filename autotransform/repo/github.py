@@ -17,9 +17,9 @@ from typing import Any, Dict, List, Mapping, Optional, Sequence
 from github import Github, Repository
 from typing_extensions import NotRequired
 
-import autotransform.change.github as github_change
 import autotransform.schema
 from autotransform.batcher.base import Batch
+from autotransform.change.github import GithubChange
 from autotransform.config import fetcher as Config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
@@ -213,21 +213,21 @@ class GithubRepo(GitRepo):
 
         return "\n".join(automation_info_lines)
 
-    def get_outstanding_changes(self) -> Sequence[github_change.GithubChange]:
+    def get_outstanding_changes(self) -> Sequence[GithubChange]:
         """Gets all outstanding pull requests for the Repo.
 
         Returns:
-            Sequence[github_change.GithubChange]: The outstanding Changes against the Repo.
+            Sequence[GithubChange]: The outstanding Changes against the Repo.
         """
 
         repo = GithubRepo.get_github_repo(self._params["full_github_name"])
         pulls = repo.get_pulls(
             "open", sort="created", direction="desc", base=self._params["base_branch_name"]
         )
-        changes: List[github_change.GithubChange] = []
+        changes: List[GithubChange] = []
         for pull in pulls:
             changes.append(
-                github_change.GithubChange(
+                GithubChange(
                     {
                         "full_github_name": self._params["full_github_name"],
                         "pull_request_number": pull.number,

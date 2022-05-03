@@ -12,19 +12,20 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Dict, List, Mapping, TypedDict
+from typing import TYPE_CHECKING, Any, Dict, List, Mapping, TypedDict
 
 import pytz
 from github.PullRequest import PullRequest
 
 import autotransform.repo.github as github_repo
-import autotransform.schema.schema as AutoTransformSchema
 from autotransform.batcher.base import Batch
 from autotransform.change.base import Change
 from autotransform.change.state import ChangeState
 from autotransform.change.type import ChangeType
 from autotransform.item.factory import ItemFactory
 
+if TYPE_CHECKING:
+    from autotransform.schema.schema import AutoTransformSchema
 
 class GithubChangeParams(TypedDict):
     """The param type for a GithubChange."""
@@ -48,7 +49,7 @@ class GithubChange(Change[GithubChangeParams]):
     _pull_request: PullRequest
     _state: ChangeState
     _batch: Batch
-    _schema: AutoTransformSchema.AutoTransformSchema
+    _schema: AutoTransformSchema
 
     def __init__(self, params: GithubChangeParams):
         """A simple constructor.
@@ -84,6 +85,9 @@ class GithubChange(Change[GithubChangeParams]):
     def _load_data(self) -> None:
         """Loads the Schema and Batch data for the GithubChange."""
 
+        # pylint: disable=import-outside-toplevel
+        from autotransform.schema.schema import AutoTransformSchema
+
         data: Dict[str, List[str]] = {"schema": [], "batch": []}
         cur_line_placement = None
         for line in self._pull_request.body.splitlines():
@@ -98,7 +102,7 @@ class GithubChange(Change[GithubChangeParams]):
             elif cur_line_placement is not None:
                 data[cur_line_placement].append(line)
 
-        self._schema = AutoTransformSchema.AutoTransformSchema.from_json("\n".join(data["schema"]))
+        self._schema = AutoTransformSchema.from_json("\n".join(data["schema"]))
         batch = json.loads("\n".join(data["batch"]))
         items = [ItemFactory.get(item) for item in batch["items"]]
         self._batch = {
@@ -119,11 +123,11 @@ class GithubChange(Change[GithubChangeParams]):
 
         return self._batch
 
-    def get_schema(self) -> AutoTransformSchema.AutoTransformSchema:
+    def get_schema(self) -> AutoTransformSchema:
         """Gets the Schema that was used to produce the Change.
 
         Returns:
-            AutoTransformSchema.AutoTransformSchema: The Schema used to produce the Change.
+            AutoTransformSchema: The Schema used to produce the Change.
         """
 
         if not hasattr(self, "_schema"):

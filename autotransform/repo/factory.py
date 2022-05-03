@@ -13,8 +13,9 @@ import importlib
 from typing import Any, Callable, Dict, Mapping
 
 from autotransform.config import fetcher as Config
-from autotransform.repo import git, github
 from autotransform.repo.base import Repo, RepoBundle
+from autotransform.repo.git import GitRepo
+from autotransform.repo.github import GithubRepo
 from autotransform.repo.type import RepoType
 
 
@@ -29,8 +30,8 @@ class RepoFactory:
     # pylint: disable=too-few-public-methods
 
     _map: Dict[RepoType, Callable[[Mapping[str, Any]], Repo]] = {
-        RepoType.GIT: git.GitRepo.from_data,
-        RepoType.GITHUB: github.GithubRepo.from_data,
+        RepoType.GIT: GitRepo.from_data,
+        RepoType.GITHUB: GithubRepo.from_data,
     }
 
     @staticmethod
