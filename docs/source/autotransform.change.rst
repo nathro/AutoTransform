@@ -19,4 +19,5 @@ Core
 
    autotransform.change.base
    autotransform.change.type
+   autotransform.change.state
    autotransform.change.factory

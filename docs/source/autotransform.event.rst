@@ -9,6 +9,7 @@ Events
 .. toctree::
    :maxdepth: 4
 
+   autotransform.event.action
    autotransform.event.debug
    autotransform.event.remoterun
    autotransform.event.run

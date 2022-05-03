@@ -129,6 +129,47 @@ Scheduled runs are invoked using `autotransform schedule <path_to_schedule_file>
 
 As a note, if using GithubActions, the github_token used must have admin access to the repo to trigger further github actions.
 
+## Managing Changes
+
+AutoTransform provides a managing command for managing outstanding Changes, updating, merging, abandoning, and handling other actions for outstanding Changes.
+
+### Manager File
+
+To manage outstanding Changes, a JSON file with all manager information is required. The manage format looks like the following:
+```
+{
+    "repo": {
+        "type": <RepoType>,
+        "params": {
+            ...
+        }
+    },
+    "runner": {
+        "type": <RunnerType>,
+        "params": {
+            ...
+        }
+    },
+    "steps": [
+        {
+            "type": <RunnerType>,
+            "params": {
+                ...
+            }
+        },
+        ...
+    ]
+
+}
+```
+To see an example, check out `data/autotransform_manage.json`.
+
+### Managing Params
+
+* **Repo**: The Repo to fetch outstanding Changes for.
+* **Runner**: The Runner to use for updating outstanding Changes.
+* **Steps**: The Steps to check against the outstanding Changes.
+
 ## **Schema Components**
 
 The core of AutoTransform is the [schema](https://github.com/nathro/AutoTransform/blob/master/autotransform/schema/schema.py). A schema is a collection of components and configurations required to actually execute a change.
