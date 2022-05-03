@@ -18,7 +18,7 @@ import pytz
 from github.PullRequest import PullRequest
 
 import autotransform.repo.github as github_repo
-import autotransform.schema.schema as schema
+import autotransform.schema.schema as AutoTransformSchema
 from autotransform.batcher.base import Batch
 from autotransform.change.base import Change
 from autotransform.change.state import ChangeState
@@ -48,7 +48,7 @@ class GithubChange(Change[GithubChangeParams]):
     _pull_request: PullRequest
     _state: ChangeState
     _batch: Batch
-    _schema: schema.AutoTransformSchema
+    _schema: AutoTransformSchema.AutoTransformSchema
 
     def __init__(self, params: GithubChangeParams):
         """A simple constructor.
@@ -98,7 +98,7 @@ class GithubChange(Change[GithubChangeParams]):
             elif cur_line_placement is not None:
                 data[cur_line_placement].append(line)
 
-        self._schema = schema.AutoTransformSchema.from_json("\n".join(data["schema"]))
+        self._schema = AutoTransformSchema.AutoTransformSchema.from_json("\n".join(data["schema"]))
         batch = json.loads("\n".join(data["batch"]))
         items = [ItemFactory.get(item) for item in batch["items"]]
         self._batch = {
@@ -119,11 +119,11 @@ class GithubChange(Change[GithubChangeParams]):
 
         return self._batch
 
-    def get_schema(self) -> schema.AutoTransformSchema:
+    def get_schema(self) -> AutoTransformSchema.AutoTransformSchema:
         """Gets the Schema that was used to produce the Change.
 
         Returns:
-            schema.AutoTransformSchema: The Schema used to produce the Change.
+            AutoTransformSchema.AutoTransformSchema: The Schema used to produce the Change.
         """
 
         if not hasattr(self, "_schema"):
