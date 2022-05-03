@@ -70,7 +70,7 @@ class ConditionalStep(Step):
             }
         return {
             "type": ActionType.NONE,
-            "stop_steps": True,
+            "stop_steps": False,
         }
 
     def bundle(self) -> StepBundle:
