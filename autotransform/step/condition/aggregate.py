@@ -15,8 +15,8 @@ import json
 from enum import Enum
 from typing import Any, Dict, List, Mapping, TypedDict
 
-import autotransform.step.condition.factory as condition_factory
 from autotransform.change.base import Change
+from autotransform.step.condition import factory
 from autotransform.step.condition.base import Condition, ConditionBundle
 from autotransform.step.condition.type import ConditionType
 
@@ -146,6 +146,9 @@ class AggregateCondition(Condition[AggregateConditionParams]):
         conditions = [str(condition) for condition in self._params["conditions"]]
         return f"{self._params['aggregator']} {json.dumps(conditions)}"
 
+
+
+
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> AggregateCondition:
         """Produces an instance of the component from decoded params. Implementations should
@@ -164,8 +167,6 @@ class AggregateCondition(Condition[AggregateConditionParams]):
         else:
             aggregator = AggregatorType.from_value(aggregator)
 
-        conditions = [
-            condition_factory.ConditionFactory.get(condition) for condition in data["conditions"]
-        ]
+        conditions = [factory.ConditionFactory.get(condition) for condition in data["conditions"]]
 
         return AggregateCondition({"conditions": conditions, "aggregator": aggregator})
