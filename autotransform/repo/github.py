@@ -213,10 +213,6 @@ class GithubRepo(GitRepo):
 
         return "\n".join(automation_info_lines)
 
-
-
-
-
     def get_outstanding_changes(self) -> Sequence[github_change.GithubChange]:
         """Gets all outstanding pull requests for the Repo.
 
