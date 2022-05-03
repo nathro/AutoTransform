@@ -17,17 +17,17 @@ from typing import Any, Dict, List, Mapping, TypedDict
 import pytz
 from github.PullRequest import PullRequest
 
+import autotransform.repo.github as github_repo
 from autotransform.batcher.base import Batch
 from autotransform.change.base import Change
 from autotransform.change.state import ChangeState
 from autotransform.change.type import ChangeType
 from autotransform.item.factory import ItemFactory
-from autotransform.repo.github import GithubRepo
 from autotransform.schema.schema import AutoTransformSchema
 
 
 class GithubChangeParams(TypedDict):
-    """The param type for a GithubRepo."""
+    """The param type for a GithubChange."""
 
     full_github_name: str
     pull_request_number: int
@@ -58,9 +58,9 @@ class GithubChange(Change[GithubChangeParams]):
         """
 
         Change.__init__(self, params)
-        self._pull_request = GithubRepo.get_github_repo(params["full_github_name"]).get_pull(
-            params["pull_request_number"]
-        )
+        self._pull_request = github_repo.GithubRepo.get_github_repo(
+            params["full_github_name"]
+        ).get_pull(params["pull_request_number"])
 
     def get_params(self) -> GithubChangeParams:
         """Gets the paramaters used to set up the GithubChange.
@@ -87,13 +87,13 @@ class GithubChange(Change[GithubChangeParams]):
         data: Dict[str, List[str]] = {"schema": [], "batch": []}
         cur_line_placement = None
         for line in self._pull_request.body.splitlines():
-            if line == GithubRepo.BEGIN_SCHEMA:
+            if line == github_repo.GithubRepo.BEGIN_SCHEMA:
                 cur_line_placement = "schema"
-            elif line == GithubRepo.END_SCHEMA:
+            elif line == github_repo.GithubRepo.END_SCHEMA:
                 cur_line_placement = None
-            elif line == GithubRepo.BEGIN_BATCH:
+            elif line == github_repo.GithubRepo.BEGIN_BATCH:
                 cur_line_placement = "batch"
-            elif line == GithubRepo.END_BATCH:
+            elif line == github_repo.GithubRepo.END_BATCH:
                 cur_line_placement = None
             elif cur_line_placement is not None:
                 data[cur_line_placement].append(line)
@@ -185,9 +185,9 @@ class GithubChange(Change[GithubChangeParams]):
         merge_status = self._pull_request.merge()
         if merge_status.merged:
             branch_name = self._pull_request.head.ref
-            ref = GithubRepo.get_github_repo(self._params["full_github_name"]).get_git_ref(
-                f"heads/{branch_name}"
-            )
+            ref = github_repo.GithubRepo.get_github_repo(
+                self._params["full_github_name"]
+            ).get_git_ref(f"heads/{branch_name}")
             ref.delete()
 
         return merge_status.merged
@@ -201,16 +201,12 @@ class GithubChange(Change[GithubChangeParams]):
 
         self._pull_request.edit(state="closed")
         branch_name = self._pull_request.head.ref
-        ref = GithubRepo.get_github_repo(self._params["full_github_name"]).get_git_ref(
+        ref = github_repo.GithubRepo.get_github_repo(self._params["full_github_name"]).get_git_ref(
             f"heads/{branch_name}"
         )
         ref.delete()
 
         return True
-
-
-
-
 
     def __str__(self) -> str:
         return f"Pull Request #{self._params['pull_request_number']}"
