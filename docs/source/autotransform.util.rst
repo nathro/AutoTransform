@@ -10,3 +10,4 @@ Utilities
    :maxdepth: 4
 
    autotransform.util.cachedfile
+   autotransform.util.github

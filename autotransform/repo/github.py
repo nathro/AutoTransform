@@ -12,19 +12,18 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Dict, List, Mapping, Optional, Sequence
+from typing import Any, Dict, List, Mapping, Sequence
 
-from github import Github, Repository
 from typing_extensions import NotRequired
 
 import autotransform.schema
 from autotransform.batcher.base import Batch
 from autotransform.change.github import GithubChange
-from autotransform.config import fetcher as Config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.repo.git import GitRepo, GitRepoParams
 from autotransform.repo.type import RepoType
+from autotransform.util.github import GithubUtils
 
 
 class GithubRepoParams(GitRepoParams):
@@ -45,18 +44,9 @@ class GithubRepo(GitRepo):
             name and any required labels.
         __github_repos (Dict[str, Repository.Repository]): A mapping of repo names to repos. Used
             for caching.
-        __github_object (Optional[Github]): An instance of the Github object of PyGithub.
     """
 
     _params: GithubRepoParams
-    __github_repos: Dict[str, Repository.Repository] = {}
-    __github_object: Optional[Github] = None
-
-    BEGIN_SCHEMA: str = "<<<<BEGIN SCHEMA>>>>"
-    END_SCHEMA: str = "<<<<END SCHEMA>>>>"
-
-    BEGIN_BATCH: str = "<<<<BEGIN BATCH>>>>"
-    END_BATCH: str = "<<<<END BATCH>>>>"
 
     def __init__(self, params: GithubRepoParams):
         """Establishes the Github object to enable API access.
@@ -66,50 +56,6 @@ class GithubRepo(GitRepo):
         """
 
         GitRepo.__init__(self, params)
-
-    @staticmethod
-    def get_github_object() -> Github:
-        """Authenticates with Github to allow API access via a token provided by AutoTransform
-        configuration. If no token is provided a username + password will be used. Also allows
-        use of a base URL for enterprise use cases. Stores the Github object for future use.
-
-        Returns:
-            Github: An object allowing interaction with the Github API.
-        """
-
-        if GithubRepo.__github_object is None:
-            url = Config.get_credentials_github_base_url()
-            token = Config.get_credentials_github_token()
-            if token is not None:
-                if url is not None:
-                    GithubRepo.__github_object = Github(token, base_url=url)
-                GithubRepo.__github_object = Github(token)
-            elif url is not None:
-                GithubRepo.__github_object = Github(
-                    Config.get_credentials_github_username(),
-                    Config.get_credentials_github_password(),
-                    base_url=url,
-                )
-            else:
-                GithubRepo.__github_object = Github(
-                    Config.get_credentials_github_username(),
-                    Config.get_credentials_github_password(),
-                )
-        return GithubRepo.__github_object
-
-    @staticmethod
-    def get_github_repo(repo_name: str) -> Repository.Repository:
-        """Gets the Github repository being interacted with.
-
-        Returns:
-            Repository.Repository: The Github repository being interacted with.
-        """
-
-        if repo_name not in GithubRepo.__github_repos:
-            GithubRepo.__github_repos[repo_name] = GithubRepo.get_github_object().get_repo(
-                repo_name,
-            )
-        return GithubRepo.__github_repos[repo_name]
 
     @staticmethod
     def get_type() -> RepoType:
@@ -145,7 +91,7 @@ class GithubRepo(GitRepo):
             automation_info = "\n\n" + self.get_automation_info(batch)
 
         assert body is not None, "All pull requests must have a body."
-        pull_request = GithubRepo.get_github_repo(self._params["full_github_name"]).create_pull(
+        pull_request = GithubUtils.get_github_repo(self._params["full_github_name"]).create_pull(
             title=title,
             body=f"{str(body)}{automation_info}",
             base=self._base_branch.name,
@@ -187,9 +133,9 @@ class GithubRepo(GitRepo):
             automation_info_lines.append("<details><summary>Schema JSON</summary>")
             automation_info_lines.append("")
             automation_info_lines.append("```")
-            automation_info_lines.append(GithubRepo.BEGIN_SCHEMA)
+            automation_info_lines.append(GithubUtils.BEGIN_SCHEMA)
             automation_info_lines.append(current_schema.to_json(pretty=True))
-            automation_info_lines.append(GithubRepo.END_SCHEMA)
+            automation_info_lines.append(GithubUtils.END_SCHEMA)
             automation_info_lines.append("```")
             automation_info_lines.append("")
             automation_info_lines.append("</details>")
@@ -204,9 +150,9 @@ class GithubRepo(GitRepo):
         automation_info_lines.append("<details><summary>Batch JSON</summary>")
         automation_info_lines.append("")
         automation_info_lines.append("```")
-        automation_info_lines.append(GithubRepo.BEGIN_BATCH)
+        automation_info_lines.append(GithubUtils.BEGIN_BATCH)
         automation_info_lines.append(json.dumps(encodable_batch, indent=4))
-        automation_info_lines.append(GithubRepo.END_BATCH)
+        automation_info_lines.append(GithubUtils.END_BATCH)
         automation_info_lines.append("```")
         automation_info_lines.append("")
         automation_info_lines.append("</details>")
@@ -220,7 +166,7 @@ class GithubRepo(GitRepo):
             Sequence[GithubChange]: The outstanding Changes against the Repo.
         """
 
-        repo = GithubRepo.get_github_repo(self._params["full_github_name"])
+        repo = GithubUtils.get_github_repo(self._params["full_github_name"])
         pulls = repo.get_pulls(
             "open", sort="created", direction="desc", base=self._params["base_branch_name"]
         )

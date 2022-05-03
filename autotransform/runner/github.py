@@ -22,6 +22,7 @@ from autotransform.repo.github import GithubRepo
 from autotransform.runner.base import Runner
 from autotransform.runner.type import RunnerType
 from autotransform.schema.schema import AutoTransformSchema
+from autotransform.util.github import GithubUtils
 
 
 class GithubRunnerParams(TypedDict):
@@ -69,7 +70,7 @@ class GithubRunner(Runner[GithubRunnerParams]):
 
         # Get the Workflow object
         repo_name = str(repo.get_params().get("full_github_name"))
-        github_repo = GithubRepo.get_github_repo(repo_name)
+        github_repo = GithubUtils.get_github_repo(repo_name)
         workflow = github_repo.get_workflow(self._params["workflow"])
         event_handler.handle(DebugEvent({"message": f"Workflow found: {workflow.name}"}))
 
