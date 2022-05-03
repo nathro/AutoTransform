@@ -21,6 +21,10 @@ Version 0.2.0 represents a production ready beta of AutoTransform. It includes a
  - GithubRunner class added to use Github workflows for remote runs
 
  - Change class added to provide an API for handling submissions to source control/code review
+ - Step class for managing changes
+ - ConditionalStep for condition based actions
+ - Condition class for handling step logic
+ - UpdateAgoCondition, CreatedAgoCondition, ChangeStateCondition, SchemaNameCondition, AggregateCondition for potential conditions of ConditionalStep
 
 #### Scripts
 
