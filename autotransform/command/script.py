@@ -68,6 +68,8 @@ class ScriptCommand(Command[ScriptCommandParams]):
 
         return CommandType.SCRIPT
 
+
+
     def run(self, batch: Batch) -> None:
         """Runs the script command against the Batch, either on each item individually or
         on the entire Batch, based on the per_item flag.
