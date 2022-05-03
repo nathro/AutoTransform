@@ -58,6 +58,4 @@ class ManageActionEvent(Event[ManageActionEventData]):
             str: The message for the event
         """
 
-        return (
-            f"({self.data['action']['type']}) {str(self.data['change'])}: {str(self.data['step'])}"
-        )
+        return f"{str(self.data['change'])}: {self.data['action']['type']}"

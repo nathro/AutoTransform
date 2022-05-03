@@ -172,14 +172,15 @@ class GithubRepo(GitRepo):
         )
         changes: List[GithubChange] = []
         for pull in pulls:
-            changes.append(
-                GithubChange(
-                    {
-                        "full_github_name": self._params["full_github_name"],
-                        "pull_request_number": pull.number,
-                    }
+            if pull.user.login == GithubUtils.get_github_object().get_user().login:
+                changes.append(
+                    GithubChange(
+                        {
+                            "full_github_name": self._params["full_github_name"],
+                            "pull_request_number": pull.number,
+                        }
+                    )
                 )
-            )
 
         return changes
 
