@@ -317,6 +317,16 @@ class AutoTransformSchema:
                 event_handler.handle(DebugEvent({"message": "Rewinding repo"}))
                 repo.rewind(batch)
             else:
+                if change is not None:
+                    event_handler.handle(
+                        DebugEvent(
+                            {
+                                "message": f"Abandoning Change ({str(change)}) "
+                                + "due to no changes in update."
+                            }
+                        )
+                    )
+                    change.abandon()
                 event_handler.handle(DebugEvent({"message": "No changes found"}))
         event_handler.handle(DebugEvent({"message": "Finish batch"}))
         autotransform.schema.current = None

@@ -197,7 +197,7 @@ class GithubChange(Change[GithubChangeParams]):
 
         return merge_status.merged
 
-    def _abandon(self) -> bool:
+    def abandon(self) -> bool:
         """Close the pull request and delete the associated branch.
 
         Returns:
