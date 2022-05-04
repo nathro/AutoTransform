@@ -80,9 +80,6 @@ class Change(Generic[TParams], ABC):
             Batch: The Batch used to produce the Change.
         """
 
-
-
-
     @abstractmethod
     def get_schema(self) -> AutoTransformSchema:
         """Gets the Schema that was used to produce the Change.
@@ -105,9 +102,6 @@ class Change(Generic[TParams], ABC):
         Returns:
             int: The timestamp in seconds when the Change was created.
         """
-
-
-
 
     def get_last_updated_timestamp(self) -> int:
         """Returns the timestamp when the Change was last updated.
@@ -141,9 +135,6 @@ class Change(Generic[TParams], ABC):
 
         # No known way to handle the Action, so treat it as failed
         return False
-
-
-
 
     @abstractmethod
     def _merge(self) -> bool:
