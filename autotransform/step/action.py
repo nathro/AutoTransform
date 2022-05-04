@@ -19,6 +19,7 @@ class ActionType(str, Enum):
     ABANDON = "abandon"
     MERGE = "merge"
     NONE = "none"
+    UPDATE = "update"
 
 
 class Action(TypedDict):

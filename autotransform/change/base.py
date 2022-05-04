@@ -110,7 +110,7 @@ class Change(Generic[TParams], ABC):
             int: The timestamp in seconds when the Change was last updated.
         """
 
-    def take_action(self, action_type: ActionType, _runner: Runner) -> bool:
+    def take_action(self, action_type: ActionType, runner: Runner) -> bool:
         """Tells the Change to take an action based on the results of a Step run.
 
         Args:
@@ -126,6 +126,9 @@ class Change(Generic[TParams], ABC):
 
         if action_type == ActionType.MERGE:
             return self._merge()
+
+        if action_type == ActionType.UPDATE:
+            return self._update(runner)
 
         if action_type == ActionType.ABANDON:
             return self._abandon()
@@ -149,6 +152,19 @@ class Change(Generic[TParams], ABC):
         Returns:
             bool: Whether the abandon was completed successfully.
         """
+
+    def _update(self, runner: Runner) -> bool:
+        """Update an outstanding Change against the latest state of the codebase.
+
+        Args:
+            runner (Runner): The Runner to use to update the Change.
+
+        Returns:
+            bool: Whether the update was completed successfully.
+        """
+
+        runner.update(self)
+        return True
 
     def bundle(self) -> ChangeBundle:
         """Generates a JSON encodable bundle.
