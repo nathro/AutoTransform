@@ -80,6 +80,9 @@ class Change(Generic[TParams], ABC):
             Batch: The Batch used to produce the Change.
         """
 
+
+
+
     @abstractmethod
     def get_schema(self) -> AutoTransformSchema:
         """Gets the Schema that was used to produce the Change.
