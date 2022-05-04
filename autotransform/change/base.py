@@ -136,6 +136,9 @@ class Change(Generic[TParams], ABC):
         # No known way to handle the Action, so treat it as failed
         return False
 
+
+
+
     @abstractmethod
     def _merge(self) -> bool:
         """Merges an approved change in to main.

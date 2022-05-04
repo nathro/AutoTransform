@@ -37,7 +37,7 @@
                     },
                     "type": "change_state"
                 },
-                "action_type": "abandon",
+                "action_type": "update",
                 "continue_if_passed": false
             },
             "type": "conditional"
