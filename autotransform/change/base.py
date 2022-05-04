@@ -106,6 +106,9 @@ class Change(Generic[TParams], ABC):
             int: The timestamp in seconds when the Change was created.
         """
 
+
+
+
     def get_last_updated_timestamp(self) -> int:
         """Returns the timestamp when the Change was last updated.
 
