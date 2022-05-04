@@ -12,13 +12,14 @@
 # pylint: disable=too-many-arguments
 
 import pathlib
-from typing import List, Sequence
+from typing import List, Optional, Sequence
 
 from git import Head
 from mock import patch
 
 from autotransform.batcher.base import Batch
 from autotransform.batcher.single import SingleBatcher
+from autotransform.change.base import Change
 from autotransform.filter.regex import RegexFilter
 from autotransform.input.directory import DirectoryInput
 from autotransform.item.base import Item
@@ -95,7 +96,9 @@ def mock_repo(
 
     mocked_has_changes.return_value = should_have_changes
 
-    def submit(_batch: Batch) -> None:
+    # pylint: disable=unused-argument
+
+    def submit(_batch: Batch, change: Optional[Change] = None) -> None:
         pass
 
     mocked_submit.side_effect = submit
