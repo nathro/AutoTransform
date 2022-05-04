@@ -86,8 +86,8 @@ class GithubRepo(GitRepo):
         if change is not None:
             self._local_repo.git.push(remote.name, "-u", "-f", commit_branch)
             return
-        else:
-            self._local_repo.git.push(remote.name, "-u", commit_branch)
+
+        self._local_repo.git.push(remote.name, "-u", commit_branch)
 
         body = batch["metadata"].get("body", None)
 
