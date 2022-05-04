@@ -12,7 +12,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Generic, List, Mapping, Sequence, TypedDict, TypeVar
+from typing import Any, Generic, List, Mapping, Optional, Sequence, TypedDict, TypeVar
 
 from autotransform.batcher.base import Batch
 from autotransform.change.base import Change
@@ -90,12 +90,13 @@ class Repo(Generic[TParams], ABC):
         return len(self.get_changed_files(batch)) > 0
 
     @abstractmethod
-    def submit(self, batch: Batch) -> None:
+    def submit(self, batch: Batch, change: Optional[Change] = None) -> None:
         """Submit the changes to the Repo (i.e. commit, submit pull request, etc...).
         Only called when changes are present.
 
         Args:
             batch (Batch): The Batch for which the changes were made.
+            change (Optional[Change]): An associated change which should be updated.
         """
 
     @abstractmethod

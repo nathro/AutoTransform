@@ -19,6 +19,7 @@ from typing import Any, Dict, List, Mapping, Optional
 import autotransform.schema
 from autotransform.batcher.base import Batch, Batcher
 from autotransform.batcher.factory import BatcherFactory
+from autotransform.change.base import Change
 from autotransform.command.base import Command
 from autotransform.command.factory import CommandFactory
 from autotransform.event.debug import DebugEvent
@@ -240,13 +241,14 @@ class AutoTransformSchema:
 
         return batches
 
-    def execute_batch(self, batch: Batch) -> None:
+    def execute_batch(self, batch: Batch, change: Optional[Change] = None) -> None:
         """Executes changes for a batch, including setting up the Repo, running the Transformer,
         checking all Validators, running Commands, submitting changes if present, and rewinding
         the Repo if changes are submitted. Note: this function is not thread safe.
 
         Args:
             batch (Batch): The Batch to execute.
+            change (Optional[Change]): An associated Change that is being updated.
 
         Raises:
             ValidationError: If one of the Schema's Validators fails raises an exception.
@@ -311,7 +313,7 @@ class AutoTransformSchema:
             if repo.has_changes(batch):
                 event_handler.handle(DebugEvent({"message": "Changes found"}))
                 event_handler.handle(DebugEvent({"message": "Submitting changes"}))
-                repo.submit(batch)
+                repo.submit(batch, change=change)
                 event_handler.handle(DebugEvent({"message": "Rewinding repo"}))
                 repo.rewind(batch)
             else:

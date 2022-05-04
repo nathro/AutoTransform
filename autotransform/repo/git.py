@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import re
 import subprocess
-from typing import Any, List, Mapping, Sequence, TypedDict
+from typing import Any, List, Mapping, Optional, Sequence, TypedDict
 
 from git import Head
 from git import Repo as GitPython
@@ -132,23 +132,28 @@ class GitRepo(Repo[GitRepoParams]):
             for line in status.strip().split("\n")
         ]
 
-    def submit(self, batch: Batch) -> None:
+    def submit(self, batch: Batch, change: Optional[Change] = None) -> None:
         """Stages all changes and commits them in a new branch.
 
         Args:
             batch (Batch): The Batch for which the changes were made.
+            change (Optional[Change]): An associated change which should be updated.
         """
 
-        self.commit(batch["title"])
+        self.commit(batch["title"], change is not None)
 
-    def commit(self, title: str) -> None:
+    def commit(self, title: str, update: bool) -> None:
         """Creates a new branch for all changes, stages them, and commits them.
 
         Args:
             title (str): The title of the Batch being commited.
+            update(bool): Whether to update an existing change.
         """
 
-        self._local_repo.git.checkout("-b", GitRepo.get_branch_name(title))
+        if update:
+            self._local_repo.git.checkout("-B", GitRepo.get_branch_name(title))
+        else:
+            self._local_repo.git.checkout("-b", GitRepo.get_branch_name(title))
         self._local_repo.git.add(all=True)
         self._local_repo.index.commit(GitRepo.get_commit_message(title))
 

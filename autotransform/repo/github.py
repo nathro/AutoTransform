@@ -12,12 +12,13 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Dict, List, Mapping, Sequence
+from typing import Any, Dict, List, Mapping, Optional, Sequence
 
 from typing_extensions import NotRequired
 
 import autotransform.schema
 from autotransform.batcher.base import Batch
+from autotransform.change.base import Change
 from autotransform.change.github import GithubChange
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
@@ -67,21 +68,25 @@ class GithubRepo(GitRepo):
 
         return RepoType.GITHUB
 
-    def submit(self, batch: Batch) -> None:
+    def submit(self, batch: Batch, change: Optional[Change] = None) -> None:
         """Performs the normal submit for a git repo then submits a pull request
         against the provided Github repo.
 
         Args:
             batch (Batch): The Batch for which the changes were made.
+            change (Optional[Change]): An associated change which should be updated.
         """
 
         title = GitRepo.get_commit_message(batch["title"])
 
-        self.commit(batch["title"])
+        self.commit(batch["title"], change is not None)
 
         commit_branch = GitRepo.get_branch_name(batch["title"])
         remote = self._local_repo.remote()
-        self._local_repo.git.push(remote.name, "-u", commit_branch)
+        if change is not None:
+            self._local_repo.git.push(remote.name, "-u", "-f", commit_branch)
+        else:
+            self._local_repo.git.push(remote.name, "-u", commit_branch)
 
         body = batch["metadata"].get("body", None)
 
