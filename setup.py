@@ -16,7 +16,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="AutoTransform",
-    version="0.1.1",
+    version="0.2.0",
     author="Nathan Rockenbach",
     author_email="nathro.software@gmail.com",
     description="A component based framework for designing automated code modification",
@@ -26,7 +26,6 @@ setuptools.setup(
     project_urls={
         "Source": "https://github.com/nathro/AutoTransform/",
         "Bug Tracker": "https://github.com/nathro/AutoTransform/issues",
-        "Say Thanks!": "https://saythanks.io/to/nathro.software",
     },
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -38,12 +37,12 @@ setuptools.setup(
     keywords="codemod, automation, code change, codeshift, transformation, maintain",
     package_dir={"": "."},
     packages=setuptools.find_packages(),
-    install_requires=["GitPython", "PyGithub", "typing-extensions", "colorama"],
+    install_requires=["GitPython", "PyGithub", "typing-extensions", "colorama", "pytz"],
     python_requires=">=3.10",
     entry_points={
         "console_scripts": [
             "autotransform = autotransform.scripts.main:main",
         ]
     },
-    package_data={"": ["data/sample_config.ini", "data/packages/sample_package.json"]},
+    package_data={"": ["data/sample_config.ini"]},
 )

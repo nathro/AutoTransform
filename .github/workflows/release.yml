@@ -10,7 +10,7 @@ name: Release
 on:
   push:
     branches:
-      - release
+      - 'releases/**'
 
 jobs:
   build:
