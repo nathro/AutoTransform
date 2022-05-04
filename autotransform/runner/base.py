@@ -14,6 +14,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Generic, Mapping, TypedDict, TypeVar
 
+from autotransform.change.base import Change
 from autotransform.runner.type import RunnerType
 from autotransform.schema.schema import AutoTransformSchema
 
@@ -62,6 +63,14 @@ class Runner(Generic[TParams], ABC):
 
         Args:
             schema (AutoTransformSchema): The schema that will be run.
+        """
+
+    @abstractmethod
+    def update(self, change: Change) -> None:
+        """Triggers an update of the Change.
+
+        Args:
+            change (Change): The Change to update.
         """
 
     def bundle(self) -> RunnerBundle:

@@ -18,5 +18,6 @@ class EventType(str, Enum):
     DEBUG = "debug"
     MANAGE_ACTION = "manage_action"
     REMOTE_RUN = "remote_run"
+    REMOTE_UPDATE = "remote_update"
     SCHEDULE_RUN = "schedule_run"
     SCRIPT_RUN = "script_run"

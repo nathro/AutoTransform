@@ -14,6 +14,7 @@ Events
    autotransform.event.remoterun
    autotransform.event.run
    autotransform.event.schedulerun
+   autotransform.event.update
 
 Core
 ----

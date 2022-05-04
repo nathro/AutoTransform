@@ -3,7 +3,8 @@
     "runner": {
         "type": "github",
         "params": {
-            "workflow": "autotransform_runner.yml"
+            "run_workflow": "autotransform_runner.yml",
+            "update_workflow": "autotransform_updater.yml"
         }
     },
     "excluded_days": [

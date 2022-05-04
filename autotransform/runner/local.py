@@ -14,6 +14,7 @@ from __future__ import annotations
 
 from typing import Any, Mapping, TypedDict
 
+from autotransform.change.base import Change
 from autotransform.runner.base import Runner
 from autotransform.runner.type import RunnerType
 from autotransform.schema.schema import AutoTransformSchema
@@ -50,6 +51,17 @@ class LocalRunner(Runner[LocalRunnerParams]):
         """
 
         schema.run()
+
+    def update(self, change: Change) -> None:
+        """Triggers an update of the Change.
+
+        Args:
+            change (Change): The Change to update.
+        """
+
+        schema = change.get_schema()
+        batch = change.get_batch()
+        schema.execute_batch(batch, change)
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> LocalRunner:

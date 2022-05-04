@@ -15,9 +15,11 @@ from __future__ import annotations
 import time
 from typing import Any, Mapping, TypedDict, Union
 
+from autotransform.change.base import Change
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.remoterun import RemoteRunEvent
+from autotransform.event.update import RemoteUpdateEvent
 from autotransform.repo.github import GithubRepo
 from autotransform.runner.base import Runner
 from autotransform.runner.type import RunnerType
@@ -28,7 +30,8 @@ from autotransform.util.github import GithubUtils
 class GithubRunnerParams(TypedDict):
     """The params required for a GithubRunner instance."""
 
-    workflow: Union[str, int]
+    run_workflow: Union[str, int]
+    update_workflow: Union[str, int]
 
 
 class GithubRunner(Runner[GithubRunnerParams]):
@@ -71,7 +74,7 @@ class GithubRunner(Runner[GithubRunnerParams]):
         # Get the Workflow object
         repo_name = str(repo.get_params().get("full_github_name"))
         github_repo = GithubUtils.get_github_repo(repo_name)
-        workflow = github_repo.get_workflow(self._params["workflow"])
+        workflow = github_repo.get_workflow(self._params["run_workflow"])
         event_handler.handle(DebugEvent({"message": f"Workflow found: {workflow.name}"}))
 
         # Dispatch a Workflow run
@@ -101,6 +104,55 @@ class GithubRunner(Runner[GithubRunnerParams]):
             )
         )
 
+    def update(self, change: Change) -> None:
+        """Triggers an update of the Change by submitting a workflow run to the
+        Github repo in the Schema associated with the change.
+
+        Args:
+            change (Change): The Change to update.
+        """
+
+        event_handler = EventHandler.get()
+        schema = change.get_schema()
+        repo = schema.get_repo()
+
+        # May add support for cross-repo usage but enforce that the workflow being invoked exists
+        # in the target repo for now
+        assert isinstance(
+            repo, GithubRepo
+        ), "GithubRunner can only update changes using schemas that have Github repos"
+
+        # Get the Workflow object
+        repo_name = str(repo.get_params().get("full_github_name"))
+        github_repo = GithubUtils.get_github_repo(repo_name)
+        workflow = github_repo.get_workflow(self._params["update_workflow"])
+        event_handler.handle(DebugEvent({"message": f"Workflow found: {workflow.name}"}))
+
+        # Dispatch an Update Workflow
+        dispatch_success = workflow.create_dispatch(
+            repo.get_params()["base_branch_name"],
+            {"schema": schema.to_json()},
+        )
+        assert dispatch_success, "Failed to dispatch workflow request"
+        event_handler.handle(DebugEvent({"message": "Successfully dispatched update workflow"}))
+
+        # We wait a bit to make sure Github's API is updated before printing a best guess of the
+        # Update Workflow's URL
+        time.sleep(5)
+        event_handler.handle(DebugEvent({"message": "Checking for update workflow URL"}))
+        workflow_runs = workflow.get_runs()
+        event_handler.handle(
+            DebugEvent(
+                {
+                    "message": "Because Github REST API does not provide IDs in response, "
+                    + "taking best guess at workflow URL"
+                }
+            )
+        )
+        event_handler.handle(
+            RemoteUpdateEvent({"change": change, "ref": workflow_runs[0].html_url})
+        )
+
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> GithubRunner:
         """Produces an instance of the component from decoded params. Implementations should
@@ -113,6 +165,8 @@ class GithubRunner(Runner[GithubRunnerParams]):
             GithubRunner: An instance of the GithubRunner.
         """
 
-        workflow = data["workflow"]
-        assert isinstance(workflow, (int, str))
-        return GithubRunner({"workflow": workflow})
+        run_workflow = data["run_workflow"]
+        assert isinstance(run_workflow, (int, str))
+        update_workflow = data["update_workflow"]
+        assert isinstance(update_workflow, (int, str))
+        return GithubRunner({"run_workflow": run_workflow, "update_workflow": update_workflow})
