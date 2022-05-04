@@ -12,6 +12,7 @@ runs a schema."""
 
 from __future__ import annotations
 
+import json
 import time
 from typing import Any, Mapping, TypedDict, Union
 
@@ -131,7 +132,7 @@ class GithubRunner(Runner[GithubRunnerParams]):
         # Dispatch an Update Workflow
         dispatch_success = workflow.create_dispatch(
             repo.get_params()["base_branch_name"],
-            {"schema": schema.to_json()},
+            {"change": json.dumps(change.bundle())},
         )
         assert dispatch_success, "Failed to dispatch workflow request"
         event_handler.handle(DebugEvent({"message": "Successfully dispatched update workflow"}))
