@@ -1,0 +1,73 @@
+{
+    "input": {
+        "params": {
+            "pattern": "@black_format"
+        },
+        "type": "git_grep"
+    },
+    "filters": [
+        {
+            "params": {
+                "pattern": ".*\\.py$"
+            },
+            "type": "regex"
+        }
+    ],
+    "batcher": {
+        "params": {
+            "title": "Format all python files",
+            "metadata": {
+                "body": "Apply Black formatting to all python files with @black_format"
+            }
+        },
+        "type": "single"
+    },
+    "transformer": {
+        "params": {
+            "script": "black",
+            "args": [
+                "-l",
+                "100",
+                "<<KEY>>"
+            ],
+            "timeout": 360,
+            "per_item": true
+        },
+        "type": "script"
+    },
+    "validators": [
+        {
+            "params": {
+                "script": "mypy",
+                "args": [
+                    "autotransform",
+                    "tests"
+                ],
+                "failure_level": 2
+            },
+            "type": "script"
+        },
+        {
+            "params": {
+                "script": "pytest",
+                "args": [
+                    "tests/"
+                ],
+                "failure_level": 2
+            },
+            "type": "script"
+        }
+    ],
+    "commands": [],
+    "config": {
+        "name": "Black Format",
+        "allowed_validation_level": 1
+    },
+    "repo": {
+        "params": {
+            "base_branch_name": "master",
+            "full_github_name": "nathro/AutoTransform"
+        },
+        "type": "github"
+    }
+}

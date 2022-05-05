@@ -1,0 +1,60 @@
+{
+    "repo": {
+        "params": {
+            "base_branch_name": "master",
+            "full_github_name": "nathro/AutoTransform"
+        },
+        "type": "github"
+    },
+    "runner": {
+        "type": "github",
+        "params": {
+            "run_workflow": "autotransform_runner.yml",
+            "update_workflow": "autotransform_updater.yml"
+        }
+    },
+    "steps": [
+        {
+            "params": {
+                "condition": {
+                    "params": {
+                        "comparison": "eq",
+                        "state": "approved"
+                    },
+                    "type": "change_state"
+                },
+                "action_type": "merge",
+                "continue_if_passed": false
+            },
+            "type": "conditional"
+        },
+        {
+            "params": {
+                "condition": {
+                    "params": {
+                        "comparison": "eq",
+                        "state": "changes_requested"
+                    },
+                    "type": "change_state"
+                },
+                "action_type": "abandon",
+                "continue_if_passed": false
+            },
+            "type": "conditional"
+        },
+        {
+            "params": {
+                "condition": {
+                    "params": {
+                        "comparison": "gte",
+                        "time": 259200
+                    },
+                    "type": "updated_ago"
+                },
+                "action_type": "update",
+                "continue_if_passed": false
+            },
+            "type": "conditional"
+        }
+    ]
+}

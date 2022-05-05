@@ -1,12 +1,10 @@
-include LICENSE, README.md, pyproject.toml
-include CHANGELOG.md CONTRIBUTING.md CUSTOM_DEPLOYMENT.md
-include requirements.txt
-include autotransform/config/sample_config.ini
-include data/autotransform_schedule.json
-include data/autotransform_manage.json
-include data/schemas/black_format.json
-include data/schemas/sample_schema.json
-include data/workflows/autotransform_runner.yml
-include data/workflows/autotransform_scheduler.yml
-include data/workflows/autotransform_manager.yml
-include data/workflows/autotransform_updater.yml
+include README.md
+include config/sample_config.ini
+include examples/autotransform_schedule.json
+include examples/autotransform_manage.json
+include examples/schemas/black_format.json
+include examples/schemas/sample_schema.json
+include examples/workflows/autotransform_runner.yml
+include examples/workflows/autotransform_scheduler.yml
+include examples/workflows/autotransform_manager.yml
+include examples/workflows/autotransform_updater.yml
