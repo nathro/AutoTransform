@@ -10,6 +10,7 @@
 """The config command is used to update or list existing config values."""
 
 import itertools
+import json
 from argparse import ArgumentParser, Namespace
 from configparser import ConfigParser
 from typing import Any
@@ -81,7 +82,7 @@ def config_command_main(args: Namespace) -> None:
     should_write = False
     if args.update is not None:
         event_args["update"] = args.update
-        updates = args.update.split(",")
+        updates = json.loads(args.update)
 
         # Ensure an update is provided for each setting
         assert len(updates) is len(
