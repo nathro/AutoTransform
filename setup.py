@@ -5,10 +5,6 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-"""Sets up the build for AutoTransform. Check out MAINTAINER_INFO.md on GitHub for
-how this is updated.
-"""
-
 import setuptools
 
 with open("README.md", "r", encoding="utf-8") as fh:
