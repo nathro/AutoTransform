@@ -16,7 +16,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="AutoTransform",
-    version="0.2.0a1",
+    version="0.2.0a2",
     author="Nathan Rockenbach",
     author_email="nathro.software@gmail.com",
     description="A component based framework for designing automated code modification",
@@ -44,5 +44,13 @@ setuptools.setup(
             "autotransform = autotransform.scripts.main:main",
         ]
     },
-    package_data={"": ["data/sample_config.ini"]},
+    package_data={
+        'autotransform_data': [
+            'data/schemas/sample_schema.json',
+            'data/workflows/autotransform_manager.yml',
+            'data/workflows/autotransform_runner.yml',
+            'data/workflows/autotransform_scheduler.yml',
+            'data/workflows/autotransform_updater.yml',
+        ],
+    }
 )

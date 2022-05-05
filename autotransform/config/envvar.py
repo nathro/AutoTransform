@@ -18,7 +18,7 @@ from autotransform.config.fetcher import ConfigFetcher
 class EnvironmentVariableConfigFetcher(ConfigFetcher):
     """A ConfigFetcher that utilizes environment variables as configuration storage.
     Environment variable names are of the form AUTO_TRANSFORM_<SECTION>_<SETTING>, using
-    the sections and settings from data/sample_config.ini"""
+    the sections and settings from autotransform/config/sample_config.ini"""
 
     def get_credentials_github_token(self) -> Optional[str]:
         """Fetch the github token from AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN.

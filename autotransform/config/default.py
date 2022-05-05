@@ -7,7 +7,7 @@
 
 # @black_format
 
-"""A ConfigFetcher that uses the data/config.ini file to supply configuration."""
+"""A ConfigFetcher that uses the autotransform/config/config.ini file to supply configuration."""
 
 import pathlib
 from configparser import ConfigParser
@@ -18,13 +18,13 @@ from autotransform.config.fetcher import ConfigFetcher
 
 class DefaultConfigFetcher(ConfigFetcher):
     """The default configuration fetcher that pulls from the config file.
-    See the sample config in /data/sample_config.ini.
+    See the sample config in /autotransform/config/sample_config.ini.
 
     Attributes:
         config (ConfigParser): The parser created from the config file.
     """
 
-    CONFIG_LOCATION: str = "/data/config.ini"
+    CONFIG_NAME: str = "config.ini"
 
     config: ConfigParser
 
@@ -44,8 +44,8 @@ class DefaultConfigFetcher(ConfigFetcher):
         """
 
         return (
-            str(pathlib.Path(__file__).parent.parent.parent.resolve()).replace("\\", "/")
-            + "/data/config.ini"
+            str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
+            + "/" + DefaultConfigFetcher.CONFIG_NAME
         )
 
     def get_credentials_github_token(self) -> Optional[str]:

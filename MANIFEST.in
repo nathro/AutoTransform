@@ -1,7 +1,7 @@
 include LICENSE, README.md, pyproject.toml
 include CHANGELOG.md CONTRIBUTING.md CUSTOM_DEPLOYMENT.md
 include requirements.txt
-include data/sample_config.ini
+include autotransform/config/sample_config.ini
 include data/autotransform_schedule.json
 include data/autotransform_manage.json
 include data/schemas/black_format.json
