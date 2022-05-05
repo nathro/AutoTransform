@@ -10,7 +10,6 @@ name: Release
 on:
   push:
     branches:
-      - '!releases/**-test'
       - 'releases/**'
 
 jobs:
