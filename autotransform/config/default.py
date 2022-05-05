@@ -45,7 +45,8 @@ class DefaultConfigFetcher(ConfigFetcher):
 
         return (
             str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
-            + "/" + DefaultConfigFetcher.CONFIG_NAME
+            + "/"
+            + DefaultConfigFetcher.CONFIG_NAME
         )
 
     def get_credentials_github_token(self) -> Optional[str]:
