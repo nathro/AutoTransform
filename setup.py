@@ -4,9 +4,9 @@
 # Licensed under the MIT License <http://opensource.org/licenses/MIT>
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
- 
- """Sets up the build for AutoTransform."""
- 
+
+"""Sets up the build for AutoTransform."""
+
 import setuptools
 
 with open("README.md", "r", encoding="utf-8") as fh:
