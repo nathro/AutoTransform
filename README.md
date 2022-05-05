@@ -209,7 +209,7 @@ the same key, separate items of the same type must have unique keys. Subclasses 
 
 # **Upcoming Milestones**
 
-## **Milestone 1 - Beta 0.2.0 - ETA 5/29/2022**
+## **[RELEASED] Milestone 1 - Beta 0.2.0 - 5/4/2022**
 
 An early beta with all core functionality, including scheduling and change management available with an initial set of core components. This represents a mostly locked down version of the code, APIs, etc. Breaking changes may still happen after this release, but they will be weighted heavily against potential existing adoption. Before this release, breaking changes will be far more likely.
 
