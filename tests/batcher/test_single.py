@@ -25,6 +25,16 @@ def test_with_no_items():
     check_batcher(batcher, items, [{"metadata": metadata, "items": items, "title": title}])
 
 
+def test_with_no_items_skip_empty():
+    """Checks that the Batcher works with no Items and skip empty set to True."""
+
+    title = "foo"
+    metadata = {"summary": "bar", "tests": "baz"}
+    items = []
+    batcher = SingleBatcher({"title": title, "metadata": metadata, "skip_empty_batch": True})
+    check_batcher(batcher, items, [])
+
+
 def test_with_one_item():
     """Checks that the Batcher works with one Item."""
 

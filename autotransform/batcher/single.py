@@ -24,6 +24,7 @@ class SingleBatcherParams(TypedDict):
     """The param type for a SingleBatcher."""
 
     metadata: NotRequired[Mapping[str, Any]]
+    skip_empty_batch: NotRequired[bool]
     title: str
 
 
@@ -55,6 +56,8 @@ class SingleBatcher(Batcher[SingleBatcherParams]):
         Returns:
             List[Batch]: A list containing a single Batch for all Items.
         """
+        if self._params.get("skip_empty_batch", False) and len(items) == 0:
+            return []
 
         batch: Batch = {
             "items": items,
@@ -84,5 +87,9 @@ class SingleBatcher(Batcher[SingleBatcherParams]):
         if metadata is not None:
             assert isinstance(metadata, Dict)
             params["metadata"] = metadata
+        skip_empty_batch = data.get("skip_empty_batch", None)
+        if skip_empty_batch is not None:
+            assert isinstance(skip_empty_batch, bool)
+            params["skip_empty_batch"] = skip_empty_batch
 
         return SingleBatcher(params)
