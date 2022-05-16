@@ -11,7 +11,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional
 
 from autotransform.validator.base import ValidationResultLevel
 
@@ -24,15 +24,18 @@ class SchemaConfig:
             validation issues. Any issues raised above this level will trigger
             exceptions.
         _name (str): The unique name of the schema.
+        _owners (List[str]): The owners for the schema.
     """
 
     _allowed_validation_level: ValidationResultLevel
     _name: str
+    _owners: List[str]
 
     def __init__(
         self,
         name: str,
         allowed_validation_level: ValidationResultLevel = ValidationResultLevel.NONE,
+        owners: Optional[List[str]] = None,
     ):
         """A simple constructor.
 
@@ -41,10 +44,13 @@ class SchemaConfig:
             allowed_validation_level (ValidationResultLevel, optional): The allowed level of
                 validation issues. Any issues raised above this level will trigger
                 exceptions. Defaults to ValidationResultLevel.NONE.
+            owners (Optional[List[str]], optional): The owners of the Schema. Usable by
+                components to add context or handle alerting/notification.
         """
 
         self._name = name
         self._allowed_validation_level = allowed_validation_level
+        self._owners = owners or []
 
     def get_name(self) -> str:
         """Gets the name of the Schema.
@@ -64,6 +70,15 @@ class SchemaConfig:
 
         return self._allowed_validation_level
 
+    def get_owners(self) -> List[str]:
+        """Gets the owners for the Schema.
+
+        Returns:
+            List[str]: The owners for the Schema.
+        """
+
+        return self._owners
+
     def bundle(self) -> Dict[str, Any]:
         """Bundles the configuration for JSON encoding.
 
@@ -74,6 +89,7 @@ class SchemaConfig:
         return {
             "name": self._name,
             "allowed_validation_level": self._allowed_validation_level,
+            "owners": self._owners,
         }
 
     @classmethod
@@ -87,15 +103,19 @@ class SchemaConfig:
             Config: The configuration represented by the provided data.
         """
 
-        if "allowed_validation_level" in data:
-            validation_level = data["allowed_validation_level"]
-            if not ValidationResultLevel.has_value(validation_level):
-                validation_level = ValidationResultLevel.from_name(validation_level)
-            else:
-                validation_level = ValidationResultLevel.from_value(validation_level)
-        else:
+        validation_level = data.get("allowed_validation_level", None)
+        if validation_level is None:
             validation_level = ValidationResultLevel.NONE
+        elif not ValidationResultLevel.has_value(validation_level):
+            validation_level = ValidationResultLevel.from_name(validation_level)
+        else:
+            validation_level = ValidationResultLevel.from_value(validation_level)
 
         name = data["name"]
         assert isinstance(name, str)
-        return cls(name, validation_level)
+        owners = data.get("owners")
+        if owners is not None:
+            assert isinstance(owners, List)
+            for owner in owners:
+                assert isinstance(owner, str)
+        return cls(name, validation_level, owners)

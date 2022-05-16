@@ -42,7 +42,7 @@ def get_sample_schema() -> AutoTransformSchema:
         DirectoryInput({"path": repo_root}),
         SingleBatcher({"title": EXPECTED_TITLE, "metadata": EXPECTED_METADATA}),
         RegexTransformer({"pattern": "input", "replacement": "inputsource"}),
-        SchemaConfig("Sample"),
+        SchemaConfig("Sample", owners=["foo", "bar"]),
         filters=[RegexFilter({"pattern": ".*\\.py$"})],
         repo=GithubRepo({"base_branch_name": "master", "full_github_name": "nathro/AutoTransform"}),
     )
@@ -274,6 +274,7 @@ def test_json_encoding(_mocked_checkout):
 
     schema = get_sample_schema()
     schema_json = schema.to_json(pretty=True)
+    print(schema_json)
     parent_dir = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
     with open(parent_dir + "/data/sample_schema.json", "r") as schema_file:
         actual_json = schema_file.read()
@@ -372,3 +373,11 @@ def test_json_decoding(_mocked_checkout):
         actual_config.get_allowed_validation_level()
         == expected_config.get_allowed_validation_level()
     ), "Allowed validation level does not match"
+    missing_owners = [
+        owner for owner in expected_config.get_owners() if owner not in actual_config.get_owners()
+    ]
+    assert len(missing_owners) == 0, f"Missing owners: {missing_owners}"
+    extra_owners = [
+        owner for owner in actual_config.get_owners() if owner not in expected_config.get_owners()
+    ]
+    assert len(extra_owners) == 0, f"Extra owners: {extra_owners}"
