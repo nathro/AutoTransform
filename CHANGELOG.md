@@ -1,5 +1,11 @@
 # Change Log
 
+## Upcomming Release
+
+#### Misc
+ - Added an optional owners list to Schemas
+ - Added a skip_empty_batch option for SingleBatcher
+
 ## Release 0.2.0 - Production Beta
 
 Version 0.2.0 represents a production ready beta of AutoTransform. It includes all initial functionality for production environments and represents the desired API for AutoTransform. This API will not be final until 1.0.0 is released, at which point breaking changes will generally only occur with major version updates.
