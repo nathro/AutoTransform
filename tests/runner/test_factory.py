@@ -16,9 +16,10 @@ from autotransform.runner.type import RunnerType
 def test_all_enum_values_present():
     """Ensures that all values from the enum are present in the factory map."""
 
-    missing_values = []
-    for runner_type in RunnerType:
+    missing_values = [
+        runner_type
+        for runner_type in RunnerType
         # pylint: disable=protected-access
-        if runner_type not in RunnerFactory._map:
-            missing_values.append(runner_type)
+        if runner_type not in RunnerFactory._map
+    ]
     assert not missing_values, "Types missing from factory: " + ", ".join(missing_values)

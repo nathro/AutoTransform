@@ -24,18 +24,13 @@ def assert_directory_content(directory: str, expected_files: List[str]):
 
     inp: DirectoryInput = DirectoryInput({"path": directory})
     files = [item.get_path() for item in inp.get_items()]
-    missing_files = []
-    for file in expected_files:
-        if file not in files:
-            missing_files.append(file)
+
+    missing_files = [file for file in expected_files if file not in files]
     assert not missing_files, "The following files were expected but not found: " + ", ".join(
         missing_files
     )
 
-    extra_files = []
-    for file in files:
-        if file not in expected_files:
-            extra_files.append(file)
+    extra_files = [file for file in files if file not in expected_files]
     assert not extra_files, "The following files were found but not expected: " + ", ".join(
         extra_files
     )

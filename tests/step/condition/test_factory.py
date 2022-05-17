@@ -16,9 +16,10 @@ from autotransform.step.condition.type import ConditionType
 def test_all_enum_values_present():
     """Ensures that all values from the enum are present in the factory map."""
 
-    missing_values = []
-    for change_type in ConditionType:
+    missing_values = [
+        change_type
+        for change_type in ConditionType
         # pylint: disable=protected-access
-        if change_type not in ConditionFactory._map:
-            missing_values.append(change_type)
+        if change_type not in ConditionFactory._map
+    ]
     assert not missing_values, "Types missing from factory: " + ", ".join(missing_values)

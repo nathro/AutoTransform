@@ -276,7 +276,7 @@ def test_json_encoding(_mocked_checkout):
     schema_json = schema.to_json(pretty=True)
     print(schema_json)
     parent_dir = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
-    with open(parent_dir + "/data/sample_schema.json", "r") as schema_file:
+    with open(f"{parent_dir}/data/sample_schema.json", "r") as schema_file:
         actual_json = schema_file.read()
     repo_root = str(pathlib.Path(__file__).parent.parent.parent.resolve()).replace("\\", "/")
     actual_json = actual_json.replace("<<REPO ROOT>>", repo_root)
@@ -291,7 +291,7 @@ def test_json_decoding(_mocked_checkout):
 
     expected_schema = get_sample_schema()
     parent_dir = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
-    with open(parent_dir + "/data/sample_schema.json", "r") as schema_file:
+    with open(f"{parent_dir}/data/sample_schema.json", "r") as schema_file:
         actual_json = schema_file.read()
     repo_root = str(pathlib.Path(__file__).parent.parent.parent.resolve()).replace("\\", "/")
     actual_json = actual_json.replace("<<REPO ROOT>>", repo_root)

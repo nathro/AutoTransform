@@ -16,9 +16,10 @@ from autotransform.repo.type import RepoType
 def test_all_enum_values_present():
     """Ensures that all values from the enum are present in the factory map."""
 
-    missing_values = []
-    for repo_type in RepoType:
+    missing_values = [
+        repo_type
+        for repo_type in RepoType
         # pylint: disable=protected-access
-        if repo_type not in RepoFactory._map:
-            missing_values.append(repo_type)
+        if repo_type not in RepoFactory._map
+    ]
     assert not missing_values, "Types missing from factory: " + ", ".join(missing_values)

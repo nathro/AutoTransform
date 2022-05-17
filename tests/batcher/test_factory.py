@@ -16,9 +16,10 @@ from autotransform.batcher.type import BatcherType
 def test_all_enum_values_present():
     """Ensures that all values from the enum are present in the factory map."""
 
-    missing_values = []
-    for batcher_type in BatcherType:
+    missing_values = [
+        batcher_type
+        for batcher_type in BatcherType
         # pylint: disable=protected-access
-        if batcher_type not in BatcherFactory._map:
-            missing_values.append(batcher_type)
+        if batcher_type not in BatcherFactory._map
+    ]
     assert not missing_values, "Types missing from factory: " + ", ".join(missing_values)

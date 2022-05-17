@@ -35,7 +35,7 @@ def test_with_one_item():
     check_batcher(
         batcher,
         items,
-        [{"metadata": metadata, "items": items, "title": prefix + ": foo"}],
+        [{"metadata": metadata, "items": items, "title": f"{prefix}: foo"}],
     )
 
 
@@ -45,7 +45,7 @@ def test_with_one_item_no_metadata():
     prefix = "test"
     items = [FileItem("foo/bar.py")]
     batcher = DirectoryBatcher({"prefix": prefix})
-    check_batcher(batcher, items, [{"items": items, "title": prefix + ": foo"}])
+    check_batcher(batcher, items, [{"items": items, "title": f"{prefix}: foo"}])
 
 
 def test_with_multiple_items_single_directory():
@@ -58,7 +58,7 @@ def test_with_multiple_items_single_directory():
     check_batcher(
         batcher,
         items,
-        [{"metadata": metadata, "items": items, "title": prefix + ": foo"}],
+        [{"metadata": metadata, "items": items, "title": f"{prefix}: foo"}],
     )
 
 
@@ -73,8 +73,8 @@ def test_with_multiple_items_multiple_directories():
         batcher,
         items,
         [
-            {"metadata": metadata, "items": items[0:1], "title": prefix + ": foo"},
-            {"metadata": metadata, "items": items[1:], "title": prefix + ": fizz"},
+            {"metadata": metadata, "items": items[:1], "title": f"{prefix}: foo"},
+            {"metadata": metadata, "items": items[1:], "title": f"{prefix}: fizz"},
         ],
     )
 
@@ -90,8 +90,8 @@ def test_with_multiple_items_nested_directories():
         batcher,
         items,
         [
-            {"metadata": metadata, "items": items[0:1], "title": prefix + ": test/foo"},
-            {"metadata": metadata, "items": items[1:2], "title": prefix + ": test/fizz"},
-            {"metadata": metadata, "items": items[2:], "title": prefix + ": test"},
+            {"metadata": metadata, "items": items[:1], "title": f"{prefix}: test/foo"},
+            {"metadata": metadata, "items": items[1:2], "title": f"{prefix}: test/fizz"},
+            {"metadata": metadata, "items": items[2:], "title": f"{prefix}: test"},
         ],
     )

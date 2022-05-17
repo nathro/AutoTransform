@@ -16,9 +16,10 @@ from autotransform.schema.type import SchemaBuilderType
 def test_all_enum_values_present():
     """Ensures that all values from the enum are present in the factory map."""
 
-    missing_values = []
-    for schema_type in SchemaBuilderType:
+    missing_values = [
+        schema_type
+        for schema_type in SchemaBuilderType
         # pylint: disable=protected-access
-        if schema_type not in SchemaBuilderFactory._map:
-            missing_values.append(schema_type)
+        if schema_type not in SchemaBuilderFactory._map
+    ]
     assert not missing_values, "Types missing from factory: " + ", ".join(missing_values)

@@ -16,9 +16,10 @@ from autotransform.validator.type import ValidatorType
 def test_all_enum_values_present():
     """Ensures that all values from the enum are present in the factory map."""
 
-    missing_values = []
-    for validator_type in ValidatorType:
+    missing_values = [
+        validator_type
+        for validator_type in ValidatorType
         # pylint: disable=protected-access
-        if validator_type not in ValidatorFactory._map:
-            missing_values.append(validator_type)
+        if validator_type not in ValidatorFactory._map
+    ]
     assert not missing_values, "Types missing from factory: " + ", ".join(missing_values)

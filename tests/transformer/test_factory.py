@@ -16,9 +16,10 @@ from autotransform.transformer.type import TransformerType
 def test_all_enum_values_present():
     """Ensures that all values from the enum are present in the factory map."""
 
-    missing_values = []
-    for transformer_type in TransformerType:
+    missing_values = [
+        transformer_type
+        for transformer_type in TransformerType
         # pylint: disable=protected-access
-        if transformer_type not in TransformerFactory._map:
-            missing_values.append(transformer_type)
+        if transformer_type not in TransformerFactory._map
+    ]
     assert not missing_values, "Types missing from factory: " + ", ".join(missing_values)

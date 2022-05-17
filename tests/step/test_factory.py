@@ -16,9 +16,10 @@ from autotransform.step.type import StepType
 def test_all_enum_values_present():
     """Ensures that all values from the enum are present in the factory map."""
 
-    missing_values = []
-    for change_type in StepType:
+    missing_values = [
+        change_type
+        for change_type in StepType
         # pylint: disable=protected-access
-        if change_type not in StepFactory._map:
-            missing_values.append(change_type)
+        if change_type not in StepFactory._map
+    ]
     assert not missing_values, "Types missing from factory: " + ", ".join(missing_values)

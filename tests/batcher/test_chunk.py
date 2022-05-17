@@ -70,7 +70,7 @@ def test_with_multiple_files_and_multiple_batches():
         batcher,
         items,
         [
-            {"metadata": metadata, "items": items[0:2], "title": expected_title_1},
+            {"metadata": metadata, "items": items[:2], "title": expected_title_1},
             {"metadata": metadata, "items": items[2:], "title": expected_title_2},
         ],
     )
@@ -91,7 +91,7 @@ def test_with_multiple_files_and_max_batches():
         batcher,
         items,
         [
-            {"metadata": metadata, "items": items[0:2], "title": expected_title_1},
+            {"metadata": metadata, "items": items[:2], "title": expected_title_1},
             {"metadata": metadata, "items": items[2:], "title": expected_title_2},
         ],
     )

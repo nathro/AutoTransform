@@ -31,7 +31,7 @@ class TransformerTester:
 
     def __init__(self, path: str, transformer: Transformer):
         parent_dir = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
-        self.path = parent_dir + "/data/" + path
+        self.path = f"{parent_dir}/data/{path}"
         self.transformer = transformer
 
     def check(self):
@@ -40,9 +40,9 @@ class TransformerTester:
 
         # pylint: disable="unspecified-encoding"
 
-        with open(self.path + ".input", "r") as input_file:
+        with open(f"{self.path}.input", "r") as input_file:
             input_content = input_file.read()
-        with open(self.path + ".output", "r") as output_file:
+        with open(f"{self.path}.output", "r") as output_file:
             output_content = output_file.read()
 
         mock_file = mock.create_autospec(FileItem)
@@ -58,7 +58,7 @@ class TransformerTester:
 
         # pylint: disable="unspecified-encoding"
 
-        with open(self.path + ".input", "r") as input_file:
+        with open(f"{self.path}.input", "r") as input_file:
             input_content = input_file.read()
 
         mock_file = mock.create_autospec(FileItem)
@@ -69,5 +69,5 @@ class TransformerTester:
         output_content = [
             args[0] for name, args, _ in mock_file.mock_calls if name == "write_content"
         ][0]
-        with open(self.path + ".output", "w") as output_file:
+        with open(f"{self.path}.output", "w") as output_file:
             output_file.write(output_content)
