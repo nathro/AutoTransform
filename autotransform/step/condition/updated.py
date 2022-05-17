@@ -76,10 +76,11 @@ class UpdatedAgoCondition(Condition[UpdatedAgoConditionParams]):
         """
 
         comparison = data["comparison"]
-        if not ComparisonType.has_value(comparison):
-            comparison = ComparisonType.from_name(comparison)
-        else:
-            comparison = ComparisonType.from_value(comparison)
+        comparison = (
+            ComparisonType.from_value(comparison)
+            if ComparisonType.has_value(comparison)
+            else ComparisonType.from_name(comparison)
+        )
 
         time_param = data["time"]
         assert isinstance(time_param, int)

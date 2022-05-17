@@ -83,10 +83,11 @@ class SchemaNameCondition(Condition[SchemaNameConditionParams]):
         """
 
         comparison = data["comparison"]
-        if not ComparisonType.has_value(comparison):
-            comparison = ComparisonType.from_name(comparison)
-        else:
-            comparison = ComparisonType.from_value(comparison)
+        comparison = (
+            ComparisonType.from_value(comparison)
+            if ComparisonType.has_value(comparison)
+            else ComparisonType.from_name(comparison)
+        )
 
         name = data["name"]
         assert isinstance(name, str)

@@ -67,7 +67,6 @@ def config_command_main(args: Namespace) -> None:
 
     # pylint: disable=unspecified-encoding
 
-    event_args = {}
     event_handler = EventHandler.get()
 
     # Get the existing config
@@ -77,7 +76,7 @@ def config_command_main(args: Namespace) -> None:
 
     # Get settings and new values
     settings = args.settings
-    event_args["settings"] = args.settings
+    event_args = {"settings": args.settings}
     updates = []
     should_write = False
     if args.update is not None:
@@ -115,11 +114,10 @@ def config_command_main(args: Namespace) -> None:
                 print(f"{setting} = {sub_config[sections[-1]]}")
             else:
                 print(f"No value found for {setting}")
+        elif sections[-1] in sub_config and args.append:
+            sub_config[sections[-1]] = f"{sub_config[sections[-1]]},{update_value}"
         else:
-            if sections[-1] in sub_config and args.append:
-                sub_config[sections[-1]] = sub_config[sections[-1]] + "," + update_value
-            else:
-                sub_config[sections[-1]] = update_value
+            sub_config[sections[-1]] = update_value
 
     # Update the config file
     if should_write:

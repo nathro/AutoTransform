@@ -67,18 +67,14 @@ def schedule_command_main(args: Namespace) -> None:
 
     # pylint: disable=unspecified-encoding
 
-    if args.time is not None:
-        start_time = int(args.time)
-    else:
-        start_time = int(time.time())
-    event_args = {}
+    start_time = int(args.time) if args.time is not None else int(time.time())
     event_handler = EventHandler.get()
     if args.verbose:
         event_handler.set_logging_level(LoggingLevel.DEBUG)
 
     # Get Schedule Data
     schedule_file = args.schedule
-    event_args["schedule_file"] = schedule_file
+    event_args = {"schedule_file": schedule_file}
     with open(schedule_file, "r") as file:
         schedule_json = file.read()
     event_args["schedule"] = schedule_json
@@ -93,12 +89,8 @@ def schedule_command_main(args: Namespace) -> None:
     elapsed_time = start_time - int(schedule_data["base_time"])
 
     elapsed_hours = int(elapsed_time / 60 / 60)
-    hour_of_day = elapsed_hours % 24
-
-    elapsed_days = int(elapsed_hours / 24)
-    day_of_week = elapsed_days % 7
-
-    elapsed_weeks = int(elapsed_days / 7)
+    elapsed_days, hour_of_day = divmod(elapsed_hours, 24)
+    elapsed_weeks, day_of_week = divmod(elapsed_days, 7)
 
     event_handler.handle(
         DebugEvent({"message": f"Running for hour {hour_of_day}, day {day_of_week}"})

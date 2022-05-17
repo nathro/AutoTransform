@@ -29,17 +29,17 @@ class EventHandler:
     to AutoTransform Events should be added here.
 
     Attributes:
-        logging_level (LoggingLevel): The level for which logs will be output to CLI. All other
+        _logging_level (LoggingLevel): The level for which logs will be output to CLI. All other
             events will be dropped.
-        callbacks (List[Callable[[Event], None]]): Custom imported callback functions for handling
+        _callbacks (List[Callable[[Event], None]]): Custom imported callback functions for handling
             events for custom deployments
         __instance (Optional[EventHandler]): The singleton instance of the EventHandler
         __color_map (Dict[LoggingLevel, str]): A mapping from log level to ANSI color for CLI
             output
     """
 
-    logging_level: LoggingLevel
-    callbacks: List[Callable[[Event], None]]
+    _logging_level: LoggingLevel
+    _callbacks: List[Callable[[Event], None]]
     __instance: Optional[EventHandler] = None
     __color_map: Dict[LoggingLevel, str] = {
         LoggingLevel.ERROR: Fore.RED,
@@ -51,14 +51,13 @@ class EventHandler:
     def __init__(self):
         if EventHandler.__instance is not None:
             raise Exception("Trying to instantiate new EventHandler when one already present")
-        self.logging_level = LoggingLevel.INFO
-        self.callbacks = []
+        self._logging_level = LoggingLevel.INFO
+        self._callbacks = []
         custom_component_modules = Config.get_imports_components()
         for module_string in custom_component_modules:
             module = importlib.import_module(module_string)
             if hasattr(module, "EVENT_CALLBACKS"):
-                for callback in module.EVENT_CALLBACKS:
-                    self.callbacks.append(callback)
+                self._callbacks.extend(module.EVENT_CALLBACKS)
 
     @staticmethod
     def get() -> EventHandler:
@@ -77,7 +76,7 @@ class EventHandler:
         Args:
             logging_level (LoggingLevel): The logging level to output
         """
-        self.logging_level = logging_level
+        self._logging_level = logging_level
 
     def handle(self, event: Event) -> None:
         """Handles the given Event, logging and executing any hooks needed.
@@ -85,9 +84,9 @@ class EventHandler:
         Args:
             event (Event): The Event that was dispatched
         """
-        if self.logging_level >= event.get_logging_level():
+        if self._logging_level >= event.get_logging_level():
             self.output_to_cli(event)
-        for callback in self.callbacks:
+        for callback in self._callbacks:
             callback(event)
 
     @staticmethod
@@ -101,4 +100,4 @@ class EventHandler:
         if color is None:
             color = EventHandler.__color_map[event.get_logging_level()]
         creation_string = datetime.fromtimestamp(event.create_time).strftime("%Y-%m-%d %H:%M:%S")
-        print(f"{color}[{creation_string}]" + event.get_message() + Fore.RESET)
+        print(f"{color}[{creation_string}]{event.get_message()}{Fore.RESET}")

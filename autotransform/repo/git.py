@@ -80,7 +80,7 @@ class GitRepo(Repo[GitRepoParams]):
 
         # Add a blank space before prefixes
         if not title.startswith("["):
-            title = " " + title
+            title = f" {title}"
         if autotransform.schema.current is not None:
             schema_name = f"[{autotransform.schema.current.get_config().get_name()}]"
         else:

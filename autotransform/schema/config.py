@@ -103,13 +103,12 @@ class SchemaConfig:
             Config: The configuration represented by the provided data.
         """
 
-        validation_level = data.get("allowed_validation_level", None)
-        if validation_level is None:
-            validation_level = ValidationResultLevel.NONE
-        elif not ValidationResultLevel.has_value(validation_level):
-            validation_level = ValidationResultLevel.from_name(validation_level)
-        else:
-            validation_level = ValidationResultLevel.from_value(validation_level)
+        validation_level = data.get("allowed_validation_level", ValidationResultLevel.NONE)
+        validation_level = (
+            ValidationResultLevel.from_value(validation_level)
+            if ValidationResultLevel.has_value(validation_level)
+            else ValidationResultLevel.from_name(validation_level)
+        )
 
         name = data["name"]
         assert isinstance(name, str)

@@ -111,16 +111,10 @@ class AggregateCondition(Condition[AggregateConditionParams]):
         """
 
         if self._params["aggregator"] == AggregatorType.ALL:
-            for condition in self._params["conditions"]:
-                if not condition.check(change):
-                    return False
-            return True
+            return all(condition.check(change) for condition in self._params["conditions"])
 
         if self._params["aggregator"] == AggregatorType.ANY:
-            for condition in self._params["conditions"]:
-                if condition.check(change):
-                    return True
-            return False
+            return any(condition.check(change) for condition in self._params["conditions"])
 
         raise ValueError(f"Unknown aggregator type {self._params['aggregator']}")
 
@@ -159,10 +153,11 @@ class AggregateCondition(Condition[AggregateConditionParams]):
         """
 
         aggregator = data["aggregator"]
-        if not AggregatorType.has_value(aggregator):
-            aggregator = AggregatorType.from_name(aggregator)
-        else:
-            aggregator = AggregatorType.from_value(aggregator)
+        aggregator = (
+            AggregatorType.from_value(aggregator)
+            if AggregatorType.has_value(aggregator)
+            else AggregatorType.from_name(aggregator)
+        )
 
         conditions = [factory.ConditionFactory.get(condition) for condition in data["conditions"]]
 

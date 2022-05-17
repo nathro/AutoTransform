@@ -145,7 +145,7 @@ class ScriptCommand(Command[ScriptCommandParams]):
                     cmd.append(arg)
 
             # Run script
-            event_handler.handle(DebugEvent({"message": f"Running command: {str(cmd)}"}))
+            event_handler.handle(DebugEvent({"message": f"Running command: {cmd}"}))
             proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", check=False)
         if proc.stdout.strip() != "":
             event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
@@ -221,7 +221,7 @@ class ScriptCommand(Command[ScriptCommandParams]):
                     cmd.append(arg)
 
             # Run script
-            event_handler.handle(DebugEvent({"message": f"Running command: {str(cmd)}"}))
+            event_handler.handle(DebugEvent({"message": f"Running command: {cmd}"}))
             proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", check=False)
         if proc.stdout.strip() != "":
             event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))

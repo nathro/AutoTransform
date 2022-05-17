@@ -120,14 +120,12 @@ def run_command_main(args: Namespace) -> None:
 
     # pylint: disable=unspecified-encoding
 
-    event_args = {}
     event_handler = EventHandler.get()
     if args.verbose:
         event_handler.set_logging_level(LoggingLevel.DEBUG)
     schema = args.schema
     event_handler.handle(DebugEvent({"message": f"Schema: ({args.schema_type}) {args.schema}"}))
-    event_args["schema"] = args.schema
-    event_args["schema_type"] = args.schema_type
+    event_args = {"schema": args.schema, "schema_type": args.schema_type}
     if args.schema_type == "builder":
         schema = SchemaBuilderFactory.get(schema).build()
     elif args.schema_type == "file":

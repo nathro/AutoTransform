@@ -57,14 +57,13 @@ def manage_command_main(args: Namespace) -> None:
 
     # pylint: disable=unspecified-encoding
 
-    event_args = {}
     event_handler = EventHandler.get()
     if args.verbose:
         event_handler.set_logging_level(LoggingLevel.DEBUG)
 
     # Get Schedule Data
     manager_file = args.manager
-    event_args["manager_file"] = manager_file
+    event_args = {"manager_file": manager_file}
     with open(manager_file, "r") as file:
         manager_json = file.read()
     event_args["manager"] = manager_json

@@ -136,34 +136,43 @@ class GithubRepo(GitRepo):
         # Add schema JSON
         current_schema = autotransform.schema.current
         if current_schema is not None:
-            automation_info_lines.append("<details><summary>Schema JSON</summary>")
-            automation_info_lines.append("")
-            automation_info_lines.append("```")
-            automation_info_lines.append(GithubUtils.BEGIN_SCHEMA)
-            automation_info_lines.append(current_schema.to_json(pretty=True))
-            automation_info_lines.append(GithubUtils.END_SCHEMA)
-            automation_info_lines.append("```")
-            automation_info_lines.append("")
-            automation_info_lines.append("</details>")
+            automation_info_lines.extend(
+                GithubRepo._get_encoded_json_lines("Schema", current_schema.bundle())
+            )
 
-            # Add batch JSON
+        # Add batch JSON
         encodable_batch: Dict[str, Any] = {
             "title": batch["title"],
             "items": [item.bundle() for item in batch["items"]],
         }
         if "metadata" in batch:
             encodable_batch["metadata"] = batch["metadata"]
-        automation_info_lines.append("<details><summary>Batch JSON</summary>")
-        automation_info_lines.append("")
-        automation_info_lines.append("```")
-        automation_info_lines.append(GithubUtils.BEGIN_BATCH)
-        automation_info_lines.append(json.dumps(encodable_batch, indent=4))
-        automation_info_lines.append(GithubUtils.END_BATCH)
-        automation_info_lines.append("```")
-        automation_info_lines.append("")
-        automation_info_lines.append("</details>")
+        automation_info_lines.extend(GithubRepo._get_encoded_json_lines("batch", encodable_batch))
 
         return "\n".join(automation_info_lines)
+
+    @staticmethod
+    def _get_encoded_json_lines(title: str, encodable_object: Any) -> List[str]:
+        """Gets the details section for an encoded json object as a list of lines.
+
+        Args:
+            title (str): The title of the section.
+            encodable_object (Any): The object to json encode.
+
+        Returns:
+            List[str]: _description_
+        """
+        return [
+            f"<details><summary>{title} JSON</summary>",
+            "",
+            "```",
+            GithubUtils.BEGIN_BATCH,
+            json.dumps(encodable_object, indent=4),
+            GithubUtils.END_BATCH,
+            "```",
+            "",
+            "</details>",
+        ]
 
     def get_outstanding_changes(self) -> Sequence[GithubChange]:
         """Gets all outstanding pull requests for the Repo.
@@ -176,19 +185,16 @@ class GithubRepo(GitRepo):
         pulls = repo.get_pulls(
             "open", sort="created", direction="desc", base=self._params["base_branch_name"]
         )
-        changes: List[GithubChange] = []
-        for pull in pulls:
-            if pull.user.login == GithubUtils.get_github_object().get_user().login:
-                changes.append(
-                    GithubChange(
-                        {
-                            "full_github_name": self._params["full_github_name"],
-                            "pull_request_number": pull.number,
-                        }
-                    )
-                )
-
-        return changes
+        return [
+            GithubChange(
+                {
+                    "full_github_name": self._params["full_github_name"],
+                    "pull_request_number": pull.number,
+                }
+            )
+            for pull in pulls
+            if pull.user.login == GithubUtils.get_github_object().get_user().login
+        ]
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> GithubRepo:

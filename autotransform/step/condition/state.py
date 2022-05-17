@@ -80,15 +80,17 @@ class ChangeStateCondition(Condition[ChangeStateConditionParams]):
         """
 
         comparison = data["comparison"]
-        if not ComparisonType.has_value(comparison):
-            comparison = ComparisonType.from_name(comparison)
-        else:
-            comparison = ComparisonType.from_value(comparison)
+        comparison = (
+            ComparisonType.from_value(comparison)
+            if ComparisonType.has_value(comparison)
+            else ComparisonType.from_name(comparison)
+        )
 
         state = data["state"]
-        if not ChangeState.has_value(state):
-            state = ChangeState.from_name(state)
-        else:
-            state = ChangeState.from_value(state)
+        state = (
+            ChangeState.from_value(state)
+            if ChangeState.has_value(state)
+            else ChangeState.from_name(state)
+        )
 
         return ChangeStateCondition({"comparison": comparison, "state": state})

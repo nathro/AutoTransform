@@ -82,27 +82,26 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
             ValidationResult: The result of the validation check indicating the severity of any
                 validation failures as well as an associated message
         """
+        if not self._params.get("per_item", False):
+            return self._validate_batch(batch)
+        if self._params.get("run_on_changes", False):
+            current_schema = autotransform.schema.current
+            assert current_schema is not None
+            repo = current_schema.get_repo()
+            assert repo is not None
+            items: Sequence[Item] = [FileItem(file) for file in repo.get_changed_files(batch)]
+        else:
+            items = batch["items"]
 
-        if self._params.get("per_item", False):
-            if self._params.get("run_on_changes", False):
-                current_schema = autotransform.schema.current
-                assert current_schema is not None
-                repo = current_schema.get_repo()
-                assert repo is not None
-                items: Sequence[Item] = [FileItem(file) for file in repo.get_changed_files(batch)]
-            else:
-                items = batch["items"]
-
-            for item in items:
-                result = self._validate_single(item, batch.get("metadata", None))
-                if result["level"] != ValidationResultLevel.NONE:
-                    return result
-            return {
-                "level": ValidationResultLevel.NONE,
-                "message": "",
-                "validator": self.get_type(),
-            }
-        return self._validate_batch(batch)
+        for item in items:
+            result = self._validate_single(item, batch.get("metadata", None))
+            if result["level"] != ValidationResultLevel.NONE:
+                return result
+        return {
+            "level": ValidationResultLevel.NONE,
+            "message": "",
+            "validator": self.get_type(),
+        }
 
     def _validate_single(
         self, item: Item, batch_metadata: Optional[Mapping[str, Any]]
@@ -161,7 +160,7 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
                     cmd.append(arg)
 
             # Run script
-            event_handler.handle(DebugEvent({"message": f"Running command: {str(cmd)}"}))
+            event_handler.handle(DebugEvent({"message": f"Running command: {cmd}"}))
             proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", check=False)
         level = (
             self._params["failure_level"] if proc.returncode != 0 else ValidationResultLevel.NONE
@@ -176,8 +175,7 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
             event_handler.handle(DebugEvent({"message": "No STDERR"}))
         return {
             "level": level,
-            "message": f"[{str(cmd)}]\n"
-            + f"STDOUT:\n{proc.stdout.strip()}\nSTDERR:\n{proc.stderr.strip()}",
+            "message": (f"[{cmd}]\nSTDOUT:\n{proc.stdout.strip()}\nSTDERR:\n{proc.stderr.strip()}"),
             "validator": self.get_type(),
         }
 
@@ -245,7 +243,7 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
                     cmd.append(arg)
 
             # Run script
-            event_handler.handle(DebugEvent({"message": f"Running command: {str(cmd)}"}))
+            event_handler.handle(DebugEvent({"message": f"Running command: {cmd}"}))
             proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", check=False)
         level = (
             self._params["failure_level"] if proc.returncode != 0 else ValidationResultLevel.NONE
@@ -260,8 +258,7 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
             event_handler.handle(DebugEvent({"message": "No STDERR"}))
         return {
             "level": level,
-            "message": f"[{str(cmd)}]\n"
-            + f"STDOUT:\n{proc.stdout.strip()}\nSTDERR:\n{proc.stderr.strip()}",
+            "message": f"[{cmd}]\nSTDOUT:\n{proc.stdout.strip()}\nSTDERR:\n{proc.stderr.strip()}",
             "validator": self.get_type(),
         }
 
@@ -284,10 +281,11 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
         for arg in args:
             assert isinstance(arg, str)
         failure_level = data["failure_level"]
-        if not ValidationResultLevel.has_value(failure_level):
-            failure_level = ValidationResultLevel.from_name(failure_level)
-        else:
-            failure_level = ValidationResultLevel.from_value(failure_level)
+        failure_level = (
+            ValidationResultLevel.from_value(failure_level)
+            if ValidationResultLevel.has_value(failure_level)
+            else ValidationResultLevel.from_name(failure_level)
+        )
         params: ScriptValidatorParams = {
             "script": script,
             "args": args,

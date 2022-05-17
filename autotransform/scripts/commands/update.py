@@ -109,14 +109,12 @@ def run_command_main(args: Namespace) -> None:
 
     # pylint: disable=unspecified-encoding
 
-    event_args = {}
     event_handler = EventHandler.get()
     if args.verbose:
         event_handler.set_logging_level(LoggingLevel.DEBUG)
     change = args.change
     event_handler.handle(DebugEvent({"message": f"Change: ({args.change_type}) {args.change}"}))
-    event_args["change"] = args.change
-    event_args["change_type"] = args.change_type
+    event_args = {"change": args.change, "change_type": args.change_type}
     if args.change_type == "file":
         with open(change, "r") as change_file:
             change = ChangeFactory.get(json.loads(change_file.read()))

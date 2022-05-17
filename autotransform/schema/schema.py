@@ -410,10 +410,7 @@ class AutoTransformSchema:
         validators = [ValidatorFactory.get(validator) for validator in bundle["validators"]]
         commands = [CommandFactory.get(command) for command in bundle["commands"]]
 
-        if "repo" in bundle:
-            repo = RepoFactory.get(bundle["repo"])
-        else:
-            repo = None
+        repo = RepoFactory.get(bundle["repo"]) if "repo" in bundle else None
 
         return AutoTransformSchema(
             inp,
