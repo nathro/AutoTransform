@@ -1,28 +1,28 @@
 # Requirements for core AutoTransform
-GitPython
-PyGithub
-typing-extensions
-colorama
-pytz
+GitPython >= 3.1.27
+PyGithub >= 1.55
+typing-extensions >= 4.2.0
+colorama >= 0.4.4
+pytz >= 2022.1
 
 # Requirements for Schemas
 
 # Formatting
-black
+black >= 22.3.0
 
 # Type Checking
-mypy
-types-colorama
-types-mock
-types-pytz
+mypy >= 0.950
+types-colorama >= 0.4.13
+types-mock >= 4.0.13
+types-pytz >= 2021.3.7
 
 # Linting
-pylint
+pylint >= 2.13.8
 
 # Unit Tests
-pytest
-mock
+pytest >= 7.1.2
+mock >= 4.0.3
 
 # Build Requirements
-build
-twine
+build >= 0.7.0
+twine >= 4.0.0

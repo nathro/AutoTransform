@@ -35,7 +35,13 @@ setuptools.setup(
     keywords="codemod, automation, code change, codeshift, transformation, maintain",
     package_dir={"": "."},
     packages=setuptools.find_packages(),
-    install_requires=["GitPython", "PyGithub", "typing-extensions", "colorama", "pytz"],
+    install_requires=[
+        "GitPython>=3.1.27",
+        "PyGithub>=1.55",
+        "typing-extensions>=4.2.0",
+        "colorama>=0.4.4",
+        "pytz>=2022.1",
+    ],
     python_requires=">=3.10",
     entry_points={
         "console_scripts": [
