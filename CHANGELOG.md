@@ -5,6 +5,8 @@
 #### Misc
  - Added an optional owners list to Schemas
  - Added a skip_empty_batch option for SingleBatcher
+ - Set minimum versions for requirements in package
+ - Replaced PyGithub with ghapi
 
 ## Release 0.2.0 - Production Beta
 
