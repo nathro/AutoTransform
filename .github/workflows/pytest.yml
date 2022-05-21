@@ -22,7 +22,7 @@ jobs:
     - name: Install Dependencies
       run: pip install -r requirements.txt
     - name: Check pytest
-      run: pytest tests/
+      run: pytest -W ignore::DeprecationWarning tests/
       env:
         PYTHONPATH: /home/runner/work/AutoTransform/AutoTransform/
         AUTO_TRANSFORM_CONFIG: environment

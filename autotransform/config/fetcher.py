@@ -26,22 +26,6 @@ class ConfigFetcher(ABC):
         """
 
     @abstractmethod
-    def get_credentials_github_username(self) -> Optional[str]:
-        """Fetch the github username from configuration.
-
-        Returns:
-            Optional[str]: The github username.
-        """
-
-    @abstractmethod
-    def get_credentials_github_password(self) -> Optional[str]:
-        """Fetch the github password from configuration.
-
-        Returns:
-            Optional[str]: The github password.
-        """
-
-    @abstractmethod
     def get_credentials_github_base_url(self) -> Optional[str]:
         """Fetch the github base URL from configuration.
 

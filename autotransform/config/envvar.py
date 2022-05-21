@@ -29,24 +29,6 @@ class EnvironmentVariableConfigFetcher(ConfigFetcher):
 
         return os.getenv("AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN")
 
-    def get_credentials_github_username(self) -> Optional[str]:
-        """Fetch the github username from AUTO_TRANSFORM_CREDENTIALS_GITHUB_USERNAME.
-
-        Returns:
-            Optional[str]: The github username.
-        """
-
-        return os.getenv("AUTO_TRANSFORM_CREDENTIALS_GITHUB_USERNAME")
-
-    def get_credentials_github_password(self) -> Optional[str]:
-        """Fetch the github password from AUTO_TRANSFORM_CREDENTIALS_GITHUB_PASSWORD.
-
-        Returns:
-            Optional[str]: The github password.
-        """
-
-        return os.getenv("AUTO_TRANSFORM_CREDENTIALS_GITHUB_PASSWORD")
-
     def get_credentials_github_base_url(self) -> Optional[str]:
         """Fetch the github base URL from AUTO_TRANSFORM_CREDENTIALS_GITHUB_BASE_URL.
 

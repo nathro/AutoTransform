@@ -51,6 +51,8 @@
             "params": {
                 "script": "pytest",
                 "args": [
+                    "-W",
+                    "ignore::DeprecationWarning",
                     "tests/"
                 ],
                 "failure_level": 2

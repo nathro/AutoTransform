@@ -97,11 +97,11 @@ class GithubRepo(GitRepo):
             automation_info = "\n\n" + self.get_automation_info(batch)
 
         assert body is not None, "All pull requests must have a body."
-        pull_request = GithubUtils.get_github_repo(self._params["full_github_name"]).create_pull(
-            title=title,
-            body=f"{str(body)}{automation_info}",
-            base=self._base_branch.name,
-            head=commit_branch,
+        pull_request = GithubUtils.get(self._params["full_github_name"]).create_pull_request(
+            title,
+            f"{str(body)}{automation_info}",
+            self._base_branch.name,
+            commit_branch,
         )
 
         EventHandler.get().handle(
@@ -111,9 +111,9 @@ class GithubRepo(GitRepo):
         # Add labels
         labels = batch["metadata"].get("labels", [])
         assert isinstance(labels, List)
-        labels = labels + self._params.get("required_labels", [])
+        labels.extend(self._params.get("required_labels", []))
         if len(labels) > 0:
-            pull_request.add_to_labels(*labels)
+            pull_request.add_labels(labels)
 
     def get_automation_info(self, batch: Batch) -> str:
         """Gets information on automating with AutoTransform.
@@ -181,19 +181,19 @@ class GithubRepo(GitRepo):
             Sequence[GithubChange]: The outstanding Changes against the Repo.
         """
 
-        repo = GithubUtils.get_github_repo(self._params["full_github_name"])
-        pulls = repo.get_pulls(
-            "open", sort="created", direction="desc", base=self._params["base_branch_name"]
+        pulls = GithubUtils.get(self._params["full_github_name"]).get_open_pull_requests(
+            self._params["base_branch_name"]
         )
+        authenticated_user_id = GithubUtils.get(self._params["full_github_name"]).get_user_id()
         return [
             GithubChange(
                 {
                     "full_github_name": self._params["full_github_name"],
-                    "pull_request_number": pull.number,
+                    "pull_number": pull.number,
                 }
             )
             for pull in pulls
-            if pull.user.login == GithubUtils.get_github_object().get_user().login
+            if pull.owner_id == authenticated_user_id
         ]
 
     @staticmethod

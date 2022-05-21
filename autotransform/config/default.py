@@ -61,30 +61,6 @@ class DefaultConfigFetcher(ConfigFetcher):
         credentials = self.config["CREDENTIALS"]
         return credentials.get("github_token", None)
 
-    def get_credentials_github_username(self) -> Optional[str]:
-        """Pulls the github username from the config file.
-
-        Returns:
-            Optional[str]: The github username if present.
-        """
-
-        if "CREDENTIALS" not in self.config:
-            return None
-        credentials = self.config["CREDENTIALS"]
-        return credentials.get("github_username", None)
-
-    def get_credentials_github_password(self) -> Optional[str]:
-        """Pulls the github password from the config file.
-
-        Returns:
-            Optional[str]: The github password if present.
-        """
-
-        if "CREDENTIALS" not in self.config:
-            return None
-        credentials = self.config["CREDENTIALS"]
-        return credentials.get("github_password", None)
-
     def get_credentials_github_base_url(self) -> Optional[str]:
         """Pulls the github base URL from the config file.
 

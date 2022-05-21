@@ -14,15 +14,12 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING, Any, Dict, List, Mapping, TypedDict
 
-import pytz
-from github.PullRequest import PullRequest
-
 from autotransform.batcher.base import Batch
 from autotransform.change.base import Change
 from autotransform.change.state import ChangeState
 from autotransform.change.type import ChangeType
 from autotransform.item.factory import ItemFactory
-from autotransform.util.github import GithubUtils
+from autotransform.util.github import GithubUtils, PullRequest
 
 if TYPE_CHECKING:
     from autotransform.schema.schema import AutoTransformSchema
@@ -32,7 +29,7 @@ class GithubChangeParams(TypedDict):
     """The param type for a GithubChange."""
 
     full_github_name: str
-    pull_request_number: int
+    pull_number: int
 
 
 class GithubChange(Change[GithubChangeParams]):
@@ -60,8 +57,8 @@ class GithubChange(Change[GithubChangeParams]):
         """
 
         Change.__init__(self, params)
-        self._pull_request = GithubUtils.get_github_repo(params["full_github_name"]).get_pull(
-            params["pull_request_number"]
+        self._pull_request = GithubUtils.get(self._params["full_github_name"]).get_pull_request(
+            params["pull_number"]
         )
 
     def get_params(self) -> GithubChangeParams:
@@ -143,19 +140,16 @@ class GithubChange(Change[GithubChangeParams]):
             ChangeState: The current state of the Change.
         """
         if not hasattr(self, "_state"):
-            if self._pull_request.is_merged():
+            if self._pull_request.merged:
                 self._state = ChangeState.MERGED
-            elif self._pull_request.state == "closed":
+            elif self._pull_request.is_closed():
                 self._state = ChangeState.CLOSED
             else:
-                for review in self._pull_request.get_reviews().reversed:
-                    if review.state == "APPROVED":
-                        self._state = ChangeState.APPROVED
-                        break
-
-                    if review.state == "CHANGES_REQUESTED":
-                        self._state = ChangeState.CHANGES_REQUESTED
-                        break
+                review_state = self._pull_request.get_review_state()
+                if review_state == "APPROVED":
+                    self._state = ChangeState.APPROVED
+                elif review_state == "CHANGES_REQUESTED":
+                    self._state = ChangeState.CHANGES_REQUESTED
         if not hasattr(self, "_state"):
             self._state = ChangeState.OPEN
         return self._state
@@ -167,8 +161,7 @@ class GithubChange(Change[GithubChangeParams]):
             int: The timestamp in seconds when the pull request was created.
         """
 
-        utc_datetime = pytz.utc.localize(self._pull_request.created_at)
-        return int(utc_datetime.timestamp())
+        return self._pull_request.get_created_at()
 
     def get_last_updated_timestamp(self) -> int:
         """Returns the timestamp when the pull request was last updated.
@@ -177,8 +170,7 @@ class GithubChange(Change[GithubChangeParams]):
             int: The timestamp in seconds when the pull request was last updated.
         """
 
-        utc_datetime = pytz.utc.localize(self._pull_request.updated_at)
-        return int(utc_datetime.timestamp())
+        return self._pull_request.get_updated_at()
 
     def _merge(self) -> bool:
         """Merges the pull request and deletes the branch.
@@ -187,15 +179,10 @@ class GithubChange(Change[GithubChangeParams]):
             bool: Whether the merge was completed successfully.
         """
 
-        merge_status = self._pull_request.merge()
-        if merge_status.merged:
-            branch_name = self._pull_request.head.ref
-            ref = GithubUtils.get_github_repo(self._params["full_github_name"]).get_git_ref(
-                f"heads/{branch_name}"
-            )
-            ref.delete()
-
-        return merge_status.merged
+        merged = self._pull_request.merge()
+        if not merged:
+            return False
+        return self._pull_request.delete_branch()
 
     def abandon(self) -> bool:
         """Close the pull request and delete the associated branch.
@@ -204,17 +191,13 @@ class GithubChange(Change[GithubChangeParams]):
             bool: Whether the abandon was completed successfully.
         """
 
-        self._pull_request.edit(state="closed")
-        branch_name = self._pull_request.head.ref
-        ref = GithubUtils.get_github_repo(self._params["full_github_name"]).get_git_ref(
-            f"heads/{branch_name}"
-        )
-        ref.delete()
-
-        return True
+        closed = self._pull_request.close()
+        if not closed:
+            return False
+        return self._pull_request.delete_branch()
 
     def __str__(self) -> str:
-        return f"Pull Request #{self._params['pull_request_number']}"
+        return f"Pull Request #{self._params['pull_number']}"
 
     @staticmethod
     def from_data(data: Mapping[str, Any]) -> GithubChange:
@@ -230,9 +213,7 @@ class GithubChange(Change[GithubChangeParams]):
 
         full_github_name = data["full_github_name"]
         assert isinstance(full_github_name, str)
-        pull_request_number = data["pull_request_number"]
-        assert isinstance(pull_request_number, int)
+        pull_number = data["pull_number"]
+        assert isinstance(pull_number, int)
 
-        return GithubChange(
-            {"full_github_name": full_github_name, "pull_request_number": pull_request_number}
-        )
+        return GithubChange({"full_github_name": full_github_name, "pull_number": pull_number})

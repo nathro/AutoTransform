@@ -37,7 +37,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         "GitPython>=3.1.27",
-        "PyGithub>=1.55",
+        "ghapi>=0.1.20",
         "typing-extensions>=4.2.0",
         "colorama>=0.4.4",
         "pytz>=2022.1",
