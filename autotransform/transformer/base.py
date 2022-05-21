@@ -12,12 +12,13 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Generic, Mapping, TypedDict, TypeVar
+from typing import Any, Generic, Mapping, Optional, TypedDict, TypeVar
 
 from autotransform.batcher.base import Batch
 from autotransform.transformer.type import TransformerType
 
 TParams = TypeVar("TParams", bound=Mapping[str, Any])
+TResult = TypeVar("TResult", bound=Optional[Mapping[str, Any]])
 
 
 class TransformerBundle(TypedDict):
@@ -27,7 +28,7 @@ class TransformerBundle(TypedDict):
     type: TransformerType
 
 
-class Transformer(Generic[TParams], ABC):
+class Transformer(Generic[TParams, TResult], ABC):
     """The base for Transformer components. Transformers are used to execute changes to a codebase.
     A Transformer takes in a Batch and then executes all changes associated with the Batch.
 
@@ -66,7 +67,7 @@ class Transformer(Generic[TParams], ABC):
         """
 
     @abstractmethod
-    def transform(self, batch: Batch) -> None:
+    def transform(self, batch: Batch) -> TResult:
         """Execute a transformation against the provided Batch. All writing should be done via
         CachedFile's write_content method or FileItem's write_content method to ensure operations
         are easily accessible to testing and file content cache's are kept accurate.

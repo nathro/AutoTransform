@@ -2,6 +2,9 @@
 
 ## Upcomming Release
 
+#### API Change
+ - Made it so Transformer objects could return a result that would be used by the Repo/Validator/Commands
+
 #### Misc
  - Added an optional owners list to Schemas
  - Added a skip_empty_batch option for SingleBatcher

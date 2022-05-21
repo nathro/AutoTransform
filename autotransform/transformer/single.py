@@ -20,7 +20,7 @@ from autotransform.transformer.base import Transformer
 TParams = TypeVar("TParams", bound=Mapping[str, Any])
 
 
-class SingleTransformer(Generic[TParams], Transformer[TParams]):
+class SingleTransformer(Generic[TParams], Transformer[TParams, None]):
     """A simple interface for writing a Transformer that operates on an individual Item level."""
 
     @abstractmethod

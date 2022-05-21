@@ -35,7 +35,7 @@ class ScriptTransformerParams(TypedDict):
     per_item: NotRequired[bool]
 
 
-class ScriptTransformer(Transformer[ScriptTransformerParams]):
+class ScriptTransformer(Transformer[ScriptTransformerParams, None]):
     """A Transformer that makes changes using an invoked script. Sentinel values can be used in the
     args to supply information from the Batch.
     The available sentinel values for args are:

@@ -271,7 +271,7 @@ class AutoTransformSchema:
             repo.clean(batch)
 
         # Execute transformation
-        self._transformer.transform(batch)
+        result = self._transformer.transform(batch)
 
         # Run pre-validation commands
         pre_validation_commands = [
@@ -279,11 +279,11 @@ class AutoTransformSchema:
         ]
         for command in pre_validation_commands:
             event_handler.handle(DebugEvent({"message": f"Running command {command.get_type()}"}))
-            command.run(batch)
+            command.run(batch, result)
 
         # Validate the changes
         for validator in self._validators:
-            validation_result = validator.validate(batch)
+            validation_result = validator.validate(batch, result)
             event_handler.handle(
                 DebugEvent(
                     {
@@ -305,7 +305,7 @@ class AutoTransformSchema:
         ]
         for command in post_validation_commands:
             event_handler.handle(DebugEvent({"message": f"Running command {command.get_type()}"}))
-            command.run(batch)
+            command.run(batch, result)
 
         # Handle repo state, submitting changes if present and reseting the repo
         if repo is not None:
@@ -313,7 +313,7 @@ class AutoTransformSchema:
             if repo.has_changes(batch):
                 event_handler.handle(DebugEvent({"message": "Changes found"}))
                 event_handler.handle(DebugEvent({"message": "Submitting changes"}))
-                repo.submit(batch, change=change)
+                repo.submit(batch, result, change=change)
                 event_handler.handle(DebugEvent({"message": "Rewinding repo"}))
                 repo.rewind(batch)
             else:

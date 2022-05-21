@@ -68,13 +68,20 @@ class GithubRepo(GitRepo):
 
         return RepoType.GITHUB
 
-    def submit(self, batch: Batch, change: Optional[Change] = None) -> None:
+    def submit(
+        self,
+        batch: Batch,
+        _transform_data: Optional[Mapping[str, Any]],
+        change: Optional[Change] = None,
+    ) -> None:
         """Performs the normal submit for a git repo then submits a pull request
         against the provided Github repo.
 
         Args:
             batch (Batch): The Batch for which the changes were made.
+            _transform_data (Optional[Mapping[str, Any]]): Data from the transformation. Unused.
             change (Optional[Change]): An associated change which should be updated.
+                Defaults to None.
         """
 
         title = GitRepo.get_commit_message(batch["title"])

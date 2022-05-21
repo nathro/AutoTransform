@@ -90,13 +90,20 @@ class Repo(Generic[TParams], ABC):
         return len(self.get_changed_files(batch)) > 0
 
     @abstractmethod
-    def submit(self, batch: Batch, change: Optional[Change] = None) -> None:
+    def submit(
+        self,
+        batch: Batch,
+        transform_data: Optional[Mapping[str, Any]],
+        change: Optional[Change] = None,
+    ) -> None:
         """Submit the changes to the Repo (i.e. commit, submit pull request, etc...).
         Only called when changes are present.
 
         Args:
             batch (Batch): The Batch for which the changes were made.
+            transform_data (Optional[Mapping[str, Any]]): Data from the transformation.
             change (Optional[Change]): An associated change which should be updated.
+                Defaults to None.
         """
 
     @abstractmethod

@@ -132,12 +132,19 @@ class GitRepo(Repo[GitRepoParams]):
             for line in status.strip().split("\n")
         ]
 
-    def submit(self, batch: Batch, change: Optional[Change] = None) -> None:
+    def submit(
+        self,
+        batch: Batch,
+        _transform_data: Optional[Mapping[str, Any]],
+        change: Optional[Change] = None,
+    ) -> None:
         """Stages all changes and commits them in a new branch.
 
         Args:
             batch (Batch): The Batch for which the changes were made.
+            _transform_data (Optional[Mapping[str, Any]]): Data from the transformation. Unused.
             change (Optional[Change]): An associated change which should be updated.
+                Defaults to None.
         """
 
         self.commit(batch["title"], change is not None)

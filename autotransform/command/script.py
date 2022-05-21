@@ -68,12 +68,13 @@ class ScriptCommand(Command[ScriptCommandParams]):
 
         return CommandType.SCRIPT
 
-    def run(self, batch: Batch) -> None:
+    def run(self, batch: Batch, _transform_data: Optional[Mapping[str, Any]]) -> None:
         """Runs the script command against the Batch, either on each item individually or
         on the entire Batch, based on the per_item flag.
 
         Args:
             batch (Batch): The transformed Batch to run against.
+            _transform_data (Optional[Mapping[str, Any]]): Data from the transformation. Unused.
         """
 
         if self._params.get("per_item", False):

@@ -12,7 +12,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Generic, Mapping, TypedDict, TypeVar
+from typing import Any, Generic, Mapping, Optional, TypedDict, TypeVar
 
 from typing_extensions import NotRequired
 
@@ -89,11 +89,12 @@ class Command(Generic[TParams], ABC):
         """
 
     @abstractmethod
-    def run(self, batch: Batch) -> None:
+    def run(self, batch: Batch, transform_data: Optional[Mapping[str, Any]]) -> None:
         """Performs the post-processing steps represented by the Command.
 
         Args:
             batch (Batch): The Batch for which this Command is run.
+            transform_data (Optional[Mapping[str, Any]]): Data from the transformation.
         """
 
     def bundle(self) -> CommandBundle:

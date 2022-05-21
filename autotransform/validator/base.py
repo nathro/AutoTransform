@@ -163,12 +163,15 @@ class Validator(Generic[TParams], ABC):
         """
 
     @abstractmethod
-    def validate(self, batch: Batch) -> ValidationResult:
+    def validate(
+        self, batch: Batch, transform_data: Optional[Mapping[str, Any]]
+    ) -> ValidationResult:
         """Validate that a Batch that has undergone transformation does not produce any issues
         such as test failures or type errors.
 
         Args:
             batch (Batch): The transformed Batch to validate.
+            transform_data (Optional[Mapping[str, Any]]): Data from the transformation.
 
         Returns:
             ValidationResult: The result of the validation check indicating the severity of any

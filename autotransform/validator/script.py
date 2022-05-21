@@ -70,13 +70,16 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
 
         return ValidatorType.SCRIPT
 
-    def validate(self, batch: Batch) -> ValidationResult:
+    def validate(
+        self, batch: Batch, _transform_data: Optional[Mapping[str, Any]]
+    ) -> ValidationResult:
         """Runs the script validation against the Batch, either on each item individually or
         on the entire Batch, based on the per_item flag. If the script returns a non-zero exit
         code, the failure_level in params will be in the result.
 
         Args:
             batch (Batch): The transformed Batch to validate.
+            _transform_data (Optional[Mapping[str, Any]]): Data from the transformation. Unused.
 
         Returns:
             ValidationResult: The result of the validation check indicating the severity of any
