@@ -12,7 +12,7 @@
 # pylint: disable=too-many-arguments
 
 import pathlib
-from typing import List, Optional, Sequence
+from typing import Any, List, Mapping, Optional, Sequence
 
 from git import Head
 from mock import patch
@@ -98,7 +98,9 @@ def mock_repo(
 
     # pylint: disable=unused-argument
 
-    def submit(_batch: Batch, change: Optional[Change] = None) -> None:
+    def submit(
+        _batch: Batch, _transform_data: Optional[Mapping[str, Any]], change: Optional[Change] = None
+    ) -> None:
         pass
 
     mocked_submit.side_effect = submit
