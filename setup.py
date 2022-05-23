@@ -14,7 +14,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="AutoTransform",
-    version="0.2.0",
+    version="0.2.1",
     author="Nathan Rockenbach",
     author_email="nathro.software@gmail.com",
     description="A component based framework for designing automated code modification",
@@ -41,6 +41,7 @@ setuptools.setup(
         "typing-extensions>=4.2.0",
         "colorama>=0.4.4",
         "pytz>=2022.1",
+        "configparser>=5.2.0",
     ],
     python_requires=">=3.10",
     entry_points={
