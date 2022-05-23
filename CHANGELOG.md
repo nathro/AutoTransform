@@ -1,6 +1,6 @@
 # Change Log
 
-## Upcomming Release
+## Release 0.2.1 - Production Beta
 
 #### API Change
  - Made it so Transformer objects could return a result that would be used by the Repo/Validator/Commands
@@ -10,6 +10,7 @@
  - Added a skip_empty_batch option for SingleBatcher
  - Set minimum versions for requirements in package
  - Replaced PyGithub with ghapi
+ - Added configparser requirement
 
 ## Release 0.2.0 - Production Beta
 
