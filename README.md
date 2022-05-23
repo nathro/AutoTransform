@@ -201,19 +201,15 @@ The core of AutoTransform is the [schema](https://github.com/nathro/AutoTransfor
 ## **Other Components**
 
 * **[Config Fetcher](https://github.com/nathro/AutoTransform/blob/master/autotransform/config/fetcher.py)** - The ConfigFetcher allows for configuration of AutoTransform as a whole. This includes things like specifying custom component imports as well as providing credentials, such as a github token. There are three config fetchers provided as part of AutoTransform that can be selected based on the AUTO_TRANSFORM_CONFIG environment variable:
-    * **[Default](https://github.com/nathro/AutoTransform/blob/master/autotransform/config/default.py)** - Pulls configuration from autotransform/config/config.ini, a [sample_config.ini](https://github.com/nathro/AutoTransform/blob/master/autotransform/config/sample_config.ini) file provides an example. This is the easiest choice for local use cases on a developers machine.
-    * **[Environment Variable](https://github.com/nathro/AutoTransform/blob/master/autotransform/config/envvar.py)** - Pulls configuration from environment variables, using names that match the pattern: AUTO_TRANSFORM_&lt;SECTION>_&lt;SETTING> where section and setting represent the section and setting that would be used in a config.ini file, such as AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN. This is the preferred option for production use cases.
+    * **[Default](https://github.com/nathro/AutoTransform/blob/master/autotransform/config/default.py)** - Pulls configuration from config.ini files, a [sample_config.ini](https://github.com/nathro/AutoTransform/blob/master/autotransform/config/sample_config.ini) file provides an example. This is the easiest choice for local use cases on a developers machine. The files used will be a config.ini file in the `autotransform/config` package itself, a config relative to the root of a git repo if inside one `{repo}/autotransform/config.ini`, and a config relative to the current working directory `{cwd}/autotransform/config.ini`. The relative path of the repo and cwd configs can be specified by environment variables `AUTO_TRANSFORM_(REPO/CWD)_CONFIG_PATH`. Settings duplicated across files will prefer cwd configs to repo configs to package configs.
+    * **[Environment Variable](https://github.com/nathro/AutoTransform/blob/master/autotransform/config/envvar.py)** - Pulls configuration from environment variables, using names that match the pattern: `AUTO_TRANSFORM_<SECTION>_<SETTING>` where section and setting represent the section and setting that would be used in a config.ini file, such as `AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN`. This is the preferred option for production use cases.
 * **[Item](https://github.com/nathro/AutoTransform/blob/master/autotransform/item/base.py)** - An item represents a potential input to a transformation. It can represent a file or any other logical object. All Items must have keys that uniquely identify them within their type. While items of different types can have
 the same key, separate items of the same type must have unique keys. Subclasses of Item can provide utility functionality, or support strongly typed extra data.
 * **[Runner](https://github.com/nathro/AutoTransform/blob/master/autotransform/runner/base.py)** - Runner components are used to trigger a run of AutoTransform either locally or on an organization's remote infrastructure or job queue system. This allows organizations to set up integrations with their infrastructure to speed up developers by offloading the runs of AutoTransform. Additionally, remote infrastructure is used by scheduling logic when setting up scheduled runs of AutoTransform.
 
-# **Upcoming Milestones**
+# **Upcoming Releases**
 
-## **[RELEASED] Milestone 1 - Beta 0.2.0 - 5/4/2022**
-
-An early beta with all core functionality, including scheduling and change management available with an initial set of core components. This represents a mostly locked down version of the code, APIs, etc. Breaking changes may still happen after this release, but they will be weighted heavily against potential existing adoption. Before this release, breaking changes will be far more likely.
-
-## **Milestone 2 - Release 1.0.0 - ETA 7/29/2022**
+### **Release 1.0.0 - ETA 7/29/2022**
 
 This will include changes made as part of easing initial deployments. At this point AutoTransform will have been deployed to a production environment and the components will be considered production ready. Breaking changes after this release will be very unlikely and will coincide with new major versions of AutoTransform.
 

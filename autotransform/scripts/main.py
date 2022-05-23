@@ -14,7 +14,7 @@ Different CLI commands are handled as subparsers. Includes the following command
 
 from argparse import ArgumentParser
 
-from autotransform.scripts.commands import config, manage, run, schedule, update
+from autotransform.scripts.commands import manage, run, schedule, update
 
 
 def get_arg_parser() -> ArgumentParser:
@@ -61,14 +61,6 @@ def get_arg_parser() -> ArgumentParser:
         aliases=["u"],
     )
     update.add_args(update_parser)
-
-    # Add config command
-    config_parser = subparsers.add_parser(
-        "config",
-        help="Updates/lists values in the config",
-        aliases=["c"],
-    )
-    config.add_args(config_parser)
 
     return parser
 

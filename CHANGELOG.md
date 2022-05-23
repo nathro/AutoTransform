@@ -1,5 +1,11 @@
 # Change Log
 
+## Release 0.2.2 - Production Beta
+
+#### Misc
+ - Updated default config fetcher to pull repo and cwd relative configs
+ - Deleted config script command in preparation for a better version
+
 ## Release 0.2.1 - Production Beta
 
 #### API Change
