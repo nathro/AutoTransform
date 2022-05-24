@@ -24,10 +24,10 @@ from autotransform.step.factory import StepFactory
 
 
 def add_args(parser: ArgumentParser) -> None:
-    """Adds the args to a subparser that are required to run a schema.
+    """Adds the args to a subparser that are required to manage outstanding changes.
 
     Args:
-        parser (ArgumentParser): The parser for the schema run.
+        parser (ArgumentParser): The parser for the managing outstanding changes.
     """
 
     parser.add_argument(
@@ -49,10 +49,10 @@ def add_args(parser: ArgumentParser) -> None:
 
 
 def manage_command_main(args: Namespace) -> None:
-    """The main method for the schedule command, handles the actual execution of scheduling runs.
+    """The main method for the manage command, handles the actual management of changes.
 
     Args:
-        args (Namespace): The arguments supplied to the schedule command, such as the JSON file.
+        args (Namespace): The arguments supplied to the manage command, such as the JSON file.
     """
 
     # pylint: disable=unspecified-encoding

@@ -26,10 +26,10 @@ from autotransform.schema.schema import AutoTransformSchema
 
 
 def add_args(parser: ArgumentParser) -> None:
-    """Adds the args to a subparser that are required to run a schema.
+    """Adds the args to a subparser that are required to schedule runs.
 
     Args:
-        parser (ArgumentParser): The parser for the schema run.
+        parser (ArgumentParser): The parser for the schedule command.
     """
 
     parser.add_argument(

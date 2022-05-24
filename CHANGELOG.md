@@ -4,7 +4,7 @@
 
 #### Misc
  - Updated default config fetcher to pull repo and cwd relative configs
- - Deleted config script command in preparation for a better version
+ - Replaced config command with one that allows the user to navigate through prompts
 
 ## Release 0.2.1 - Production Beta
 
