@@ -12,13 +12,28 @@
 import os
 from typing import List, Optional
 
+from autotransform.config.default import DefaultConfigFetcher
 from autotransform.config.fetcher import ConfigFetcher
 
 
 class EnvironmentVariableConfigFetcher(ConfigFetcher):
     """A ConfigFetcher that utilizes environment variables as configuration storage.
     Environment variable names are of the form AUTO_TRANSFORM_<SECTION>_<SETTING>, using
-    the sections and settings from autotransform/config/sample_config.ini"""
+    the sections and settings from autotransform/config/sample_config.ini. The
+    DefaultConfigFetcher will be used for fallbacks where environment variables are not
+    present. Set AUTO_TRANSFORM_CONFIG_USE_FALLBACK to "False" if you do not want to use
+    a fallback.
+
+    Attributes:
+        _default_config (Optional[DefaultConfigFetcher]): A fallback config fetcher when
+            values are not present as environment variables.
+    """
+
+    _default_config: Optional[DefaultConfigFetcher]
+
+    def __init__(self):
+        use_fallback = bool(os.getenv("AUTO_TRANSFORM_CONFIG_USE_FALLBACK", "True"))
+        self._default_config = DefaultConfigFetcher() if use_fallback else None
 
     def get_credentials_github_token(self) -> Optional[str]:
         """Fetch the github token from AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN.
@@ -27,7 +42,10 @@ class EnvironmentVariableConfigFetcher(ConfigFetcher):
             Optional[str]: The github token,
         """
 
-        return os.getenv("AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN")
+        github_token = os.getenv("AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN")
+        if github_token is None and self._default_config is not None:
+            github_token = self._default_config.get_credentials_github_token()
+        return github_token
 
     def get_credentials_github_base_url(self) -> Optional[str]:
         """Fetch the github base URL from AUTO_TRANSFORM_CREDENTIALS_GITHUB_BASE_URL.
@@ -36,7 +54,10 @@ class EnvironmentVariableConfigFetcher(ConfigFetcher):
             Optional[str]: The github base URL.
         """
 
-        return os.getenv("AUTO_TRANSFORM_CREDENTIALS_GITHUB_BASE_URL")
+        github_base_url = os.getenv("AUTO_TRANSFORM_CREDENTIALS_GITHUB_BASE_URL")
+        if github_base_url is None and self._default_config is not None:
+            return self._default_config.get_credentials_github_base_url()
+        return github_base_url
 
     def get_imports_components(self) -> List[str]:
         """The modules containing the custom components to use: see
@@ -48,6 +69,8 @@ class EnvironmentVariableConfigFetcher(ConfigFetcher):
         """
 
         module_list = os.getenv("AUTO_TRANSFORM_IMPORTS_COMPONENTS")
+        if module_list is None and self._default_config is not None:
+            return self._default_config.get_imports_components()
         if module_list is None or module_list == "":
             return []
         return [module.strip() for module in module_list.split(",")]
@@ -59,7 +82,10 @@ class EnvironmentVariableConfigFetcher(ConfigFetcher):
             str: The JSON encoded Runner component to use for local runs.
         """
 
-        return os.getenv("AUTO_TRANSFORM_RUNNER_LOCAL")
+        local_runner = os.getenv("AUTO_TRANSFORM_RUNNER_LOCAL")
+        if local_runner is None and self._default_config is not None:
+            return self._default_config.get_runner_local()
+        return local_runner
 
     def get_runner_remote(self) -> Optional[str]:
         """Gets the JSON encoded Runner component to use for remote runs.
@@ -68,4 +94,7 @@ class EnvironmentVariableConfigFetcher(ConfigFetcher):
             str: The JSON encoded Runner component to use for remote runs.
         """
 
-        return os.getenv("AUTO_TRANSFORM_RUNNER_REMOTE")
+        remote_runner = os.getenv("AUTO_TRANSFORM_RUNNER_REMOTE")
+        if remote_runner is None and self._default_config is not None:
+            return self._default_config.get_runner_remote()
+        return remote_runner
