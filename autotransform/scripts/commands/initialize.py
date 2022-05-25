@@ -11,6 +11,7 @@
 
 import json
 import os
+import subprocess
 from argparse import ArgumentParser, Namespace
 from configparser import ConfigParser
 from getpass import getpass
@@ -259,4 +260,24 @@ def initialize_command_main(_args: Namespace) -> None:
     user_config_path = (
         f"{DefaultConfigFetcher.get_user_config_dir()}/{DefaultConfigFetcher.CONFIG_NAME}"
     )
-    initialize_config(user_config_path, "user", {})
+    inputs = initialize_config(user_config_path, "user", {})
+
+    # Set up repo
+    try:
+        dir_cmd = ["git", "rev-parse", "--show-toplevel"]
+        repo_dir = subprocess.check_output(dir_cmd, encoding="UTF-8").replace("\\", "/").strip()
+        print(f"{INFO_COLOR}Repo found at {repo_dir}{RESET_COLOR}")
+        setup_repo = get_yes_or_no("Initialize the repo?")
+    except Exception:  # pylint: disable=broad-except
+        print(
+            f"{INFO_COLOR}No git repo to set up, "
+            + f"run inside a git repo to initialize the repo{RESET_COLOR}"
+        )
+        setup_repo = False
+
+    if setup_repo:
+        print(f"{INFO_COLOR}Setting up repo level configuration{RESET_COLOR}")
+        repo_config_path = (
+            f"{DefaultConfigFetcher.get_repo_config_dir()}/{DefaultConfigFetcher.CONFIG_NAME}"
+        )
+        initialize_config(repo_config_path, "repo", inputs)
