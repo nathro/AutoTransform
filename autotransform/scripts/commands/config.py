@@ -14,9 +14,16 @@ from configparser import ConfigParser
 from getpass import getpass
 from typing import List, Optional, Tuple, TypedDict, TypeVar
 
+from colorama import Fore
+
 from autotransform.config.default import DefaultConfigFetcher
 
 T = TypeVar("T")
+
+ERROR_COLOR = Fore.RED
+INFO_COLOR = Fore.YELLOW
+QUESTION_COLOR = Fore.GREEN
+RESET_COLOR = Fore.RESET
 
 
 class ConfigSetting(TypedDict):
@@ -57,21 +64,24 @@ def choose_option(
 
     max_choice = len(options) + 1 if allow_none else len(options)
     while True:
-        print(prompt)
+        print(f"{QUESTION_COLOR}{prompt}{RESET_COLOR}")
         for i, option in enumerate(options):
-            print(f"\t{i + 1}) {option[0]}")
+            print(f"\t{QUESTION_COLOR}{i + 1}) {option[0]}{RESET_COLOR}")
         if allow_none:
-            print(f"\t{len(options) + 1}) Done.")
-        inp = input("Enter choice: ")
+            print(f"\t{QUESTION_COLOR}{len(options) + 1}) Done.{RESET_COLOR}")
+        inp = input(f"{QUESTION_COLOR}Enter choice: {RESET_COLOR}")
         if not inp.isdigit():
-            print(f"Choice must be a number: {inp}")
+            print(f"{ERROR_COLOR}Choice must be a number: {inp} is invalid{RESET_COLOR}")
             continue
         choice = int(inp) - 1
         if choice in range(len(options)):
             return options[choice][1]
         if choice == len(options) and allow_none:
             return None
-        print(f"Invalid choice {choice}: Please select a number between 1 and {max_choice}")
+        print(
+            f"{ERROR_COLOR}Invalid choice {choice}: "
+            + f"Please select a number between 1 and {max_choice}{RESET_COLOR}"
+        )
 
 
 def get_all_config_paths() -> List[Tuple[str, str]]:
@@ -171,7 +181,7 @@ def config_command_main(_args: Namespace) -> None:
             break
         path = f"{path}/{DefaultConfigFetcher.CONFIG_NAME}"
         parser = ConfigParser()
-        print(f"Reading config at path: {path}\n\n")
+        print(f"{INFO_COLOR}Reading config at path: {path}{RESET_COLOR}\n\n")
         parser.read(path)
 
         has_updates = False
@@ -189,9 +199,13 @@ def config_command_main(_args: Namespace) -> None:
             if is_update:
                 has_updates = True
                 if config_setting["secret"]:
-                    new_value = getpass(f"Input new {config_setting['name']}: ")
+                    new_value = getpass(
+                        f"{QUESTION_COLOR}Input new {config_setting['name']}: {RESET_COLOR}"
+                    )
                 else:
-                    new_value = input(f"Input new {config_setting['name']}: ")
+                    new_value = input(
+                        f"{QUESTION_COLOR}Input new {config_setting['name']}: {RESET_COLOR}"
+                    )
                 if config_setting["section"] not in parser:
                     parser[config_setting["section"]] = {}
                 parser[config_setting["section"]][config_setting["setting"]] = new_value
@@ -199,14 +213,20 @@ def config_command_main(_args: Namespace) -> None:
                 continue
 
             if config_setting["section"] not in parser:
-                print(f"No value for setting {config_setting['name']}\n\n")
+                print(f"{INFO_COLOR}No value for setting {config_setting['name']}{RESET_COLOR}\n\n")
                 continue
 
             section = parser[config_setting["section"]]
             if config_setting["setting"] not in section:
-                print(f"No existing value for setting {config_setting['name']}\n\n")
+                print(
+                    f"{INFO_COLOR}No existing value for setting "
+                    + f"{config_setting['name']}{RESET_COLOR}\n\n"
+                )
                 continue
-            print(f"{config_setting['name']}: {section[config_setting['setting']]}\n\n")
+            print(
+                f"{INFO_COLOR}{config_setting['name']}: "
+                + f"{section[config_setting['setting']]}{RESET_COLOR}\n\n"
+            )
 
         if has_updates:
             with open(path, "w", encoding="utf-8") as config_file:
