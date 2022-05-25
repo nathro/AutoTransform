@@ -273,11 +273,17 @@ def initialize_command_main(_args: Namespace) -> None:
             f"{INFO_COLOR}No git repo to set up, "
             + f"run inside a git repo to initialize the repo{RESET_COLOR}"
         )
+        repo_dir = None
         setup_repo = False
 
     if setup_repo:
-        print(f"{INFO_COLOR}Setting up repo level configuration{RESET_COLOR}")
         repo_config_path = (
             f"{DefaultConfigFetcher.get_repo_config_dir()}/{DefaultConfigFetcher.CONFIG_NAME}"
         )
         initialize_config(repo_config_path, "repo", inputs)
+
+    if repo_dir is None and get_yes_or_no("Set up configuration for current working directory?"):
+        cwd_config_path = (
+            f"{DefaultConfigFetcher.get_cwd_config_dir()}/{DefaultConfigFetcher.CONFIG_NAME}"
+        )
+        initialize_config(cwd_config_path, "current working directory", inputs)
