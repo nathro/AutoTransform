@@ -1,5 +1,5 @@
 {
-    "base_time": 1650870000,
+    "base_time": <BASE TIME>,
     "runner": {
         "type": "github",
         "params": {
@@ -14,7 +14,7 @@
     "schemas": [
         {
             "type": "file",
-            "schema": "data/schemas/black_format.json",
+            "schema": "autotransform/schemas/black_format.json",
             "schedule": {
                 "repeats": "daily",
                 "hour_of_day": 7

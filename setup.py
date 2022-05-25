@@ -51,14 +51,15 @@ setuptools.setup(
     },
     package_data={
         "": [
-            "config/sample_config.ini",
-            "examples/schemas/sample_schema.json",
-            "examples/workflows/autotransform_manager.yml",
-            "examples/workflows/autotransform_runner.yml",
-            "examples/workflows/autotransform_scheduler.yml",
-            "examples/workflows/autotransform_updater.yml",
-            "examples/autotransform_schedule.json",
-            "examples/autotransform_manage.json",
+            "examples/sample_config.ini",
+            "examples/schedule.json",
+            "examples/manage.json",
+            "examples/requirements.txt",
+            "examples/schemas/black_format.json",
+            "examples/workflows/autotransform_manage.yml",
+            "examples/workflows/autotransform_run.yml",
+            "examples/workflows/autotransform_schedule.yml",
+            "examples/workflows/autotransform_update.yml",
         ],
     },
 )

@@ -1,14 +1,3 @@
-# AutoTransform
-# Large scale, component based code modification library
-#
-# Licensed under the MIT License <http://opensource.org/licenses/MIT>
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
-
-# A sample workflow that can be used by a repo on Github to run AutoTransform
-# using github actions. Usable with the GithubRemote runner for triggering
-# remote runs.
-
 name: Run AutoTransform
 
 on:
@@ -25,11 +14,10 @@ permissions:
 jobs:
   run-autotransform:
     runs-on: ubuntu-latest
-    name: Run
+    name: Run AutoTransform
     steps:
     - uses: actions/checkout@v2
     - name: Set up git user
-      # It is highly recommended to create a bot name/email to represent automated runs
       run: |
         git config --global user.name "<BOT NAME>"
         git config --global user.email "<BOT EMAIL>"
@@ -39,14 +27,12 @@ jobs:
         python-version: "3.10"
     - name: Install AutoTransform
       run: pip install AutoTransform
-    # Optionally install any custom components needed
     - name: Install custom components
-      run: # Install your custom components here
+      run: pip install -r autotransform/requirements.txt
     - name: Run AutoTransform
       run: autotransform run --environment AUTO_TRANSFORM_SCHEMA
       env:
         AUTO_TRANSFORM_CONFIG: environment
         AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}
         AUTO_TRANSFORM_SCHEMA: ${{ github.event.inputs.schema }}
-        # List your custom components, leave off if not using any
-        AUTO_TRANSFORM_IMPORTS_CUSTOM_COMPONENTS: <<custom.component.modules>>
+        AUTO_TRANSFORM_IMPORTS_CUSTOM_COMPONENTS: <CUSTOM COMPONENTS>

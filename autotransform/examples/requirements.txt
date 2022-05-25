@@ -1,0 +1,2 @@
+# Formatting
+black >= 22.3.0

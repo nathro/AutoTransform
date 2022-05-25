@@ -1,8 +1,8 @@
 {
     "repo": {
         "params": {
-            "base_branch_name": "master",
-            "full_github_name": "nathro/AutoTransform"
+            "base_branch_name": "<BASE BRANCH>",
+            "full_github_name": "<GITHUB REPO>"
         },
         "type": "github"
     },
@@ -38,20 +38,6 @@
                     "type": "change_state"
                 },
                 "action_type": "abandon",
-                "continue_if_passed": false
-            },
-            "type": "conditional"
-        },
-        {
-            "params": {
-                "condition": {
-                    "params": {
-                        "comparison": "gte",
-                        "time": 259200
-                    },
-                    "type": "updated_ago"
-                },
-                "action_type": "update",
                 "continue_if_passed": false
             },
             "type": "conditional"

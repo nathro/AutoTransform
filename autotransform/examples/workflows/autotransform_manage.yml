@@ -1,0 +1,30 @@
+name: Manage AutoTransform
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+
+jobs:
+  manage-autotransform:
+    runs-on: ubuntu-latest
+    name: Manage AutoTransform
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up git user
+      run: |
+        git config --global user.name "<BOT NAME>"
+        git config --global user.email "<BOT EMAIL>"
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install AutoTransform
+      run: pip install AutoTransform
+    - name: Install custom components
+      run: pip install -r autotransform/requirements.txt
+    - name: Schedule AutoTransform
+      run: autotransform manage autotransform/manage.json
+      env:
+        AUTO_TRANSFORM_CONFIG: environment
+        AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}
+        AUTO_TRANSFORM_IMPORTS_CUSTOM_COMPONENTS: <CUSTOM COMPONENTS>

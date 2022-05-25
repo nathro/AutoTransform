@@ -77,7 +77,8 @@ class DefaultConfigFetcher(ConfigFetcher):
         """
 
         relative_path = os.getenv("AUTO_TRANSFORM_CWD_CONFIG_PATH", "autotransform")
-        return f"{os.getcwd()}/{relative_path}"
+        cwd = os.getcwd().replace("\\", "/")
+        return f"{cwd}/{relative_path}"
 
     @staticmethod
     def get_package_config_dir() -> str:
