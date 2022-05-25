@@ -82,13 +82,11 @@ def initialize_config_credentials(
         github_token = getpass(f"{QUESTION_COLOR}Enter your Github Token: {RESET_COLOR}")
         section["github_token"] = github_token
 
-    use_ghe = get_yes_or_no("Use Github Enterprise?")
-    if use_ghe:
-        github_base_url = prev_inputs.get("github_base_url")
-        if github_base_url is not None:
-            if not get_yes_or_no(f"Use previous GHE URL ({github_base_url})?"):
-                github_base_url = None
-        if github_base_url is None:
+    if get_yes_or_no("Use Github Enterprise?"):
+        prev_base_url = prev_inputs.get("github_base_url")
+        if prev_base_url is not None and get_yes_or_no(f"Use previous GHE URL ({prev_base_url})?"):
+            github_base_url = prev_base_url
+        else:
             github_base_url = input(
                 f"{QUESTION_COLOR}Enter the base URL for GHE API requests"
                 + f"(i.e. https://api.your_org-github.com): {RESET_COLOR}"
@@ -120,16 +118,80 @@ def initialize_config_imports(
 
     section = {}
     inputs: Dict[str, Any] = {}
-    custom_components = prev_inputs.get("import_components")
-    if custom_components is not None:
-        if not get_yes_or_no(f"Use previous custom components ({custom_components})?"):
-            custom_components = None
-    if custom_components is None:
+
+    prev_custom_components = prev_inputs.get("import_components")
+    if prev_custom_components and get_yes_or_no(
+        f"Use previous custom components ({prev_custom_components})?"
+    ):
+        custom_components = prev_custom_components
+    else:
         custom_components = input(
             f"{QUESTION_COLOR}Enter a comma separated list of custom components: {RESET_COLOR}"
         )
     section["components"] = custom_components
     inputs["import_components"] = custom_components
+
+    return section, inputs
+
+
+def initialize_config_runner(
+    prev_inputs: Mapping[str, Any]
+) -> Tuple[Dict[str, Any], Mapping[str, Any]]:
+    """Initialize the runner section of a config.
+
+    Args:
+        prev_inputs (Mapping[str, Any]): Previously used input values.
+
+    Returns:
+        Tuple[Dict[str, Any], Mapping[str, Any]]: A tuple containing the new section and the
+            supplied inputs.
+    """
+
+    section = {}
+    inputs: Dict[str, Any] = {}
+
+    # Get local runner
+    prev_local_runner = prev_inputs.get("runner_local")
+    default_local_runner = json.dumps(LocalRunner({}).bundle())
+    if (
+        prev_local_runner is not None
+        and prev_local_runner != default_local_runner
+        and get_yes_or_no(f"Use previous local runner({prev_local_runner})?")
+    ):
+        local_runner = prev_local_runner
+    elif get_yes_or_no("Would you like to use the default local runner?"):
+        local_runner = default_local_runner
+    else:
+        local_runner = input(
+            f"{QUESTION_COLOR}Enter a JSON encoded runner for local runs: {RESET_COLOR}"
+        )
+    section["local"] = local_runner
+    inputs["runner_local"] = local_runner
+
+    # Get remote runner
+    prev_remote_runner = prev_inputs.get("runner_remote")
+    default_remote_runner = json.dumps(
+        GithubRunner(
+            {
+                "run_workflow": "autotransform_run.yml",
+                "update_workflow": "autotransform_update.yml",
+            }
+        ).bundle()
+    )
+    if (
+        prev_remote_runner is not None
+        and prev_remote_runner != default_remote_runner
+        and get_yes_or_no(f"Use previous remote runner({prev_remote_runner})?")
+    ):
+        remote_runner = prev_remote_runner
+    elif get_yes_or_no("Would you like to use the default Github remote runner?"):
+        remote_runner = default_remote_runner
+    else:
+        remote_runner = input(
+            f"{QUESTION_COLOR}Enter a JSON encoded runner for remote runs: {RESET_COLOR}"
+        )
+    section["remote"] = remote_runner
+    inputs["runner_remote"] = remote_runner
 
     return section, inputs
 
@@ -175,36 +237,10 @@ def initialize_config(
         inputs[key] = value
 
     # Set up runner configuration
-    use_default_local_runner = get_yes_or_no("Would you like to use the default local runner?")
-    if use_default_local_runner:
-        local_runner = json.dumps(LocalRunner({}).bundle())
-    else:
-        local_runner = input(
-            f"{QUESTION_COLOR}Enter a JSON encoded runner for local runs: {RESET_COLOR}"
-        )
-    config["RUNNER"]["local"] = local_runner
-    inputs["local_runner"] = local_runner
-
-    remote_runner = None
-    if inputs.get("use_github", False):
-        use_default_remote_runner = get_yes_or_no(
-            "Would you like to use the default remote runner?"
-        )
-        if use_default_remote_runner:
-            remote_runner = json.dumps(
-                GithubRunner(
-                    {
-                        "run_workflow": "autotransform_run.yml",
-                        "update_workflow": "autotransform_update.yml",
-                    }
-                ).bundle()
-            )
-    if remote_runner is None:
-        remote_runner = input(
-            f"{QUESTION_COLOR}Enter a JSON encoded runner for remote runs: {RESET_COLOR}"
-        )
-    config["RUNNER"]["remote"] = remote_runner
-    inputs["remote_runner"] = remote_runner
+    runner_section, runner_inputs = initialize_config_runner(prev_inputs)
+    config["RUNNER"] = runner_section
+    for key, value in runner_inputs.items():
+        inputs[key] = value
 
     with open(config_path, "w", encoding="utf-8") as config_file:
         config.write(config_file)
