@@ -14,7 +14,7 @@ import os
 from argparse import ArgumentParser, Namespace
 from configparser import ConfigParser
 from getpass import getpass
-from typing import Any, Dict, Mapping
+from typing import Any, Dict, Mapping, Tuple
 
 from colorama import Fore
 
@@ -57,18 +57,63 @@ def get_yes_or_no(prompt: str) -> bool:
         print(f"{ERROR_COLOR}Invalid answer, please choose y(es) or n(o){RESET_COLOR}")
 
 
-def initialize_config(config_path: str, config_name: str) -> Mapping[str, Any]:
+def initialize_config_credentials(
+    get_token: bool, prev_inputs: Mapping[str, Any]
+) -> Tuple[Dict[str, Any], Mapping[str, Any]]:
+    """Initialize the credentials section of a config.
+
+    Args:
+        get_token (bool): Whether to get a Github Token.
+        prev_inputs (Mapping[str, Any]): Previously used input values.
+
+    Returns:
+        Tuple[Dict[str, Any], Mapping[str, Any]]: A tuple containing the new section and the
+            supplied inputs.
+    """
+
+    use_github = get_yes_or_no("Do you want to configure AutoTransform to use Github?")
+    if not use_github:
+        return {}, {"use_github": False}
+
+    section = {}
+    inputs: Dict[str, Any] = {"use_github": True}
+    # Github tokens should only ever be used in user configs
+    if get_token:
+        github_token = getpass(f"{QUESTION_COLOR}Enter your Github Token: {RESET_COLOR}")
+        section["github_token"] = github_token
+
+    use_ghe = get_yes_or_no("Use Github Enterprise?")
+    if use_ghe:
+        github_base_url = prev_inputs.get("github_base_url")
+        if github_base_url is not None:
+            if not get_yes_or_no(f"Use previous GHE URL ({github_base_url})?"):
+                github_base_url = None
+        if github_base_url is None:
+            github_base_url = input(
+                f"{QUESTION_COLOR}Enter the base URL for GHE API requests"
+                + f"(i.e. https://api.your_org-github.com): {RESET_COLOR}"
+            )
+        section["github_base_url"] = github_base_url
+        inputs["github_base_url"] = github_base_url
+    else:
+        inputs["github_base_url"] = None
+
+    return section, inputs
+
+
+def initialize_config(
+    config_path: str, config_name: str, prev_inputs: Mapping[str, Any]
+) -> Mapping[str, Any]:
     """Sets up the config and returns inputs that will be used for later setup.
 
     Args:
         config_path (str): The path to the config.
         config_name (str): The name of the config: user, repo, or cwd.
+        prev_inputs (Mapping[str, Any]): Previously specified values.
 
     Returns:
         Mapping[str, Any]: The inputs that were obtained when setting up the config.
     """
-
-    # pylint: disable=too-many-branches
 
     print(f"{INFO_COLOR}Initializing {config_name} config located at: {config_path}{RESET_COLOR}")
 
@@ -78,29 +123,17 @@ def initialize_config(config_path: str, config_name: str) -> Mapping[str, Any]:
             return {}
 
     config = ConfigParser()
-    config["CREDENTIALS"] = {}
     config["IMPORTS"] = {}
     config["RUNNER"] = {}
+    inputs: Dict[str, Any] = {}
 
     # Set up credentials configuration
-    use_github = get_yes_or_no("Do you want to configure AutoTransform to work with Github?")
-    inputs: Dict[str, Any] = {"use_github": use_github}
-    if use_github:
-        # Github tokens should only ever be used in user configs
-        if config_name == "user":
-            github_token = getpass(f"{QUESTION_COLOR}Enter your Github Token: {RESET_COLOR}")
-            config["CREDENTIALS"]["github_token"] = github_token
-
-        use_ghe = get_yes_or_no("Will you be using exclusively Github Enterprise repos?")
-        if use_ghe:
-            github_base_url = input(
-                f"{QUESTION_COLOR}Enter the base URL for GHE API requests"
-                + f"(i.e. https://api.your_org-github.com): {RESET_COLOR}"
-            )
-            config["CREDENTIALS"]["github_base_url"] = github_base_url
-            inputs["github_base_url"] = github_base_url
-        else:
-            inputs["github_base_url"] = None
+    credentials_section, credentials_inputs = initialize_config_credentials(
+        config_name == "user", prev_inputs
+    )
+    config["CREDENTIALS"] = credentials_section
+    for key, value in credentials_inputs.items():
+        inputs[key] = value
 
     # Set up custom component configuration
     use_custom_components = get_yes_or_no("Would you like to use custom component modules?")
@@ -108,7 +141,7 @@ def initialize_config(config_path: str, config_name: str) -> Mapping[str, Any]:
         custom_components = input(
             f"{QUESTION_COLOR}Enter a comma separated list of custom components: {RESET_COLOR}"
         )
-        config["IMPORTS"]["components"] = github_base_url
+        config["IMPORTS"]["components"] = custom_components
         inputs["custom_components"] = custom_components
     else:
         inputs["custom_components"] = None
@@ -125,7 +158,7 @@ def initialize_config(config_path: str, config_name: str) -> Mapping[str, Any]:
     inputs["local_runner"] = local_runner
 
     remote_runner = None
-    if use_github:
+    if inputs.get("use_github", False):
         use_default_remote_runner = get_yes_or_no(
             "Would you like to use the default remote runner?"
         )
@@ -160,4 +193,4 @@ def initialize_command_main(_args: Namespace) -> None:
     user_config_path = (
         f"{DefaultConfigFetcher.get_user_config_dir()}/{DefaultConfigFetcher.CONFIG_NAME}"
     )
-    initialize_config(user_config_path, "user")
+    initialize_config(user_config_path, "user", {})
