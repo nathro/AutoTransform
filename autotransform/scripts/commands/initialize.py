@@ -101,6 +101,39 @@ def initialize_config_credentials(
     return section, inputs
 
 
+def initialize_config_imports(
+    prev_inputs: Mapping[str, Any]
+) -> Tuple[Dict[str, Any], Mapping[str, Any]]:
+    """Initialize the imports section of a config.
+
+    Args:
+        prev_inputs (Mapping[str, Any]): Previously used input values.
+
+    Returns:
+        Tuple[Dict[str, Any], Mapping[str, Any]]: A tuple containing the new section and the
+            supplied inputs.
+    """
+
+    use_custom_components = get_yes_or_no("Would you like to use custom component modules?")
+    if not use_custom_components:
+        return {}, {}
+
+    section = {}
+    inputs: Dict[str, Any] = {}
+    custom_components = prev_inputs.get("import_components")
+    if custom_components is not None:
+        if not get_yes_or_no(f"Use previous custom components ({custom_components})?"):
+            custom_components = None
+    if custom_components is None:
+        custom_components = input(
+            f"{QUESTION_COLOR}Enter a comma separated list of custom components: {RESET_COLOR}"
+        )
+    section["components"] = custom_components
+    inputs["import_components"] = custom_components
+
+    return section, inputs
+
+
 def initialize_config(
     config_path: str, config_name: str, prev_inputs: Mapping[str, Any]
 ) -> Mapping[str, Any]:
@@ -136,15 +169,10 @@ def initialize_config(
         inputs[key] = value
 
     # Set up custom component configuration
-    use_custom_components = get_yes_or_no("Would you like to use custom component modules?")
-    if use_custom_components:
-        custom_components = input(
-            f"{QUESTION_COLOR}Enter a comma separated list of custom components: {RESET_COLOR}"
-        )
-        config["IMPORTS"]["components"] = custom_components
-        inputs["custom_components"] = custom_components
-    else:
-        inputs["custom_components"] = None
+    imports_section, imports_inputs = initialize_config_imports(prev_inputs)
+    config["IMPORTS"] = imports_section
+    for key, value in imports_inputs.items():
+        inputs[key] = value
 
     # Set up runner configuration
     use_default_local_runner = get_yes_or_no("Would you like to use the default local runner?")
@@ -190,6 +218,8 @@ def initialize_command_main(_args: Namespace) -> None:
     Args:
         _args (Namespace): The arguments supplied to the initialize command.
     """
+
+    print(f"{INFO_COLOR}Setting up user level configuration{RESET_COLOR}")
     user_config_path = (
         f"{DefaultConfigFetcher.get_user_config_dir()}/{DefaultConfigFetcher.CONFIG_NAME}"
     )
