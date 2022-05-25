@@ -14,7 +14,7 @@ Different CLI commands are handled as subparsers. Includes the following command
 
 from argparse import ArgumentParser
 
-from autotransform.scripts.commands import config, manage, run, schedule, update
+from autotransform.scripts.commands import config, initialize, manage, run, schedule, update
 
 
 def get_arg_parser() -> ArgumentParser:
@@ -34,7 +34,6 @@ def get_arg_parser() -> ArgumentParser:
     run_parser = subparsers.add_parser(
         "run",
         help="Execute a full run of AutoTransform",
-        aliases=["r"],
     )
     run.add_args(run_parser)
 
@@ -42,7 +41,6 @@ def get_arg_parser() -> ArgumentParser:
     schedule_parser = subparsers.add_parser(
         "schedule",
         help="Schedule runs of AutoTransform schemas",
-        aliases=["s"],
     )
     schedule.add_args(schedule_parser)
 
@@ -50,7 +48,6 @@ def get_arg_parser() -> ArgumentParser:
     manage_parser = subparsers.add_parser(
         "manage",
         help="Manage outstanding Changes",
-        aliases=["m"],
     )
     manage.add_args(manage_parser)
 
@@ -58,7 +55,6 @@ def get_arg_parser() -> ArgumentParser:
     update_parser = subparsers.add_parser(
         "update",
         help="Update an outstanding change",
-        aliases=["u"],
     )
     update.add_args(update_parser)
 
@@ -66,9 +62,15 @@ def get_arg_parser() -> ArgumentParser:
     config_parser = subparsers.add_parser(
         "config",
         help="Update/view AutoTransform configs",
-        aliases=["c"],
     )
     config.add_args(config_parser)
+
+    # Add initialize command
+    config_parser = subparsers.add_parser(
+        "init",
+        help="Initialize AutoTransform for the user/repo",
+    )
+    initialize.add_args(config_parser)
 
     return parser
 

@@ -2,6 +2,9 @@
 
 ## Release 0.2.2 - Production Beta
 
+#### Scripts
+ - Added init command to set up user configuration/repos
+
 #### Misc
  - Updated default config fetcher to pull repo and cwd relative configs
  - Replaced config command with one that allows the user to navigate through prompts

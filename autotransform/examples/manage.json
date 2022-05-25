@@ -9,8 +9,8 @@
     "runner": {
         "type": "github",
         "params": {
-            "run_workflow": "autotransform_runner.yml",
-            "update_workflow": "autotransform_updater.yml"
+            "run_workflow": "autotransform_run.yml",
+            "update_workflow": "autotransform_update.yml"
         }
     },
     "steps": [

@@ -40,7 +40,7 @@ class DefaultConfigFetcher(ConfigFetcher):
 
         config = ConfigParser()
         config_paths = [
-            self.get_package_config_dir(),
+            self.get_user_config_dir(),
             self.get_repo_config_dir(),
             self.get_cwd_config_dir(),
         ]
@@ -81,8 +81,8 @@ class DefaultConfigFetcher(ConfigFetcher):
         return f"{cwd}/{relative_path}"
 
     @staticmethod
-    def get_package_config_dir() -> str:
-        """Gets the directory where a config for the overall AutoTransform package would be located.
+    def get_user_config_dir() -> str:
+        """Gets the directory where a config for the user of AutoTransform would be located.
 
         Returns:
             str: The path to the config file.

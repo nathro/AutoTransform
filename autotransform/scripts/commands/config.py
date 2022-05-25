@@ -31,7 +31,7 @@ class ConfigSetting(TypedDict):
 
 
 def add_args(parser: ArgumentParser) -> None:
-    """Adds the args to a subparser that are required to run a schema.
+    """Adds the args to a subparser that are required to update/view configs.
 
     Args:
         parser (ArgumentParser): The parser for the schema run.
@@ -82,7 +82,7 @@ def get_all_config_paths() -> List[Tuple[str, str]]:
     """
 
     options = [
-        ("The user config file.", DefaultConfigFetcher.get_package_config_dir()),
+        ("The user config file.", DefaultConfigFetcher.get_user_config_dir()),
     ]
     repo_path = DefaultConfigFetcher.get_repo_config_dir()
     if repo_path is not None:
@@ -152,10 +152,11 @@ def get_all_config_settings() -> List[ConfigSetting]:
 
 
 def config_command_main(_args: Namespace) -> None:
-    """The main method for the schedule command, handles the actual execution of scheduling runs.
+    """The main method for the config command, handles the actual execution of updating and viewing
+    configs.
 
     Args:
-        _args (Namespace): The arguments supplied to the schedule command, such as the JSON file.
+        _args (Namespace): The arguments supplied to the config command.
     """
     config_paths = get_all_config_paths()
     config_settings = [

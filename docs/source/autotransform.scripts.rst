@@ -14,6 +14,7 @@ Commands
    autotransform.scripts.commands.manage
    autotransform.scripts.commands.update
    autotransform.scripts.commands.config
+   autotransform.scripts.commands.initialize
 
 Script
 ----------
