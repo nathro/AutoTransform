@@ -30,8 +30,8 @@ jobs:
     - name: Set up git user
       # It is highly recommended to create a bot name/email to represent automated runs
       run: |
-        git config --global user.name "<<BOT NAME>>"
-        git config --global user.email "<<BOT EMAIL>>"
+        git config --global user.name "<BOT NAME>"
+        git config --global user.email "<BOT EMAIL>"
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
