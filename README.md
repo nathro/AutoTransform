@@ -10,6 +10,10 @@ Full documentation available [here](https://autotransform.readthedocs.io)
  - **Bleeding Edge** `pip install git+git://github.com/nathro/AutoTransform.git`
    - Windows users may need to replace `git://` with `https://`
    - If you do not have git use: `pip install https://github.com/nathro/AutoTransform/archive/master.zip`
+
+## **Getting Started**
+
+After installing via pip, AutoTransform can be initialized using `autotransform init`. If called within a git repo, this script will also initialize the repo to use AutoTransform. For a simple setup experience, run `autotransform init --simple --github` or `autotransform init --simple --no-github`
 ## **Summary**
 
 AutoTransform is an opensource framework for large-scale code modification. It enables a schema-based system of defining codemods that can then be run using AutoTransform, with options for automatic scheduling as well as change management. AutoTransform leverages a component-based model that allows adopters to quickly and easily get whatever behavior they need through the creation of new, custom components. Additionally, custom components can readily be added to the component library of AutoTransform to be shared more widely with others using the framework.

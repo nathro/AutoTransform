@@ -11,3 +11,5 @@ Utilities
 
    autotransform.util.cachedfile
    autotransform.util.github
+   autotransform.util.console
+   autotransform.util.schedule
