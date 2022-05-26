@@ -466,7 +466,7 @@ def initialize_repo(
         requirements_file.flush()
 
     # Set up manage file
-    manage_bundle = get_manage_bundle(use_github_actions, repo, prev_inputs)
+    manage_bundle = get_manage_bundle(use_github_actions, repo, prev_inputs, simple)
     manage_path = f"{repo_dir}/autotransform/manage.json"
     os.makedirs(os.path.dirname(manage_path), exist_ok=True)
     with open(manage_path, "w+", encoding="UTF-8") as manage_file:
