@@ -12,19 +12,12 @@
 import os
 from argparse import ArgumentParser, Namespace
 from configparser import ConfigParser
-from getpass import getpass
 from typing import List, Optional, Tuple, TypedDict, TypeVar
 
-from colorama import Fore
-
 from autotransform.config.default import DefaultConfigFetcher
+from autotransform.util.console import choose_option_from_list, get_str, info
 
 T = TypeVar("T")
-
-ERROR_COLOR = Fore.RED
-INFO_COLOR = Fore.YELLOW
-QUESTION_COLOR = Fore.GREEN
-RESET_COLOR = Fore.RESET
 
 
 class ConfigSetting(TypedDict):
@@ -48,61 +41,27 @@ def add_args(parser: ArgumentParser) -> None:
     parser.set_defaults(func=config_command_main)
 
 
-def choose_option(
-    prompt: str, options: List[Tuple[str, T]], allow_none: bool = True
-) -> Optional[T]:
-    """Allows the user to select one of a set of options and returns the corresponding selection.
-
-    Args:
-        prompt (str): The prompt to ask the user.
-        options (List[Tuple[str, T]]): The list of potential options.
-        allow_none (bool, optional): Whether to allow None as an option for the user. Defaults
-            to True.
-
-    Returns:
-        Optional[T]: The selected option.
-    """
-
-    max_choice = len(options) + 1 if allow_none else len(options)
-    while True:
-        print(f"{QUESTION_COLOR}{prompt}{RESET_COLOR}")
-        for i, option in enumerate(options):
-            print(f"\t{QUESTION_COLOR}{i + 1}) {option[0]}{RESET_COLOR}")
-        if allow_none:
-            print(f"\t{QUESTION_COLOR}{len(options) + 1}) Done.{RESET_COLOR}")
-        inp = input(f"{QUESTION_COLOR}Enter choice: {RESET_COLOR}")
-        if not inp.isdigit():
-            print(f"{ERROR_COLOR}Choice must be a number: {inp} is invalid{RESET_COLOR}")
-            continue
-        choice = int(inp) - 1
-        if choice in range(len(options)):
-            return options[choice][1]
-        if choice == len(options) and allow_none:
-            return None
-        print(
-            f"{ERROR_COLOR}Invalid choice {choice}: "
-            + f"Please select a number between 1 and {max_choice}{RESET_COLOR}"
-        )
-
-
-def get_all_config_paths() -> List[Tuple[str, str]]:
+def get_config_options() -> List[Tuple[Optional[str], str]]:
     """Gets all of the config paths as options for the user to choose.
 
     Returns:
-        List[Tuple[str, str]]: A list of config descriptions and paths.
+        List[Tuple[str, str]]: A list of config paths and descriptions.
     """
 
-    options = [
-        ("The user config file.", DefaultConfigFetcher.get_user_config_dir()),
+    options: List[Tuple[Optional[str], str]] = [
+        (DefaultConfigFetcher.get_user_config_dir(), "The user config file."),
     ]
     repo_path = DefaultConfigFetcher.get_repo_config_dir()
     if repo_path is not None:
-        options.append(("The Repo's config file.", repo_path))
-    options.append(
-        (
-            "The current working directory config file.",
-            DefaultConfigFetcher.get_cwd_config_dir(),
-        ),
+        options.append((repo_path, "The Repo's config file."))
+    options.extend(
+        [
+            (
+                DefaultConfigFetcher.get_cwd_config_dir(),
+                "The current working directory config file.",
+            ),
+            (None, "Quit."),
+        ]
     )
     return options
 
@@ -169,44 +128,41 @@ def config_command_main(_args: Namespace) -> None:
     Args:
         _args (Namespace): The arguments supplied to the config command.
     """
-    config_paths = get_all_config_paths()
-    config_settings = [
-        (f"{setting['name']}: {setting['description']}", setting)
+    config_options: List[Tuple[Optional[str], str]] = get_config_options()
+    config_setting_options: List[Tuple[Optional[ConfigSetting], str]] = [
+        (setting, f"{setting['name']}: {setting['description']}")
         for setting in get_all_config_settings()
     ]
-    config_setting_actions = [("Get existing value", False), ("Update value", True)]
+    config_setting_options.append((None, "Done."))
+    config_setting_action_options = [(False, "Get existing value"), (True, "Update value")]
 
     while True:
-        path = choose_option("Select config to update or view", config_paths)
+        path = choose_option_from_list("Select config to update or view", config_options)
         if path is None:
             break
         path = f"{path}/{DefaultConfigFetcher.CONFIG_NAME}"
         parser = ConfigParser()
-        print(f"{INFO_COLOR}Reading config at path: {path}{RESET_COLOR}\n\n")
+        info(f"Reading config at path: {path}\n\n")
         parser.read(path)
 
         has_updates = False
         while True:
-            config_setting = choose_option("Choose a config setting", config_settings)
+            config_setting = choose_option_from_list(
+                "Choose a config setting", config_setting_options
+            )
             print("\n")
             if config_setting is None:
                 break
-            is_update = choose_option(
+            is_update = choose_option_from_list(
                 f"What action would you like to take on setting {config_setting['name']}",
-                config_setting_actions,
-                allow_none=False,
+                config_setting_action_options,
             )
 
             if is_update:
                 has_updates = True
-                if config_setting["secret"]:
-                    new_value = getpass(
-                        f"{QUESTION_COLOR}Input new {config_setting['name']}: {RESET_COLOR}"
-                    )
-                else:
-                    new_value = input(
-                        f"{QUESTION_COLOR}Input new {config_setting['name']}: {RESET_COLOR}"
-                    )
+                new_value = get_str(
+                    f"Input new {config_setting['name']}: ", secret=config_setting["secret"]
+                )
                 if config_setting["section"] not in parser:
                     parser[config_setting["section"]] = {}
                 parser[config_setting["section"]][config_setting["setting"]] = new_value
@@ -214,20 +170,14 @@ def config_command_main(_args: Namespace) -> None:
                 continue
 
             if config_setting["section"] not in parser:
-                print(f"{INFO_COLOR}No value for setting {config_setting['name']}{RESET_COLOR}\n\n")
+                info(f"No value for setting {config_setting['name']}\n\n")
                 continue
 
             section = parser[config_setting["section"]]
             if config_setting["setting"] not in section:
-                print(
-                    f"{INFO_COLOR}No existing value for setting "
-                    + f"{config_setting['name']}{RESET_COLOR}\n\n"
-                )
+                info(f"No existing value for setting {config_setting['name']}\n\n")
                 continue
-            print(
-                f"{INFO_COLOR}{config_setting['name']}: "
-                + f"{section[config_setting['setting']]}{RESET_COLOR}\n\n"
-            )
+            info(f"{config_setting['name']}: {section[config_setting['setting']]}\n\n")
 
         if has_updates:
             os.makedirs(os.path.dirname(path), exist_ok=True)

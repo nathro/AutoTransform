@@ -220,9 +220,10 @@ def initialize_workflows(repo_dir: str, examples_dir: str, prev_inputs: Mapping[
         prev_inputs (Mapping[str, Any]): Previous inputs from configuration.
     """
 
-    bot_email = get_str("Enter the email of the account used for automation: ")
     bot_name = get_str("Enter the name of the account used for automation: ")
+    bot_email = get_str("Enter the email of the account used for automation: ")
     custom_components = prev_inputs.get("import_components")
+
     workflows = [
         "autotransform_manage.yml",
         "autotransform_run.yml",
