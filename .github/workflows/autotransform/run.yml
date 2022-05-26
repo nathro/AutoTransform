@@ -5,20 +5,20 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
 
-name: Update AutoTransform
+name: Run AutoTransform
 
 on:
   workflow_dispatch:
     inputs:
-      change:
-        description: "A JSON encoded Change to update"
+      schema:
+        description: "A JSON encoded schema to run"
         required: true
         type: string
 
 jobs:
-  update-autotransform:
+  run-autotransform:
     runs-on: ubuntu-latest
-    name: Update
+    name: Run
     steps:
     - uses: actions/checkout@v2
     - name: Set up git user
@@ -31,10 +31,10 @@ jobs:
         python-version: "3.10"
     - name: Install Dependencies
       run: pip install -r requirements.txt
-    - name: Update AutoTransform
-      run: python3 -m autotransform.scripts.main update --verbose --environment AUTO_TRANSFORM_CHANGE
+    - name: Run AutoTransform
+      run: python3 -m autotransform.scripts.main run --verbose --environment AUTO_TRANSFORM_SCHEMA
       env:
-        PYTHONPATH: ${{ github.workspace }}
+        PYTHONPATH: /home/runner/work/AutoTransform/AutoTransform/src/python
         AUTO_TRANSFORM_CONFIG: environment
         AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}
-        AUTO_TRANSFORM_CHANGE: ${{ github.event.inputs.change }}
+        AUTO_TRANSFORM_SCHEMA: ${{ github.event.inputs.schema }}
