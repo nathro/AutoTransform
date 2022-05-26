@@ -22,7 +22,7 @@ from autotransform.filter.base import FilterBundle
 from autotransform.filter.type import FilterType
 from autotransform.runner.base import RunnerBundle
 from autotransform.util.console import (
-    choose_string_option,
+    choose_option,
     choose_yes_or_no,
     get_str,
     info,
@@ -117,18 +117,17 @@ def input_scheduled_schema() -> ScheduledSchema:
         Mapping[str, Any]: The schema with scheduling information.
     """
 
-    schema_type = choose_string_option(
-        "What type of schema is it?", [[SchemaType.FILE, "f"], [SchemaType.BUILDER, "b"]]
+    schema_type = choose_option(
+        "What type of schema is it?", [(SchemaType.FILE, ["f"]), (SchemaType.BUILDER, ["b"])]
     )
     schema_type = SchemaType.from_value(schema_type)
 
     schema = get_str("Enter the schema to schedule:")
 
-    repeats = choose_string_option(
+    repeats = choose_option(
         "How often should the schema run?",
-        [[RepeatSchedule.DAILY, "d"], [RepeatSchedule.WEEKLY, "w"]],
+        [(RepeatSchedule.DAILY, ["d"]), (RepeatSchedule.WEEKLY, ["w"])],
     )
-    repeats = RepeatSchedule.from_value(repeats)
     hour_of_day = input_int("What hour of the day should the schema run?", min_val=0, max_val=23)
     schedule: Schedule = {
         "repeats": repeats,

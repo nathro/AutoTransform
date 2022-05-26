@@ -10,9 +10,11 @@
 """Utility methods for getting user input for AutoTransform."""
 
 from getpass import getpass
-from typing import List, Optional
+from typing import List, Optional, Tuple, TypeVar
 
 from colorama import Fore
+
+T = TypeVar("T")
 
 ERROR_COLOR = Fore.RED
 INFO_COLOR = Fore.YELLOW
@@ -54,47 +56,6 @@ def get_str(prompt: str, secret: bool = False) -> str:
     if secret:
         return getpass(f"{INFO_COLOR}{prompt}{RESET_COLOR}")
     return input(f"{INFO_COLOR}{prompt}{RESET_COLOR}")
-
-
-def choose_string_option(prompt: str, options: List[str | List[str]]) -> str:
-    """Prompts the user to choose one of a set of options. All options should
-    be lowercase.
-
-    Args:
-        prompt (str): The prompt to give the user.
-        options (List[str  |  List[str]]): The potential options to choose. If a list
-            is an option, then the first value of the list will be returned if any of
-            the list is chosen.
-
-    Returns:
-        str: The selected option
-    """
-
-    assert len(options) > 0, "Choosing from an empty list of options is not possible."
-    option_list = [option if isinstance(option, str) else option[0] for option in options]
-    while True:
-        choice = get_str(f"{prompt}({'/'.join(option_list)}) ").lower()
-        for option in options:
-            if isinstance(option, str) and choice == option:
-                return option
-
-            if isinstance(option, List) and choice in option:
-                return option[0]
-
-        error(f"Invalid choice, choose one of: {', '.join(option_list)}")
-
-
-def choose_yes_or_no(prompt: str) -> bool:
-    """Gives the user a yes or no prompt.
-
-    Args:
-        prompt (str): The prompt to give to the user.
-
-    Returns:
-        bool: If the user chose yes.
-    """
-
-    return choose_string_option(prompt, [["y", "yes"], ["n", "no"]]) == "y"
 
 
 def input_string(
@@ -174,3 +135,60 @@ def input_int(prompt: str, min_val: Optional[int] = None, max_val: Optional[int]
             error(f"{int_val} is too high, must be less than {max_val}")
             continue
         return int_val
+
+
+def choose_option(prompt: str, options: List[Tuple[T, List[str]]]) -> T:
+    """Prompts the user to choose one of a set of options using a string. User input is
+    converted in to lower case.
+
+    Args:
+        prompt (str): The prompt to give the user.
+        options (List[Tuple[T, List[str]]]): The potential options to choose. The first value
+            is the option, the second value is a list of potential aliases for the option.
+
+    Returns:
+        str: The selected option
+    """
+
+    assert len(options) > 0, "Choosing from an empty list of options is not possible."
+    option_list = [option[1][0] for option in options]
+    while True:
+        choice = get_str(f"{prompt}({'/'.join(option_list)}) ").lower()
+        for option in options:
+            if choice in option[1]:
+                return option[0]
+
+        error(f"Invalid choice, choose one of: {', '.join(option_list)}")
+
+
+def choose_yes_or_no(prompt: str) -> bool:
+    """Gives the user a yes or no prompt.
+
+    Args:
+        prompt (str): The prompt to give to the user.
+
+    Returns:
+        bool: If the user chose yes.
+    """
+
+    return choose_option(prompt, [(True, ["yes", "y"]), (False, ["no", "n"])])
+
+
+def choose_option_from_list(prompt: str, options: List[Tuple[T, str]]) -> T:
+    """Prompts the user to choose one of a set of options using a list
+    and having the user choose a number.
+
+    Args:
+        prompt (str): The prompt for the user.
+        options (List[Tuple[T, str]]): The options to choose from, where the first value
+            in a Tuple is the option and the second value is the prompt for the list.
+
+    Returns:
+        T: The chosen option.
+    """
+
+    assert len(options) > 0, "Choosing from an empty list of options is not possible."
+    for idx, option in enumerate(options):
+        print(f"{INPUT_COLOR}{idx + 1}) {option[1]}{RESET_COLOR}")
+    choice = input_int(prompt, min_val=1, max_val=len(options))
+    return options[choice - 1][0]
