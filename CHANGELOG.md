@@ -4,10 +4,10 @@
 
 #### Scripts
  - Added init command to set up user configuration/repos
+ - Replaced config command with one that allows the user to navigate through prompts
 
 #### Misc
  - Updated default config fetcher to pull repo and cwd relative configs
- - Replaced config command with one that allows the user to navigate through prompts
  - Made EnvironmentVariableConfigFetcher use DefaultConfigFetcher as a fallback when no environment variable is present
 
 ## Release 0.2.1 - Production Beta

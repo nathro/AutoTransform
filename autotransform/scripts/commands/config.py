@@ -229,5 +229,5 @@ def config_command_main(_args: Namespace) -> None:
             )
 
         if has_updates:
-            with open(path, "w", encoding="utf-8") as config_file:
+            with open(path, "w", encoding="UTF-8") as config_file:
                 parser.write(config_file)

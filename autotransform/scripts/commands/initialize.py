@@ -11,6 +11,7 @@
 
 import json
 import os
+import pathlib
 import subprocess
 from argparse import ArgumentParser, Namespace
 from configparser import ConfigParser
@@ -20,8 +21,12 @@ from typing import Any, Dict, Mapping, Tuple
 from colorama import Fore
 
 from autotransform.config.default import DefaultConfigFetcher
+from autotransform.repo.base import Repo
+from autotransform.repo.git import GitRepo
+from autotransform.repo.github import GithubRepo
 from autotransform.runner.github import GithubRunner
 from autotransform.runner.local import LocalRunner
+from autotransform.schema.schema import AutoTransformSchema
 
 ERROR_COLOR = Fore.RED
 INFO_COLOR = Fore.YELLOW
@@ -243,10 +248,113 @@ def initialize_config(
     for key, value in runner_inputs.items():
         inputs[key] = value
 
-    with open(config_path, "w", encoding="utf-8") as config_file:
+    with open(config_path, "w", encoding="UTF-8") as config_file:
         config.write(config_file)
 
     return inputs
+
+
+def initialize_workflows(repo_dir: str, examples_dir: str, prev_inputs: Mapping[str, Any]) -> None:
+    """Set up the workflow files for using Github workflows.
+
+    Args:
+        repo_dir (str): The top level directory of the repo.
+        examples_dir (str): Where example files are located.
+        prev_inputs (Mapping[str, Any]): Previous inputs from configuration.
+    """
+
+    bot_email = input(
+        f"{QUESTION_COLOR}Enter the email of the account used for automation: {RESET_COLOR}"
+    )
+    bot_name = input(
+        f"{QUESTION_COLOR}Enter the name of the account used for automation: {RESET_COLOR}"
+    )
+    custom_components = prev_inputs.get("import_components")
+    workflows = [
+        "autotransform_manage.yml",
+        "autotransform_run.yml",
+        "autotransform_schedule.yml",
+        "autotransform_update.yml",
+    ]
+    for workflow in workflows:
+        with open(f"{examples_dir}/workflows/{workflow}", "r", encoding="UTF-8") as workflow_file:
+            workflow_text = workflow_file.read()
+        workflow_text = workflow_text.replace("<BOT EMAIL>", bot_email)
+        workflow_text = workflow_text.replace("<BOT NAME>", bot_name)
+        if custom_components is not None:
+            workflow_text = workflow_text.replace("<CUSTOM COMPONENTS>", custom_components)
+        else:
+            workflow_text = "\n".join(
+                [line for line in workflow_text.split("\n") if "<CUSTOM COMPONENTS>" not in line]
+            )
+        with open(
+            f"{repo_dir}/.github/workflows/{workflow}", "w", encoding="UTF-8"
+        ) as workflow_file:
+            workflow_file.write(workflow_text)
+            workflow_file.flush()
+
+
+def initialize_repo(repo_dir: str, prev_inputs: Mapping[str, Any]) -> None:
+    """Set up a repo to work with AutoTransform.
+
+    Args:
+        repo_dir (str): The top level directory of the repo.
+        prev_inputs (Mapping[str, Any]): Previous inputs from configuration.
+    """
+
+    package_dir = str(pathlib.Path(__file__).parent.parent.parent.resolve()).replace("\\", "/")
+    examples_dir = f"{package_dir}/examples"
+
+    use_github = prev_inputs.get("use_github")
+    if use_github is None:
+        use_github = get_yes_or_no("Do you want to configure AutoTransform to use Github?")
+
+    # Set up workflow files
+    if use_github and get_yes_or_no("Use Github Actions for AutoTransform?"):
+        initialize_workflows(repo_dir, examples_dir, prev_inputs)
+
+    # Get the repo
+    base_branch_name = input(
+        f"{QUESTION_COLOR}Enter the name of the base branch "
+        + f"for the repo(i.e. main,master): {RESET_COLOR}"
+    )
+    if use_github:
+        github_name = input(
+            f"{QUESTION_COLOR}Enter the fully qualified name of "
+            + f"the github repo (owner/repo): {RESET_COLOR}"
+        )
+        repo: Repo = GithubRepo(
+            {"base_branch_name": base_branch_name, "full_github_name": github_name}
+        )
+    else:
+        repo = GitRepo({"base_branch_name": base_branch_name})
+
+    # Set up the sample schema
+    use_sample_schema = get_yes_or_no("Would you like to include the sample schema?")
+    if use_sample_schema:
+        with open(
+            f"{examples_dir}/schemas/black_format.json", "r", encoding="UTF-8"
+        ) as schema_file:
+            schema = AutoTransformSchema.from_json(schema_file.read())
+        schema._repo = repo  # pylint: disable=protected-access
+        with open(
+            f"{repo_dir}/autotransform/schemas/black_format.json", "w", encoding="UTF-8"
+        ) as schema_file:
+            schema_file.write(schema.to_json(pretty=True))
+            schema_file.flush()
+
+        # Get requirements
+        with open(f"{examples_dir}/requirements.txt", "r", encoding="UTF-8") as requirements_file:
+            requirements = requirements_file.read()
+    else:
+        requirements = ""
+
+    # Set up requirements file
+    with open(
+        f"{repo_dir}/autotransform/requirements.txt", "w", encoding="UTF-8"
+    ) as requirements_file:
+        requirements_file.write(requirements)
+        requirements_file.flush()
 
 
 def initialize_command_main(_args: Namespace) -> None:
@@ -273,16 +381,17 @@ def initialize_command_main(_args: Namespace) -> None:
             f"{INFO_COLOR}No git repo to set up, "
             + f"run inside a git repo to initialize the repo{RESET_COLOR}"
         )
-        repo_dir = None
+        repo_dir = ""
         setup_repo = False
 
     if setup_repo:
         repo_config_path = (
             f"{DefaultConfigFetcher.get_repo_config_dir()}/{DefaultConfigFetcher.CONFIG_NAME}"
         )
-        initialize_config(repo_config_path, "repo", inputs)
+        inputs = initialize_config(repo_config_path, "repo", inputs)
+        initialize_repo(repo_dir, inputs)
 
-    if repo_dir is None and get_yes_or_no("Set up configuration for current working directory?"):
+    if repo_dir == "" and get_yes_or_no("Set up configuration for current working directory?"):
         cwd_config_path = (
             f"{DefaultConfigFetcher.get_cwd_config_dir()}/{DefaultConfigFetcher.CONFIG_NAME}"
         )
