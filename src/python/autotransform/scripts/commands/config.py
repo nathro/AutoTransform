@@ -16,6 +16,7 @@ from typing import List, Optional, Tuple, TypedDict, TypeVar
 
 from autotransform.config.default import DefaultConfigFetcher
 from autotransform.util.console import choose_option_from_list, get_str, info
+from autotransform.util.package import get_config_dir
 
 T = TypeVar("T")
 
@@ -49,7 +50,7 @@ def get_config_options() -> List[Tuple[Optional[str], str]]:
     """
 
     options: List[Tuple[Optional[str], str]] = [
-        (DefaultConfigFetcher.get_user_config_dir(), "The user config file."),
+        (get_config_dir(), "The user config file."),
     ]
     repo_path = DefaultConfigFetcher.get_repo_config_dir()
     if repo_path is not None:

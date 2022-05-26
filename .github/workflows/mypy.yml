@@ -22,4 +22,4 @@ jobs:
     - name: Install Dependencies
       run: pip install -r requirements.txt
     - name: Check mypy
-      run: mypy autotransform tests
+      run: mypy src/python/autotransform tests

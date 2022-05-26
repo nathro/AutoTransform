@@ -24,6 +24,6 @@ jobs:
     - name: Check pytest
       run: pytest -W ignore::DeprecationWarning tests/
       env:
-        PYTHONPATH: /home/runner/work/AutoTransform/AutoTransform/
+        PYTHONPATH: /home/runner/work/AutoTransform/AutoTransform/src/python
         AUTO_TRANSFORM_CONFIG: environment
         AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ github.token }}

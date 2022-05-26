@@ -10,12 +10,12 @@
 """A ConfigFetcher that uses config files for configuration."""
 
 import os
-import pathlib
 import subprocess
 from configparser import ConfigParser
 from typing import List, Optional
 
 from autotransform.config.fetcher import ConfigFetcher
+from autotransform.util.package import get_config_dir
 
 
 class DefaultConfigFetcher(ConfigFetcher):
@@ -40,7 +40,7 @@ class DefaultConfigFetcher(ConfigFetcher):
 
         config = ConfigParser()
         config_paths = [
-            self.get_user_config_dir(),
+            get_config_dir(),
             self.get_repo_config_dir(),
             self.get_cwd_config_dir(),
         ]
@@ -79,16 +79,6 @@ class DefaultConfigFetcher(ConfigFetcher):
         relative_path = os.getenv("AUTO_TRANSFORM_CWD_CONFIG_PATH", "autotransform")
         cwd = os.getcwd().replace("\\", "/")
         return f"{cwd}/{relative_path}"
-
-    @staticmethod
-    def get_user_config_dir() -> str:
-        """Gets the directory where a config for the user of AutoTransform would be located.
-
-        Returns:
-            str: The path to the config file.
-        """
-
-        return str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
 
     def get_credentials_github_token(self) -> Optional[str]:
         """Pulls the github authentication token from the config file.

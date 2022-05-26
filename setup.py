@@ -33,8 +33,8 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     keywords="codemod, automation, code change, codeshift, transformation, maintain",
-    package_dir={"": "."},
-    packages=setuptools.find_packages(),
+    package_dir={"": "src/python"},
+    packages=setuptools.find_packages("src/python"),
     install_requires=[
         "GitPython>=3.1.27",
         "ghapi>=0.1.20",
@@ -48,18 +48,5 @@ setuptools.setup(
         "console_scripts": [
             "autotransform = autotransform.scripts.main:main",
         ]
-    },
-    package_data={
-        "": [
-            "examples/sample_config.ini",
-            "examples/schedule.json",
-            "examples/manage.json",
-            "examples/requirements.txt",
-            "examples/schemas/black_format.json",
-            "examples/workflows/autotransform_manage.yml",
-            "examples/workflows/autotransform_run.yml",
-            "examples/workflows/autotransform_schedule.yml",
-            "examples/workflows/autotransform_update.yml",
-        ],
     },
 )

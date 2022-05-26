@@ -29,11 +29,11 @@ jobs:
     - name: Check pytest
       run: pytest -W ignore::DeprecationWarning tests/
       env:
-        PYTHONPATH: /home/runner/work/AutoTransform/AutoTransform/
+        PYTHONPATH: /home/runner/work/AutoTransform/AutoTransform/src/python
         AUTO_TRANSFORM_CONFIG: environment
         AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ github.token }}
     - name: Check pylint
-      run: pylint --enable=W0611,R0201,R0902,R0903,R0913,R1732 --disable=R0401,R0801,R0914,R0915 autotransform tests
+      run: pylint --enable=W0611,R0201,R0902,R0903,R0913,R1732 --disable=R0401,R0801,R0914,R0915 src/python/autotransform tests
     - name: Build
       run: python3 -m build
     - name: Publish

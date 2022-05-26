@@ -11,7 +11,6 @@
 
 import json
 import os
-import pathlib
 import subprocess
 from argparse import ArgumentParser, Namespace
 from configparser import ConfigParser
@@ -32,6 +31,7 @@ from autotransform.step.condition.state import ChangeStateCondition
 from autotransform.step.condition.updated import UpdatedAgoCondition
 from autotransform.step.conditional import ConditionalStep
 from autotransform.util.console import choose_yes_or_no, get_str, info, input_int, input_string
+from autotransform.util.package import get_config_dir, get_examples_dir
 from autotransform.util.schedule import input_schedule_bundle
 
 
@@ -413,8 +413,7 @@ def initialize_repo(
         use_github (bool, optional): Whether to use Github or not. Defaults to None.
     """
 
-    package_dir = str(pathlib.Path(__file__).parent.parent.parent.resolve()).replace("\\", "/")
-    examples_dir = f"{package_dir}/examples"
+    examples_dir = get_examples_dir()
 
     github = use_github or prev_inputs.get("use_github")
     if github is None:
@@ -503,9 +502,7 @@ def initialize_command_main(args: Namespace) -> None:
     simple = args.simple
     github = args.github
 
-    user_config_path = (
-        f"{DefaultConfigFetcher.get_user_config_dir()}/{DefaultConfigFetcher.CONFIG_NAME}"
-    )
+    user_config_path = f"{get_config_dir()}/{DefaultConfigFetcher.CONFIG_NAME}"
     inputs = write_config(user_config_path, "user", {}, simple=simple, use_github=github)
 
     # Set up repo
