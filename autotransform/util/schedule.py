@@ -118,7 +118,8 @@ def input_scheduled_schema() -> ScheduledSchema:
     """
 
     schema_type = choose_option(
-        "What type of schema is it?", [(SchemaType.FILE, ["f"]), (SchemaType.BUILDER, ["b"])]
+        "What type of schema is it?",
+        [(SchemaType.FILE, ["file", "f"]), (SchemaType.BUILDER, ["builder", "b"])],
     )
     schema_type = SchemaType.from_value(schema_type)
 
