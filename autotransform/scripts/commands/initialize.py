@@ -204,6 +204,7 @@ def write_config(
     for key, value in runner_inputs.items():
         inputs[key] = value
 
+    os.makedirs(os.path.dirname(config_path), exist_ok=True)
     with open(config_path, "w+", encoding="UTF-8") as config_file:
         config.write(config_file)
 
@@ -231,6 +232,7 @@ def initialize_workflows(repo_dir: str, examples_dir: str, prev_inputs: Mapping[
     for workflow in workflows:
         with open(f"{examples_dir}/workflows/{workflow}", "r", encoding="UTF-8") as workflow_file:
             workflow_text = workflow_file.read()
+
         workflow_text = workflow_text.replace("<BOT EMAIL>", bot_email)
         workflow_text = workflow_text.replace("<BOT NAME>", bot_name)
         if custom_components is not None:
@@ -239,9 +241,10 @@ def initialize_workflows(repo_dir: str, examples_dir: str, prev_inputs: Mapping[
             workflow_text = "\n".join(
                 [line for line in workflow_text.split("\n") if "<CUSTOM COMPONENTS>" not in line]
             )
-        with open(
-            f"{repo_dir}/.github/workflows/{workflow}", "w+", encoding="UTF-8"
-        ) as workflow_file:
+
+        workflow_file_path = f"{repo_dir}/.github/workflows/{workflow}"
+        os.makedirs(os.path.dirname(workflow_file_path), exist_ok=True)
+        with open(workflow_file_path, "w+", encoding="UTF-8") as workflow_file:
             workflow_file.write(workflow_text)
             workflow_file.flush()
 
@@ -268,9 +271,11 @@ def get_manage_bundle(
             }
         ).bundle()
     else:
-        remote_runner = prev_inputs.get("runner_remote")
-        if remote_runner is None:
-            remote_runner = get_str("Enter a JSON encoded runner for remote runs: ")
+        remote_runner = input_string(
+            "Enter a JSON encoded runner for remote runs: ",
+            "remote runner",
+            previous=prev_inputs.get("runner_remote"),
+        )
         remote_runner = json.loads(remote_runner)
     steps: List[Step] = []
 
@@ -302,7 +307,7 @@ def get_manage_bundle(
 
     # Update stale changes
     if choose_yes_or_no("Automatically update stale changes?"):
-        days_stale = input_int("How many days to consider a change stale?", min_val=0, max_val=6)
+        days_stale = input_int("How many days to consider a change stale?", min_val=1)
         steps.append(
             ConditionalStep(
                 {
@@ -319,7 +324,7 @@ def get_manage_bundle(
 
     return {
         "repo": repo.bundle(),
-        "remote_runner": remote_runner,
+        "runner": remote_runner,
         "steps": [step.bundle() for step in steps],
     }
 
@@ -359,14 +364,14 @@ def initialize_repo(repo_dir: str, prev_inputs: Mapping[str, Any]) -> None:
     # Set up the sample schema
     use_sample_schema = choose_yes_or_no("Would you like to include the sample schema?")
     if use_sample_schema:
-        with open(
-            f"{examples_dir}/schemas/black_format.json", "r", encoding="UTF-8"
-        ) as schema_file:
-            schema = AutoTransformSchema.from_json(schema_file.read())
+        sample_schema_path = f"{examples_dir}/schemas/black_format.json"
+        with open(sample_schema_path, "r", encoding="UTF-8") as sample_schema_file:
+            schema = AutoTransformSchema.from_json(sample_schema_file.read())
         schema._repo = repo  # pylint: disable=protected-access
-        with open(
-            f"{repo_dir}/autotransform/schemas/black_format.json", "w+", encoding="UTF-8"
-        ) as schema_file:
+
+        schema_path = f"{repo_dir}/autotransform/schemas/black_format.json"
+        os.makedirs(os.path.dirname(schema_path), exist_ok=True)
+        with open(schema_path, "w+", encoding="UTF-8") as schema_file:
             schema_file.write(schema.to_json(pretty=True))
             schema_file.flush()
 
@@ -377,21 +382,25 @@ def initialize_repo(repo_dir: str, prev_inputs: Mapping[str, Any]) -> None:
         requirements = ""
 
     # Set up requirements file
-    with open(
-        f"{repo_dir}/autotransform/requirements.txt", "w+", encoding="UTF-8"
-    ) as requirements_file:
+    requirements_path = f"{repo_dir}/autotransform/requirements.txt"
+    os.makedirs(os.path.dirname(requirements_path), exist_ok=True)
+    with open(requirements_path, "w+", encoding="UTF-8") as requirements_file:
         requirements_file.write(requirements)
         requirements_file.flush()
 
     # Set up manage file
     manage_bundle = get_manage_bundle(use_github_actions, repo, prev_inputs)
-    with open(f"{repo_dir}/autotransform/manage.json", "w+", encoding="UTF-8") as manage_file:
+    manage_path = f"{repo_dir}/autotransform/manage.json"
+    os.makedirs(os.path.dirname(manage_path), exist_ok=True)
+    with open(manage_path, "w+", encoding="UTF-8") as manage_file:
         manage_file.write(json.dumps(manage_bundle, indent=4))
         manage_file.flush()
 
     # Set up schedule file
     schedule_bundle = input_schedule_bundle(manage_bundle["runner"], use_sample_schema)
-    with open(f"{repo_dir}/autotransform/schedule.json", "w+", encoding="UTF-8") as schedule_file:
+    schedule_path = f"{repo_dir}/autotransform/schedule.json"
+    os.makedirs(os.path.dirname(schedule_path), exist_ok=True)
+    with open(schedule_path, "w+", encoding="UTF-8") as schedule_file:
         schedule_file.write(json.dumps(schedule_bundle, indent=4))
         schedule_file.flush()
 

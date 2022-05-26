@@ -9,6 +9,7 @@
 
 """The config command is used to update the config files for AutoTransform."""
 
+import os
 from argparse import ArgumentParser, Namespace
 from configparser import ConfigParser
 from getpass import getpass
@@ -229,5 +230,6 @@ def config_command_main(_args: Namespace) -> None:
             )
 
         if has_updates:
+            os.makedirs(os.path.dirname(path), exist_ok=True)
             with open(path, "w+", encoding="UTF-8") as config_file:
                 parser.write(config_file)

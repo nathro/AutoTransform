@@ -27,7 +27,7 @@ jobs:
         python-version: "3.10"
     - name: Install AutoTransform
       run: pip install AutoTransform
-    - name: Install custom components
+    - name: Install requirements
       run: pip install -r autotransform/requirements.txt
     - name: Update AutoTransform
       run: autotransform update --environment AUTO_TRANSFORM_CHANGE

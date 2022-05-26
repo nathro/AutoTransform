@@ -124,6 +124,8 @@ def input_int(prompt: str, min_val: Optional[int] = None, max_val: Optional[int]
         if str_val.startswith("-"):
             is_negative = True
             str_val = str_val[1:]
+        else:
+            is_negative = False
         if not str_val.isdigit():
             error("Only a decimal number may be entered")
             continue
