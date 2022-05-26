@@ -16,10 +16,11 @@ import subprocess
 from argparse import ArgumentParser, Namespace
 from configparser import ConfigParser
 from getpass import getpass
-from typing import Any, Dict, Mapping, Tuple
+from typing import Any, Dict, List, Mapping, Tuple
 
 from colorama import Fore
 
+from autotransform.change.state import ChangeState
 from autotransform.config.default import DefaultConfigFetcher
 from autotransform.repo.base import Repo
 from autotransform.repo.git import GitRepo
@@ -27,6 +28,12 @@ from autotransform.repo.github import GithubRepo
 from autotransform.runner.github import GithubRunner
 from autotransform.runner.local import LocalRunner
 from autotransform.schema.schema import AutoTransformSchema
+from autotransform.step.action import ActionType
+from autotransform.step.base import Step
+from autotransform.step.condition.comparison import ComparisonType
+from autotransform.step.condition.state import ChangeStateCondition
+from autotransform.step.condition.updated import UpdatedAgoCondition
+from autotransform.step.conditional import ConditionalStep
 
 ERROR_COLOR = Fore.RED
 INFO_COLOR = Fore.YELLOW
@@ -294,6 +301,92 @@ def initialize_workflows(repo_dir: str, examples_dir: str, prev_inputs: Mapping[
             workflow_file.flush()
 
 
+def get_manage_bundle(
+    use_github_actions: bool, repo: Repo, prev_inputs: Mapping[str, Any]
+) -> Mapping[str, Any]:
+    """Initialize the manage.json file.
+
+    Args:
+        use_github_actions (bool): Whether the repo uses Github Actions.
+        repo (Repo): The repo being managed.
+        prev_inputs (Mapping[str, Any]): Previous inputs from configuration.
+    """
+    if use_github_actions:
+        remote_runner: Any = GithubRunner(
+            {
+                "run_workflow": "autotransform_run.yml",
+                "update_workflow": "autotransform_update.yml",
+            }
+        ).bundle()
+    else:
+        remote_runner = prev_inputs.get("runner_remote")
+        if remote_runner is None:
+            remote_runner = input(
+                f"{QUESTION_COLOR}Enter a JSON encoded runner for remote runs: {RESET_COLOR}"
+            )
+        remote_runner = json.loads(remote_runner)
+    steps: List[Step] = []
+
+    # Merge approved changes
+    if get_yes_or_no("Automatically merge approved changes?"):
+        steps.append(
+            ConditionalStep(
+                {
+                    "condition": ChangeStateCondition(
+                        {"comparison": ComparisonType.EQUAL, "state": ChangeState.APPROVED}
+                    ),
+                    "action_type": ActionType.MERGE,
+                }
+            )
+        )
+
+    # Abandon rejected changes
+    if get_yes_or_no("Automatically abandon rejected changes?"):
+        steps.append(
+            ConditionalStep(
+                {
+                    "condition": ChangeStateCondition(
+                        {"comparison": ComparisonType.EQUAL, "state": ChangeState.CHANGES_REQUESTED}
+                    ),
+                    "action_type": ActionType.ABANDON,
+                }
+            )
+        )
+
+    # Update stale changes
+    if get_yes_or_no("Automatically update stale changes?"):
+        days_stale: int = 0
+        while days_stale == 0:
+            num_days = input(
+                f"{QUESTION_COLOR}How many days to consider a change stale?{RESET_COLOR}"
+            )
+            if num_days.isdigit():
+                days_stale = int(num_days)
+                if days_stale <= 0:
+                    print(f"{ERROR_COLOR}Invalid input, enter a number greater than 0{RESET_COLOR}")
+            else:
+                print(f"{ERROR_COLOR}Invalid input, enter a number{RESET_COLOR}")
+        steps.append(
+            ConditionalStep(
+                {
+                    "condition": UpdatedAgoCondition(
+                        {
+                            "comparison": ComparisonType.GREATER_THAN_OR_EQUAL,
+                            "time": days_stale * 24 * 60 * 60,
+                        }
+                    ),
+                    "action_type": ActionType.ABANDON,
+                }
+            )
+        )
+
+    return {
+        "repo": repo.bundle(),
+        "remote_runner": remote_runner,
+        "steps": [step.bundle() for step in steps],
+    }
+
+
 def initialize_repo(repo_dir: str, prev_inputs: Mapping[str, Any]) -> None:
     """Set up a repo to work with AutoTransform.
 
@@ -310,7 +403,8 @@ def initialize_repo(repo_dir: str, prev_inputs: Mapping[str, Any]) -> None:
         use_github = get_yes_or_no("Do you want to configure AutoTransform to use Github?")
 
     # Set up workflow files
-    if use_github and get_yes_or_no("Use Github Actions for AutoTransform?"):
+    use_github_actions = get_yes_or_no("Use Github Actions for AutoTransform?")
+    if use_github and use_github_actions:
         initialize_workflows(repo_dir, examples_dir, prev_inputs)
 
     # Get the repo
@@ -355,6 +449,12 @@ def initialize_repo(repo_dir: str, prev_inputs: Mapping[str, Any]) -> None:
     ) as requirements_file:
         requirements_file.write(requirements)
         requirements_file.flush()
+
+    # Set up manage file
+    manage_bundle = get_manage_bundle(use_github_actions, repo, prev_inputs)
+    with open(f"{repo_dir}/autotransform/manage.json", "w", encoding="UTF-8") as manage_file:
+        manage_file.write(json.dumps(manage_bundle, indent=4))
+        manage_file.flush()
 
 
 def initialize_command_main(_args: Namespace) -> None:
