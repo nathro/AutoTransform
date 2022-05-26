@@ -405,6 +405,16 @@ def initialize_repo(repo_dir: str, prev_inputs: Mapping[str, Any]) -> None:
         schedule_file.write(json.dumps(schedule_bundle, indent=4))
         schedule_file.flush()
 
+    if use_github_actions:
+        info(
+            "Please ensure there is a repository secret of AUTO_TRANSFORM_BOT_GITHUB_TOKEN "
+            + "that contains a Github token for your bot account"
+        )
+        info(
+            "This token must have permissions to push branches, "
+            + "create pull requests, and trigger workflows."
+        )
+
 
 def initialize_command_main(_args: Namespace) -> None:
     """The main method for the schedule command, handles the actual execution of scheduling runs.
