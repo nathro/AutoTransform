@@ -54,8 +54,8 @@ def get_str(prompt: str, secret: bool = False) -> str:
     """
 
     if secret:
-        return getpass(f"{INFO_COLOR}{prompt}{RESET_COLOR}")
-    return input(f"{INFO_COLOR}{prompt}{RESET_COLOR}")
+        return getpass(f"{INPUT_COLOR}{prompt}{RESET_COLOR}")
+    return input(f"{INPUT_COLOR}{prompt}{RESET_COLOR}")
 
 
 def input_string(
