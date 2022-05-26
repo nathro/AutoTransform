@@ -55,7 +55,7 @@ class ComparisonType(str, Enum):
         return ComparisonType._member_map_[name]
 
     @staticmethod
-    def from_value(value: int) -> Enum:
+    def from_value(value: str) -> Enum:
         """Gets the enum value associated with an int value.
 
         Args:
