@@ -117,13 +117,13 @@ def input_scheduled_schema() -> ScheduledSchema:
         Mapping[str, Any]: The schema with scheduling information.
     """
 
+    schema = get_str("Enter the schema to schedule: ")
+
     schema_type = choose_option(
-        "What type of schema is it?",
+        "What is the type of the schema?",
         [(SchemaType.FILE, ["file", "f"]), (SchemaType.BUILDER, ["builder", "b"])],
     )
     schema_type = SchemaType.from_value(schema_type)
-
-    schema = get_str("Enter the schema to schedule: ")
 
     repeats = choose_option(
         "How often should the schema run?",
