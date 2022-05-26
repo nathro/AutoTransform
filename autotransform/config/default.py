@@ -127,6 +127,8 @@ class DefaultConfigFetcher(ConfigFetcher):
             return []
         imports = self.config["IMPORTS"]
         module_list = imports.get("components", None)
+        if module_list is None:
+            return []
         return [module.strip() for module in module_list.split(",")]
 
     def get_runner_local(self) -> Optional[str]:

@@ -15,7 +15,7 @@ import pathlib
 import subprocess
 from argparse import ArgumentParser, Namespace
 from configparser import ConfigParser
-from typing import Any, Dict, List, Mapping, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Tuple
 
 from autotransform.change.state import ChangeState
 from autotransform.config.default import DefaultConfigFetcher
@@ -42,24 +42,54 @@ def add_args(parser: ArgumentParser) -> None:
         parser (ArgumentParser): The parser for the schema run.
     """
 
-    parser.set_defaults(func=initialize_command_main)
+    parser.add_argument(
+        "-s",
+        "--simple",
+        dest="simple",
+        action="store_true",
+        required=False,
+        help="Tells the script to perform a simple set-up, selecting smart defaults.",
+    )
+    github_group = parser.add_mutually_exclusive_group()
+    github_group.add_argument(
+        "--github",
+        dest="github",
+        action="store_true",
+        required=False,
+        help="Tells the script that github is being used.",
+    )
+    github_group.add_argument(
+        "--no-github",
+        dest="github",
+        action="store_false",
+        required=False,
+        help="Tells the script that Github is not being used.",
+    )
+
+    parser.set_defaults(func=initialize_command_main, simple=False, github=None)
 
 
 def get_config_credentials(
-    get_token: bool, prev_inputs: Mapping[str, Any]
+    get_token: bool,
+    prev_inputs: Mapping[str, Any],
+    simple: bool = False,
+    use_github: Optional[bool] = None,
 ) -> Tuple[Dict[str, str], Mapping[str, Any]]:
     """Get the credentials section of a config file.
 
     Args:
         get_token (bool): Whether to get a Github Token.
         prev_inputs (Mapping[str, Any]): Previously used input values.
+        simple (bool, optional): Whether to use simple inputs. Defaults to False.
+        use_github (Optional[bool], optional): Whether to use Github or not. Defaults to None.
 
     Returns:
         Tuple[Dict[str, Any], Mapping[str, Any]]: A tuple containing the new section and the
             supplied inputs.
     """
 
-    use_github = choose_yes_or_no("Do you want to configure AutoTransform to use Github?")
+    if use_github is None:
+        use_github = choose_yes_or_no("Do you want to configure AutoTransform to use Github?")
     if not use_github:
         return {}, {"use_github": False}
 
@@ -71,7 +101,7 @@ def get_config_credentials(
         github_token = get_str("Enter your Github Token: ", secret=True)
         section["github_token"] = github_token
 
-    if choose_yes_or_no("Use Github Enterprise?"):
+    if not simple and choose_yes_or_no("Use Github Enterprise?"):
         github_base_url = input_string(
             "Enter the base URL for GHE API requests (i.e. https://api.your_org-github.com):",
             "Github Enterprise base URL",
@@ -85,16 +115,22 @@ def get_config_credentials(
     return section, inputs
 
 
-def get_config_imports(prev_inputs: Mapping[str, Any]) -> Tuple[Dict[str, str], Mapping[str, Any]]:
+def get_config_imports(
+    prev_inputs: Mapping[str, Any], simple: bool = False
+) -> Tuple[Dict[str, str], Mapping[str, Any]]:
     """Gets the imports section of a config file.
 
     Args:
         prev_inputs (Mapping[str, Any]): Previously used input values.
+        simple (bool, optional): Whether to use simple inputs. Defaults to False.
 
     Returns:
         Tuple[Dict[str, Any], Mapping[str, Any]]: A tuple containing the new section and the
             supplied inputs.
     """
+
+    if simple:
+        return {}, {}
 
     use_custom_components = choose_yes_or_no("Would you like to use custom component modules?")
     if not use_custom_components:
@@ -114,11 +150,17 @@ def get_config_imports(prev_inputs: Mapping[str, Any]) -> Tuple[Dict[str, str], 
     return section, inputs
 
 
-def get_config_runner(prev_inputs: Mapping[str, Any]) -> Tuple[Dict[str, Any], Mapping[str, Any]]:
+def get_config_runner(
+    prev_inputs: Mapping[str, Any],
+    simple: bool = False,
+    use_github: Optional[bool] = None,
+) -> Tuple[Dict[str, Any], Mapping[str, Any]]:
     """Gets the runner section of a config file.
 
     Args:
         prev_inputs (Mapping[str, Any]): Previously used input values.
+        simple (bool, optional): Whether to use simple inputs. Defaults to False.
+        use_github (Optional[bool], optional): Whether to use Github or not. Defaults to None.
 
     Returns:
         Tuple[Dict[str, Any], Mapping[str, Any]]: A tuple containing the new section and the
@@ -129,29 +171,40 @@ def get_config_runner(prev_inputs: Mapping[str, Any]) -> Tuple[Dict[str, Any], M
     inputs: Dict[str, Any] = {}
 
     # Get local runner
-    local_runner = input_string(
-        "Enter a JSON encoded runner for local runs:",
-        "local runner",
-        previous=prev_inputs.get("runner_local"),
-        default=json.dumps(LocalRunner({}).bundle()),
-    )
+    default_local = json.dumps(LocalRunner({}).bundle())
+    if simple:
+        local_runner = default_local
+    else:
+        local_runner = input_string(
+            "Enter a JSON encoded runner for local runs:",
+            "local runner",
+            previous=prev_inputs.get("runner_local"),
+            default=json.dumps(LocalRunner({}).bundle()),
+        )
     section["local"] = local_runner
     inputs["runner_local"] = local_runner
 
     # Get remote runner
-    remote_runner = input_string(
-        "Enter a JSON encoded runner for remote runs:",
-        "remote runner",
-        previous=prev_inputs.get("runner_remote"),
-        default=json.dumps(
-            GithubRunner(
-                {
-                    "run_workflow": "autotransform_run.yml",
-                    "update_workflow": "autotransform_update.yml",
-                }
-            ).bundle()
-        ),
+    default_remote = json.dumps(
+        GithubRunner(
+            {
+                "run_workflow": "autotransform_run.yml",
+                "update_workflow": "autotransform_update.yml",
+            }
+        ).bundle()
     )
+    prev_remote = prev_inputs.get("runner_remote")
+    if simple and use_github:
+        remote_runner = default_remote
+    elif simple and prev_remote is not None:
+        remote_runner = str(prev_remote)
+    else:
+        remote_runner = input_string(
+            "Enter a JSON encoded runner for remote runs:",
+            "remote runner",
+            previous=prev_remote,
+            default=default_remote if use_github is not False else None,
+        )
     section["remote"] = remote_runner
     inputs["runner_remote"] = remote_runner
 
@@ -159,7 +212,11 @@ def get_config_runner(prev_inputs: Mapping[str, Any]) -> Tuple[Dict[str, Any], M
 
 
 def write_config(
-    config_path: str, config_name: str, prev_inputs: Mapping[str, Any]
+    config_path: str,
+    config_name: str,
+    prev_inputs: Mapping[str, Any],
+    simple: bool = False,
+    use_github: Optional[bool] = None,
 ) -> Mapping[str, Any]:
     """Gets all of the inputs required to create a config file and write it.
 
@@ -167,6 +224,8 @@ def write_config(
         config_path (str): The path to the config.
         config_name (str): The name of the config: user, repo, or cwd.
         prev_inputs (Mapping[str, Any]): Previously specified values.
+        simple (bool, optional): Whether to use the simple setup. Defaults to False.
+        use_github (bool, optional): Whether to use Github or not. Defaults to None.
 
     Returns:
         Mapping[str, Any]: The inputs that were obtained when setting up the config.
@@ -175,7 +234,7 @@ def write_config(
     info(f"Initializing {config_name} config located at: {config_path}")
 
     if os.path.exists(config_path):
-        reset_config = choose_yes_or_no("An existing config was found, replace it?")
+        reset_config = not simple and choose_yes_or_no("An existing config was found, replace it?")
         if not reset_config:
             return {}
 
@@ -186,20 +245,22 @@ def write_config(
 
     # Set up credentials configuration
     credentials_section, credentials_inputs = get_config_credentials(
-        config_name == "user", prev_inputs
+        config_name == "user", prev_inputs, simple=simple, use_github=use_github
     )
     config["CREDENTIALS"] = credentials_section
     for key, value in credentials_inputs.items():
         inputs[key] = value
 
     # Set up custom component configuration
-    imports_section, imports_inputs = get_config_imports(prev_inputs)
+    imports_section, imports_inputs = get_config_imports(prev_inputs, simple=simple)
     config["IMPORTS"] = imports_section
     for key, value in imports_inputs.items():
         inputs[key] = value
 
     # Set up runner configuration
-    runner_section, runner_inputs = get_config_runner(prev_inputs)
+    runner_section, runner_inputs = get_config_runner(
+        prev_inputs, simple=simple, use_github=use_github
+    )
     config["RUNNER"] = runner_section
     for key, value in runner_inputs.items():
         inputs[key] = value
@@ -251,7 +312,7 @@ def initialize_workflows(repo_dir: str, examples_dir: str, prev_inputs: Mapping[
 
 
 def get_manage_bundle(
-    use_github_actions: bool, repo: Repo, prev_inputs: Mapping[str, Any]
+    use_github_actions: bool, repo: Repo, prev_inputs: Mapping[str, Any], simple: bool = False
 ) -> Mapping[str, Any]:
     """Get the bundle needed to create the manage.json file.
 
@@ -259,11 +320,13 @@ def get_manage_bundle(
         use_github_actions (bool): Whether the repo uses Github Actions.
         repo (Repo): The repo being managed.
         prev_inputs (Mapping[str, Any]): Previous inputs from configuration.
+        simple (bool, optional): Whether to use the simple setup. Defaults to False.
 
     Returns:
         Mapping[str, Any]: The manage bundle.
     """
 
+    prev_remote = prev_inputs.get("runner_remote")
     if use_github_actions:
         remote_runner: Any = GithubRunner(
             {
@@ -271,17 +334,19 @@ def get_manage_bundle(
                 "update_workflow": "autotransform_update.yml",
             }
         ).bundle()
+    elif simple and prev_remote is not None:
+        remote_runner = str(prev_remote)
     else:
         remote_runner = input_string(
             "Enter a JSON encoded runner for remote runs: ",
             "remote runner",
-            previous=prev_inputs.get("runner_remote"),
+            previous=prev_remote,
         )
         remote_runner = json.loads(remote_runner)
     steps: List[Step] = []
 
     # Merge approved changes
-    if choose_yes_or_no("Automatically merge approved changes?"):
+    if simple or choose_yes_or_no("Automatically merge approved changes?"):
         steps.append(
             ConditionalStep(
                 {
@@ -294,7 +359,7 @@ def get_manage_bundle(
         )
 
     # Abandon rejected changes
-    if choose_yes_or_no("Automatically abandon rejected changes?"):
+    if simple or choose_yes_or_no("Automatically abandon rejected changes?"):
         steps.append(
             ConditionalStep(
                 {
@@ -307,8 +372,11 @@ def get_manage_bundle(
         )
 
     # Update stale changes
-    if choose_yes_or_no("Automatically update stale changes?"):
-        days_stale = input_int("How many days to consider a change stale?", min_val=1)
+    if simple or choose_yes_or_no("Automatically update stale changes?"):
+        if simple:
+            days_stale = 7
+        else:
+            days_stale = input_int("How many days to consider a change stale?", min_val=1)
         steps.append(
             ConditionalStep(
                 {
@@ -330,31 +398,40 @@ def get_manage_bundle(
     }
 
 
-def initialize_repo(repo_dir: str, prev_inputs: Mapping[str, Any]) -> None:
+def initialize_repo(
+    repo_dir: str,
+    prev_inputs: Mapping[str, Any],
+    simple: bool = False,
+    use_github: Optional[bool] = None,
+) -> None:
     """Set up a repo to work with AutoTransform.
 
     Args:
         repo_dir (str): The top level directory of the repo.
         prev_inputs (Mapping[str, Any]): Previous inputs from configuration.
+        simple (bool, optional): Whether to use the simple setup. Defaults to False.
+        use_github (bool, optional): Whether to use Github or not. Defaults to None.
     """
 
     package_dir = str(pathlib.Path(__file__).parent.parent.parent.resolve()).replace("\\", "/")
     examples_dir = f"{package_dir}/examples"
 
-    use_github = prev_inputs.get("use_github")
-    if use_github is None:
-        use_github = choose_yes_or_no("Do you want to configure AutoTransform to use Github?")
+    github = use_github or prev_inputs.get("use_github")
+    if github is None:
+        github = choose_yes_or_no("Do you want to configure AutoTransform to use Github?")
 
     # Set up workflow files
-    use_github_actions = choose_yes_or_no("Use Github Actions for AutoTransform?")
-    if use_github and use_github_actions:
+    use_github_actions = github and (
+        simple or choose_yes_or_no("Use Github Actions for AutoTransform?")
+    )
+    if use_github_actions:
         initialize_workflows(repo_dir, examples_dir, prev_inputs)
 
     # Get the repo
     base_branch_name = get_str(
         "Enter the name of the base branch for the repo(i.e. main, master): "
     )
-    if use_github:
+    if github:
         github_name = get_str("Enter the fully qualified name of the github repo(owner/repo): ")
         repo: Repo = GithubRepo(
             {"base_branch_name": base_branch_name, "full_github_name": github_name}
@@ -363,7 +440,7 @@ def initialize_repo(repo_dir: str, prev_inputs: Mapping[str, Any]) -> None:
         repo = GitRepo({"base_branch_name": base_branch_name})
 
     # Set up the sample schema
-    use_sample_schema = choose_yes_or_no("Would you like to include the sample schema?")
+    use_sample_schema = simple or choose_yes_or_no("Would you like to include the sample schema?")
     if use_sample_schema:
         sample_schema_path = f"{examples_dir}/schemas/black_format.json"
         with open(sample_schema_path, "r", encoding="UTF-8") as sample_schema_file:
@@ -398,7 +475,7 @@ def initialize_repo(repo_dir: str, prev_inputs: Mapping[str, Any]) -> None:
         manage_file.flush()
 
     # Set up schedule file
-    schedule_bundle = input_schedule_bundle(manage_bundle["runner"], use_sample_schema)
+    schedule_bundle = input_schedule_bundle(manage_bundle["runner"], use_sample_schema, simple)
     schedule_path = f"{repo_dir}/autotransform/schedule.json"
     os.makedirs(os.path.dirname(schedule_path), exist_ok=True)
     with open(schedule_path, "w+", encoding="UTF-8") as schedule_file:
@@ -416,17 +493,20 @@ def initialize_repo(repo_dir: str, prev_inputs: Mapping[str, Any]) -> None:
         )
 
 
-def initialize_command_main(_args: Namespace) -> None:
+def initialize_command_main(args: Namespace) -> None:
     """The main method for the schedule command, handles the actual execution of scheduling runs.
 
     Args:
         _args (Namespace): The arguments supplied to the initialize command.
     """
 
+    simple = args.simple
+    github = args.github
+
     user_config_path = (
         f"{DefaultConfigFetcher.get_user_config_dir()}/{DefaultConfigFetcher.CONFIG_NAME}"
     )
-    inputs = write_config(user_config_path, "user", {})
+    inputs = write_config(user_config_path, "user", {}, simple=simple, use_github=github)
 
     # Set up repo
     try:
@@ -443,11 +523,13 @@ def initialize_command_main(_args: Namespace) -> None:
         repo_config_path = (
             f"{DefaultConfigFetcher.get_repo_config_dir()}/{DefaultConfigFetcher.CONFIG_NAME}"
         )
-        inputs = write_config(repo_config_path, "repo", inputs)
-        initialize_repo(repo_dir, inputs)
+        inputs = write_config(repo_config_path, "repo", inputs, simple=simple, use_github=github)
+        initialize_repo(repo_dir, inputs, simple=simple, use_github=github)
 
     if repo_dir == "" and choose_yes_or_no("Set up configuration for current working directory?"):
         cwd_config_path = (
             f"{DefaultConfigFetcher.get_cwd_config_dir()}/{DefaultConfigFetcher.CONFIG_NAME}"
         )
-        write_config(cwd_config_path, "current working directory", inputs)
+        write_config(
+            cwd_config_path, "current working directory", inputs, simple=simple, use_github=github
+        )

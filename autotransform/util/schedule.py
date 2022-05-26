@@ -156,12 +156,15 @@ def input_scheduled_schema() -> ScheduledSchema:
     }
 
 
-def input_schedule_bundle(runner: RunnerBundle, use_sample_schema: bool = False) -> ScheduleBundle:
+def input_schedule_bundle(
+    runner: RunnerBundle, use_sample_schema: bool = False, simple: bool = False
+) -> ScheduleBundle:
     """Get the bundle needed to create the schedule.json file.
 
     Args:
         runner (Any): The runner bundle to use for scheduling.
         use_sample_schema (bool, optional): Whether to include the sample schema. Defaults to False.
+        simple (bool, optional): Whether to use simple inputs. Defaults to False.
 
     Returns:
         Mapping[str, Any]: The schedule bundle.
@@ -169,12 +172,12 @@ def input_schedule_bundle(runner: RunnerBundle, use_sample_schema: bool = False)
 
     info("Using local time to establish a base")
     info("Midnight Monday local is day_of_week 0, hour_of_day 0")
-    if choose_yes_or_no("Would you like to apply a modifier to local time for scheduling?"):
+    if not simple and choose_yes_or_no("Apply a modifier to local time for scheduling?"):
         base_modifier = input_int("Enter the modifier in secords:")
     else:
         base_modifier = 0
 
-    if choose_yes_or_no("Should AutoTransform schedule runs on weekends?"):
+    if not simple and choose_yes_or_no("Should AutoTransform schedule runs on weekends?"):
         excluded_days = []
     else:
         excluded_days = [5, 6]
@@ -190,7 +193,7 @@ def input_schedule_bundle(runner: RunnerBundle, use_sample_schema: bool = False)
     else:
         schemas = []
 
-    get_new_schema = choose_yes_or_no("Would you like to add a schema to the schedule?")
+    get_new_schema = not simple and choose_yes_or_no("Add a schema to the schedule?")
     while get_new_schema:
         schemas.append(input_scheduled_schema())
         get_new_schema = choose_yes_or_no("Would you like to add a schema to the schedule?")
