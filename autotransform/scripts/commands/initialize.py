@@ -68,7 +68,7 @@ def get_config_credentials(
 
     # Github tokens should only ever be used in user configs
     if get_token:
-        github_token = get_str("Enter your Github Token:", secret=True)
+        github_token = get_str("Enter your Github Token: ", secret=True)
         section["github_token"] = github_token
 
     if choose_yes_or_no("Use Github Enterprise?"):
@@ -204,7 +204,7 @@ def write_config(
     for key, value in runner_inputs.items():
         inputs[key] = value
 
-    with open(config_path, "w", encoding="UTF-8") as config_file:
+    with open(config_path, "w+", encoding="UTF-8") as config_file:
         config.write(config_file)
 
     return inputs
@@ -219,8 +219,8 @@ def initialize_workflows(repo_dir: str, examples_dir: str, prev_inputs: Mapping[
         prev_inputs (Mapping[str, Any]): Previous inputs from configuration.
     """
 
-    bot_email = get_str("Enter the email of the account used for automation:")
-    bot_name = get_str("Enter the name of the account used for automation:")
+    bot_email = get_str("Enter the email of the account used for automation: ")
+    bot_name = get_str("Enter the name of the account used for automation: ")
     custom_components = prev_inputs.get("import_components")
     workflows = [
         "autotransform_manage.yml",
@@ -240,7 +240,7 @@ def initialize_workflows(repo_dir: str, examples_dir: str, prev_inputs: Mapping[
                 [line for line in workflow_text.split("\n") if "<CUSTOM COMPONENTS>" not in line]
             )
         with open(
-            f"{repo_dir}/.github/workflows/{workflow}", "w", encoding="UTF-8"
+            f"{repo_dir}/.github/workflows/{workflow}", "w+", encoding="UTF-8"
         ) as workflow_file:
             workflow_file.write(workflow_text)
             workflow_file.flush()
@@ -270,7 +270,7 @@ def get_manage_bundle(
     else:
         remote_runner = prev_inputs.get("runner_remote")
         if remote_runner is None:
-            remote_runner = get_str("Enter a JSON encoded runner for remote runs:")
+            remote_runner = get_str("Enter a JSON encoded runner for remote runs: ")
         remote_runner = json.loads(remote_runner)
     steps: List[Step] = []
 
@@ -345,9 +345,9 @@ def initialize_repo(repo_dir: str, prev_inputs: Mapping[str, Any]) -> None:
         initialize_workflows(repo_dir, examples_dir, prev_inputs)
 
     # Get the repo
-    base_branch_name = get_str("Enter the name of the base branch for the repo(i.e. main,master):")
+    base_branch_name = get_str("Enter the name of the base branch for the repo(i.e. main,master): ")
     if use_github:
-        github_name = get_str("Enter the fully qualified name of the github repo(owner/repo):")
+        github_name = get_str("Enter the fully qualified name of the github repo(owner/repo): ")
         repo: Repo = GithubRepo(
             {"base_branch_name": base_branch_name, "full_github_name": github_name}
         )
@@ -363,7 +363,7 @@ def initialize_repo(repo_dir: str, prev_inputs: Mapping[str, Any]) -> None:
             schema = AutoTransformSchema.from_json(schema_file.read())
         schema._repo = repo  # pylint: disable=protected-access
         with open(
-            f"{repo_dir}/autotransform/schemas/black_format.json", "w", encoding="UTF-8"
+            f"{repo_dir}/autotransform/schemas/black_format.json", "w+", encoding="UTF-8"
         ) as schema_file:
             schema_file.write(schema.to_json(pretty=True))
             schema_file.flush()
@@ -376,20 +376,20 @@ def initialize_repo(repo_dir: str, prev_inputs: Mapping[str, Any]) -> None:
 
     # Set up requirements file
     with open(
-        f"{repo_dir}/autotransform/requirements.txt", "w", encoding="UTF-8"
+        f"{repo_dir}/autotransform/requirements.txt", "w+", encoding="UTF-8"
     ) as requirements_file:
         requirements_file.write(requirements)
         requirements_file.flush()
 
     # Set up manage file
     manage_bundle = get_manage_bundle(use_github_actions, repo, prev_inputs)
-    with open(f"{repo_dir}/autotransform/manage.json", "w", encoding="UTF-8") as manage_file:
+    with open(f"{repo_dir}/autotransform/manage.json", "w+", encoding="UTF-8") as manage_file:
         manage_file.write(json.dumps(manage_bundle, indent=4))
         manage_file.flush()
 
     # Set up schedule file
     schedule_bundle = input_schedule_bundle(manage_bundle["runner"], use_sample_schema)
-    with open(f"{repo_dir}/autotransform/schedule.json", "w", encoding="UTF-8") as schedule_file:
+    with open(f"{repo_dir}/autotransform/schedule.json", "w+", encoding="UTF-8") as schedule_file:
         schedule_file.write(json.dumps(schedule_bundle, indent=4))
         schedule_file.flush()
 

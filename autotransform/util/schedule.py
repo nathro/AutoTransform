@@ -122,7 +122,7 @@ def input_scheduled_schema() -> ScheduledSchema:
     )
     schema_type = SchemaType.from_value(schema_type)
 
-    schema = get_str("Enter the schema to schedule:")
+    schema = get_str("Enter the schema to schedule: ")
 
     repeats = choose_option(
         "How often should the schema run?",
