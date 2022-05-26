@@ -8,6 +8,10 @@ AutoTransform is a tool for simple, automatic large-scale code modification. It 
    :caption: Documents
 
    README.md
+   COMPONENTS.md
+   SCHEDULED_RUNS.md
+   MANAGE_CHANGES.md
+   BEST_PRACTICES.md
    CUSTOM_DEPLOYMENT.md
    CONTRIBUTING.md
 

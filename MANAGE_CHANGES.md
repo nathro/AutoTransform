@@ -1,0 +1,46 @@
+# **Managing Changes**
+
+AutoTransform provides a managing command for managing outstanding Changes, updating, merging, abandoning, and handling other actions for outstanding Changes.
+
+### **Manage File**
+
+To manage outstanding Changes, a JSON file with all manager information is required. The manage format looks like the following:
+```
+{
+    "repo": {
+        "type": <RepoType>,
+        "params": {
+            ...
+        }
+    },
+    "runner": {
+        "type": <RunnerType>,
+        "params": {
+            ...
+        }
+    },
+    "steps": [
+        {
+            "type": <StepType>,
+            "params": {
+                ...
+            }
+        },
+        ...
+    ]
+
+}
+```
+To see an example, check out `data/autotransform_manage.json`.
+
+### **Managing Params**
+
+* **Repo**: The Repo to fetch outstanding Changes for.
+* **Runner**: The Runner to use for updating outstanding Changes.
+* **Steps**: The Steps to check against the outstanding Changes.
+
+### **Invoking Management**
+
+Management is invoked using `autotransform manage <path_to_manager_file>`. If you use Github, you can see an example workflow at `data/workflows/autotransform_manager.yml` that shows how to use Github actions for automating manager runs. If you do not use Github, you can set up a cron job on your organization's infrastructure to invoke the script on a schedule.
+
+As a note, if using GithubActions, the github_token used must have admin access to the repo to trigger further github actions.
