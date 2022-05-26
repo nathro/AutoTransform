@@ -9,6 +9,9 @@
 #### Misc
  - Updated default config fetcher to pull repo and cwd relative configs
  - Made EnvironmentVariableConfigFetcher use DefaultConfigFetcher as a fallback when no environment variable is present
+ - Updated directory structure to src/python/autotransform
+ - Broke docs apart for better browsing rather than 1 large readme
+ - Added utility functions for the init script involving user input/console output
 
 ## Release 0.2.1 - Production Beta
 
