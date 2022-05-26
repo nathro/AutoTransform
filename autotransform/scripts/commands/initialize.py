@@ -345,7 +345,9 @@ def initialize_repo(repo_dir: str, prev_inputs: Mapping[str, Any]) -> None:
         initialize_workflows(repo_dir, examples_dir, prev_inputs)
 
     # Get the repo
-    base_branch_name = get_str("Enter the name of the base branch for the repo(i.e. main,master): ")
+    base_branch_name = get_str(
+        "Enter the name of the base branch for the repo(i.e. main, master): "
+    )
     if use_github:
         github_name = get_str("Enter the fully qualified name of the github repo(owner/repo): ")
         repo: Repo = GithubRepo(
