@@ -12,20 +12,33 @@
 import pathlib
 
 
-def get_package_dir() -> str:
-    """Gets the top level directory where the package is installed
-    (the directory that contains src/).
+def get_path_as_str(path: pathlib.Path) -> str:
+    """Coverts a path to a string AutoTransform can use.
+
+    Args:
+        path (pathlib.Path): The path to convert.
 
     Returns:
-        str: The package's directory.
+        str: The path as a string.
+    """
+
+    return str(path.resolve()).replace("\\", "/")
+
+
+def get_package_dir() -> pathlib.Path:
+    """Gets the directory for the autotransform package
+
+    Returns:
+        pathlib.Path: The package's directory.
     """
 
     path = pathlib.Path(__file__)
-    # File is located in {package_dir}/src/python/autotransform/util/
-    # Need to go up parent 5 times
-    for _ in range(5):
+    for parent in path.parents:
+        if (parent / "examples").exists() or (parent / "autotransform-examples").exists():
+            return parent
+    while path.name != "autotransform":
         path = path.parent
-    return str(path.resolve()).replace("\\", "/")
+    return path.parent
 
 
 def get_examples_dir() -> str:
@@ -35,7 +48,14 @@ def get_examples_dir() -> str:
         str: The examples directory
     """
 
-    return f"{get_package_dir()}/examples"
+    package_dir = get_package_dir()
+    examples_dir = package_dir / "examples"
+    if examples_dir.exists():
+        return get_path_as_str(examples_dir)
+    examples_dir = package_dir / "autotransform-examples"
+    if examples_dir.exists():
+        return get_path_as_str(examples_dir)
+    raise FileNotFoundError()
 
 
 def get_config_dir() -> str:
@@ -44,5 +64,9 @@ def get_config_dir() -> str:
     Returns:
         str: The directory where configuration is stored.
     """
-
-    return f"{get_package_dir()}/config"
+    package_dir = get_package_dir()
+    if (package_dir / "examples").exists():
+        config_dir = "config"
+    else:
+        config_dir = "autotransform-config"
+    return get_path_as_str(get_package_dir() / config_dir)
