@@ -188,8 +188,8 @@ def get_config_runner(
     default_remote = json.dumps(
         GithubRunner(
             {
-                "run_workflow": "autotransform_run.yml",
-                "update_workflow": "autotransform_update.yml",
+                "run_workflow": "autotransform.run.yml",
+                "update_workflow": "autotransform.update.yml",
             }
         ).bundle()
     )
@@ -286,10 +286,10 @@ def initialize_workflows(repo_dir: str, examples_dir: str, prev_inputs: Mapping[
     custom_components = prev_inputs.get("import_components")
 
     workflows = [
-        "autotransform_manage.yml",
-        "autotransform_run.yml",
-        "autotransform_schedule.yml",
-        "autotransform_update.yml",
+        "autotransform.manage.yml",
+        "autotransform.run.yml",
+        "autotransform.schedule.yml",
+        "autotransform.update.yml",
     ]
     for workflow in workflows:
         with open(f"{examples_dir}/workflows/{workflow}", "r", encoding="UTF-8") as workflow_file:
@@ -330,8 +330,8 @@ def get_manage_bundle(
     if use_github_actions:
         remote_runner: Any = GithubRunner(
             {
-                "run_workflow": "autotransform_run.yml",
-                "update_workflow": "autotransform_update.yml",
+                "run_workflow": "autotransform.run.yml",
+                "update_workflow": "autotransform.update.yml",
             }
         ).bundle()
     elif simple and prev_remote is not None:
