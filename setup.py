@@ -7,10 +7,42 @@
 
 """Sets up the build for AutoTransform."""
 
+import os
+from typing import List, Tuple
+
 import setuptools
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
+
+
+def generate_datafiles() -> List[Tuple[str, List[str]]]:
+    """Generates the data files for set-up
+
+    Returns:
+        List[Tuple[str, List[str]]]: The datafiles for setup.
+    """
+
+    data_files = [
+        (
+            "autotransform-docs",
+            [
+                "BEST_PRACTICES.md",
+                "COMPONENTS.md",
+                "CONTRIBUTING.md",
+                "CUSTOM_DEPLOYMENT.md",
+                "MANAGE_CHANGES.md",
+                "README.md",
+                "SCHEDULED_RUNS.md",
+            ],
+        )
+    ]
+
+    for path, _, files in os.walk("examples"):
+        data_files.append((f"autotransform-{path}", files))
+
+    return data_files
+
 
 setuptools.setup(
     name="AutoTransform",
@@ -44,42 +76,7 @@ setuptools.setup(
         "configparser>=5.2.0",
     ],
     python_requires=">=3.10",
-    data_files=[
-        (
-            "autotransform-docs",
-            [
-                "BEST_PRACTICES.md",
-                "COMPONENTS.md",
-                "CONTRIBUTING.md",
-                "CUSTOM_DEPLOYMENT.md",
-                "MANAGE_CHANGES.md",
-                "README.md",
-                "SCHEDULED_RUNS.md",
-            ],
-        ),
-        (
-            "autotransform-examples",
-            [
-                "examples/manage.json",
-                "examples/schedule.json",
-            ],
-        ),
-        (
-            "autotransform-examples/workflows",
-            [
-                "examples/workflows/autotransform.manage.yml",
-                "examples/workflows/autotransform.run.yml",
-                "examples/workflows/autotransform.schedule.yml",
-                "examples/workflows/autotransform.update.yml",
-            ],
-        ),
-        (
-            "autotransform-examples/schemas",
-            [
-                "examples/schemas/black_format.json",
-            ],
-        ),
-    ],
+    data_files=generate_datafiles(),
     entry_points={
         "console_scripts": [
             "autotransform = autotransform.scripts.main:main",
