@@ -80,6 +80,9 @@ class GithubRunner(Runner[GithubRunnerParams]):
         )
         assert workflow_url is not None, "Failed to dispatch workflow request"
         event_handler.handle(DebugEvent({"message": "Successfully dispatched workflow run"}))
+        if workflow_url == "":
+            event_handler.handle(DebugEvent({"message": "No guess for workflow run URL."}))
+            return
         event_handler.handle(
             DebugEvent(
                 {
@@ -119,6 +122,9 @@ class GithubRunner(Runner[GithubRunnerParams]):
         )
         assert workflow_url is not None, "Failed to dispatch workflow request"
         event_handler.handle(DebugEvent({"message": "Successfully dispatched workflow run"}))
+        if workflow_url == "":
+            event_handler.handle(DebugEvent({"message": "No guess for workflow run URL."}))
+            return
         event_handler.handle(
             DebugEvent(
                 {
