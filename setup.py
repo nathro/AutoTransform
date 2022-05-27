@@ -8,7 +8,6 @@
 """Sets up the build for AutoTransform."""
 
 import os
-import pathlib
 from typing import List, Tuple
 
 import setuptools
@@ -39,15 +38,8 @@ def generate_datafiles() -> List[Tuple[str, List[str]]]:
         )
     ]
 
-    parent_dir = f"{str(pathlib.Path(__file__).parent.resolve())}/"
-    for path, _, files in os.walk(f"{parent_dir}examples"):
-        relative_path = path.removeprefix(parent_dir)
-        data_files.append(
-            (
-                f"autotransform-{relative_path}",
-                [os.path.join(relative_path, file) for file in files],
-            )
-        )
+    for path, _, files in os.walk("examples"):
+        data_files.append((f"autotransform-{path}", [os.path.join(path, file) for file in files]))
 
     return data_files
 
