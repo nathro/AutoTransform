@@ -54,7 +54,7 @@ def generate_datafiles() -> List[Tuple[str, List[str]]]:
 
 setuptools.setup(
     name="AutoTransform",
-    version="0.2.2a6",
+    version="0.2.2a7",
     author="Nathan Rockenbach",
     author_email="nathro.software@gmail.com",
     description="A component based framework for designing automated code modification",
