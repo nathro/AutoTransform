@@ -31,7 +31,7 @@ from autotransform.validator.base import Validator
 # See autotransform.batcher.factory
 BATCHERS: Dict[str, Type[Batcher]] = {}
 # See autotransform.change.factory
-CHANGES: Dict[str, Callable[[Mapping[str, Any]], Change]] = {}
+CHANGES: Dict[str, Type[Change]] = {}
 # See autotransform.command.factory
 COMMANDS: Dict[str, Callable[[Mapping[str, Any]], Command]] = {}
 # See autotransform.step.condition.factory

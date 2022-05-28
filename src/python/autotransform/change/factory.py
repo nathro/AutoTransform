@@ -10,7 +10,7 @@
 """A simple factory for producing Changes from type and param information."""
 
 import importlib
-from typing import Any, Callable, Dict, Mapping
+from typing import Dict, Type
 
 from autotransform.change.base import Change, ChangeBundle
 from autotransform.change.github import GithubChange
@@ -28,8 +28,8 @@ class ChangeFactory:
 
     # pylint: disable=too-few-public-methods
 
-    _map: Dict[ChangeType, Callable[[Mapping[str, Any]], Change]] = {
-        ChangeType.GITHUB: GithubChange.from_data,
+    _map: Dict[ChangeType, Type[Change]] = {
+        ChangeType.GITHUB: GithubChange,
     }
 
     @staticmethod
@@ -44,11 +44,14 @@ class ChangeFactory:
         """
 
         if bundle["type"] in ChangeFactory._map:
-            return ChangeFactory._map[bundle["type"]](bundle["params"])
+            return ChangeFactory._map[bundle["type"]].from_data(bundle["params"])
 
         custom_component_modules = Config.get_imports_components()
         for module_string in custom_component_modules:
             module = importlib.import_module(module_string)
             if hasattr(module, "CHANGES") and bundle["type"] in module.CHANGES:
-                return module.CHANGES[bundle["type"]](bundle["params"])
+                class_type = module.CHANGES[bundle["type"]]
+                assert isinstance(class_type, type), "Imported component must be a Type"
+                assert issubclass(class_type, Change), "Imported component must be a Change"
+                return class_type.from_data(bundle["params"])
         raise ValueError(f"No Change found for type {bundle['type']}")
