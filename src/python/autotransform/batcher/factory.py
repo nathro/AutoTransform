@@ -10,7 +10,7 @@
 """A simple factory for producing Batchers from type and param information."""
 
 import importlib
-from typing import Any, Callable, Dict, Mapping
+from typing import Dict, Type
 
 from autotransform.batcher.base import Batcher, BatcherBundle
 from autotransform.batcher.chunk import ChunkBatcher
@@ -30,10 +30,10 @@ class BatcherFactory:
 
     # pylint: disable=too-few-public-methods
 
-    _map: Dict[BatcherType, Callable[[Mapping[str, Any]], Batcher]] = {
-        BatcherType.CHUNK: ChunkBatcher.from_data,
-        BatcherType.DIRECTORY: DirectoryBatcher.from_data,
-        BatcherType.SINGLE: SingleBatcher.from_data,
+    _map: Dict[BatcherType, Type[Batcher]] = {
+        BatcherType.CHUNK: ChunkBatcher,
+        BatcherType.DIRECTORY: DirectoryBatcher,
+        BatcherType.SINGLE: SingleBatcher,
     }
 
     @staticmethod
@@ -48,11 +48,14 @@ class BatcherFactory:
         """
 
         if bundle["type"] in BatcherFactory._map:
-            return BatcherFactory._map[bundle["type"]](bundle["params"])
+            return BatcherFactory._map[bundle["type"]].from_data(bundle["params"])
 
         custom_component_modules = Config.get_imports_components()
         for module_string in custom_component_modules:
             module = importlib.import_module(module_string)
             if hasattr(module, "BATCHERS") and bundle["type"] in module.BATCHERS:
-                return module.BATCHERS[bundle["type"]](bundle["params"])
+                class_type = module.BATCHERS[bundle["type"]]
+                assert isinstance(class_type, type), "Imported component must be a Type"
+                assert issubclass(class_type, Batcher), "Imported component must be a Batcher"
+                return class_type.from_data(bundle["params"])
         raise ValueError(f"No Batcher found for type {bundle['type']}")

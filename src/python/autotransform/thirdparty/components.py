@@ -29,7 +29,7 @@ from autotransform.transformer.base import Transformer
 from autotransform.validator.base import Validator
 
 # See autotransform.batcher.factory
-BATCHERS: Dict[str, Callable[[Mapping[str, Any]], Batcher]] = {}
+BATCHERS: Dict[str, Type[Batcher]] = {}
 # See autotransform.change.factory
 CHANGES: Dict[str, Callable[[Mapping[str, Any]], Change]] = {}
 # See autotransform.command.factory
