@@ -33,7 +33,7 @@ BATCHERS: Dict[str, Type[Batcher]] = {}
 # See autotransform.change.factory
 CHANGES: Dict[str, Type[Change]] = {}
 # See autotransform.command.factory
-COMMANDS: Dict[str, Callable[[Mapping[str, Any]], Command]] = {}
+COMMANDS: Dict[str, Type[Command]] = {}
 # See autotransform.step.condition.factory
 CONDITIONS: Dict[str, Callable[[Mapping[str, Any]], Condition]] = {}
 # See autotransform.event.handler

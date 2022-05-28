@@ -10,7 +10,7 @@
 """A simple factory for producing Commands from type and param information."""
 
 import importlib
-from typing import Any, Callable, Dict, Mapping
+from typing import Dict, Type
 
 from autotransform.command.base import Command, CommandBundle
 from autotransform.command.script import ScriptCommand
@@ -28,8 +28,8 @@ class CommandFactory:
 
     # pylint: disable=too-few-public-methods
 
-    _map: Dict[CommandType, Callable[[Mapping[str, Any]], Command]] = {
-        CommandType.SCRIPT: ScriptCommand.from_data,
+    _map: Dict[CommandType, Type[Command]] = {
+        CommandType.SCRIPT: ScriptCommand,
     }
 
     @staticmethod
@@ -44,11 +44,14 @@ class CommandFactory:
         """
 
         if bundle["type"] in CommandFactory._map:
-            return CommandFactory._map[bundle["type"]](bundle["params"])
+            return CommandFactory._map[bundle["type"]].from_data(bundle["params"])
 
         custom_component_modules = Config.get_imports_components()
         for module_string in custom_component_modules:
             module = importlib.import_module(module_string)
             if hasattr(module, "COMMANDS") and bundle["type"] in module.COMMANDS:
-                return module.COMMANDS[bundle["type"]](bundle["params"])
+                class_type = module.COMMANDS[bundle["type"]]
+                assert isinstance(class_type, type), "Imported component must be a Type"
+                assert issubclass(class_type, Command), "Imported component must be a Command"
+                return class_type.from_data(bundle["params"])
         raise ValueError(f"No Command found for type {bundle['type']}")
