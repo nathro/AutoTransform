@@ -10,7 +10,7 @@
 """A simple factory for producing Inputs from type and param information."""
 
 import importlib
-from typing import Any, Callable, Dict, Mapping
+from typing import Dict, Type
 
 from autotransform.config import fetcher as Config
 from autotransform.input.base import Input, InputBundle
@@ -21,7 +21,7 @@ from autotransform.input.type import InputType
 
 
 class InputFactory:
-    """The factory class for Inputs. Maps a type to an Input.
+    """The factory class for Inputs. Maps a type to a Input.
 
     Attributes:
         _map (Dict[InputType, Callable[[Mapping[str, Any]], Input]]): A mapping from
@@ -30,10 +30,10 @@ class InputFactory:
 
     # pylint: disable=too-few-public-methods
 
-    _map: Dict[InputType, Callable[[Mapping[str, Any]], Input]] = {
-        InputType.DIRECTORY: DirectoryInput.from_data,
-        InputType.EMPTY: EmptyInput.from_data,
-        InputType.GIT_GREP: GitGrepInput.from_data,
+    _map: Dict[InputType, Type[Input]] = {
+        InputType.DIRECTORY: DirectoryInput,
+        InputType.EMPTY: EmptyInput,
+        InputType.GIT_GREP: GitGrepInput,
     }
 
     @staticmethod
@@ -46,12 +46,16 @@ class InputFactory:
         Returns:
             Input: An instance of the associated Input.
         """
+
         if bundle["type"] in InputFactory._map:
-            return InputFactory._map[bundle["type"]](bundle["params"])
+            return InputFactory._map[bundle["type"]].from_data(bundle["params"])
 
         custom_component_modules = Config.get_imports_components()
         for module_string in custom_component_modules:
             module = importlib.import_module(module_string)
             if hasattr(module, "INPUTS") and bundle["type"] in module.INPUTS:
-                return module.INPUTS[bundle["type"]](bundle["params"])
+                class_type = module.INPUTS[bundle["type"]]
+                assert isinstance(class_type, type), "Imported component must be a Type"
+                assert issubclass(class_type, Input), "Imported component must be a Input"
+                return class_type.from_data(bundle["params"])
         raise ValueError(f"No Input found for type {bundle['type']}")

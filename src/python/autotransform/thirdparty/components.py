@@ -41,7 +41,7 @@ EVENT_CALLBACKS: List[Callable[[Event], None]] = []
 # See autotransform.filter.factory
 FILTERS: Dict[str, Type[Filter]] = {}
 # See autotransform.input.factory
-INPUTS: Dict[str, Callable[[Mapping[str, Any]], Input]] = {}
+INPUTS: Dict[str, Type[Input]] = {}
 # See autotransform.item.factory
 ITEMS: Dict[str, Callable[[Mapping[str, Any]], Item]] = {}
 # See autotransform.runner.factory
