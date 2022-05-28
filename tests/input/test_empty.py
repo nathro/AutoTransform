@@ -7,14 +7,12 @@
 
 # @black_format
 
-"""The type of Input, used create a 1:1 mapping."""
+"""Tests for the EmptyInput component."""
 
-from enum import Enum
+from autotransform.input.empty import EmptyInput
 
 
-class InputType(str, Enum):
-    """A simple enum for 1:1 Input to type mapping."""
+def test_input():
+    """Tests running EmptyInput component."""
 
-    DIRECTORY = "directory"
-    EMPTY = "empty"
-    GIT_GREP = "git_grep"
+    assert len(EmptyInput({}).get_items()) == 0, "Empty Input should always return no Items."

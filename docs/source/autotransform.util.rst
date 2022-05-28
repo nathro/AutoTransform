@@ -10,6 +10,7 @@ Utilities
    :maxdepth: 4
 
    autotransform.util.cachedfile
-   autotransform.util.github
    autotransform.util.console
+   autotransform.util.github
+   autotransform.util.package
    autotransform.util.schedule

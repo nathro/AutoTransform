@@ -2,6 +2,9 @@
 
 ## Release 0.2.2 - Production Beta
 
+#### New Components
+ - Added EmptyInput for schemas that operate on the entire codebase at once
+
 #### Scripts
  - Added init command to set up user configuration/repos
  - Replaced config command with one that allows the user to navigate through prompts

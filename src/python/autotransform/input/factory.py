@@ -15,6 +15,7 @@ from typing import Any, Callable, Dict, Mapping
 from autotransform.config import fetcher as Config
 from autotransform.input.base import Input, InputBundle
 from autotransform.input.directory import DirectoryInput
+from autotransform.input.empty import EmptyInput
 from autotransform.input.gitgrep import GitGrepInput
 from autotransform.input.type import InputType
 
@@ -31,6 +32,7 @@ class InputFactory:
 
     _map: Dict[InputType, Callable[[Mapping[str, Any]], Input]] = {
         InputType.DIRECTORY: DirectoryInput.from_data,
+        InputType.EMPTY: EmptyInput.from_data,
         InputType.GIT_GREP: GitGrepInput.from_data,
     }
 

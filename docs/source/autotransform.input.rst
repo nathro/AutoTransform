@@ -10,6 +10,7 @@ Components
    :maxdepth: 4
 
    autotransform.input.directory
+   autotransform.input.empty
    autotransform.input.gitgrep
 
 Core
