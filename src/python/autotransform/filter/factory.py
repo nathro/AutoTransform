@@ -10,7 +10,7 @@
 """A simple factory for producing Filters from type and param information."""
 
 import importlib
-from typing import Any, Callable, Dict, Mapping
+from typing import Dict, Type
 
 from autotransform.config import fetcher as Config
 from autotransform.filter.base import Filter, FilterBundle
@@ -29,10 +29,10 @@ class FilterFactory:
 
     # pylint: disable=too-few-public-methods
 
-    _map: Dict[FilterType, Callable[[Mapping[str, Any]], Filter]] = {
-        FilterType.FILE_CONTENT_REGEX: FileContentRegexFilter.from_data,
-        FilterType.KEY_HASH_SHARD: KeyHashShardFilter.from_data,
-        FilterType.REGEX: RegexFilter.from_data,
+    _map: Dict[FilterType, Type[Filter]] = {
+        FilterType.FILE_CONTENT_REGEX: FileContentRegexFilter,
+        FilterType.KEY_HASH_SHARD: KeyHashShardFilter,
+        FilterType.REGEX: RegexFilter,
     }
 
     @staticmethod
@@ -47,11 +47,14 @@ class FilterFactory:
         """
 
         if bundle["type"] in FilterFactory._map:
-            return FilterFactory._map[bundle["type"]](bundle["params"])
+            return FilterFactory._map[bundle["type"]].from_data(bundle["params"])
 
         custom_component_modules = Config.get_imports_components()
         for module_string in custom_component_modules:
             module = importlib.import_module(module_string)
             if hasattr(module, "FILTERS") and bundle["type"] in module.FILTERS:
-                return module.FILTERS[bundle["type"]](bundle["params"])
+                class_type = module.FILTERS[bundle["type"]]
+                assert isinstance(class_type, type), "Imported component must be a Type"
+                assert issubclass(class_type, Filter), "Imported component must be a Filter"
+                return class_type.from_data(bundle["params"])
         raise ValueError(f"No Filter found for type {bundle['type']}")

@@ -39,7 +39,7 @@ CONDITIONS: Dict[str, Callable[[Mapping[str, Any]], Condition]] = {}
 # See autotransform.event.handler
 EVENT_CALLBACKS: List[Callable[[Event], None]] = []
 # See autotransform.filter.factory
-FILTERS: Dict[str, Callable[[Mapping[str, Any]], Filter]] = {}
+FILTERS: Dict[str, Type[Filter]] = {}
 # See autotransform.input.factory
 INPUTS: Dict[str, Callable[[Mapping[str, Any]], Input]] = {}
 # See autotransform.item.factory
