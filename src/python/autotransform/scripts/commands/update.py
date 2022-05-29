@@ -13,7 +13,7 @@ import json
 import os
 from argparse import ArgumentParser, Namespace
 
-from autotransform.change.factory import ChangeFactory
+from autotransform.change.base import FACTORY as change_factory
 from autotransform.config import fetcher as Config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
@@ -117,13 +117,13 @@ def run_command_main(args: Namespace) -> None:
     event_args = {"change": args.change, "change_type": args.change_type}
     if args.change_type == "file":
         with open(change, "r") as change_file:
-            change = ChangeFactory.get(json.loads(change_file.read()))
+            change = change_factory.get_instance(json.loads(change_file.read()))
     elif args.change_type == "environment":
         change = os.getenv(change)
         assert isinstance(change, str)
-        change = ChangeFactory.get(json.loads(change))
+        change = change_factory.get_instance(json.loads(change))
     else:
-        change = ChangeFactory.get(json.loads(change))
+        change = change_factory.get_instance(json.loads(change))
 
     if args.change_type != "string":
         event_handler.handle(DebugEvent({"message": f"JSON Change: {json.dumps(change.bundle())}"}))

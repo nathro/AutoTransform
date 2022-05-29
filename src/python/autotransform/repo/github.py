@@ -194,10 +194,8 @@ class GithubRepo(GitRepo):
         authenticated_user_id = GithubUtils.get(self._params["full_github_name"]).get_user_id()
         return [
             GithubChange(
-                {
-                    "full_github_name": self._params["full_github_name"],
-                    "pull_number": pull.number,
-                }
+                full_github_name=self._params["full_github_name"],
+                pull_number=pull.number,
             )
             for pull in pulls
             if pull.owner_id == authenticated_user_id

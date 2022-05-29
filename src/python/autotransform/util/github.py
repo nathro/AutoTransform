@@ -108,7 +108,7 @@ class GithubUtils:
             PullRequest: The pull request.
         """
 
-        return PullRequest(self, pull_number)
+        return PullRequest(self, self._api.pulls.get(pull_number))
 
     def get_open_pull_requests(self, base: Optional[str] = None) -> List[PullRequest]:
         """Gets all outstanding pull requests from the repo.
