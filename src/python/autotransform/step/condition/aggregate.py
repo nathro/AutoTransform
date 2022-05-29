@@ -11,14 +11,13 @@
 
 from __future__ import annotations
 
-import json
+from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, Mapping, TypedDict
+from typing import Any, ClassVar, Dict, List, Type
 
 from autotransform.change.base import Change
-from autotransform.step.condition import factory
-from autotransform.step.condition.base import Condition, ConditionBundle
-from autotransform.step.condition.type import ConditionType
+from autotransform.step.condition.base import FACTORY as condition_factory
+from autotransform.step.condition.base import Condition, ConditionName
 
 
 class AggregatorType(str, Enum):
@@ -27,78 +26,22 @@ class AggregatorType(str, Enum):
     ALL = "all"
     ANY = "any"
 
-    @staticmethod
-    def has_value(value: Any) -> bool:
-        """Checks is the provided value is a valid value for this enum.
 
-        Args:
-            value (Any): An unknown value.
-
-        Returns:
-            [bool]: Whether the value is present in the enum.
-        """
-
-        # pylint: disable=no-member
-
-        return value in AggregatorType._value2member_map_
-
-    @staticmethod
-    def from_name(name: str) -> Enum:
-        """Gets the enum value associated with a name.
-
-        Args:
-            name (str): The name of a member of the enum.
-
-        Returns:
-            AggregatorType: The associated enum value.
-        """
-
-        # pylint: disable=no-member
-
-        return AggregatorType._member_map_[name]
-
-    @staticmethod
-    def from_value(value: int) -> Enum:
-        """Gets the enum value associated with an int value.
-
-        Args:
-            value (str): The value of a member of the enum.
-
-        Returns:
-            AggregatorType: The associated enum value.
-        """
-
-        # pylint: disable=no-member
-
-        return AggregatorType._value2member_map_[value]
-
-
-class AggregateConditionParams(TypedDict):
-    """The param type for a AggregateCondition."""
-
-    conditions: List[Condition]
-    aggregator: AggregatorType
-
-
-class AggregateCondition(Condition[AggregateConditionParams]):
+@dataclass(frozen=True, kw_only=True)
+class AggregateCondition(Condition):
     """A Condition which aggregates a list of Conditions using the supplied aggregator and
     returns the result of the aggregation.
 
     Attributes:
-        _params (TParams): The aggregator type and list of Conditions.
+        aggregator (AggregatorType): How to aggregate the conditions, using any or all.
+        conditions (List[Condition]): The conditions to be aggregated.
+        name (ClassVar[ConditionName]): The name of the Component.
     """
 
-    _params: AggregateConditionParams
+    aggregator: AggregatorType
+    conditions: List[Condition]
 
-    @staticmethod
-    def get_type() -> ConditionType:
-        """Used to map Condition components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            ConditionType: The unique type associated with this Condition.
-        """
-
-        return ConditionType.AGGREGATE
+    name: ClassVar[ConditionName] = ConditionName.AGGREGATE
 
     def check(self, change: Change) -> bool:
         """Checks whether how long ago the Change was created passes the comparison.
@@ -110,55 +53,41 @@ class AggregateCondition(Condition[AggregateConditionParams]):
             bool: Whether the Change passes the Condition.
         """
 
-        if self._params["aggregator"] == AggregatorType.ALL:
-            return all(condition.check(change) for condition in self._params["conditions"])
+        if self.aggregator == AggregatorType.ALL:
+            return all(condition.check(change) for condition in self.conditions)
 
-        if self._params["aggregator"] == AggregatorType.ANY:
-            return any(condition.check(change) for condition in self._params["conditions"])
+        if self.aggregator == AggregatorType.ANY:
+            return any(condition.check(change) for condition in self.conditions)
 
-        raise ValueError(f"Unknown aggregator type {self._params['aggregator']}")
+        raise ValueError(f"Unknown aggregator type {self.aggregator}")
 
-    def bundle(self) -> ConditionBundle:
+    def bundle(self) -> Dict[str, Any]:
         """Generates a JSON encodable bundle.
-        If a component's params are not JSON encodable this method should be overridden to provide
+        If a component is not JSON encodable this method should be overridden to provide
         an encodable version.
 
         Returns:
-            ConditionBundle: The encodable bundle.
+            Dict[str, Any]: The encodable bundle.
         """
-        bundled_params: Dict[str, Any] = {
-            "conditions": [condition.bundle() for condition in self._params["conditions"]],
-            "aggregator": self._params["aggregator"],
-        }
 
         return {
-            "params": bundled_params,
-            "type": self.get_type(),
+            "name": self.name,
+            "aggregator": str(self.aggregator),
+            "conditions": [condition.bundle() for condition in self.conditions],
         }
 
-    def __str__(self) -> str:
-        conditions = [str(condition) for condition in self._params["conditions"]]
-        return f"{self._params['aggregator']} {json.dumps(conditions)}"
-
-    @staticmethod
-    def from_data(data: Mapping[str, Any]) -> AggregateCondition:
-        """Produces an instance of the component from decoded params. Implementations should
-        assert that the data provided matches expected types and is valid.
+    @classmethod
+    def from_data(cls: Type[AggregateCondition], data: Dict[str, Any]) -> AggregateCondition:
+        """Produces an instance of the component from decoded data. Override if
+        the component had to be modified to encode.
 
         Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
+            data (Mapping[str, Any]): The JSON decoded data.
 
         Returns:
-            AggregateCondition: An instance of the AggregateCondition.
+            TComponent: An instance of the component.
         """
 
-        aggregator = data["aggregator"]
-        aggregator = (
-            AggregatorType.from_value(aggregator)
-            if AggregatorType.has_value(aggregator)
-            else AggregatorType.from_name(aggregator)
-        )
-
-        conditions = [factory.ConditionFactory.get(condition) for condition in data["conditions"]]
-
-        return AggregateCondition({"conditions": conditions, "aggregator": aggregator})
+        aggregator = AggregatorType(data["aggregator"])
+        conditions = [condition_factory.get_instance(condition) for condition in data["conditions"]]
+        return AggregateCondition(aggregator=aggregator, conditions=conditions)

@@ -21,12 +21,9 @@ from autotransform.item.base import Item
 from autotransform.runner.base import Runner
 from autotransform.schema.builder import SchemaBuilder
 from autotransform.step.base import Step
-from autotransform.step.condition.base import Condition
 from autotransform.transformer.base import Transformer
 from autotransform.validator.base import Validator
 
-# See autotransform.step.condition.factory
-CONDITIONS: Dict[str, Callable[[Mapping[str, Any]], Condition]] = {}
 # See autotransform.event.handler
 EVENT_CALLBACKS: List[Callable[[Event], None]] = []
 # See autotransform.filter.factory

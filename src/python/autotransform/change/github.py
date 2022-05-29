@@ -16,8 +16,7 @@ from functools import cached_property
 from typing import TYPE_CHECKING, ClassVar, Dict, List, Tuple
 
 from autotransform.batcher.base import Batch
-from autotransform.change.base import Change, ChangeName
-from autotransform.change.state import ChangeState
+from autotransform.change.base import Change, ChangeName, ChangeState
 from autotransform.item.factory import ItemFactory
 from autotransform.util.github import GithubUtils, PullRequest
 

@@ -29,29 +29,27 @@ def test_non_used_comparisons():
     mock_change = mock.create_autospec(Change)
     mock_change.get_schema.return_value = mock_schema
 
-    condition = SchemaNameCondition({"name": "foo", "comparison": ComparisonType.GREATER_THAN})
+    condition = SchemaNameCondition(schema_name="foo", comparison=ComparisonType.GREATER_THAN)
     with pytest.raises(
         AssertionError, match="SchemaNameCondition may only use equal or not_equal comparison"
     ):
         condition.check(mock_change)
 
     condition = SchemaNameCondition(
-        {"name": "foo", "comparison": ComparisonType.GREATER_THAN_OR_EQUAL}
+        schema_name="foo", comparison=ComparisonType.GREATER_THAN_OR_EQUAL
     )
     with pytest.raises(
         AssertionError, match="SchemaNameCondition may only use equal or not_equal comparison"
     ):
         condition.check(mock_change)
 
-    condition = SchemaNameCondition({"name": "foo", "comparison": ComparisonType.LESS_THAN})
+    condition = SchemaNameCondition(schema_name="foo", comparison=ComparisonType.LESS_THAN)
     with pytest.raises(
         AssertionError, match="SchemaNameCondition may only use equal or not_equal comparison"
     ):
         condition.check(mock_change)
 
-    condition = SchemaNameCondition(
-        {"name": "foo", "comparison": ComparisonType.LESS_THAN_OR_EQUAL}
-    )
+    condition = SchemaNameCondition(schema_name="foo", comparison=ComparisonType.LESS_THAN_OR_EQUAL)
     with pytest.raises(
         AssertionError, match="SchemaNameCondition may only use equal or not_equal comparison"
     ):

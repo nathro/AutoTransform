@@ -12,8 +12,7 @@
 import mock
 import pytest
 
-from autotransform.change.base import Change
-from autotransform.change.state import ChangeState
+from autotransform.change.base import Change, ChangeState
 from autotransform.step.condition.comparison import ComparisonType
 from autotransform.step.condition.state import ChangeStateCondition
 
@@ -25,7 +24,7 @@ def test_non_used_comparisons():
     mock_change.get_state.return_value = ChangeState.APPROVED
 
     condition = ChangeStateCondition(
-        {"state": ChangeState.APPROVED, "comparison": ComparisonType.GREATER_THAN}
+        state=ChangeState.APPROVED, comparison=ComparisonType.GREATER_THAN
     )
     with pytest.raises(
         AssertionError, match="ChangeStateCondition may only use equal or not_equal comparison"
@@ -33,7 +32,7 @@ def test_non_used_comparisons():
         condition.check(mock_change)
 
     condition = ChangeStateCondition(
-        {"state": ChangeState.APPROVED, "comparison": ComparisonType.GREATER_THAN_OR_EQUAL}
+        state=ChangeState.APPROVED, comparison=ComparisonType.GREATER_THAN_OR_EQUAL
     )
     with pytest.raises(
         AssertionError, match="ChangeStateCondition may only use equal or not_equal comparison"
@@ -41,7 +40,7 @@ def test_non_used_comparisons():
         condition.check(mock_change)
 
     condition = ChangeStateCondition(
-        {"state": ChangeState.APPROVED, "comparison": ComparisonType.LESS_THAN}
+        state=ChangeState.APPROVED, comparison=ComparisonType.LESS_THAN
     )
     with pytest.raises(
         AssertionError, match="ChangeStateCondition may only use equal or not_equal comparison"
@@ -49,7 +48,7 @@ def test_non_used_comparisons():
         condition.check(mock_change)
 
     condition = ChangeStateCondition(
-        {"state": ChangeState.APPROVED, "comparison": ComparisonType.LESS_THAN_OR_EQUAL}
+        state=ChangeState.APPROVED, comparison=ComparisonType.LESS_THAN_OR_EQUAL
     )
     with pytest.raises(
         AssertionError, match="ChangeStateCondition may only use equal or not_equal comparison"

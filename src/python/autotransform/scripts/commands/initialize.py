@@ -17,7 +17,7 @@ from argparse import ArgumentParser, Namespace
 from configparser import ConfigParser
 from typing import Any, Dict, List, Mapping, Optional, Tuple
 
-from autotransform.change.state import ChangeState
+from autotransform.change.base import ChangeState
 from autotransform.config.default import DefaultConfigFetcher
 from autotransform.repo.base import Repo
 from autotransform.repo.git import GitRepo
@@ -363,7 +363,7 @@ def get_manage_bundle(
             ConditionalStep(
                 {
                     "condition": ChangeStateCondition(
-                        {"comparison": ComparisonType.EQUAL, "state": ChangeState.APPROVED}
+                        comparison=ComparisonType.EQUAL, state=ChangeState.APPROVED
                     ),
                     "action_type": ActionType.MERGE,
                 }
@@ -376,7 +376,7 @@ def get_manage_bundle(
             ConditionalStep(
                 {
                     "condition": ChangeStateCondition(
-                        {"comparison": ComparisonType.EQUAL, "state": ChangeState.CHANGES_REQUESTED}
+                        comparison=ComparisonType.EQUAL, state=ChangeState.CHANGES_REQUESTED
                     ),
                     "action_type": ActionType.ABANDON,
                 }
@@ -393,10 +393,8 @@ def get_manage_bundle(
             ConditionalStep(
                 {
                     "condition": UpdatedAgoCondition(
-                        {
-                            "comparison": ComparisonType.GREATER_THAN_OR_EQUAL,
-                            "time": days_stale * 24 * 60 * 60,
-                        }
+                        comparison=ComparisonType.GREATER_THAN_OR_EQUAL,
+                        time=days_stale * 24 * 60 * 60,
                     ),
                     "action_type": ActionType.ABANDON,
                 }

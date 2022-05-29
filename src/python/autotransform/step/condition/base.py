@@ -11,60 +11,33 @@
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-from typing import Any, Generic, Mapping, TypedDict, TypeVar
+from abc import abstractmethod
+from enum import Enum
+from typing import ClassVar
 
 from autotransform.change.base import Change
-from autotransform.step.condition.type import ConditionType
+from autotransform.util.component import Component, ComponentFactory, ComponentImport
 
 
-class ConditionBundle(TypedDict):
-    """A bundled version of the Condition object used for JSON encoding."""
+class ConditionName(str, Enum):
+    """A simple enum for mapping."""
 
-    params: Mapping[str, Any]
-    type: ConditionType
+    AGGREGATE = "aggregate"
+    CHANGE_STATE = "change_state"
+    CREATED_AGO = "created_ago"
+    SCHEMA_NAME = "schema_name"
+    UPDATED_AGO = "updated_ago"
 
 
-TParams = TypeVar("TParams", bound=Mapping[str, Any])
-
-
-class Condition(Generic[TParams], ABC):
+class Condition(Component):
     """The base for Condition components. Used by ConditionalStep to determine whether to
     take an Action.
 
     Attributes:
-        _params (TParams): The paramaters that control operation of the Condition.
-            Should be defined using a TypedDict in subclasses.
+        name (ClassVar[ConditionName]): The name of the Component.
     """
 
-    _params: TParams
-
-    def __init__(self, params: TParams):
-        """A simple constructor.
-
-        Args:
-            params (TParams): The paramaters used to set up the Condition.
-        """
-
-        self._params = params
-
-    def get_params(self) -> TParams:
-        """Gets the paramaters used to set up the Condition.
-
-        Returns:
-            TParams: The paramaters used to set up the Condition.
-        """
-
-        return self._params
-
-    @staticmethod
-    @abstractmethod
-    def get_type() -> ConditionType:
-        """Used to map Condition components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            ConditionType: The unique type associated with this Condition.
-        """
+    name: ClassVar[ConditionName]
 
     @abstractmethod
     def check(self, change: Change) -> bool:
@@ -77,29 +50,25 @@ class Condition(Generic[TParams], ABC):
             bool: Whether the Change passes the condition.
         """
 
-    def bundle(self) -> ConditionBundle:
-        """Generates a JSON encodable bundle.
-        If a component's params are not JSON encodable this method should be overridden to provide
-        an encodable version.
 
-        Returns:
-            ConditionBundle: The encodable bundle.
-        """
-
-        return {
-            "params": self._params,
-            "type": self.get_type(),
-        }
-
-    @staticmethod
-    @abstractmethod
-    def from_data(data: Mapping[str, Any]) -> Condition:
-        """Produces an instance of the component from decoded params. Implementations should
-        assert that the data provided matches expected types and is valid.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-
-        Returns:
-            Condition: An instance of the Condition.
-        """
+FACTORY = ComponentFactory(
+    {
+        ConditionName.AGGREGATE: ComponentImport(
+            class_name="AggregateCondition", module="autotransform.step.condition.aggregate"
+        ),
+        ConditionName.CHANGE_STATE: ComponentImport(
+            class_name="ChangeStateCondition", module="autotransform.step.condition.state"
+        ),
+        ConditionName.CREATED_AGO: ComponentImport(
+            class_name="CreatedAgoCondition", module="autotransform.step.condition.created"
+        ),
+        ConditionName.SCHEMA_NAME: ComponentImport(
+            class_name="SchemaNameCondition", module="autotransform.step.condition.schema"
+        ),
+        ConditionName.UPDATED_AGO: ComponentImport(
+            class_name="UpdatedAgoCondition", module="autotransform.step.condition.updated"
+        ),
+    },
+    Condition,  # type: ignore [misc]
+    "condition.json",
+)

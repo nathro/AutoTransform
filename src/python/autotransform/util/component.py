@@ -15,9 +15,11 @@ import importlib
 import json
 from abc import ABC
 from dataclasses import asdict, dataclass
+from enum import Enum
 from typing import Any, ClassVar, Dict, Generic, Optional, Type, TypeVar
 
 from dacite import from_dict
+from dacite.config import Config as DaciteConfig
 
 from autotransform.config import fetcher as Config
 from autotransform.event.debug import DebugEvent
@@ -57,7 +59,16 @@ class Component(ABC):
         Returns:
             Dict[str, Any]: The encodable bundle.
         """
-        return {"name": self.name} | asdict(self)
+
+        def custom_asdict_factory(data):
+            def convert_value(obj):
+                if isinstance(obj, Enum):
+                    return obj.value
+                return obj
+
+            return dict((k, convert_value(v)) for k, v in data)
+
+        return {"name": self.name} | asdict(self, dict_factory=custom_asdict_factory)
 
     @classmethod
     def from_data(cls: Type[TComponent], data: Dict[str, Any]) -> TComponent:
@@ -71,7 +82,7 @@ class Component(ABC):
             TComponent: An instance of the component.
         """
 
-        return from_dict(data_class=cls, data=data)
+        return from_dict(data_class=cls, data=data, config=DaciteConfig(cast=[Enum]))
 
 
 T = TypeVar("T", bound=Component)

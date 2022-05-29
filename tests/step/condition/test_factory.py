@@ -7,19 +7,41 @@
 
 # @black_format
 
-"""Tests that the ConditionFactory has all types included."""
+"""Tests that the Condition's factory is correctly setup."""
 
-from autotransform.step.condition.factory import ConditionFactory
-from autotransform.step.condition.type import ConditionType
+from autotransform.step.condition.base import FACTORY, ConditionName
 
 
 def test_all_enum_values_present():
-    """Ensures that all values from the enum are present in the factory map."""
+    """Ensures that all values from the enum are present in the factory map,
+    and only enum values are present."""
 
     missing_values = [
-        change_type
-        for change_type in ConditionType
-        # pylint: disable=protected-access
-        if change_type not in ConditionFactory._map
+        condition_type
+        for condition_type in ConditionName
+        if condition_type not in FACTORY.get_components()
     ]
     assert not missing_values, "Types missing from factory: " + ", ".join(missing_values)
+
+    extra_values = [
+        condition_type
+        for condition_type in FACTORY.get_components()
+        if condition_type not in ConditionName
+    ]
+    assert not extra_values, "Extra types in factory: " + ", ".join(extra_values)
+
+
+def test_fetching_components():
+    """Ensures that all components can be fetched correctly."""
+
+    for component_type in FACTORY.get_components():
+        component_class = FACTORY.get_class(component_type)
+        assert (
+            component_class.name == component_type
+        ), f"Component {component_type} has wrong type {component_class.name}"
+
+    for component_type in FACTORY.get_custom_components(strict=True):
+        component_class = FACTORY.get_class(component_type)
+        assert (
+            f"custom/{component_class.name}" == component_type
+        ), f"Component {component_type} has wrong type {component_class.name}"

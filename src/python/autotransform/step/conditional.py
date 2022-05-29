@@ -18,8 +18,8 @@ from typing_extensions import NotRequired
 from autotransform.change.base import Change
 from autotransform.step.action import Action, ActionType
 from autotransform.step.base import Step, StepBundle
+from autotransform.step.condition.base import FACTORY as condition_factory
 from autotransform.step.condition.base import Condition
-from autotransform.step.condition.factory import ConditionFactory
 from autotransform.step.type import StepType
 
 
@@ -113,7 +113,7 @@ class ConditionalStep(Step):
 
         params: ConditionalStepParams = {
             "action_type": data["action_type"],
-            "condition": ConditionFactory.get(data["condition"]),
+            "condition": condition_factory.get_instance(data["condition"]),
         }
 
         continue_if_passed = data.get("continue_if_passed", None)

@@ -12,40 +12,29 @@
 from __future__ import annotations
 
 import time
-from typing import Any, Mapping, TypedDict
+from dataclasses import dataclass
+from typing import ClassVar
 
 from autotransform.change.base import Change
-from autotransform.step.condition.base import Condition
+from autotransform.step.condition.base import Condition, ConditionName
 from autotransform.step.condition.comparison import ComparisonType, compare
-from autotransform.step.condition.type import ConditionType
 
 
-class CreatedAgoConditionParams(TypedDict):
-    """The param type for a CreatedAgoCondition."""
-
-    comparison: ComparisonType
-    time: int
-
-
-class CreatedAgoCondition(Condition[CreatedAgoConditionParams]):
+@dataclass(frozen=True, kw_only=True)
+class CreatedAgoCondition(Condition):
     """A condition which checks how long ago a Change was created against the supplied time, all
     in seconds, using the supplied comparison.
 
     Attributes:
-        _params (TParams): The comparison type and time to compare against.
+        comparison (ComparisonType): The type of comparison to perform.
+        time (int): The number of seconds to compare against.
+        name (ClassVar[ConditionName]): The name of the Component.
     """
 
-    _params: CreatedAgoConditionParams
+    comparison: ComparisonType
+    time: int
 
-    @staticmethod
-    def get_type() -> ConditionType:
-        """Used to map Condition components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            ConditionType: The unique type associated with this Condition.
-        """
-
-        return ConditionType.CREATED_AGO
+    name: ClassVar[ConditionName] = ConditionName.CREATED_AGO
 
     def check(self, change: Change) -> bool:
         """Checks whether how long ago the Change was created passes the comparison.
@@ -58,31 +47,4 @@ class CreatedAgoCondition(Condition[CreatedAgoConditionParams]):
         """
 
         time_since_created = time.time() - change.get_created_timestamp()
-        return compare(time_since_created, self._params["time"], self._params["comparison"])
-
-    def __str__(self) -> str:
-        return f"Created Ago {self._params['comparison'].name.lower()} {self._params['time']}"
-
-    @staticmethod
-    def from_data(data: Mapping[str, Any]) -> CreatedAgoCondition:
-        """Produces an instance of the component from decoded params. Implementations should
-        assert that the data provided matches expected types and is valid.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-
-        Returns:
-            CreatedAgoCondition: An instance of the CreatedAgoCondition.
-        """
-
-        comparison = data["comparison"]
-        comparison = (
-            ComparisonType.from_value(comparison)
-            if ComparisonType.has_value(comparison)
-            else ComparisonType.from_name(comparison)
-        )
-
-        time_param = data["time"]
-        assert isinstance(time_param, int)
-
-        return CreatedAgoCondition({"comparison": comparison, "time": time_param})
+        return compare(time_since_created, self.time, self.comparison)

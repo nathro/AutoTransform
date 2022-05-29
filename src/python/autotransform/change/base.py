@@ -16,13 +16,23 @@ from enum import Enum
 from typing import TYPE_CHECKING, ClassVar
 
 from autotransform.batcher.base import Batch
-from autotransform.change.state import ChangeState
 from autotransform.step.action import ActionType
 from autotransform.util.component import Component, ComponentFactory, ComponentImport
 
 if TYPE_CHECKING:
     from autotransform.runner.base import Runner
     from autotransform.schema.schema import AutoTransformSchema
+
+
+class ChangeState(str, Enum):
+    """A simple enum for the state of a given Change in code review or version
+    control systems."""
+
+    APPROVED = "approved"
+    CHANGES_REQUESTED = "changes_requested"
+    CLOSED = "closed"
+    MERGED = "merged"
+    OPEN = "open"
 
 
 class ChangeName(str, Enum):
