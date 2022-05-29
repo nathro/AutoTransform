@@ -40,6 +40,9 @@ class Batch(TypedDict):
 class Batcher(Component):
     """The base for Batcher components. Used by AutoTransform to separate Items in to logical
     groupings that can be acted on indepently and have associated metadata.
+
+    Attributes:
+        name (ClassVar[BatcherName]): The name of the Component.
     """
 
     name: ClassVar[BatcherName]

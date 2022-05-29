@@ -36,7 +36,11 @@ TComponent = TypeVar("TComponent")
 
 
 class Component(ABC):
-    """A base class for AutoTransform components, such as Batchers."""
+    """A base class for AutoTransform components, such as Batchers.
+
+    Attributes:
+        name (ClassVar[str]): The name of the Component.
+    """
 
     name: ClassVar[str]
 

@@ -27,6 +27,7 @@ class SingleBatcher(Batcher):
         title (str): The title to use for the Batch.
         metadata (Optional[Dict[str, Any]]): The metadata to use for the Batch.
         skip_empty_batch (bool): Whether to skip creating empty Batches.
+        name (ClassVar[BatcherName]): The name of the Component.
     """
 
     title: str

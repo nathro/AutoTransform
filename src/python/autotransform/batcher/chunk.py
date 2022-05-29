@@ -34,7 +34,7 @@ class ChunkBatcher(Batcher):
         title (str): The title to use for Batches.
         max_chunks (Optional[int]): The maximum number of chunks to create.
         metadata (Optional[Dict[str, Any]]): The metadata to associate with Batches.
-        _name (BatcherName): The name of the component.
+        name (ClassVar[BatcherName]): The name of the Component.
     """
 
     chunk_size: int
