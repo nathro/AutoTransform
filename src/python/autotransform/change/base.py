@@ -138,7 +138,9 @@ class Change(Component):
 
 FACTORY = ComponentFactory(
     {
-        ChangeName.GITHUB: ComponentImport("GithubChange", "autotransform.change.github"),
+        ChangeName.GITHUB: ComponentImport(
+            class_name="GithubChange", module="autotransform.change.github"
+        ),
     },
     Change,  # type: ignore [misc]
     "change.json",

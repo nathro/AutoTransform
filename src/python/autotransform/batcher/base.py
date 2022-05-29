@@ -63,11 +63,15 @@ class Batcher(Component):
 
 FACTORY = ComponentFactory(
     {
-        BatcherName.CHUNK: ComponentImport("ChunkBatcher", "autotransform.batcher.chunk"),
-        BatcherName.DIRECTORY: ComponentImport(
-            "DirectoryBatcher", "autotransform.batcher.directory"
+        BatcherName.CHUNK: ComponentImport(
+            class_name="ChunkBatcher", module="autotransform.batcher.chunk"
         ),
-        BatcherName.SINGLE: ComponentImport("SingleBatcher", "autotransform.batcher.single"),
+        BatcherName.DIRECTORY: ComponentImport(
+            class_name="DirectoryBatcher", module="autotransform.batcher.directory"
+        ),
+        BatcherName.SINGLE: ComponentImport(
+            class_name="SingleBatcher", module="autotransform.batcher.single"
+        ),
     },
     Batcher,  # type: ignore [misc]
     "batchers.json",

@@ -24,7 +24,7 @@ from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, kw_only=True)
 class ComponentImport:
     """The information required to import and return a component.
 
@@ -268,7 +268,7 @@ class ComponentFactory(Generic[T], ABC):
                 raise ValueError(message)
             EventHandler.get().handle(DebugEvent({"message": message}))
             return None
-        return ComponentImport(class_name, module)
+        return ComponentImport(class_name=class_name, module=module)
 
     def _get_component_class(
         self,

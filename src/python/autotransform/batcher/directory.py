@@ -21,7 +21,7 @@ from autotransform.item.base import Item
 from autotransform.item.file import FileItem
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, kw_only=True)
 class DirectoryBatcher(Batcher):
     """A batcher which separates FileItems by directory. Batches are given a title that is based
     on a prefix and the directory that the batch is using.

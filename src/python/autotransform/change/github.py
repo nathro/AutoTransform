@@ -32,20 +32,19 @@ class GithubChangeParams(TypedDict):
     pull_number: int
 
 
-@dataclass
+@dataclass(frozen=True, kw_only=True)
 class GithubChange(Change):
     """A Change representing a pull request on a Github repo.
 
     Attributes:
-        _params (GithubChangeParams): The paramaters for the github change, including the
-            pull request number and the full github name of the repo.
-        _pull_request (PullRequest): The PullRequest object for the change.
-        _state (Optional[ChangeState]): The cached state of the Change. Used to prevent excessive
-            Github API requests.
+        full_github_name (str): The fully qualified name of the Github Repo the
+            pull request is against.
+        pull_number (int): The number for the pull request.
+        name (ClassVar[ChangeName]): The name of the Component.
     """
 
-    pull_number: int
     full_github_name: str
+    pull_number: int
     name: ClassVar[ChangeName] = ChangeName.GITHUB
 
     def get_batch(self) -> Batch:

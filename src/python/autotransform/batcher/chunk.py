@@ -20,7 +20,7 @@ from autotransform.batcher.base import Batch, Batcher, BatcherName
 from autotransform.item.base import Item
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, kw_only=True)
 class ChunkBatcher(Batcher):
     """A batcher which chunks Items in to several Batches. A chunk size is supplied that
     determines the size of Batches. A maximum number of chunks can optionally be supplied. If
