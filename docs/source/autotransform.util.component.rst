@@ -1,7 +1,7 @@
-ChangeState (autotransform.change.state)
+Component (autotransform.util.component)
 ========================================
 
-.. automodule:: autotransform.change.state
+.. automodule:: autotransform.util.component
    :members:
    :undoc-members:
    :show-inheritance:

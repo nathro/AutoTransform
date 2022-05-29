@@ -4,7 +4,7 @@ Event Package (autotransform.event)
 .. automodule:: autotransform.event
 
 Events
-----------
+------
 
 .. toctree::
    :maxdepth: 4
@@ -15,6 +15,7 @@ Events
    autotransform.event.run
    autotransform.event.schedulerun
    autotransform.event.update
+   autotransform.event.warning
 
 Core
 ----

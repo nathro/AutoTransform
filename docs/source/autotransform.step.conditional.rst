@@ -10,8 +10,6 @@ Conditions
    :maxdepth: 4
 
    autotransform.step.condition.base
-   autotransform.step.condition.factory
-   autotransform.step.condition.type
    autotransform.step.condition.comparison
    autotransform.step.condition.aggregate
    autotransform.step.condition.created

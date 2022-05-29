@@ -10,5 +10,4 @@ Components
    :maxdepth: 4
 
    autotransform.change.base
-   autotransform.change.state
    autotransform.change.github
