@@ -9,7 +9,7 @@
 
 """Tests for SingleBatcher component."""
 
-from autotransform.batcher.directory import DirectoryBatcher, DirectoryBatcherParams
+from autotransform.batcher.directory import DirectoryBatcher
 from autotransform.item.file import FileItem
 
 from .batcher_test import check_batcher
@@ -21,7 +21,7 @@ def test_with_no_items():
     prefix = "foo"
     metadata = {"summary": "bar", "tests": "baz"}
     items = []
-    batcher = DirectoryBatcher(DirectoryBatcherParams(prefix=prefix, metadata=metadata))
+    batcher = DirectoryBatcher(prefix=prefix, metadata=metadata)
     check_batcher(batcher, items, [])
 
 
@@ -31,7 +31,7 @@ def test_with_one_item():
     prefix = "test"
     metadata = {"summary": "bar", "tests": "baz"}
     items = [FileItem("foo/bar.py")]
-    batcher = DirectoryBatcher(DirectoryBatcherParams(prefix=prefix, metadata=metadata))
+    batcher = DirectoryBatcher(prefix=prefix, metadata=metadata)
     check_batcher(
         batcher,
         items,
@@ -44,7 +44,7 @@ def test_with_one_item_no_metadata():
 
     prefix = "test"
     items = [FileItem("foo/bar.py")]
-    batcher = DirectoryBatcher(DirectoryBatcherParams(prefix=prefix))
+    batcher = DirectoryBatcher(prefix=prefix)
     check_batcher(batcher, items, [{"items": items, "title": f"{prefix}: foo"}])
 
 
@@ -54,7 +54,7 @@ def test_with_multiple_items_single_directory():
     prefix = "test"
     metadata = {"summary": "bar", "tests": "baz"}
     items = [FileItem("foo/bar.py"), FileItem("foo/baz.py")]
-    batcher = DirectoryBatcher(DirectoryBatcherParams(prefix=prefix, metadata=metadata))
+    batcher = DirectoryBatcher(prefix=prefix, metadata=metadata)
     check_batcher(
         batcher,
         items,
@@ -68,7 +68,7 @@ def test_with_multiple_items_multiple_directories():
     prefix = "test"
     metadata = {"summary": "bar", "tests": "baz"}
     items = [FileItem("foo/bar.py"), FileItem("fizz/baz.py")]
-    batcher = DirectoryBatcher(DirectoryBatcherParams(prefix=prefix, metadata=metadata))
+    batcher = DirectoryBatcher(prefix=prefix, metadata=metadata)
     check_batcher(
         batcher,
         items,
@@ -85,7 +85,7 @@ def test_with_multiple_items_nested_directories():
     prefix = "test"
     metadata = {"summary": "bar", "tests": "baz"}
     items = [FileItem("test/foo/bar.py"), FileItem("test/fizz/baz.py"), FileItem("test/buzz.py")]
-    batcher = DirectoryBatcher(DirectoryBatcherParams(prefix=prefix, metadata=metadata))
+    batcher = DirectoryBatcher(prefix=prefix, metadata=metadata)
     check_batcher(
         batcher,
         items,

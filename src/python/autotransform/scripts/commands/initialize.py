@@ -289,6 +289,11 @@ def initialize_workflows(repo_dir: str, examples_dir: str, prev_inputs: Mapping[
     bot_name = get_str("Enter the name of the account used for automation: ")
     bot_email = get_str("Enter the email of the account used for automation: ")
     custom_components = prev_inputs.get("import_components")
+    repo_config_dir = DefaultConfigFetcher.get_repo_config_dir()
+    if repo_config_dir is not None:
+        relative_config_dir = repo_config_dir.removeprefix(repo_dir)
+    else:
+        relative_config_dir = "autotransform"
 
     workflows = [
         "autotransform.manage.yml",
@@ -302,6 +307,8 @@ def initialize_workflows(repo_dir: str, examples_dir: str, prev_inputs: Mapping[
 
         workflow_text = workflow_text.replace("<BOT EMAIL>", bot_email)
         workflow_text = workflow_text.replace("<BOT NAME>", bot_name)
+        workflow_text = workflow_text.replace("<CONFIG DIR>", relative_config_dir)
+
         if custom_components is not None:
             workflow_text = workflow_text.replace("<CUSTOM COMPONENTS>", custom_components)
         else:

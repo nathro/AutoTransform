@@ -14,24 +14,14 @@ from __future__ import annotations
 from copy import deepcopy
 from dataclasses import dataclass
 from math import ceil
-from typing import Any, Dict, List, Mapping, Optional, Sequence
+from typing import Any, ClassVar, Dict, List, Optional, Sequence
 
 from autotransform.batcher.base import Batch, Batcher, BatcherName
 from autotransform.item.base import Item
-from autotransform.util.component import ComponentParams
 
 
-@dataclass
-class ChunkBatcherParams(ComponentParams):
-    """The param type for a ChunkBatcher."""
-
-    chunk_size: int
-    title: str
-    max_chunks: Optional[int] = None
-    metadata: Optional[Mapping[str, Any]] = None
-
-
-class ChunkBatcher(Batcher[ChunkBatcherParams]):
+@dataclass(frozen=True)
+class ChunkBatcher(Batcher):
     """A batcher which chunks Items in to several Batches. A chunk size is supplied that
     determines the size of Batches. A maximum number of chunks can optionally be supplied. If
     the chunk size would result in more than the maximum number of chunks, the chunk size is
@@ -40,21 +30,19 @@ class ChunkBatcher(Batcher[ChunkBatcherParams]):
     total number of chunks.
 
     Attributes:
-        _params (ChunkBatcherParams): Contains the chunking information along with metadata
-            and title.
+        chunk_size (int): The size of chunks.
+        title (str): The title to use for Batches.
+        max_chunks (Optional[int]): The maximum number of chunks to create.
+        metadata (Optional[Dict[str, Any]]): The metadata to associate with Batches.
+        _name (BatcherName): The name of the component.
     """
 
-    _params: ChunkBatcherParams
+    chunk_size: int
+    title: str
+    max_chunks: Optional[int] = None
+    metadata: Optional[Dict[str, Any]] = None
 
-    @staticmethod
-    def get_name() -> BatcherName:
-        """Used to map Batcher components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            BatcherName: The unique name associated with this Batcher.
-        """
-
-        return BatcherName.CHUNK
+    name: ClassVar[BatcherName] = BatcherName.CHUNK
 
     def batch(self, items: Sequence[Item]) -> List[Batch]:
         """Take filtered Items and chunk them into Batches.
@@ -67,31 +55,15 @@ class ChunkBatcher(Batcher[ChunkBatcherParams]):
                 title.
         """
 
-        chunk_size = self._params.chunk_size
-        if (
-            self._params.max_chunks is not None
-            and len(items) / chunk_size > self._params.max_chunks
-        ):
-            chunk_size = ceil(len(items) / self._params.max_chunks)
+        chunk_size = self.chunk_size
+        if self.max_chunks is not None and len(items) / chunk_size > self.max_chunks:
+            chunk_size = ceil(len(items) / self.max_chunks)
         item_chunks = [items[i : i + chunk_size] for i in range(0, len(items), chunk_size)]
         item_batches: List[Batch] = []
         for idx, item_chunk in enumerate(item_chunks, start=1):
-            title = f"[{idx}/{len(item_chunks)}] " + self._params.title
+            title = f"[{idx}/{len(item_chunks)}] " + self.title
             batch: Batch = {"items": item_chunk, "title": title}
-            if self._params.metadata is not None:
-                batch["metadata"] = deepcopy(self._params.metadata)
+            if self.metadata is not None:
+                batch["metadata"] = deepcopy(self.metadata)
             item_batches.append(batch)
         return item_batches
-
-    @staticmethod
-    def from_data(data: Dict[str, Any]) -> ChunkBatcher:
-        """Produces a ChunkBatcher from the provided data.
-
-        Args:
-            bundle (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-
-        Returns:
-            ChunkBatcher: An instance of the ChunkBatcher with the provided params.
-        """
-
-        return ChunkBatcher(ChunkBatcherParams.from_data(data))

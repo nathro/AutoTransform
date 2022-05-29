@@ -13,7 +13,7 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 
 from autotransform.batcher.base import Batcher
-from autotransform.batcher.single import SingleBatcher, SingleBatcherParams
+from autotransform.batcher.single import SingleBatcher
 from autotransform.command.base import Command
 from autotransform.filter.base import Filter
 from autotransform.input.base import Input
@@ -58,7 +58,7 @@ class SchemaBuilder(ABC):
 
         # pylint: disable=no-self-use
 
-        return SingleBatcher(SingleBatcherParams(title=""))
+        return SingleBatcher(title="")
 
     @abstractmethod
     def get_transformer(self) -> Transformer:

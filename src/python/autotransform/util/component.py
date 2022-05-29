@@ -13,9 +13,9 @@ from __future__ import annotations
 
 import importlib
 import json
-from abc import ABC, abstractmethod
+from abc import ABC
 from dataclasses import asdict, dataclass
-from typing import Any, Dict, Generic, Optional, Type, TypedDict, TypeVar
+from typing import Any, ClassVar, Dict, Generic, Optional, Type, TypeVar
 
 from dacite import from_dict
 
@@ -32,103 +32,40 @@ class ComponentImport:
     module: str
 
 
-TParamClass = TypeVar("TParamClass")
+TComponent = TypeVar("TComponent")
 
 
-@dataclass
-class ComponentParams:
-    """A base class for component Params."""
+class Component(ABC):
+    """A base class for AutoTransform components, such as Batchers."""
 
-    @classmethod
-    def from_data(cls: Type[TParamClass], data: Dict[str, Any]) -> TParamClass:
-        """Construct the params from a dictionary.
+    name: ClassVar[str]
 
-        Args:
-            cls (Type[TParamClass]): The param class.
-            data (Dict[str, Any]): The dictionary containing param data.
+    def bundle(self) -> Dict[str, Any]:
+        """Generates a JSON encodable bundle.
+        If a component is not JSON encodable this method should be overridden to provide
+        an encodable version.
 
         Returns:
-            TParamClass: The ComponentParams.
+            Dict[str, Any]: The encodable bundle.
+        """
+        return {"name": self.name} | asdict(self)
+
+    @classmethod
+    def from_data(cls: Type[TComponent], data: Dict[str, Any]) -> TComponent:
+        """Produces an instance of the component from decoded data. Override if
+        the component had to be modified to encode.
+
+        Args:
+            data (Mapping[str, Any]): The JSON decoded data.
+
+        Returns:
+            TComponent: An instance of the component.
         """
 
         return from_dict(data_class=cls, data=data)
 
 
-class ComponentBundle(TypedDict):
-    """A bundled version of a component."""
-
-    name: str
-    params: Dict[str, Any]
-
-
-TComponent = TypeVar("TComponent")
-TParams = TypeVar("TParams", bound=ComponentParams)
-
-
-class Component(Generic[TParams]):
-    """A base class for AutoTransform components, such as Batchers.
-
-    Attributes:
-        _params (TParams): The params required to set up the component.
-    """
-
-    _params: TParams
-
-    def __init__(self, params: TParams):
-        """A simple constructor.
-
-        Args:
-            params (TParams): The params for the component.
-        """
-
-        self._params = params
-
-    @staticmethod
-    def get_name() -> str:
-        """Used to map components by the component factory.
-
-        Returns:
-            str: The unique name associated with this component.
-        """
-
-    def get_params(self) -> TParams:
-        """Gets the paramaters used to set up the component.
-
-        Returns:
-            TParams: The paramaters used to set up the component.
-        """
-
-        return self._params
-
-    def bundle(self) -> ComponentBundle:
-        """Generates a JSON encodable bundle.
-        If a component's params are not JSON encodable this method should be overridden to provide
-        an encodable version.
-
-        Returns:
-            ComponentBundle: The encodable bundle.
-        """
-
-        return {
-            "name": self.get_name(),
-            "params": asdict(self._params),
-        }
-
-    @classmethod
-    @abstractmethod
-    def from_data(cls: Type[TComponent], data: Dict[str, Any]) -> TComponent:
-        """Produces an instance of the component from decoded params. Implementations should
-        assert that the data provided matches expected types and is valid.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded data from an encoded bundle.
-
-        Returns:
-            T: An instance of the component.
-        """
-
-
-T = TypeVar("T", bound=Component[Any])
+T = TypeVar("T", bound=Component)
 
 
 class ComponentFactory(Generic[T], ABC):
@@ -187,17 +124,17 @@ class ComponentFactory(Generic[T], ABC):
             )
         return self._custom_components
 
-    def get_instance(self, bundle: ComponentBundle) -> T:
+    def get_instance(self, data: Dict[str, Any]) -> T:
         """Simple method to get an instance from a bundle.
 
         Args:
-            bundle (ComponentBundle): The bundled component.
+            data (Dict[str, Any]): The bundled component.
 
         Returns:
             T: An instance of the associated component.
         """
 
-        return self.get_class(bundle["name"]).from_data(bundle["params"])
+        return self.get_class(data["name"]).from_data(data)
 
     def get_class(self, component_type: str) -> Type[T]:
         """Gets the class for a component with the specified type, usually an enum value.

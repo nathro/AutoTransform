@@ -9,7 +9,7 @@
 
 """Tests for SingleBatcher component."""
 
-from autotransform.batcher.chunk import ChunkBatcher, ChunkBatcherParams
+from autotransform.batcher.chunk import ChunkBatcher
 from autotransform.item.base import Item
 
 from .batcher_test import check_batcher
@@ -21,7 +21,7 @@ def test_with_no_items():
     title = "foo"
     metadata = {"summary": "bar", "tests": "baz"}
     items = []
-    batcher = ChunkBatcher(ChunkBatcherParams(title=title, metadata=metadata, chunk_size=10))
+    batcher = ChunkBatcher(title=title, metadata=metadata, chunk_size=10)
     check_batcher(batcher, items, [{"metadata": metadata, "items": items, "title": title}])
 
 
@@ -32,7 +32,7 @@ def test_with_one_item():
     metadata = {"summary": "bar", "tests": "baz"}
     expected_title = "[1/1] foo"
     items = [Item("foo.py")]
-    batcher = ChunkBatcher(ChunkBatcherParams(title=title, metadata=metadata, chunk_size=10))
+    batcher = ChunkBatcher(title=title, metadata=metadata, chunk_size=10)
     check_batcher(batcher, items, [{"metadata": metadata, "items": items, "title": expected_title}])
 
 
@@ -42,7 +42,7 @@ def test_with_one_item_no_metadata():
     title = "foo"
     expected_title = "[1/1] foo"
     items = [Item("foo.py")]
-    batcher = ChunkBatcher(ChunkBatcherParams(title=title, chunk_size=10))
+    batcher = ChunkBatcher(title=title, chunk_size=10)
     check_batcher(batcher, items, [{"items": items, "title": expected_title}])
 
 
@@ -53,7 +53,7 @@ def test_with_multiple_items():
     metadata = {"summary": "bar", "tests": "baz"}
     expected_title = "[1/1] foo"
     items = [Item("foo.py"), Item("bar.py")]
-    batcher = ChunkBatcher(ChunkBatcherParams(title=title, metadata=metadata, chunk_size=10))
+    batcher = ChunkBatcher(title=title, metadata=metadata, chunk_size=10)
     check_batcher(batcher, items, [{"metadata": metadata, "items": items, "title": expected_title}])
 
 
@@ -65,7 +65,7 @@ def test_with_multiple_files_and_multiple_batches():
     expected_title_1 = "[1/2] foo"
     expected_title_2 = "[2/2] foo"
     items = [Item("foo.py"), Item("bar.py"), Item("baz.py")]
-    batcher = ChunkBatcher(ChunkBatcherParams(title=title, metadata=metadata, chunk_size=2))
+    batcher = ChunkBatcher(title=title, metadata=metadata, chunk_size=2)
     check_batcher(
         batcher,
         items,
@@ -86,9 +86,7 @@ def test_with_multiple_files_and_max_batches():
     expected_title_1 = "[1/2] foo"
     expected_title_2 = "[2/2] foo"
     items = [Item("foo.py"), Item("bar.py"), Item("baz.py")]
-    batcher = ChunkBatcher(
-        ChunkBatcherParams(title=title, metadata=metadata, chunk_size=1, max_chunks=2)
-    )
+    batcher = ChunkBatcher(title=title, metadata=metadata, chunk_size=1, max_chunks=2)
     check_batcher(
         batcher,
         items,

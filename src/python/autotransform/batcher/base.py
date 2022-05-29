@@ -13,19 +13,12 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from enum import Enum
-from typing import Any, Generic, List, Mapping, Sequence, TypedDict, TypeVar
+from typing import Any, ClassVar, List, Mapping, Sequence, TypedDict
 
 from typing_extensions import NotRequired
 
 from autotransform.item.base import Item
-from autotransform.util.component import (
-    Component,
-    ComponentFactory,
-    ComponentImport,
-    ComponentParams,
-)
-
-TParams = TypeVar("TParams", bound=ComponentParams)
+from autotransform.util.component import Component, ComponentFactory, ComponentImport
 
 
 class BatcherName(str, Enum):
@@ -44,16 +37,12 @@ class Batch(TypedDict):
     title: str
 
 
-class Batcher(Generic[TParams], Component[TParams]):
+class Batcher(Component):
     """The base for Batcher components. Used by AutoTransform to separate Items in to logical
     groupings that can be acted on indepently and have associated metadata.
-
-    Attributes:
-        _params (TParams): The paramaters that control operation of the Batcher.
-            Should be defined using a TypedDict in subclasses.
     """
 
-    _params: TParams
+    name: ClassVar[BatcherName]
 
     @abstractmethod
     def batch(self, items: Sequence[Item]) -> List[Batch]:

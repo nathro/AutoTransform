@@ -7,14 +7,12 @@
     },
     "batcher": {
         "name": "single",
-        "params": {
-            "title": "test",
-            "metadata": {
-                "summary": "",
-                "tests": ""
-            },
-            "skip_empty_batch": false
-        }
+        "title": "test",
+        "metadata": {
+            "summary": "",
+            "tests": ""
+        },
+        "skip_empty_batch": false
     },
     "transformer": {
         "params": {

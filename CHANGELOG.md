@@ -4,6 +4,7 @@
 
 #### API Changes
  - Updating all components to inherit from Component class to unify logic for many pieces in one place
+ - Eliminated params from components, components are now dataclasses
  - Component bundles use "name" instead of "type" now to avoid confusion between the class type and the identifier
  - Custom components are now imported via JSON files
 

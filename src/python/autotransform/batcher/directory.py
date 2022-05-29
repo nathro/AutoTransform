@@ -14,41 +14,27 @@ from __future__ import annotations
 import pathlib
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Any, Dict, List, Mapping, Optional, Sequence
+from typing import Any, ClassVar, Dict, List, Optional, Sequence
 
 from autotransform.batcher.base import Batch, Batcher, BatcherName
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
-from autotransform.util.component import ComponentParams
 
 
-@dataclass
-class DirectoryBatcherParams(ComponentParams):
-    """The param type for a DirectoryBatcher."""
-
-    prefix: str
-    metadata: Optional[Mapping[str, Any]] = None
-
-
-class DirectoryBatcher(Batcher[DirectoryBatcherParams]):
+@dataclass(frozen=True)
+class DirectoryBatcher(Batcher):
     """A batcher which separates FileItems by directory. Batches are given a title that is based
     on a prefix and the directory that the batch is using.
 
     Attributes:
-        _params (DirectoryBatcherParams): Contains the prefix to use for constructing a title.
+        prefix (str): The prefix to apply to any titles for Batches.
+        metadata (Optional[Dict[str, Any]]): The metadata to associate with Batches.
     """
 
-    _params: DirectoryBatcherParams
+    prefix: str
+    metadata: Optional[Dict[str, Any]] = None
 
-    @staticmethod
-    def get_name() -> BatcherName:
-        """Used to map Batcher components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            BatcherName: The unique name associated with this Batcher.
-        """
-
-        return BatcherName.DIRECTORY
+    name: ClassVar[BatcherName] = BatcherName.DIRECTORY
 
     def batch(self, items: Sequence[Item]) -> List[Batch]:
         """Takes in a list FileItems and separates them based on their directory.
@@ -69,24 +55,11 @@ class DirectoryBatcher(Batcher[DirectoryBatcherParams]):
             item_map[directory].append(item)
 
         batches: List[Batch] = [
-            {"items": batch_items, "title": self._params.prefix + ": " + directory}
+            {"items": batch_items, "title": self.prefix + ": " + directory}
             for directory, batch_items in item_map.items()
         ]
 
-        if self._params.metadata is not None:
+        if self.metadata is not None:
             for batch in batches:
-                batch["metadata"] = deepcopy(self._params.metadata)
+                batch["metadata"] = deepcopy(self.metadata)
         return batches
-
-    @staticmethod
-    def from_data(data: Dict[str, Any]) -> DirectoryBatcher:
-        """Produces a DirectoryBatcher from the provided data.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
-
-        Returns:
-            DirectoryBatcher: An instance of the DirectoryBatcher with the provided params.
-        """
-
-        return DirectoryBatcher(DirectoryBatcherParams.from_data(data))

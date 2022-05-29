@@ -33,11 +33,11 @@ def test_fetching_components():
     for component_type in FACTORY.get_components():
         component_class = FACTORY.get_class(component_type)
         assert (
-            component_class.get_name() == component_type
-        ), f"Component {component_type} has wrong type {component_class.get_name()}"
+            component_class.name == component_type
+        ), f"Component {component_type} has wrong type {component_class.name}"
 
     for component_type in FACTORY.get_custom_components(strict=True):
         component_class = FACTORY.get_class(component_type)
         assert (
-            f"custom/{component_class.get_name()}" == component_type
-        ), f"Component {component_type} has wrong type {component_class.get_name()}"
+            f"custom/{component_class.name}" == component_type
+        ), f"Component {component_type} has wrong type {component_class.name}"

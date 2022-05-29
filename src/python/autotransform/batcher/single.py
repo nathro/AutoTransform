@@ -13,40 +13,27 @@ from __future__ import annotations
 
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Any, Dict, List, Mapping, Optional, Sequence
+from typing import Any, ClassVar, Dict, List, Optional, Sequence
 
 from autotransform.batcher.base import Batch, Batcher, BatcherName
 from autotransform.item.base import Item
-from autotransform.util.component import ComponentParams
 
 
-@dataclass
-class SingleBatcherParams(ComponentParams):
-    """The param type for a SingleBatcher."""
-
-    title: str
-    metadata: Optional[Mapping[str, Any]] = None
-    skip_empty_batch: bool = False
-
-
-class SingleBatcher(Batcher[SingleBatcherParams]):
+@dataclass(frozen=True)
+class SingleBatcher(Batcher):
     """A batcher which puts all Items together in to a single batch
 
     Attributes:
-        _params (SingleBatcherParams): Contains the batch title and any needed metadata.
+        title (str): The title to use for the Batch.
+        metadata (Optional[Dict[str, Any]]): The metadata to use for the Batch.
+        skip_empty_batch (bool): Whether to skip creating empty Batches.
     """
 
-    _params: SingleBatcherParams
+    title: str
+    metadata: Optional[Dict[str, Any]] = None
+    skip_empty_batch: bool = False
 
-    @staticmethod
-    def get_name() -> BatcherName:
-        """Used to map Batcher components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            BatcherName: The unique name associated with this Batcher.
-        """
-
-        return BatcherName.SINGLE
+    name: ClassVar[BatcherName] = BatcherName.SINGLE
 
     def batch(self, items: Sequence[Item]) -> List[Batch]:
         """Takes in a list Items and batches them together in to a single Batch.
@@ -57,26 +44,13 @@ class SingleBatcher(Batcher[SingleBatcherParams]):
         Returns:
             List[Batch]: A list containing a single Batch for all Items.
         """
-        if self._params.skip_empty_batch and len(items) == 0:
+        if self.skip_empty_batch and len(items) == 0:
             return []
 
         batch: Batch = {
             "items": items,
-            "title": self._params.title,
+            "title": self.title,
         }
-        if self._params.metadata is not None:
-            batch["metadata"] = deepcopy(self._params.metadata)
+        if self.metadata is not None:
+            batch["metadata"] = deepcopy(self.metadata)
         return [batch]
-
-    @staticmethod
-    def from_data(data: Dict[str, Any]) -> SingleBatcher:
-        """Produces a SingleBatcher from the provided data.
-
-        Args:
-            bundle (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-
-        Returns:
-            SingleBatcher: An instance of the SingleBatcher with the provided params.
-        """
-
-        return SingleBatcher(SingleBatcherParams.from_data(data))
