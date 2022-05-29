@@ -36,8 +36,7 @@ class Change(Component):
     code review and source control systems.
 
     Attributes:
-        _params (TParams): The paramaters that control operation of the Change.
-            Should be defined using a TypedDict in subclasses.
+        name (ClassVar[ChangeName]): The name of the Component.
     """
 
     name: ClassVar[ChangeName]

@@ -26,7 +26,12 @@ from autotransform.event.handler import EventHandler
 
 @dataclass(frozen=True)
 class ComponentImport:
-    """The information required to import and return a component."""
+    """The information required to import and return a component.
+
+    Attributes:
+        class_name (str): The name of the class of the component.
+        module (str): The fully qualified module where the class can be imported.
+    """
 
     class_name: str
     module: str
