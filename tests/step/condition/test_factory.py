@@ -9,7 +9,17 @@
 
 """Tests that the Condition's factory is correctly setup."""
 
-from autotransform.step.condition.base import FACTORY, ConditionName
+import json
+from typing import Dict, List
+
+from autotransform.change.base import ChangeState
+from autotransform.step.condition.aggregate import AggregateCondition, AggregatorType
+from autotransform.step.condition.base import FACTORY, Condition, ConditionName
+from autotransform.step.condition.comparison import ComparisonType
+from autotransform.step.condition.created import CreatedAgoCondition
+from autotransform.step.condition.schema import SchemaNameCondition
+from autotransform.step.condition.state import ChangeStateCondition
+from autotransform.step.condition.updated import UpdatedAgoCondition
 
 
 def test_all_enum_values_present():
@@ -45,3 +55,55 @@ def test_fetching_components():
         assert (
             f"custom/{component_class.name}" == component_type
         ), f"Component {component_type} has wrong type {component_class.name}"
+
+
+def test_encoding_and_decoding():
+    """Tests the encoding and decoding of components."""
+
+    test_components: Dict[ConditionName, List[Condition]] = {
+        ConditionName.AGGREGATE: [
+            AggregateCondition(
+                aggregator=AggregatorType.ALL,
+                conditions=[],
+            ),
+            AggregateCondition(
+                aggregator=AggregatorType.ALL,
+                conditions=[
+                    SchemaNameCondition(schema_name="foo", comparison=ComparisonType.NOT_EQUAL),
+                ],
+            ),
+            AggregateCondition(
+                aggregator=AggregatorType.ALL,
+                conditions=[
+                    SchemaNameCondition(schema_name="foo", comparison=ComparisonType.EQUAL),
+                    CreatedAgoCondition(comparison=ComparisonType.GREATER_THAN_OR_EQUAL, time=500),
+                    UpdatedAgoCondition(comparison=ComparisonType.LESS_THAN_OR_EQUAL, time=1000),
+                ],
+            ),
+        ],
+        ConditionName.CHANGE_STATE: [
+            ChangeStateCondition(comparison=ComparisonType.EQUAL, state=ChangeState.APPROVED)
+        ],
+        ConditionName.CREATED_AGO: [
+            CreatedAgoCondition(comparison=ComparisonType.GREATER_THAN, time=-100)
+        ],
+        ConditionName.SCHEMA_NAME: [
+            SchemaNameCondition(comparison=ComparisonType.NOT_EQUAL, schema_name="foo")
+        ],
+        ConditionName.UPDATED_AGO: [
+            UpdatedAgoCondition(comparison=ComparisonType.LESS_THAN, time=100)
+        ],
+    }
+
+    for name in ConditionName:
+        assert name in test_components, f"No test components for Condition {name}"
+
+    for name, components in test_components.items():
+        assert name in ConditionName, f"{name} is not a valid ConditionName"
+        for component in components:
+            assert (
+                component.name == name
+            ), f"Testing condition of type {component.name} for type {name}"
+            assert (
+                FACTORY.get_instance(json.loads(json.dumps(component.bundle()))) == component
+            ), f"Component {component} does not bundle and unbundle correctly"

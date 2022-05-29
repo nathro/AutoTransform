@@ -9,7 +9,11 @@
 
 """Tests that the Change's factory is correctly setup."""
 
-from autotransform.change.base import FACTORY, ChangeName
+import json
+from typing import Dict, List
+
+from autotransform.change.base import FACTORY, Change, ChangeName
+from autotransform.change.github import GithubChange
 
 
 def test_all_enum_values_present():
@@ -41,3 +45,26 @@ def test_fetching_components():
         assert (
             f"custom/{component_class.name}" == component_type
         ), f"Component {component_type} has wrong type {component_class.name}"
+
+
+def test_encoding_and_decoding():
+    """Tests the encoding and decoding of components."""
+
+    test_components: Dict[ChangeName, List[Change]] = {
+        ChangeName.GITHUB: [
+            GithubChange(full_github_name="nathro/ATTest", pull_number=1),
+        ],
+    }
+
+    for name in ChangeName:
+        assert name in test_components, f"No test components for Change {name}"
+
+    for name, components in test_components.items():
+        assert name in ChangeName, f"{name} is not a valid ChangeName"
+        for component in components:
+            assert (
+                component.name == name
+            ), f"Testing change of type {component.name} for type {name}"
+            assert (
+                FACTORY.get_instance(json.loads(json.dumps(component.bundle()))) == component
+            ), f"Component {component} does not bundle and unbundle correctly"

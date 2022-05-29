@@ -70,9 +70,14 @@ class AggregateCondition(Condition):
             Dict[str, Any]: The encodable bundle.
         """
 
+        aggregator = (
+            self.aggregator.value
+            if isinstance(self.aggregator, AggregatorType)
+            else str(self.aggregator)
+        )
         return {
             "name": self.name,
-            "aggregator": str(self.aggregator),
+            "aggregator": aggregator,
             "conditions": [condition.bundle() for condition in self.conditions],
         }
 
@@ -88,6 +93,10 @@ class AggregateCondition(Condition):
             TComponent: An instance of the component.
         """
 
-        aggregator = AggregatorType(data["aggregator"])
+        aggregator = (
+            data["aggregator"]
+            if isinstance(data["aggregator"], AggregatorType)
+            else AggregatorType(data["aggregator"])
+        )
         conditions = [condition_factory.get_instance(condition) for condition in data["conditions"]]
         return AggregateCondition(aggregator=aggregator, conditions=conditions)
