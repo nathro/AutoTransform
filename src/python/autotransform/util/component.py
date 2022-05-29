@@ -16,28 +16,15 @@ import json
 from abc import ABC
 from dataclasses import asdict, dataclass
 from enum import Enum
-from typing import Any, ClassVar, Dict, Generic, Optional, Type, TypeVar
+from functools import cached_property
+from typing import Any, ClassVar, Dict, Generic, Type, TypeVar
 
-from dacite import from_dict
+from dacite import DaciteError, from_dict
 from dacite.config import Config as DaciteConfig
 
 from autotransform.config import fetcher as Config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
-
-
-@dataclass(frozen=True, kw_only=True)
-class ComponentImport:
-    """The information required to import and return a component.
-
-    Attributes:
-        class_name (str): The name of the class of the component.
-        module (str): The fully qualified module where the class can be imported.
-    """
-
-    class_name: str
-    module: str
-
 
 TComponent = TypeVar("TComponent")
 
@@ -85,6 +72,19 @@ class Component(ABC):
         return from_dict(data_class=cls, data=data, config=DaciteConfig(cast=[Enum]))
 
 
+@dataclass(frozen=True, kw_only=True)
+class ComponentImport(Component):
+    """The information required to import and return a component.
+
+    Attributes:
+        class_name (str): The name of the class of the component.
+        module (str): The fully qualified module where the class can be imported.
+    """
+
+    class_name: str
+    module: str
+
+
 T = TypeVar("T", bound=Component)
 
 
@@ -101,7 +101,6 @@ class ComponentFactory(Generic[T], ABC):
     """
 
     _components: Dict[str, ComponentImport]
-    _custom_components: Dict[str, ComponentImport]
     _custom_components_file: str
     _type: Type[T]
 
@@ -138,11 +137,27 @@ class ComponentFactory(Generic[T], ABC):
             Dict[str, ComponentImport]: The custom component import info.
         """
 
-        if not hasattr(self, "_custom_components"):
-            self._custom_components = ComponentFactory._get_custom_components(
-                self._custom_components_file, strict
-            )
-        return self._custom_components
+        return self._custom_components_strict if strict else self._custom_components
+
+    @cached_property
+    def _custom_components(self) -> Dict[str, ComponentImport]:
+        """A cached property for the non-strict custom components.
+
+        Returns:
+            Dict[str, ComponentImport]: Non-strict custom components.
+        """
+
+        return ComponentFactory._get_custom_components(self._custom_components_file, strict=False)
+
+    @cached_property
+    def _custom_components_strict(self) -> Dict[str, ComponentImport]:
+        """A cached property for the strict custom components.
+
+        Returns:
+            Dict[str, ComponentImport]: Strict custom components.
+        """
+
+        return ComponentFactory._get_custom_components(self._custom_components_file, strict=True)
 
     def get_instance(self, data: Dict[str, Any]) -> T:
         """Simple method to get an instance from a bundle.
@@ -156,11 +171,11 @@ class ComponentFactory(Generic[T], ABC):
 
         return self.get_class(data["name"]).from_data(data)
 
-    def get_class(self, component_type: str) -> Type[T]:
+    def get_class(self, component_name: str) -> Type[T]:
         """Gets the class for a component with the specified type, usually an enum value.
 
         Args:
-            component_type (str): The type of the component, usually an enum value. If a custom
+            component_name (str): The type of the component, usually an enum value. If a custom
                 component is used, the type should start with custom/.
 
         Raises:
@@ -170,15 +185,15 @@ class ComponentFactory(Generic[T], ABC):
             Type[T]: The class for the component.
         """
 
-        component_info = self.get_components().get(component_type)
+        component_info = self.get_components().get(component_name)
         if component_info is not None:
             return self._get_component_class(component_info)
         custom_components = self.get_custom_components()
-        component_info = custom_components.get(component_type)
+        component_info = custom_components.get(component_name)
         if component_info is not None:
             return self._get_component_class(component_info)
 
-        raise ValueError(f"No component found with type: {component_type}")
+        raise ValueError(f"No component found with name: {component_name}")
 
     @staticmethod
     def _get_custom_components(
@@ -221,65 +236,13 @@ class ComponentFactory(Generic[T], ABC):
                     raise ValueError(message)
                 EventHandler.get().handle(DebugEvent({"message": message}))
                 continue
-            if not isinstance(import_info, Dict):
-                message = f"Invalid import: {json.dumps(import_info)}"
+            try:
+                custom_components[f"custom/{name}"] = ComponentImport.from_data(import_info)
+            except DaciteError as err:
                 if strict:
-                    raise ValueError(message)
-                EventHandler.get().handle(DebugEvent({"message": message}))
-                continue
-            component_import = ComponentFactory._get_component_import(import_info, name, strict)
-            if component_import is not None:
-                custom_components[f"custom/{name}"] = component_import
+                    raise err
+                EventHandler.get().handle(DebugEvent({"message": str(err)}))
         return custom_components
-
-    @staticmethod
-    def _get_component_import(
-        import_info: Dict, name: str, strict: bool = False
-    ) -> Optional[ComponentImport]:
-        """Gets the component import info from a JSON decoded dictionary.
-
-        Args:
-            import_info (Dict): The JSON decoded import information.
-            name (str): The name of the component.
-            strict (bool, optional): Whether to raise an error if a problem is encountered.
-                Defaults to False.
-
-        Raises:
-            ValueError: Raised if using strict imports and an issue is encountered during
-                the creation of the ComponentImport.
-
-        Returns:
-            Optional[ComponentImport]: The ComponentImport needed to get the component class.
-                None if there is an issue with the info.
-        """
-
-        class_name = import_info.get("class_name")
-        if class_name is None:
-            message = f"Class name missing for {name}"
-            if strict:
-                raise ValueError(message)
-            EventHandler.get().handle(DebugEvent({"message": message}))
-            return None
-        if not isinstance(class_name, str):
-            message = f"Invalid class name for {name}: {class_name}"
-            if strict:
-                raise ValueError(message)
-            EventHandler.get().handle(DebugEvent({"message": message}))
-            return None
-        module = import_info.get("module")
-        if module is None:
-            message = f"Module missing for {name}"
-            if strict:
-                raise ValueError(message)
-            EventHandler.get().handle(DebugEvent({"message": message}))
-            return None
-        if not isinstance(module, str):
-            message = f"Invalid module for {name}: {module}"
-            if strict:
-                raise ValueError(message)
-            EventHandler.get().handle(DebugEvent({"message": message}))
-            return None
-        return ComponentImport(class_name=class_name, module=module)
 
     def _get_component_class(
         self,
