@@ -206,7 +206,7 @@ class ComponentFactory(Generic[T], ABC):
 
         Args:
             component_file_name (str): The name of the file that contains the custom components.
-            strict (bool, optional): Whether to raise an error if a problem is encountered.
+            strict (bool, optional): Whether to raise an error if JSON is malformed.
                 Defaults to False.
 
         Returns:
