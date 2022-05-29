@@ -9,7 +9,7 @@
 
 """Tests for SingleBatcher component."""
 
-from autotransform.batcher.single import SingleBatcher
+from autotransform.batcher.single import SingleBatcher, SingleBatcherParams
 from autotransform.item.base import Item
 
 from .batcher_test import check_batcher
@@ -21,7 +21,7 @@ def test_with_no_items():
     title = "foo"
     metadata = {"summary": "bar", "tests": "baz"}
     items = []
-    batcher = SingleBatcher({"title": title, "metadata": metadata})
+    batcher = SingleBatcher(SingleBatcherParams(title=title, metadata=metadata))
     check_batcher(batcher, items, [{"metadata": metadata, "items": items, "title": title}])
 
 
@@ -31,7 +31,9 @@ def test_with_no_items_skip_empty():
     title = "foo"
     metadata = {"summary": "bar", "tests": "baz"}
     items = []
-    batcher = SingleBatcher({"title": title, "metadata": metadata, "skip_empty_batch": True})
+    batcher = SingleBatcher(
+        SingleBatcherParams(title=title, metadata=metadata, skip_empty_batch=True)
+    )
     check_batcher(batcher, items, [])
 
 
@@ -41,7 +43,7 @@ def test_with_one_item():
     title = "foo"
     metadata = {"summary": "bar", "tests": "baz"}
     items = [Item("bar.py")]
-    batcher = SingleBatcher({"title": title, "metadata": metadata})
+    batcher = SingleBatcher(SingleBatcherParams(title=title, metadata=metadata))
     check_batcher(batcher, items, [{"metadata": metadata, "items": items, "title": title}])
 
 
@@ -50,7 +52,7 @@ def test_with_one_item_no_metadata():
 
     title = "foo"
     items = [Item("bar.py")]
-    batcher = SingleBatcher({"title": title})
+    batcher = SingleBatcher(SingleBatcherParams(title=title))
     check_batcher(batcher, items, [{"items": items, "title": title}])
 
 
@@ -60,5 +62,5 @@ def test_with_multiple_items():
     title = "foo"
     metadata = {"summary": "bar", "tests": "baz"}
     items = [Item("bar.py"), Item("baz.py")]
-    batcher = SingleBatcher({"title": title, "metadata": metadata})
+    batcher = SingleBatcher(SingleBatcherParams(title=title, metadata=metadata))
     check_batcher(batcher, items, [{"metadata": metadata, "items": items, "title": title}])

@@ -14,7 +14,6 @@ BATCHERS variable can be left out."""
 
 from typing import Any, Callable, Dict, List, Mapping, Type
 
-from autotransform.batcher.base import Batcher
 from autotransform.change.base import Change
 from autotransform.command.base import Command
 from autotransform.event.base import Event
@@ -28,8 +27,6 @@ from autotransform.step.condition.base import Condition
 from autotransform.transformer.base import Transformer
 from autotransform.validator.base import Validator
 
-# See autotransform.batcher.factory
-BATCHERS: Dict[str, Type[Batcher]] = {}
 # See autotransform.change.factory
 CHANGES: Dict[str, Type[Change]] = {}
 # See autotransform.command.factory

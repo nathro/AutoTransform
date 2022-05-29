@@ -94,7 +94,7 @@ def get_all_config_settings() -> List[ConfigSetting]:
         ),
         ConfigSetting(
             {
-                "description": "A list of modules mapping names to custom components.",
+                "description": "The directory where custom components are stored.",
                 "name": "Custom Components",
                 "secret": False,
                 "section": "IMPORTS",

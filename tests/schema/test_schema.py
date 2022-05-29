@@ -18,7 +18,7 @@ from git import Head
 from mock import patch
 
 from autotransform.batcher.base import Batch
-from autotransform.batcher.single import SingleBatcher
+from autotransform.batcher.single import SingleBatcher, SingleBatcherParams
 from autotransform.change.base import Change
 from autotransform.filter.regex import RegexFilter
 from autotransform.input.directory import DirectoryInput
@@ -40,7 +40,7 @@ def get_sample_schema() -> AutoTransformSchema:
     repo_root = str(pathlib.Path(__file__).parent.parent.parent.resolve()).replace("\\", "/")
     return AutoTransformSchema(
         DirectoryInput({"path": repo_root}),
-        SingleBatcher({"title": EXPECTED_TITLE, "metadata": EXPECTED_METADATA}),
+        SingleBatcher(SingleBatcherParams(title=EXPECTED_TITLE, metadata=EXPECTED_METADATA)),
         RegexTransformer({"pattern": "input", "replacement": "inputsource"}),
         SchemaConfig("Sample", owners=["foo", "bar"]),
         filters=[RegexFilter({"pattern": ".*\\.py$"})],

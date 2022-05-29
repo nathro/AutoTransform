@@ -14,13 +14,13 @@
         }
     ],
     "batcher": {
+        "name": "single",
         "params": {
             "title": "Format all python files",
             "metadata": {
                 "body": "Apply Black formatting to all python files with @black_format"
             }
-        },
-        "type": "single"
+        }
     },
     "transformer": {
         "params": {

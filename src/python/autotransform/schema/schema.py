@@ -17,8 +17,8 @@ import json
 from typing import Any, Dict, List, Mapping, Optional
 
 import autotransform.schema
+from autotransform.batcher.base import FACTORY as batcher_factory
 from autotransform.batcher.base import Batch, Batcher
-from autotransform.batcher.factory import BatcherFactory
 from autotransform.change.base import Change
 from autotransform.command.base import Command
 from autotransform.command.factory import CommandFactory
@@ -402,7 +402,7 @@ class AutoTransformSchema:
         """
 
         inp = InputFactory.get(bundle["input"])
-        batcher = BatcherFactory.get(bundle["batcher"])
+        batcher = batcher_factory.get_instance(bundle["batcher"])
         transformer = TransformerFactory.get(bundle["transformer"])
         config = SchemaConfig.from_data(bundle["config"])
 

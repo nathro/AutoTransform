@@ -11,15 +11,29 @@
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+from enum import Enum
 from typing import Any, Generic, List, Mapping, Sequence, TypedDict, TypeVar
 
 from typing_extensions import NotRequired
 
-from autotransform.batcher.type import BatcherType
 from autotransform.item.base import Item
+from autotransform.util.component import (
+    Component,
+    ComponentFactory,
+    ComponentImport,
+    ComponentParams,
+)
 
-TParams = TypeVar("TParams", bound=Mapping[str, Any])
+TParams = TypeVar("TParams", bound=ComponentParams)
+
+
+class BatcherName(str, Enum):
+    """A simple enum for mapping."""
+
+    CHUNK = "chunk"
+    DIRECTORY = "directory"
+    SINGLE = "single"
 
 
 class Batch(TypedDict):
@@ -30,14 +44,7 @@ class Batch(TypedDict):
     title: str
 
 
-class BatcherBundle(TypedDict):
-    """A bundled version of the Batcher object used for JSON encoding."""
-
-    params: Mapping[str, Any]
-    type: BatcherType
-
-
-class Batcher(Generic[TParams], ABC):
+class Batcher(Generic[TParams], Component[TParams]):
     """The base for Batcher components. Used by AutoTransform to separate Items in to logical
     groupings that can be acted on indepently and have associated metadata.
 
@@ -47,33 +54,6 @@ class Batcher(Generic[TParams], ABC):
     """
 
     _params: TParams
-
-    def __init__(self, params: TParams):
-        """A simple constructor.
-
-        Args:
-            params (TParams): The paramaters used to set up the Batcher.
-        """
-
-        self._params = params
-
-    def get_params(self) -> TParams:
-        """Gets the paramaters used to set up the Batcher.
-
-        Returns:
-            TParams: The paramaters used to set up the Batcher.
-        """
-
-        return self._params
-
-    @staticmethod
-    @abstractmethod
-    def get_type() -> BatcherType:
-        """Used to map Batcher components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            BatcherType: The unique type associated with this Batcher.
-        """
 
     @abstractmethod
     def batch(self, items: Sequence[Item]) -> List[Batch]:
@@ -88,29 +68,15 @@ class Batcher(Generic[TParams], ABC):
                 title.
         """
 
-    def bundle(self) -> BatcherBundle:
-        """Generates a JSON encodable bundle.
-        If a component's params are not JSON encodable this method should be overridden to provide
-        an encodable version.
 
-        Returns:
-            BatcherBundle: The encodable bundle.
-        """
-
-        return {
-            "params": self._params,
-            "type": self.get_type(),
-        }
-
-    @staticmethod
-    @abstractmethod
-    def from_data(data: Mapping[str, Any]) -> Batcher:
-        """Produces an instance of the component from decoded params. Implementations should
-        assert that the data provided matches expected types and is valid.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-
-        Returns:
-            Batcher: An instance of the Batcher.
-        """
+FACTORY = ComponentFactory(
+    {
+        BatcherName.CHUNK: ComponentImport("ChunkBatcher", "autotransform.batcher.chunk"),
+        BatcherName.DIRECTORY: ComponentImport(
+            "DirectoryBatcher", "autotransform.batcher.directory"
+        ),
+        BatcherName.SINGLE: ComponentImport("SingleBatcher", "autotransform.batcher.single"),
+    },
+    Batcher,  # type: ignore [misc]
+    "batchers.json",
+)

@@ -28,7 +28,7 @@ jobs:
     - name: Install AutoTransform
       run: pip install AutoTransform
     - name: Install requirements
-      run: pip install -r autotransform/requirements.txt
+      run: pip install -r <CONFIG DIR>/requirements.txt
     - name: Update AutoTransform
       run: autotransform update --environment AUTO_TRANSFORM_CHANGE
       env:

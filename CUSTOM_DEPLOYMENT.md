@@ -2,7 +2,19 @@
 
 AutoTransform is a generic framework for defining automated code transformations, but may not provide all components needed by your specific organization. Fret not, AutoTransform is built to be extended!
 
-Custom components can be added through config based importing. The custom_components setting in the IMPORTS section of sample_config.ini shows how to import the modules, with an example module shown in `autotransform.thirdparty.components`. If changes are required beyond simply importing new modules, feel free to fork the repo! The recommendation, however, is to attempt to use custom imports as much as possible and avoid forking. Feel free to additionally push improvements upstream, think about what changes might make sense to AutoTransform to support your use case and submit a pull request!
+Custom components can be added through config based importing. Custom components are imported using a JSON encoded files where the files are of the format:
+```
+{
+    "custom/<component_name>": {
+        "class_name": "<The name of the class>",
+        "module": "<Fully qualified module containing the class>"
+    },
+    ...
+}
+```
+The `IMPORTS` section of the config has a `components` setting containing the directory where these files are stored. Each component type has a file in this directory, i.e. `batchers.json`.
+
+If changes are required beyond simply importing components, feel free to fork the repo! The recommendation, however, is to attempt to use custom imports as much as possible and avoid forking. Feel free to additionally push improvements upstream, think about what changes might make sense to AutoTransform to support your use case and submit a pull request!
 
 ### **Configuration**
 

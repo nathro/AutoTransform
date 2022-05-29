@@ -12,23 +12,23 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from dataclasses import dataclass
 from math import ceil
-from typing import Any, Dict, List, Mapping, Sequence, TypedDict
+from typing import Any, Dict, List, Mapping, Optional, Sequence
 
-from typing_extensions import NotRequired
-
-from autotransform.batcher.base import Batch, Batcher
-from autotransform.batcher.type import BatcherType
+from autotransform.batcher.base import Batch, Batcher, BatcherName
 from autotransform.item.base import Item
+from autotransform.util.component import ComponentParams
 
 
-class ChunkBatcherParams(TypedDict):
+@dataclass
+class ChunkBatcherParams(ComponentParams):
     """The param type for a ChunkBatcher."""
 
     chunk_size: int
-    max_chunks: NotRequired[int]
-    metadata: NotRequired[Mapping[str, Any]]
     title: str
+    max_chunks: Optional[int] = None
+    metadata: Optional[Mapping[str, Any]] = None
 
 
 class ChunkBatcher(Batcher[ChunkBatcherParams]):
@@ -47,14 +47,14 @@ class ChunkBatcher(Batcher[ChunkBatcherParams]):
     _params: ChunkBatcherParams
 
     @staticmethod
-    def get_type() -> BatcherType:
+    def get_name() -> BatcherName:
         """Used to map Batcher components 1:1 with an enum, allowing construction from JSON.
 
         Returns:
-            BatcherType: The unique type associated with this Batcher.
+            BatcherName: The unique name associated with this Batcher.
         """
 
-        return BatcherType.CHUNK
+        return BatcherName.CHUNK
 
     def batch(self, items: Sequence[Item]) -> List[Batch]:
         """Take filtered Items and chunk them into Batches.
@@ -67,46 +67,31 @@ class ChunkBatcher(Batcher[ChunkBatcherParams]):
                 title.
         """
 
-        chunk_size = self._params["chunk_size"]
-        if "max_chunks" in self._params and len(items) / chunk_size > self._params["max_chunks"]:
-            chunk_size = ceil(len(items) / self._params["max_chunks"])
+        chunk_size = self._params.chunk_size
+        if (
+            self._params.max_chunks is not None
+            and len(items) / chunk_size > self._params.max_chunks
+        ):
+            chunk_size = ceil(len(items) / self._params.max_chunks)
         item_chunks = [items[i : i + chunk_size] for i in range(0, len(items), chunk_size)]
         item_batches: List[Batch] = []
         for idx, item_chunk in enumerate(item_chunks, start=1):
-            title = f"[{idx}/{len(item_chunks)}] " + self._params["title"]
+            title = f"[{idx}/{len(item_chunks)}] " + self._params.title
             batch: Batch = {"items": item_chunk, "title": title}
-            metadata = self._params.get("metadata", None)
-            if metadata is not None:
-                batch["metadata"] = deepcopy(metadata)
+            if self._params.metadata is not None:
+                batch["metadata"] = deepcopy(self._params.metadata)
             item_batches.append(batch)
         return item_batches
 
     @staticmethod
-    def from_data(data: Mapping[str, Any]) -> ChunkBatcher:
+    def from_data(data: Dict[str, Any]) -> ChunkBatcher:
         """Produces a ChunkBatcher from the provided data.
 
         Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
+            bundle (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
 
         Returns:
             ChunkBatcher: An instance of the ChunkBatcher with the provided params.
         """
 
-        title = data["title"]
-        assert isinstance(title, str)
-        chunk_size = data["chunk_size"]
-        assert isinstance(chunk_size, int)
-        params: ChunkBatcherParams = {
-            "title": title,
-            "chunk_size": chunk_size,
-        }
-        metadata = data.get("metadata", None)
-        if metadata is not None:
-            assert isinstance(data["metadata"], Dict)
-            params["metadata"] = metadata
-        max_chunks = data.get("max_chunks", None)
-        if max_chunks is not None:
-            assert isinstance(max_chunks, int)
-            params["max_chunks"] = max_chunks
-
-        return ChunkBatcher(params)
+        return ChunkBatcher(ChunkBatcherParams.from_data(data))

@@ -11,6 +11,7 @@
 
 import json
 import os
+import pathlib
 import subprocess
 from argparse import ArgumentParser, Namespace
 from configparser import ConfigParser
@@ -116,12 +117,13 @@ def get_config_credentials(
 
 
 def get_config_imports(
-    prev_inputs: Mapping[str, Any], simple: bool = False
+    prev_inputs: Mapping[str, Any], default_path: str, simple: bool = False
 ) -> Tuple[Dict[str, str], Mapping[str, Any]]:
     """Gets the imports section of a config file.
 
     Args:
         prev_inputs (Mapping[str, Any]): Previously used input values.
+        default_path (str): The default path to store import files in.
         simple (bool, optional): Whether to use simple inputs. Defaults to False.
 
     Returns:
@@ -140,9 +142,10 @@ def get_config_imports(
     inputs: Dict[str, Any] = {}
 
     custom_components = input_string(
-        "Enter a comma separated list of custom components:",
+        "Enter the directory where custom component JSON files are located:",
         "custom components",
         previous=prev_inputs.get("import_components"),
+        default=default_path,
     )
     section["components"] = custom_components
     inputs["import_components"] = custom_components
@@ -252,7 +255,9 @@ def write_config(
         inputs[key] = value
 
     # Set up custom component configuration
-    imports_section, imports_inputs = get_config_imports(prev_inputs, simple=simple)
+    imports_section, imports_inputs = get_config_imports(
+        prev_inputs, str(pathlib.Path(config_path).parent.resolve()), simple=simple
+    )
     config["IMPORTS"] = imports_section
     for key, value in imports_inputs.items():
         inputs[key] = value
@@ -414,6 +419,7 @@ def initialize_repo(
     """
 
     examples_dir = get_examples_dir()
+    repo_config_dir = DefaultConfigFetcher.get_repo_config_dir()
 
     github = use_github or prev_inputs.get("use_github")
     if github is None:
@@ -446,7 +452,7 @@ def initialize_repo(
             schema = AutoTransformSchema.from_json(sample_schema_file.read())
         schema._repo = repo  # pylint: disable=protected-access
 
-        schema_path = f"{repo_dir}/autotransform/schemas/black_format.json"
+        schema_path = f"{repo_config_dir}/schemas/black_format.json"
         os.makedirs(os.path.dirname(schema_path), exist_ok=True)
         with open(schema_path, "w+", encoding="UTF-8") as schema_file:
             schema_file.write(schema.to_json(pretty=True))
@@ -459,7 +465,7 @@ def initialize_repo(
         requirements = ""
 
     # Set up requirements file
-    requirements_path = f"{repo_dir}/autotransform/requirements.txt"
+    requirements_path = f"{repo_config_dir}/requirements.txt"
     os.makedirs(os.path.dirname(requirements_path), exist_ok=True)
     with open(requirements_path, "w+", encoding="UTF-8") as requirements_file:
         requirements_file.write(requirements)
@@ -467,7 +473,7 @@ def initialize_repo(
 
     # Set up manage file
     manage_bundle = get_manage_bundle(use_github_actions, repo, prev_inputs, simple)
-    manage_path = f"{repo_dir}/autotransform/manage.json"
+    manage_path = f"{repo_config_dir}/manage.json"
     os.makedirs(os.path.dirname(manage_path), exist_ok=True)
     with open(manage_path, "w+", encoding="UTF-8") as manage_file:
         manage_file.write(json.dumps(manage_bundle, indent=4))
@@ -475,7 +481,7 @@ def initialize_repo(
 
     # Set up schedule file
     schedule_bundle = input_schedule_bundle(manage_bundle["runner"], use_sample_schema, simple)
-    schedule_path = f"{repo_dir}/autotransform/schedule.json"
+    schedule_path = f"{repo_config_dir}/schedule.json"
     os.makedirs(os.path.dirname(schedule_path), exist_ok=True)
     with open(schedule_path, "w+", encoding="UTF-8") as schedule_file:
         schedule_file.write(json.dumps(schedule_bundle, indent=4))

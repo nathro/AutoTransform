@@ -6,14 +6,15 @@
         "type": "directory"
     },
     "batcher": {
+        "name": "single",
         "params": {
             "title": "test",
             "metadata": {
                 "summary": "",
                 "tests": ""
-            }
-        },
-        "type": "single"
+            },
+            "skip_empty_batch": false
+        }
     },
     "transformer": {
         "params": {
