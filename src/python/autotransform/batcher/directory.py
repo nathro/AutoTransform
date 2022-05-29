@@ -28,7 +28,8 @@ class DirectoryBatcher(Batcher):
 
     Attributes:
         prefix (str): The prefix to apply to any titles for Batches.
-        metadata (Optional[Dict[str, Any]]): The metadata to associate with Batches.
+        metadata (Optional[Dict[str, Any]], optional): The metadata to associate with
+            Batches. Defaults to None.
         name (ClassVar[BatcherName]): The name of the Component.
     """
 

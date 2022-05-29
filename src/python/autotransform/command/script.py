@@ -13,60 +13,60 @@ from __future__ import annotations
 
 import json
 import subprocess
+from dataclasses import dataclass
 from tempfile import NamedTemporaryFile as TmpFile
-from typing import Any, List, Mapping, Optional, Sequence
-
-from typing_extensions import NotRequired
+from typing import Any, ClassVar, List, Mapping, Optional, Sequence
 
 import autotransform.schema
 from autotransform.batcher.base import Batch
-from autotransform.command.base import Command, CommandParams
-from autotransform.command.type import CommandType
+from autotransform.command.base import Command, CommandName
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
 
 
-class ScriptCommandParams(CommandParams):
-    """The param type for a ScriptCommand."""
-
-    script: str
-    args: List[str]
-    per_item: NotRequired[bool]
-    run_on_changes: NotRequired[bool]
-
-
-class ScriptCommand(Command[ScriptCommandParams]):
+@dataclass(frozen=True, kw_only=True)
+class ScriptCommand(Command):
     """Runs a script with the supplied arguments to perform a command. If the per_item flag is
     set to True, the script will be invoked on each Item. If run_on_changes is set to True, the
     script will replace the Batch Items with FileItems for each changed file. Sentinel values can
     be used in args to provide custom arguments for a run.
     The available sentinel values for args are:
-        <<KEY>>: A json encoded list of the Items for a Batch. If the per_item flag is set in
-            params, this will simply be the key of an Item.
+        <<KEY>>: A json encoded list of the Items for a Batch. If the per_item flag is set
+            his will simply be the key of an Item.
         <<EXTRA_DATA>>: A JSON encoded mapping from Item key to that Item's extra_data. If the
-            per_item flag is set in params, this will simply be a JSON encoding of the Item's
-            extra_data. If extra_data is not present for an item, it is treated as an empty Dict.
+            per_item flag is set, this will simply be a JSON encoding of the Item's extra_data.
+            If extra_data is not present for an item, it is treated as an empty Dict.
         <<METADATA>>: A JSON encoded version of the Batch's metadata.
     _FILE can be appended to any of these (i.e. <<KEY_FILE>>) and the arg will instead be replaced
      with a path to a file containing the value.
 
     Attributes:
-        _params (ScriptCommandParams): Contains the args and set-up for the script.
+        script (str): The script to run.
+        args (List[str]): The arguments to supply to the script.
+        per_item (bool, optional): Whether to run the script on each item. Defaults to False.
+        run_on_changes (bool, optional): Whether to replace the Items in the batch with
+            FileItems for the changed files. Defaults to False.
+        name (ClassVar[CommandName]): The name of the Component.
     """
 
-    _params: ScriptCommandParams
+    script: str
+    args: List[str]
+    per_item: bool = False
+    run_on_changes: bool = False
+
+    name: ClassVar[CommandName] = CommandName.SCRIPT
 
     @staticmethod
-    def get_type() -> CommandType:
+    def get_type() -> CommandName:
         """Used to map Command components 1:1 with an enum, allowing construction from JSON.
 
         Returns:
             CommandType: The unique type associated with this Command.
         """
 
-        return CommandType.SCRIPT
+        return CommandName.SCRIPT
 
     def run(self, batch: Batch, _transform_data: Optional[Mapping[str, Any]]) -> None:
         """Runs the script command against the Batch, either on each item individually or
@@ -77,8 +77,8 @@ class ScriptCommand(Command[ScriptCommandParams]):
             _transform_data (Optional[Mapping[str, Any]]): Data from the transformation. Unused.
         """
 
-        if self._params.get("per_item", False):
-            if self._params.get("run_on_changes", False):
+        if self.per_item:
+            if self.run_on_changes:
                 current_schema = autotransform.schema.current
                 assert current_schema is not None
                 repo = current_schema.get_repo()
@@ -110,7 +110,7 @@ class ScriptCommand(Command[ScriptCommandParams]):
 
         event_handler = EventHandler.get()
 
-        cmd = [self._params["script"]]
+        cmd = [self.script]
 
         extra_data = item.get_extra_data()
         if extra_data is None:
@@ -139,7 +139,7 @@ class ScriptCommand(Command[ScriptCommandParams]):
             arg_replacements["<<METADATA_FILE>>"] = meta.name
 
             # Create command
-            for arg in self._params["args"]:
+            for arg in self.args:
                 if arg in arg_replacements:
                     cmd.append(arg_replacements[arg])
                 else:
@@ -175,8 +175,8 @@ class ScriptCommand(Command[ScriptCommandParams]):
 
         event_handler = EventHandler.get()
 
-        cmd = [self._params["script"]]
-        if self._params.get("run_on_changes", False):
+        cmd = [self.script]
+        if self.run_on_changes:
             current_schema = autotransform.schema.current
             assert current_schema is not None
             repo = current_schema.get_repo()
@@ -215,7 +215,7 @@ class ScriptCommand(Command[ScriptCommandParams]):
             arg_replacements["<<METADATA_FILE>>"] = meta.name
 
             # Create command
-            for arg in self._params["args"]:
+            for arg in self.args:
                 if arg in arg_replacements:
                     cmd.append(arg_replacements[arg])
                 else:
@@ -233,38 +233,3 @@ class ScriptCommand(Command[ScriptCommandParams]):
         else:
             event_handler.handle(DebugEvent({"message": "No STDERR"}))
         proc.check_returncode()
-
-    @staticmethod
-    def _from_data(data: Mapping[str, Any]) -> ScriptCommand:
-        """Produces an instance of the component from decoded params. Implementations should
-        assert that the data provided matches expected types and is valid.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-
-        Returns:
-            ScriptCommand: An instance of the ScriptCommand.
-        """
-
-        script = data["script"]
-        assert isinstance(script, str)
-        args = data["args"]
-        assert isinstance(args, List)
-        for arg in args:
-            assert isinstance(arg, str)
-        params: ScriptCommandParams = {
-            "script": script,
-            "args": args,
-        }
-
-        per_item = data.get("per_item", None)
-        if per_item is not None:
-            assert isinstance(per_item, bool)
-            params["per_item"] = per_item
-
-        run_on_changes = data.get("run_on_changes", None)
-        if run_on_changes is not None:
-            assert isinstance(run_on_changes, bool)
-            params["run_on_changes"] = run_on_changes
-
-        return ScriptCommand(params)

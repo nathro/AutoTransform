@@ -13,7 +13,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from functools import cached_property
-from typing import TYPE_CHECKING, ClassVar, Dict, List, Tuple, TypedDict
+from typing import TYPE_CHECKING, ClassVar, Dict, List, Tuple
 
 from autotransform.batcher.base import Batch
 from autotransform.change.base import Change, ChangeName
@@ -23,13 +23,6 @@ from autotransform.util.github import GithubUtils, PullRequest
 
 if TYPE_CHECKING:
     from autotransform.schema.schema import AutoTransformSchema
-
-
-class GithubChangeParams(TypedDict):
-    """The param type for a GithubChange."""
-
-    full_github_name: str
-    pull_number: int
 
 
 @dataclass(frozen=True, kw_only=True)

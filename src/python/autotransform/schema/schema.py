@@ -20,8 +20,8 @@ import autotransform.schema
 from autotransform.batcher.base import FACTORY as batcher_factory
 from autotransform.batcher.base import Batch, Batcher
 from autotransform.change.base import Change
+from autotransform.command.base import FACTORY as command_factory
 from autotransform.command.base import Command
-from autotransform.command.factory import CommandFactory
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.filter.base import Filter
@@ -275,10 +275,10 @@ class AutoTransformSchema:
 
         # Run pre-validation commands
         pre_validation_commands = [
-            command for command in self._commands if command.get_should_run_pre_validation()
+            command for command in self._commands if command.run_pre_validation
         ]
         for command in pre_validation_commands:
-            event_handler.handle(DebugEvent({"message": f"Running command {command.get_type()}"}))
+            event_handler.handle(DebugEvent({"message": f"Running command {command}"}))
             command.run(batch, result)
 
         # Validate the changes
@@ -301,10 +301,10 @@ class AutoTransformSchema:
 
         # Run post-validation commands
         post_validation_commands = [
-            command for command in self._commands if not command.get_should_run_pre_validation()
+            command for command in self._commands if not command.run_pre_validation
         ]
         for command in post_validation_commands:
-            event_handler.handle(DebugEvent({"message": f"Running command {command.get_type()}"}))
+            event_handler.handle(DebugEvent({"message": f"Running command {command}"}))
             command.run(batch, result)
 
         # Handle repo state, submitting changes if present and reseting the repo
@@ -408,7 +408,7 @@ class AutoTransformSchema:
 
         filters = [FilterFactory.get(f) for f in bundle["filters"]]
         validators = [ValidatorFactory.get(validator) for validator in bundle["validators"]]
-        commands = [CommandFactory.get(command) for command in bundle["commands"]]
+        commands = [command_factory.get_instance(command) for command in bundle["commands"]]
 
         repo = RepoFactory.get(bundle["repo"]) if "repo" in bundle else None
 
