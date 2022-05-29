@@ -25,6 +25,7 @@ from dacite.config import Config as DaciteConfig
 from autotransform.config import fetcher as Config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
+from autotransform.event.warning import WarningEvent
 
 TComponent = TypeVar("TComponent")
 
@@ -220,7 +221,7 @@ class ComponentFactory(Generic[T], ABC):
             with open(component_json_path, "r", encoding="UTF-8") as component_file:
                 json_components = json.load(component_file)
         except FileNotFoundError:
-            EventHandler.get().handle(DebugEvent({"message": "Could not find components file."}))
+            EventHandler.get().handle(WarningEvent({"message": "Could not find components file."}))
             json_components = {}
         EventHandler.get().handle(
             DebugEvent({"message": f"Importing custom batchers from: {component_json_path}"})
@@ -229,7 +230,7 @@ class ComponentFactory(Generic[T], ABC):
             message = f"Malformed custom component file: {component_json_path}"
             if strict:
                 raise ValueError(message)
-            EventHandler.get().handle(DebugEvent({"message": message}))
+            EventHandler.get().handle(WarningEvent({"message": message}))
             return custom_components
 
         for name, import_info in json_components:
@@ -237,14 +238,14 @@ class ComponentFactory(Generic[T], ABC):
                 message = f"Invalid name: {name}"
                 if strict:
                     raise ValueError(message)
-                EventHandler.get().handle(DebugEvent({"message": message}))
+                EventHandler.get().handle(WarningEvent({"message": message}))
                 continue
             try:
                 custom_components[f"custom/{name}"] = ComponentImport.from_data(import_info)
             except DaciteError as err:
                 if strict:
                     raise err
-                EventHandler.get().handle(DebugEvent({"message": str(err)}))
+                EventHandler.get().handle(WarningEvent({"message": str(err)}))
         return custom_components
 
     def _get_component_class(

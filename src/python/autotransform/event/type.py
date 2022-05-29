@@ -21,3 +21,4 @@ class EventType(str, Enum):
     REMOTE_UPDATE = "remote_update"
     SCHEDULE_RUN = "schedule_run"
     SCRIPT_RUN = "script_run"
+    WARNING = "warning"
