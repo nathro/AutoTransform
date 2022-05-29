@@ -2,6 +2,11 @@
 
 ## Release 0.2.2 - Production Beta
 
+#### API Changes
+ - Updating all components to inherit from Component class to unify logic for many pieces in one place
+ - Component bundles use "name" instead of "type" now to avoid confusion between the class type and the identifier
+ - Custom components are now imported via JSON files
+
 #### New Components
  - Added EmptyInput for schemas that operate on the entire codebase at once
 
