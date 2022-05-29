@@ -79,10 +79,13 @@ class ComponentImport(Component):
     Attributes:
         class_name (str): The name of the class of the component.
         module (str): The fully qualified module where the class can be imported.
+        name (ClassVar[str]): The name of the Component.
     """
 
     class_name: str
     module: str
+
+    name: ClassVar[str] = "component_import"
 
 
 T = TypeVar("T", bound=Component)
