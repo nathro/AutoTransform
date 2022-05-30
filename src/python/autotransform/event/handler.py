@@ -13,15 +13,14 @@ the event, such as logging.
 
 from __future__ import annotations
 
-import importlib
 from datetime import datetime
 from typing import Callable, Dict, List, Optional
 
 from colorama import Fore
 
-from autotransform.config import fetcher as Config
 from autotransform.event.base import Event
 from autotransform.event.logginglevel import LoggingLevel
+from autotransform.util.component import ComponentFactory
 
 
 class EventHandler:
@@ -52,12 +51,11 @@ class EventHandler:
         if EventHandler.__instance is not None:
             raise Exception("Trying to instantiate new EventHandler when one already present")
         self._logging_level = LoggingLevel.INFO
-        self._callbacks = []
-        custom_component_modules = Config.get_imports_components()
-        for module_string in custom_component_modules:
-            module = importlib.import_module(module_string)
-            if hasattr(module, "EVENT_CALLBACKS"):
-                self._callbacks.extend(module.EVENT_CALLBACKS)
+        custom_handler_factory = ComponentFactory({}, EventHandler, "event.json")
+        self._callbacks = [
+            custom_handler_factory.get_class(handler).get().handle
+            for handler in custom_handler_factory.get_custom_components()
+        ]
 
     @staticmethod
     def get() -> EventHandler:

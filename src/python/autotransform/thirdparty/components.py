@@ -12,9 +12,8 @@ All custom component imports should follow this structure. Component types that 
 custom implementations do not need to be included (i.e. if there are no custom batchers, the
 BATCHERS variable can be left out."""
 
-from typing import Any, Callable, Dict, List, Mapping, Type
+from typing import Any, Callable, Dict, Mapping, Type
 
-from autotransform.event.base import Event
 from autotransform.filter.base import Filter
 from autotransform.input.base import Input
 from autotransform.item.base import Item
@@ -24,8 +23,6 @@ from autotransform.step.base import Step
 from autotransform.transformer.base import Transformer
 from autotransform.validator.base import Validator
 
-# See autotransform.event.handler
-EVENT_CALLBACKS: List[Callable[[Event], None]] = []
 # See autotransform.filter.factory
 FILTERS: Dict[str, Type[Filter]] = {}
 # See autotransform.input.factory
