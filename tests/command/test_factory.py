@@ -50,7 +50,6 @@ def test_fetching_components():
 def test_encoding_and_decoding():
     """Tests the encoding and decoding of components."""
 
-    # pylint: disable=unexpected-keyword-arg
     test_components: Dict[CommandName, List[Command]] = {
         CommandName.SCRIPT: [
             ScriptCommand(script="black", args=["-l", "100"]),

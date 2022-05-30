@@ -23,10 +23,9 @@
     },
     "filters": [
         {
-            "params": {
-                "pattern": ".*\\.py$"
-            },
-            "type": "regex"
+            "name": "regex",
+            "pattern": ".*\\.py$",
+            "inverted": false
         }
     ],
     "validators": [],

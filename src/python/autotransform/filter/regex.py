@@ -12,39 +12,29 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Mapping
+from dataclasses import dataclass
+from typing import ClassVar
 
-from autotransform.filter.base import Filter, FilterParams
-from autotransform.filter.type import FilterType
+from autotransform.filter.base import Filter, FilterName
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
 
 
-class RegexFilterParams(FilterParams):
-    """The param type for a RegexFilter."""
-
-    pattern: str
-
-
-class RegexFilter(Filter[RegexFilterParams]):
+@dataclass(kw_only=True)
+class RegexFilter(Filter):
     """A Filter which only passes Items where the Item's key matches a provided regex pattern.
     Uses re.search rather than re.match.
 
     Attributes:
-        _params (RegexFilterParams): Contains the pattern to check against the key.
+        pattern (str): The pattern to use when checking the Item's key.
+        inverted (bool, optional): Whether to invert the results of the filter. Defaults to False.
+        name (ClassVar[FilterName]): The name of the component.
     """
 
-    _params: RegexFilterParams
+    pattern: str
+    inverted: bool = False
 
-    @staticmethod
-    def get_type() -> FilterType:
-        """Used to map Filter components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            FilterType: The unique type associated with this Filter.
-        """
-
-        return FilterType.REGEX
+    name: ClassVar[FilterName] = FilterName.REGEX
 
     def _is_valid(self, item: Item) -> bool:
         """Check whether the key contains the pattern in the params.
@@ -56,50 +46,24 @@ class RegexFilter(Filter[RegexFilterParams]):
             bool: Returns True if the pattern is found within the key.
         """
 
-        return re.search(self._params["pattern"], item.get_key()) is not None
-
-    @staticmethod
-    def _from_data(data: Mapping[str, Any]) -> RegexFilter:
-        """Produces a RegexFilter from the provided data.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
-
-        Returns:
-            RegexFilter: An instance of the RegexFilter with the provided params.
-        """
-
-        pattern = data["pattern"]
-        assert isinstance(pattern, str)
-        return RegexFilter({"pattern": pattern})
+        return re.search(self.pattern, item.get_key()) is not None
 
 
-class FileContentRegexFilterParams(FilterParams):
-    """The param type for a FileContentRegexFilter."""
-
-    pattern: str
-
-
-class FileContentRegexFilter(Filter[FileContentRegexFilterParams]):
+@dataclass(kw_only=True)
+class RegexFileContentFilter(Filter):
     """A Filter which only passes FileItems where the file's content contains a match to the
     provided regex pattern. Uses re.search rather than re.match.
 
     Attributes:
-        _params (FileContentRegexFilterParams): Contains the pattern to check against the
-            content of the file.
+        pattern (str): The pattern to use when checking the FileItem's content
+        inverted (bool, optional): Whether to invert the results of the filter. Defaults to False.
+        name (ClassVar[FilterName]): The name of the component.
     """
 
-    _params: FileContentRegexFilterParams
+    pattern: str
+    inverted: bool = False
 
-    @staticmethod
-    def get_type() -> FilterType:
-        """Used to map Filter components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            FilterType: The unique type associated with this Filter.
-        """
-
-        return FilterType.FILE_CONTENT_REGEX
+    name: ClassVar[FilterName] = FilterName.REGEX_FILE_CONTENT
 
     def _is_valid(self, item: Item) -> bool:
         """Check whether the contents of the file match the regex pattern in the parms.
@@ -112,20 +76,4 @@ class FileContentRegexFilter(Filter[FileContentRegexFilterParams]):
         """
 
         assert isinstance(item, FileItem)
-        return re.search(self._params["pattern"], item.get_content()) is not None
-
-    @staticmethod
-    def _from_data(data: Mapping[str, Any]) -> FileContentRegexFilter:
-        """Produces a FileContentRegexFilter from the provided data.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
-
-        Returns:
-            FileContentRegexFilter: An instance of the FileContentRegexFilter with the provided
-                params.
-        """
-
-        pattern = data["pattern"]
-        assert isinstance(pattern, str)
-        return FileContentRegexFilter({"pattern": pattern})
+        return re.search(self.pattern, item.get_content()) is not None

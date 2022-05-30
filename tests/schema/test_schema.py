@@ -43,7 +43,7 @@ def get_sample_schema() -> AutoTransformSchema:
         SingleBatcher(title=EXPECTED_TITLE, metadata=EXPECTED_METADATA),
         RegexTransformer({"pattern": "input", "replacement": "inputsource"}),
         SchemaConfig("Sample", owners=["foo", "bar"]),
-        filters=[RegexFilter({"pattern": ".*\\.py$"})],
+        filters=[RegexFilter(pattern=".*\\.py$")],
         repo=GithubRepo({"base_branch_name": "master", "full_github_name": "nathro/AutoTransform"}),
     )
 
@@ -334,10 +334,7 @@ def test_json_decoding(_mocked_checkout):
     expected_filters = expected_schema.get_filters()
     assert len(actual_filters) == len(expected_filters), "Filter length does not match"
     for i in range(len(actual_filters)):
-        assert type(actual_filters[i]) is type(expected_filters[i]), "Filters are not the same"
-        assert (
-            actual_filters[i].get_params() == expected_filters[i].get_params()
-        ), "Filters do not have the same params"
+        assert actual_filters[i] == expected_filters[i], "Filters are not the same"
 
     # Check validators
     actual_validators = actual_schema.get_validators()

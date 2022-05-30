@@ -18,7 +18,7 @@ from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.run import ScriptRunEvent
 from autotransform.event.schedulerun import ScheduleRunEvent
-from autotransform.filter.factory import FilterFactory
+from autotransform.filter.base import FACTORY as filter_factory
 from autotransform.filter.shard import ShardFilter
 from autotransform.runner.factory import RunnerFactory
 from autotransform.schema.factory import SchemaBuilderFactory
@@ -158,9 +158,9 @@ def schedule_command_main(args: Namespace) -> None:
                 )
             )
             filter_bundle = shard_info["shard_filter"]
-            filter_bundle["params"]["num_shards"] = num_shards
-            filter_bundle["params"]["valid_shard"] = valid_shard
-            shard_filter = FilterFactory.get(filter_bundle)
+            filter_bundle["num_shards"] = num_shards
+            filter_bundle["valid_shard"] = valid_shard
+            shard_filter = filter_factory.get_instance(filter_bundle)
             assert isinstance(shard_filter, ShardFilter)
             schema.add_filter(shard_filter)
 

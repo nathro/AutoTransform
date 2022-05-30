@@ -12,26 +12,23 @@
 from __future__ import annotations
 
 from abc import abstractmethod
+from dataclasses import dataclass
 
-from autotransform.filter.base import Filter, FilterParams
+from autotransform.filter.base import Filter
 from autotransform.item.base import Item
 
 
-class ShardFilterParams(FilterParams):
-    """The param type for a ShardFilter."""
-
-    num_shards: int
-    valid_shard: int
-
-
-class ShardFilter(Filter[ShardFilterParams]):
+@dataclass(kw_only=True)  # type: ignore [misc]
+class ShardFilter(Filter):
     """A base for sharding filters that checks that an Item fits the current valid shard.
 
     Attributes:
-        _params (ShardFilterParams): Contains the valid shard and num shards.
+        num_shards (int): The number of shards to split the items across.
+        valid_shard (int): The current valid shard to use.
     """
 
-    _params: ShardFilterParams
+    num_shards: int
+    valid_shard: int
 
     @abstractmethod
     def _shard(self, item: Item) -> int:
@@ -54,4 +51,4 @@ class ShardFilter(Filter[ShardFilterParams]):
             bool: Returns True if the Item's shard matches the current valid shard.
         """
 
-        return self._shard(item) == self._params["valid_shard"]
+        return self._shard(item) == self.valid_shard

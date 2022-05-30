@@ -74,5 +74,5 @@ FACTORY = ComponentFactory(
         ),
     },
     Batcher,  # type: ignore [misc]
-    "batchers.json",
+    "batcher.json",
 )

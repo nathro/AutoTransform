@@ -48,6 +48,8 @@ class ScriptCommand(Command):
         per_item (bool, optional): Whether to run the script on each item. Defaults to False.
         run_on_changes (bool, optional): Whether to replace the Items in the batch with
             FileItems for the changed files. Defaults to False.
+        run_pre_validation (bool, optional): Whether to run the command before validation is done.
+            Defaults to False.
         name (ClassVar[CommandName]): The name of the Component.
     """
 
@@ -55,6 +57,7 @@ class ScriptCommand(Command):
     args: List[str]
     per_item: bool = False
     run_on_changes: bool = False
+    run_pre_validation: bool = False
 
     name: ClassVar[CommandName] = CommandName.SCRIPT
 

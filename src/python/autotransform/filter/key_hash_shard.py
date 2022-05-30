@@ -11,35 +11,36 @@
 
 from __future__ import annotations
 
-from typing import Any, Mapping
+from dataclasses import dataclass
+from typing import ClassVar
 
-from autotransform.filter.shard import ShardFilter, ShardFilterParams
-from autotransform.filter.type import FilterType
+from autotransform.filter.base import FilterName
+from autotransform.filter.shard import ShardFilter
 from autotransform.item.base import Item
 
 
-class KeyHashShardFilterParams(ShardFilterParams):
-    """The param type for a KeyHashShardFilter."""
-
-
+@dataclass(kw_only=True)
 class KeyHashShardFilter(ShardFilter):
     """A Filter which produces a shard from the key of an Item, using simple hashing.
 
     Attributes:
-        _params (KeyHashShardFilterParams): Contains the valid shard and num shards.
+        inverted (bool, optional): Whether to invert the results of the filter. Defaults to False.
+        name (ClassVar[FilterName]): The name of the component.
     """
 
-    _params: KeyHashShardFilterParams
+    inverted: bool = False
+
+    name: ClassVar[FilterName] = FilterName.KEY_HASH_SHARD
 
     @staticmethod
-    def get_type() -> FilterType:
+    def get_type() -> FilterName:
         """Used to map Filter components 1:1 with an enum, allowing construction from JSON.
 
         Returns:
             FilterType: The unique type associated with this Filter.
         """
 
-        return FilterType.KEY_HASH_SHARD
+        return FilterName.KEY_HASH_SHARD
 
     def _shard(self, item: Item) -> int:
         """Produces a shard from an item.
@@ -51,21 +52,4 @@ class KeyHashShardFilter(ShardFilter):
             int: The shard number for the Item.
         """
 
-        return hash(item.get_key()) % self._params["num_shards"]
-
-    @staticmethod
-    def _from_data(data: Mapping[str, Any]) -> KeyHashShardFilter:
-        """Produces a KeyHashShardFilter from the provided data.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
-
-        Returns:
-            KeyHashShardFilter: An instance of the KeyHashShardFilter with the provided params.
-        """
-
-        num_shards = data["num_shards"]
-        assert isinstance(num_shards, int)
-        valid_shard = data["valid_shard"]
-        assert isinstance(valid_shard, int)
-        return KeyHashShardFilter({"num_shards": num_shards, "valid_shard": valid_shard})
+        return hash(item.get_key()) % self.num_shards

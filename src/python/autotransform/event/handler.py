@@ -14,13 +14,12 @@ the event, such as logging.
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Callable, Dict, List, Optional
+from typing import Dict, Optional
 
 from colorama import Fore
 
 from autotransform.event.base import Event
 from autotransform.event.logginglevel import LoggingLevel
-from autotransform.util.component import ComponentFactory
 
 
 class EventHandler:
@@ -30,15 +29,12 @@ class EventHandler:
     Attributes:
         _logging_level (LoggingLevel): The level for which logs will be output to CLI. All other
             events will be dropped.
-        _callbacks (List[Callable[[Event], None]]): Custom imported callback functions for handling
-            events for custom deployments
         __instance (Optional[EventHandler]): The singleton instance of the EventHandler
         __color_map (Dict[LoggingLevel, str]): A mapping from log level to ANSI color for CLI
             output
     """
 
     _logging_level: LoggingLevel
-    _callbacks: List[Callable[[Event], None]]
     __instance: Optional[EventHandler] = None
     __color_map: Dict[LoggingLevel, str] = {
         LoggingLevel.ERROR: Fore.RED,
@@ -51,11 +47,6 @@ class EventHandler:
         if EventHandler.__instance is not None:
             raise Exception("Trying to instantiate new EventHandler when one already present")
         self._logging_level = LoggingLevel.INFO
-        custom_handler_factory = ComponentFactory({}, EventHandler, "event.json")
-        self._callbacks = [
-            custom_handler_factory.get_class(handler).get().handle
-            for handler in custom_handler_factory.get_custom_components()
-        ]
 
     @staticmethod
     def get() -> EventHandler:
@@ -84,8 +75,6 @@ class EventHandler:
         """
         if self._logging_level >= event.get_logging_level():
             self.output_to_cli(event)
-        for callback in self._callbacks:
-            callback(event)
 
     @staticmethod
     def output_to_cli(event: Event) -> None:

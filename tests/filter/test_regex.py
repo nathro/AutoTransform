@@ -9,7 +9,7 @@
 
 """Tests for the RegexFilter component."""
 
-from autotransform.filter.regex import FileContentRegexFilter, RegexFilter
+from autotransform.filter.regex import RegexFileContentFilter, RegexFilter
 from autotransform.item.file import FileItem
 
 from .filter_test import run_filter_tests
@@ -18,7 +18,7 @@ from .filter_test import run_filter_tests
 def test_regex():
     """Runs simple tests on the Regex filter."""
 
-    filt = RegexFilter({"pattern": "foo"})
+    filt = RegexFilter(pattern="foo")
     test_cases = {
         "foo.py": True,
         "bar/foo.py": True,
@@ -34,7 +34,7 @@ def test_regex():
 def test_inverted_regex():
     """Runs simple tests on the Regex filter."""
 
-    filt = RegexFilter({"pattern": "foo"}).invert()
+    filt = RegexFilter(pattern="foo", inverted=True)
     test_cases = {
         "foo.py": False,
         "bar/foo.py": False,
@@ -50,7 +50,7 @@ def test_inverted_regex():
 def test_file_content_regex(tmpdir):
     """Runs simple tests on the Regex filter."""
 
-    filt = FileContentRegexFilter({"pattern": "foo"})
+    filt = RegexFileContentFilter(pattern="foo")
     test_file_dir = tmpdir.mkdir("non_empty_dir")
     test_file_1 = test_file_dir.join("test1.txt")
     test_file_1.write("foo")
@@ -67,7 +67,7 @@ def test_file_content_regex(tmpdir):
 def test_inverted_file_content_regex(tmpdir):
     """Runs simple tests on the Regex filter."""
 
-    filt = FileContentRegexFilter({"pattern": "foo"}).invert()
+    filt = RegexFileContentFilter(pattern="foo", inverted=True)
     test_file_dir = tmpdir.mkdir("non_empty_dir")
     test_file_1 = test_file_dir.join("test1.txt")
     test_file_1.write("foo")

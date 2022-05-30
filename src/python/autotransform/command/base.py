@@ -12,7 +12,6 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from dataclasses import dataclass
 from enum import Enum
 from typing import Any, ClassVar, Mapping, Optional
 
@@ -26,7 +25,6 @@ class CommandName(str, Enum):
     SCRIPT = "script"
 
 
-@dataclass(frozen=True, kw_only=True)  # type: ignore [misc]
 class Command(Component):
     """The base for Command components. Used by AutoTransform to perform post-processing
     operations after validation, such as code generation.

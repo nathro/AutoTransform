@@ -24,8 +24,8 @@ from autotransform.command.base import FACTORY as command_factory
 from autotransform.command.base import Command
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
+from autotransform.filter.base import FACTORY as filter_factory
 from autotransform.filter.base import Filter
-from autotransform.filter.factory import FilterFactory
 from autotransform.input.base import Input
 from autotransform.input.factory import InputFactory
 from autotransform.item.base import Item
@@ -215,9 +215,8 @@ class AutoTransformSchema:
             for cur_filter in self._filters:
                 if not cur_filter.is_valid(item):
                     is_valid = False
-                    type_str = "".join([w.capitalize() for w in cur_filter.get_type().split("_")])
                     event = DebugEvent(
-                        {"message": f"[{type_str}] Invalid Item: {json.dumps(item.bundle())}"}
+                        {"message": f"[{cur_filter}] Invalid Item: {json.dumps(item.bundle())}"}
                     )
                     event_handler.handle(event)
                     break
@@ -406,7 +405,7 @@ class AutoTransformSchema:
         transformer = TransformerFactory.get(bundle["transformer"])
         config = SchemaConfig.from_data(bundle["config"])
 
-        filters = [FilterFactory.get(f) for f in bundle["filters"]]
+        filters = [filter_factory.get_instance(f) for f in bundle["filters"]]
         validators = [ValidatorFactory.get(validator) for validator in bundle["validators"]]
         commands = [command_factory.get_instance(command) for command in bundle["commands"]]
 

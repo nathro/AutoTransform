@@ -14,12 +14,11 @@ from __future__ import annotations
 import json
 from datetime import datetime
 from enum import Enum
-from typing import List, TypedDict
+from typing import Any, Dict, List, TypedDict
 
 from typing_extensions import NotRequired
 
-from autotransform.filter.base import FilterBundle
-from autotransform.filter.type import FilterType
+from autotransform.filter.base import FilterName
 from autotransform.runner.base import RunnerBundle
 from autotransform.util.console import (
     choose_option,
@@ -81,7 +80,7 @@ class Sharding(TypedDict):
     """The sharding setting for a schedule."""
 
     num_shards: int
-    shard_filter: FilterBundle
+    shard_filter: Dict[str, Any]
 
 
 class Schedule(TypedDict):
@@ -145,7 +144,7 @@ def input_scheduled_schema() -> ScheduledSchema:
         shard_filter = input_string(
             "Enter the JSON encoded shard filter:",
             "shard filter",
-            default=json.dumps({"type": FilterType.KEY_HASH_SHARD, "params": {}}),
+            default=json.dumps({"type": FilterName.KEY_HASH_SHARD, "params": {}}),
         )
         schedule["sharding"] = {"num_shards": num_shards, "shard_filter": json.loads(shard_filter)}
 
