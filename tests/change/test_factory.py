@@ -21,30 +21,30 @@ def test_all_enum_values_present():
     and only enum values are present."""
 
     missing_values = [
-        change_type for change_type in ChangeName if change_type not in FACTORY.get_components()
+        change_name for change_name in ChangeName if change_name not in FACTORY.get_components()
     ]
-    assert not missing_values, "Types missing from factory: " + ", ".join(missing_values)
+    assert not missing_values, "Names missing from factory: " + ", ".join(missing_values)
 
     extra_values = [
-        change_type for change_type in FACTORY.get_components() if change_type not in ChangeName
+        change_name for change_name in FACTORY.get_components() if change_name not in ChangeName
     ]
-    assert not extra_values, "Extra types in factory: " + ", ".join(extra_values)
+    assert not extra_values, "Extra names in factory: " + ", ".join(extra_values)
 
 
 def test_fetching_components():
     """Ensures that all components can be fetched correctly."""
 
-    for component_type in FACTORY.get_components():
-        component_class = FACTORY.get_class(component_type)
+    for component_name in FACTORY.get_components():
+        component_class = FACTORY.get_class(component_name)
         assert (
-            component_class.name == component_type
-        ), f"Component {component_type} has wrong type {component_class.name}"
+            component_class.name == component_name
+        ), f"Component {component_name} has wrong name {component_class.name}"
 
-    for component_type in FACTORY.get_custom_components(strict=True):
-        component_class = FACTORY.get_class(component_type)
+    for component_name in FACTORY.get_custom_components(strict=True):
+        component_class = FACTORY.get_class(component_name)
         assert (
-            f"custom/{component_class.name}" == component_type
-        ), f"Component {component_type} has wrong type {component_class.name}"
+            f"custom/{component_class.name}" == component_name
+        ), f"Component {component_name} has wrong name {component_class.name}"
 
 
 def test_encoding_and_decoding():
@@ -64,7 +64,7 @@ def test_encoding_and_decoding():
         for component in components:
             assert (
                 component.name == name
-            ), f"Testing change of type {component.name} for type {name}"
+            ), f"Testing change of name {component.name} for name {name}"
             assert (
                 FACTORY.get_instance(json.loads(json.dumps(component.bundle()))) == component
             ), f"Component {component} does not bundle and unbundle correctly"

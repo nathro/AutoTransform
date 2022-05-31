@@ -9,7 +9,8 @@
 
 """The base class for SchemaBuilders which are used to programatically generate a Schema."""
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+from enum import Enum
 from typing import List, Optional
 
 from autotransform.batcher.base import Batcher
@@ -21,10 +22,15 @@ from autotransform.repo.base import Repo
 from autotransform.schema.config import SchemaConfig
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.transformer.base import Transformer
+from autotransform.util.component import Component, ComponentFactory
 from autotransform.validator.base import Validator
 
 
-class SchemaBuilder(ABC):
+class SchemaBuilderName(str, Enum):
+    """A simple enum for mapping."""
+
+
+class SchemaBuilder(Component):
     """The base for SchemaBuilders. SchemaBuilders are used for programatic Schema generation.
     This can be used in conjunction with params or configuration to customize Schemas run
     through automation. Can also be used to generate JSON Schemas that can be utilized.
@@ -142,3 +148,10 @@ class SchemaBuilder(ABC):
 
         with open(path, "w") as file:
             file.write(self.build().to_json(pretty=True))
+
+
+FACTORY = ComponentFactory(
+    {},
+    SchemaBuilder,  # type: ignore [misc]
+    "schema_builder.json",
+)

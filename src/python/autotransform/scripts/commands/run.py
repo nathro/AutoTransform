@@ -22,7 +22,7 @@ from autotransform.event.run import ScriptRunEvent
 from autotransform.runner.base import FACTORY as runner_factory
 from autotransform.runner.base import Runner
 from autotransform.runner.local import LocalRunner
-from autotransform.schema.factory import SchemaBuilderFactory
+from autotransform.schema.builder import FACTORY as schema_builder_factory
 from autotransform.schema.schema import AutoTransformSchema
 
 
@@ -127,7 +127,7 @@ def run_command_main(args: Namespace) -> None:
     event_handler.handle(DebugEvent({"message": f"Schema: ({args.schema_type}) {args.schema}"}))
     event_args = {"schema": args.schema, "schema_type": args.schema_type}
     if args.schema_type == "builder":
-        schema = SchemaBuilderFactory.get(schema).build()
+        schema = schema_builder_factory.get_instance(schema).build()
     elif args.schema_type == "file":
         with open(schema, "r") as schema_file:
             schema = AutoTransformSchema.from_json(schema_file.read())

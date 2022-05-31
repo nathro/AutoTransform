@@ -21,7 +21,7 @@ from autotransform.event.schedulerun import ScheduleRunEvent
 from autotransform.filter.base import FACTORY as filter_factory
 from autotransform.filter.shard import ShardFilter
 from autotransform.runner.base import FACTORY as runner_factory
-from autotransform.schema.factory import SchemaBuilderFactory
+from autotransform.schema.builder import FACTORY as schema_builder_factory
 from autotransform.schema.schema import AutoTransformSchema
 
 
@@ -113,7 +113,7 @@ def schedule_command_main(args: Namespace) -> None:
         # Get the Schema
         schema_type = schema_data["type"]
         if schema_type == "builder":
-            schema = SchemaBuilderFactory.get(schema_data["schema"]).build()
+            schema = schema_builder_factory.get_instance(schema_data["schema"]).build()
         elif schema_type == "file":
             with open(schema_data["schema"], "r") as schema_file:
                 schema = AutoTransformSchema.from_json(schema_file.read())

@@ -21,7 +21,7 @@ from autotransform.util.component import Component, ComponentFactory, ComponentI
 
 
 class RunnerName(str, Enum):
-    """A simple enum for 1:1 Runner to type mapping."""
+    """A simple enum for mapping."""
 
     GITHUB = "github"
     LOCAL = "local"

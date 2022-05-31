@@ -19,13 +19,4 @@ Builders
 .. toctree::
    :maxdepth: 4
 
-
-Core
-----
-
-.. toctree::
-   :maxdepth: 4
-
    autotransform.schema.builder
-   autotransform.schema.type
-   autotransform.schema.factory
