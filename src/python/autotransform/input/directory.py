@@ -54,4 +54,4 @@ class DirectoryInput(Input):
             Sequence[FileItem]: The eligible files for transformation.
         """
 
-        return [FileItem(f) for f in self._files]
+        return [FileItem(key=f) for f in self._files]

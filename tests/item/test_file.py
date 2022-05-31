@@ -19,7 +19,7 @@ def test_get_content(tmpdir):
     test_file = root_dir.join("test.txt")
     test_content = "test"
     test_file.write(test_content)
-    assert FileItem(str(test_file)).get_content() == test_content
+    assert FileItem(key=str(test_file)).get_content() == test_content
 
 
 def test_write_content(tmpdir):
@@ -29,5 +29,5 @@ def test_write_content(tmpdir):
     test_file = root_dir.join("test.txt")
     test_content = "test"
     test_file.write("")
-    FileItem(str(test_file)).write_content(test_content)
+    FileItem(key=str(test_file)).write_content(test_content)
     assert test_file.read() == test_content

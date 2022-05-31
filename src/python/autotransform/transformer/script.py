@@ -100,20 +100,20 @@ class ScriptTransformer(Transformer[ScriptTransformerParams, None]):
 
         cmd = [self._params["script"]]
 
-        extra_data = item.get_extra_data()
+        extra_data = item.extra_data
         if extra_data is None:
             extra_data = {}
         metadata = batch_metadata if batch_metadata is not None else {}
 
         arg_replacements = {
-            "<<KEY>>": item.get_key(),
+            "<<KEY>>": item.key,
             "<<EXTRA_DATA>>": json.dumps(extra_data),
             "<<METADATA>>": json.dumps(metadata),
         }
 
         with TmpFile(mode="w+") as inp, TmpFile(mode="w+") as meta, TmpFile(mode="w+") as extra:
             # Make key file
-            inp.write(item.get_key())
+            inp.write(item.key)
             inp.flush()
             arg_replacements["<<KEY_FILE>>"] = inp.name
 
@@ -172,11 +172,9 @@ class ScriptTransformer(Transformer[ScriptTransformerParams, None]):
 
         cmd = [self._params["script"]]
 
-        item_keys = [item.get_key() for item in batch["items"]]
+        item_keys = [item.key for item in batch["items"]]
         extra_data = {
-            item.get_key(): item.get_extra_data()
-            for item in batch["items"]
-            if item.get_extra_data() is not None
+            item.key: item.extra_data for item in batch["items"] if item.extra_data is not None
         }
         metadata = batch.get("metadata", {})
         arg_replacements = {

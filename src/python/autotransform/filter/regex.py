@@ -46,7 +46,7 @@ class RegexFilter(Filter):
             bool: Returns True if the pattern is found within the key.
         """
 
-        return re.search(self.pattern, item.get_key()) is not None
+        return re.search(self.pattern, item.key) is not None
 
 
 @dataclass(kw_only=True)

@@ -7,19 +7,67 @@
 
 # @black_format
 
-"""Tests that the ItemFactory has all types included."""
+"""Tests that the Item's factory is correctly setup."""
 
-from autotransform.item.factory import ItemFactory
-from autotransform.item.type import ItemType
+import json
+from typing import Dict, List
+
+from autotransform.item.base import FACTORY, Item, ItemName
+from autotransform.item.file import FileItem
 
 
 def test_all_enum_values_present():
-    """Ensures that all values from the enum are present in the factory map."""
+    """Ensures that all values from the enum are present in the factory map,
+    and only enum values are present."""
 
     missing_values = [
-        item_type
-        for item_type in ItemType
-        # pylint: disable=protected-access
-        if item_type not in ItemFactory._map
+        item_type for item_type in ItemName if item_type not in FACTORY.get_components()
     ]
     assert not missing_values, "Types missing from factory: " + ", ".join(missing_values)
+
+    extra_values = [
+        item_type for item_type in FACTORY.get_components() if item_type not in ItemName
+    ]
+    assert not extra_values, "Extra types in factory: " + ", ".join(extra_values)
+
+
+def test_fetching_components():
+    """Ensures that all components can be fetched correctly."""
+
+    for component_type in FACTORY.get_components():
+        component_class = FACTORY.get_class(component_type)
+        assert (
+            component_class.name == component_type
+        ), f"Component {component_type} has wrong type {component_class.name}"
+
+    for component_type in FACTORY.get_custom_components(strict=True):
+        component_class = FACTORY.get_class(component_type)
+        assert (
+            f"custom/{component_class.name}" == component_type
+        ), f"Component {component_type} has wrong type {component_class.name}"
+
+
+def test_encoding_and_decoding():
+    """Tests the encoding and decoding of components."""
+
+    test_components: Dict[ItemName, List[Item]] = {
+        ItemName.FILE: [
+            FileItem(key="foo"),
+            FileItem(key="foo", extra_data={"body": "bar"}),
+        ],
+        ItemName.GENERIC: [
+            Item(key="foo"),
+            Item(key="foo", extra_data={"body": "bar"}),
+        ],
+    }
+
+    for name in ItemName:
+        assert name in test_components, f"No test components for Item {name}"
+
+    for name, components in test_components.items():
+        assert name in ItemName, f"{name} is not a valid ItemName"
+        for component in components:
+            assert component.name == name, f"Testing item of type {component.name} for type {name}"
+            assert (
+                FACTORY.get_instance(json.loads(json.dumps(component.bundle()))) == component
+            ), f"Component {component} does not bundle and unbundle correctly"

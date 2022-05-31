@@ -52,4 +52,4 @@ class KeyHashShardFilter(ShardFilter):
             int: The shard number for the Item.
         """
 
-        return hash(item.get_key()) % self.num_shards
+        return hash(item.key) % self.num_shards

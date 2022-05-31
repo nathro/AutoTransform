@@ -31,7 +31,7 @@ def test_with_one_item():
     title = "foo"
     metadata = {"summary": "bar", "tests": "baz"}
     expected_title = "[1/1] foo"
-    items = [Item("foo.py")]
+    items = [Item(key="foo.py")]
     batcher = ChunkBatcher(title=title, metadata=metadata, chunk_size=10)
     check_batcher(batcher, items, [{"metadata": metadata, "items": items, "title": expected_title}])
 
@@ -41,7 +41,7 @@ def test_with_one_item_no_metadata():
 
     title = "foo"
     expected_title = "[1/1] foo"
-    items = [Item("foo.py")]
+    items = [Item(key="foo.py")]
     batcher = ChunkBatcher(title=title, chunk_size=10)
     check_batcher(batcher, items, [{"items": items, "title": expected_title}])
 
@@ -52,7 +52,7 @@ def test_with_multiple_items():
     title = "foo"
     metadata = {"summary": "bar", "tests": "baz"}
     expected_title = "[1/1] foo"
-    items = [Item("foo.py"), Item("bar.py")]
+    items = [Item(key="foo.py"), Item(key="bar.py")]
     batcher = ChunkBatcher(title=title, metadata=metadata, chunk_size=10)
     check_batcher(batcher, items, [{"metadata": metadata, "items": items, "title": expected_title}])
 
@@ -64,7 +64,7 @@ def test_with_multiple_files_and_multiple_batches():
     metadata = {"summary": "bar", "tests": "baz"}
     expected_title_1 = "[1/2] foo"
     expected_title_2 = "[2/2] foo"
-    items = [Item("foo.py"), Item("bar.py"), Item("baz.py")]
+    items = [Item(key="foo.py"), Item(key="bar.py"), Item(key="baz.py")]
     batcher = ChunkBatcher(title=title, metadata=metadata, chunk_size=2)
     check_batcher(
         batcher,
@@ -85,7 +85,7 @@ def test_with_multiple_files_and_max_batches():
     metadata = {"summary": "bar", "tests": "baz"}
     expected_title_1 = "[1/2] foo"
     expected_title_2 = "[2/2] foo"
-    items = [Item("foo.py"), Item("bar.py"), Item("baz.py")]
+    items = [Item(key="foo.py"), Item(key="bar.py"), Item(key="baz.py")]
     batcher = ChunkBatcher(title=title, metadata=metadata, chunk_size=1, max_chunks=2)
     check_batcher(
         batcher,

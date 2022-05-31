@@ -92,7 +92,7 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
             assert current_schema is not None
             repo = current_schema.get_repo()
             assert repo is not None
-            items: Sequence[Item] = [FileItem(file) for file in repo.get_changed_files(batch)]
+            items: Sequence[Item] = [FileItem(key=file) for file in repo.get_changed_files(batch)]
         else:
             items = batch["items"]
 
@@ -129,19 +129,19 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
 
         cmd = [self._params["script"]]
 
-        extra_data = item.get_extra_data()
+        extra_data = item.extra_data
         if extra_data is None:
             extra_data = {}
 
         arg_replacements = {
-            "<<KEY>>": item.get_key(),
+            "<<KEY>>": item.key,
             "<<EXTRA_DATA>>": json.dumps(extra_data),
             "<<METADATA>>": json.dumps(batch_metadata),
         }
 
         with TmpFile(mode="w+") as inp, TmpFile(mode="w+") as meta, TmpFile(mode="w+") as extra:
             # Make key file
-            inp.write(item.get_key())
+            inp.write(item.key)
             inp.flush()
             arg_replacements["<<KEY_FILE>>"] = inp.name
 
@@ -205,16 +205,12 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
             assert current_schema is not None
             repo = current_schema.get_repo()
             assert repo is not None
-            items: Sequence[Item] = [FileItem(file) for file in repo.get_changed_files(batch)]
+            items: Sequence[Item] = [FileItem(key=file) for file in repo.get_changed_files(batch)]
         else:
             items = batch["items"]
 
-        item_keys = [item.get_key() for item in items]
-        extra_data = {
-            item.get_key(): item.get_extra_data()
-            for item in items
-            if item.get_extra_data() is not None
-        }
+        item_keys = [item.key for item in items]
+        extra_data = {item.key: item.extra_data for item in items if item.extra_data is not None}
         metadata = batch.get("metadata", {})
         arg_replacements = {
             "<<KEY>>": json.dumps(item_keys),

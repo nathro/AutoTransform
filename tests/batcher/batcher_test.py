@@ -40,6 +40,6 @@ def check_batcher(batcher: Batcher, items: Sequence[Item], expected: List[Batch]
             actual_batch["title"] == expected_batch["title"]
         ), f"Title for Batch {str(i)} does not match"
 
-        actual_items = [item.get_key() for item in actual_batch["items"]]
-        expected_items = [item.get_key() for item in expected_batch["items"]]
+        actual_items = [item.key for item in actual_batch["items"]]
+        expected_items = [item.key for item in expected_batch["items"]]
         assert actual_items == expected_items, f"Items for Batch {str(i)} do not match"

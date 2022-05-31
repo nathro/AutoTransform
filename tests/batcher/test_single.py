@@ -40,7 +40,7 @@ def test_with_one_item():
 
     title = "foo"
     metadata = {"summary": "bar", "tests": "baz"}
-    items = [Item("bar.py")]
+    items = [Item(key="bar.py")]
     batcher = SingleBatcher(title=title, metadata=metadata)
     check_batcher(batcher, items, [{"metadata": metadata, "items": items, "title": title}])
 
@@ -49,7 +49,7 @@ def test_with_one_item_no_metadata():
     """Checks that the Batcher works with one Item and no metadata."""
 
     title = "foo"
-    items = [Item("bar.py")]
+    items = [Item(key="bar.py")]
     batcher = SingleBatcher(title=title)
     check_batcher(batcher, items, [{"items": items, "title": title}])
 
@@ -59,6 +59,6 @@ def test_with_multiple_items():
 
     title = "foo"
     metadata = {"summary": "bar", "tests": "baz"}
-    items = [Item("bar.py"), Item("baz.py")]
+    items = [Item(key="bar.py"), Item(key="baz.py")]
     batcher = SingleBatcher(title=title, metadata=metadata)
     check_batcher(batcher, items, [{"metadata": metadata, "items": items, "title": title}])

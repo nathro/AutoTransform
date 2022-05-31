@@ -27,7 +27,7 @@ def test_regex():
         "baz": False,
         "oof": False,
     }
-    test_cases = [(FileItem(path), result) for path, result in test_cases.items()]
+    test_cases = [(FileItem(key=path), result) for path, result in test_cases.items()]
     run_filter_tests(filt, test_cases)
 
 
@@ -43,7 +43,7 @@ def test_inverted_regex():
         "baz": True,
         "oof": True,
     }
-    test_cases = [(FileItem(path), result) for path, result in test_cases.items()]
+    test_cases = [(FileItem(key=path), result) for path, result in test_cases.items()]
     run_filter_tests(filt, test_cases)
 
 
@@ -60,7 +60,7 @@ def test_file_content_regex(tmpdir):
         str(test_file_1): True,
         str(test_file_2): False,
     }
-    test_cases = [(FileItem(path), result) for path, result in test_cases.items()]
+    test_cases = [(FileItem(key=path), result) for path, result in test_cases.items()]
     run_filter_tests(filt, test_cases)
 
 
@@ -77,5 +77,5 @@ def test_inverted_file_content_regex(tmpdir):
         str(test_file_1): False,
         str(test_file_2): True,
     }
-    test_cases = [(FileItem(path), result) for path, result in test_cases.items()]
+    test_cases = [(FileItem(key=path), result) for path, result in test_cases.items()]
     run_filter_tests(filt, test_cases)

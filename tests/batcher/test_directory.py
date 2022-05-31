@@ -30,7 +30,7 @@ def test_with_one_item():
 
     prefix = "test"
     metadata = {"summary": "bar", "tests": "baz"}
-    items = [FileItem("foo/bar.py")]
+    items = [FileItem(key="foo/bar.py")]
     batcher = DirectoryBatcher(prefix=prefix, metadata=metadata)
     check_batcher(
         batcher,
@@ -43,7 +43,7 @@ def test_with_one_item_no_metadata():
     """Checks that the Batcher works with one Item and no metadata."""
 
     prefix = "test"
-    items = [FileItem("foo/bar.py")]
+    items = [FileItem(key="foo/bar.py")]
     batcher = DirectoryBatcher(prefix=prefix)
     check_batcher(batcher, items, [{"items": items, "title": f"{prefix}: foo"}])
 
@@ -53,7 +53,7 @@ def test_with_multiple_items_single_directory():
 
     prefix = "test"
     metadata = {"summary": "bar", "tests": "baz"}
-    items = [FileItem("foo/bar.py"), FileItem("foo/baz.py")]
+    items = [FileItem(key="foo/bar.py"), FileItem(key="foo/baz.py")]
     batcher = DirectoryBatcher(prefix=prefix, metadata=metadata)
     check_batcher(
         batcher,
@@ -67,7 +67,7 @@ def test_with_multiple_items_multiple_directories():
 
     prefix = "test"
     metadata = {"summary": "bar", "tests": "baz"}
-    items = [FileItem("foo/bar.py"), FileItem("fizz/baz.py")]
+    items = [FileItem(key="foo/bar.py"), FileItem(key="fizz/baz.py")]
     batcher = DirectoryBatcher(prefix=prefix, metadata=metadata)
     check_batcher(
         batcher,
@@ -84,7 +84,11 @@ def test_with_multiple_items_nested_directories():
 
     prefix = "test"
     metadata = {"summary": "bar", "tests": "baz"}
-    items = [FileItem("test/foo/bar.py"), FileItem("test/fizz/baz.py"), FileItem("test/buzz.py")]
+    items = [
+        FileItem(key="test/foo/bar.py"),
+        FileItem(key="test/fizz/baz.py"),
+        FileItem(key="test/buzz.py"),
+    ]
     batcher = DirectoryBatcher(prefix=prefix, metadata=metadata)
     check_batcher(
         batcher,

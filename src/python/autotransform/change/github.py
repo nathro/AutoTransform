@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING, ClassVar, Dict, List, Tuple
 
 from autotransform.batcher.base import Batch
 from autotransform.change.base import Change, ChangeName, ChangeState
-from autotransform.item.factory import ItemFactory
+from autotransform.item.base import FACTORY as item_factory
 from autotransform.util.github import GithubUtils, PullRequest
 
 if TYPE_CHECKING:
@@ -166,7 +166,7 @@ class GithubChange(Change):
 
         schema = AutoTransformSchema.from_json("\n".join(data["schema"]))
         batch = json.loads("\n".join(data["batch"]))
-        items = [ItemFactory.get(item) for item in batch["items"]]
+        items = [item_factory.get_instance(item) for item in batch["items"]]
         batch = {
             "items": items,
             "metadata": batch["metadata"],

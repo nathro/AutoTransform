@@ -28,8 +28,8 @@ from autotransform.schema.config import SchemaConfig
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.transformer.regex import RegexTransformer
 
-ALLOWED_ITEMS = [Item("allowed")]
-ALL_ITEMS = [Item("allowed"), Item("not_allowed")]
+ALLOWED_ITEMS = [Item(key="allowed")]
+ALL_ITEMS = [Item(key="allowed"), Item(key="not_allowed")]
 EXPECTED_METADATA = {"summary": "", "tests": ""}
 EXPECTED_TITLE = "test"
 
@@ -57,7 +57,7 @@ def mock_filter(mocked_is_valid) -> None:
     """Sets up the Filter mock."""
 
     def mock_is_valid(item: Item) -> bool:
-        return item.get_key() in [item.get_key() for item in ALLOWED_ITEMS]
+        return item.key in [item.key for item in ALLOWED_ITEMS]
 
     mocked_is_valid.side_effect = mock_is_valid
 
@@ -137,17 +137,17 @@ def test_get_batches(
 
     # Check Filter called
     assert mocked_is_valid.call_count == 2
-    filtered_keys = [mock_call.args[0].get_key() for mock_call in mocked_is_valid.call_args_list]
-    assert filtered_keys == [item.get_key() for item in ALL_ITEMS]
+    filtered_keys = [mock_call.args[0].key for mock_call in mocked_is_valid.call_args_list]
+    assert filtered_keys == [item.key for item in ALL_ITEMS]
 
     # Check batcher called
     mocked_batch.assert_called_once()
-    batched_keys = [item.get_key() for item in mocked_batch.call_args.args[0]]
-    assert batched_keys == [item.get_key() for item in ALLOWED_ITEMS]
+    batched_keys = [item.key for item in mocked_batch.call_args.args[0]]
+    assert batched_keys == [item.key for item in ALLOWED_ITEMS]
 
     # Check end result
-    actual_keys = [item.get_key() for item in actual_batch["items"]]
-    assert actual_keys == [item.get_key() for item in ALLOWED_ITEMS]
+    actual_keys = [item.key for item in actual_batch["items"]]
+    assert actual_keys == [item.key for item in ALLOWED_ITEMS]
     assert actual_batch["metadata"] == EXPECTED_METADATA
     assert actual_batch["title"] == EXPECTED_TITLE
 
@@ -190,18 +190,18 @@ def test_run_with_changes(
 
     # Check Filter called
     assert mocked_is_valid.call_count == 2
-    filtered_keys = [mock_call.args[0].get_key() for mock_call in mocked_is_valid.call_args_list]
-    assert filtered_keys == [item.get_key() for item in ALL_ITEMS]
+    filtered_keys = [mock_call.args[0].key for mock_call in mocked_is_valid.call_args_list]
+    assert filtered_keys == [item.key for item in ALL_ITEMS]
 
     # Check batcher called
     mocked_batch.assert_called_once()
-    batched_keys = [item.get_key() for item in mocked_batch.call_args.args[0]]
-    assert batched_keys == [item.get_key() for item in ALLOWED_ITEMS]
+    batched_keys = [item.key for item in mocked_batch.call_args.args[0]]
+    assert batched_keys == [item.key for item in ALLOWED_ITEMS]
 
     # Check transformer called
     mocked_transform.assert_called_once()
-    transformed_key = mocked_transform.call_args.args[0]["items"][0].get_key()
-    assert [transformed_key] == [item.get_key() for item in ALLOWED_ITEMS]
+    transformed_key = mocked_transform.call_args.args[0]["items"][0].key
+    assert [transformed_key] == [item.key for item in ALLOWED_ITEMS]
 
     # Check repo calls
     mocked_clean.assert_called_once()
@@ -248,18 +248,18 @@ def test_run_with_no_changes(
 
     # Check Filter called
     assert mocked_is_valid.call_count == 2
-    filtered_keys = [mock_call.args[0].get_key() for mock_call in mocked_is_valid.call_args_list]
-    assert filtered_keys == [item.get_key() for item in ALL_ITEMS]
+    filtered_keys = [mock_call.args[0].key for mock_call in mocked_is_valid.call_args_list]
+    assert filtered_keys == [item.key for item in ALL_ITEMS]
 
     # Check batcher called
     mocked_batch.assert_called_once()
-    batched_keys = [item.get_key() for item in mocked_batch.call_args.args[0]]
-    assert batched_keys == [item.get_key() for item in ALLOWED_ITEMS]
+    batched_keys = [item.key for item in mocked_batch.call_args.args[0]]
+    assert batched_keys == [item.key for item in ALLOWED_ITEMS]
 
     # Check transformer called
     mocked_transform.assert_called_once()
-    transformed_key = mocked_transform.call_args.args[0]["items"][0].get_key()
-    assert [transformed_key] == [item.get_key() for item in ALLOWED_ITEMS]
+    transformed_key = mocked_transform.call_args.args[0]["items"][0].key
+    assert [transformed_key] == [item.key for item in ALLOWED_ITEMS]
 
     # Check repo calls
     mocked_clean.assert_called_once()

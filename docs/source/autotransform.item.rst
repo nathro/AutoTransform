@@ -9,14 +9,5 @@ Components
 .. toctree::
    :maxdepth: 4
 
-   autotransform.item.file
-
-Core
-----
-
-.. toctree::
-   :maxdepth: 4
-
    autotransform.item.base
-   autotransform.item.type
-   autotransform.item.factory
+   autotransform.item.file

@@ -7,10 +7,11 @@
 
 # @black_format
 
-"""The base class and associated classes for Item components."""
+"""The implementation for the FileItem."""
 
-from autotransform.item.base import Item
-from autotransform.item.type import ItemType
+from typing import ClassVar
+
+from autotransform.item.base import Item, ItemName
 from autotransform.util.cachedfile import CachedFile
 
 
@@ -19,20 +20,10 @@ class FileItem(Item):
     for interacting with the file.
 
     Attributes:
-        _extra_data (Mapping[str, Any]): Any extra data that needs to be associated with this Item.
-            Should be JSON encodable.
-        _key (str): A unique key used to represent this item, such as a file path.
+        name (ClassVar[ItemName]): The name of the component.
     """
 
-    @staticmethod
-    def get_type() -> ItemType:
-        """Used to map Item components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            ItemType: The unique type associated with this Item.
-        """
-
-        return ItemType.FILE
+    name: ClassVar[ItemName] = ItemName.FILE
 
     def get_path(self) -> str:
         """Gets the path of the file.
@@ -41,7 +32,7 @@ class FileItem(Item):
             str: The file's path.
         """
 
-        return self._key
+        return self.key
 
     def get_content(self) -> str:
         """Gets the content of the file.
