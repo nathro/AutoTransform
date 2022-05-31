@@ -12,37 +12,26 @@
 from __future__ import annotations
 
 import subprocess
-from typing import Any, Mapping, Sequence, TypedDict
+from dataclasses import dataclass
+from typing import ClassVar, Sequence
 
-from autotransform.input.base import Input
-from autotransform.input.type import InputType
+from autotransform.input.base import Input, InputName
 from autotransform.item.file import FileItem
 
 
-class GitGrepInputParams(TypedDict):
-    """The param type for a GitGrepInput."""
-
-    pattern: str
-
-
-class GitGrepInput(Input[GitGrepInputParams]):
+@dataclass(frozen=True, kw_only=True)
+class GitGrepInput(Input):
     """An Input that uses git grep to search a repository for a pattern and returns all files
     that contain a match of the supplied pattern.
 
     Attributes:
-        _params (GitGrepInputParams): Contains the arguments for doing a git grep search.
+        pattern (str): The pattern to search git grep for.
+        name (ClassVar[InputName]): The name of the component.
     """
 
-    _params: GitGrepInputParams
+    pattern: str
 
-    @staticmethod
-    def get_type() -> InputType:
-        """Used to map Input components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            InputType: The unique type associated with this Input.
-        """
-        return InputType.GIT_GREP
+    name: ClassVar[InputName] = InputName.GIT_GREP
 
     def get_items(self) -> Sequence[FileItem]:
         """Gets a list of files using git grep that match the supplied pattern.
@@ -59,26 +48,13 @@ class GitGrepInput(Input[GitGrepInputParams]):
             "-l",
             "--untracked",
             "-e",
-            self._params["pattern"],
+            self.pattern,
             "--",
             repo_dir,
         ]
+
         try:
             files = subprocess.check_output(git_grep_cmd, encoding="UTF-8").strip().splitlines()
         except subprocess.CalledProcessError:
             return []
         return [FileItem(f"{repo_dir}/" + file.replace("\\", "/")) for file in files]
-
-    @staticmethod
-    def from_data(data: Mapping[str, Any]) -> GitGrepInput:
-        """Produces a GitGrepInput from the provided data.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
-
-        Returns:
-            GitGrepInput: An instance of the GitGrepInput with the provided params
-        """
-        pattern = data["pattern"]
-        assert isinstance(pattern, str)
-        return GitGrepInput({"pattern": pattern})

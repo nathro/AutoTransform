@@ -11,58 +11,32 @@
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-from typing import Any, Generic, Mapping, Sequence, TypedDict, TypeVar
+from abc import abstractmethod
+from enum import Enum
+from typing import ClassVar, Sequence
 
-from autotransform.input.type import InputType
 from autotransform.item.base import Item
-
-TParams = TypeVar("TParams", bound=Mapping[str, Any])
-
-
-class InputBundle(TypedDict):
-    """A bundled version of the Input object used for JSON encoding."""
-
-    params: Mapping[str, Any]
-    type: InputType
+from autotransform.util.component import Component, ComponentFactory, ComponentImport
 
 
-class Input(Generic[TParams], ABC):
+class InputName(str, Enum):
+    """A simple enum for 1:1 Input to type mapping."""
+
+    DIRECTORY = "directory"
+    EMPTY = "empty"
+    GIT_GREP = "git_grep"
+
+
+class Input(Component):
     """The base for Input components. Used by AutoTransform to get Items that
     represent potentially transformable units for a Schema. Usually returns files but
     any Item can be returned as long as Schema components work with it.
 
     Attributes:
-        _params (TParams): The paramaters that control operation of the Input.
-            Should be defined using a TypedDict in subclasses.
+        name (ClassVar[InputName]): The name of the component.
     """
 
-    _params: TParams
-
-    def __init__(self, params: TParams):
-        """A simple constructor.
-
-        Args:
-            params (TParams): The paramaters used to set up the Input.
-        """
-        self._params = params
-
-    def get_params(self) -> TParams:
-        """Gets the paramaters used to set up the Input.
-
-        Returns:
-            TParams: The paramaters used to set up the Input.
-        """
-        return self._params
-
-    @staticmethod
-    @abstractmethod
-    def get_type() -> InputType:
-        """Used to map Input components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            InputType: The unique type associated with this Input.
-        """
+    name: ClassVar[InputName]
 
     @abstractmethod
     def get_items(self) -> Sequence[Item]:
@@ -73,28 +47,19 @@ class Input(Generic[TParams], ABC):
             Sequence[Item]: The eligible Items for transformation.
         """
 
-    def bundle(self) -> InputBundle:
-        """Generates a JSON encodable bundle.
-        If a component's params are not JSON encodable this method should be overridden to provide
-        an encodable version.
 
-        Returns:
-            InputBundle: The encodable bundle.
-        """
-        return {
-            "params": self._params,
-            "type": self.get_type(),
-        }
-
-    @staticmethod
-    @abstractmethod
-    def from_data(data: Mapping[str, Any]) -> Input:
-        """Produces an instance of the component from decoded params. Implementations should
-        assert that the data provided matches expected types and is valid.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-
-        Returns:
-            Input: An instance of the Input.
-        """
+FACTORY = ComponentFactory(
+    {
+        InputName.DIRECTORY: ComponentImport(
+            class_name="DirectoryInput", module="autotransform.input.directory"
+        ),
+        InputName.EMPTY: ComponentImport(
+            class_name="EmptyInput", module="autotransform.input.empty"
+        ),
+        InputName.GIT_GREP: ComponentImport(
+            class_name="GitGrepInput", module="autotransform.input.gitgrep"
+        ),
+    },
+    Input,  # type: ignore [misc]
+    "input.json",
+)

@@ -22,7 +22,7 @@ def assert_directory_content(directory: str, expected_files: List[str]):
         expected_files (List[str]): The relative paths of all expected results
     """
 
-    inp: DirectoryInput = DirectoryInput({"path": directory})
+    inp: DirectoryInput = DirectoryInput(path=directory)
     files = [item.get_path() for item in inp.get_items()]
 
     missing_files = [file for file in expected_files if file not in files]
@@ -50,7 +50,7 @@ def test_non_empty_dir(tmpdir):
     non_empty_dir = tmpdir.mkdir("non_empty_dir")
     test_file = non_empty_dir.join("test.txt")
     test_file.write("test")
-    expected_files = [str(test_file)]
+    expected_files = [str(test_file).replace("\\", "/")]
     assert_directory_content(str(non_empty_dir), expected_files)
 
 
@@ -66,5 +66,5 @@ def test_recursive_dir(tmpdir):
     test_file_2 = non_empty_dir.join("test2.txt")
     test_file_2.write("test")
     root_dir.mkdir("empty_dir")
-    expected_files = [str(test_file_1), str(test_file_2)]
+    expected_files = [str(test_file_1).replace("\\", "/"), str(test_file_2).replace("\\", "/")]
     assert_directory_content(str(root_dir), expected_files)

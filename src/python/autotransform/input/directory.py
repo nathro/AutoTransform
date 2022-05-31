@@ -11,84 +11,47 @@
 
 from __future__ import annotations
 
+import os
+from dataclasses import dataclass
+from functools import cached_property
 from pathlib import Path
-from typing import Any, List, Mapping, Sequence, TypedDict
+from typing import ClassVar, List, Sequence
 
-from autotransform.input.base import Input
-from autotransform.input.type import InputType
+from autotransform.input.base import Input, InputName
 from autotransform.item.file import FileItem
 
 
-class DirectoryInputParams(TypedDict):
-    """The param type for a DirectoryInput."""
-
-    path: str
-
-
-class DirectoryInput(Input[DirectoryInputParams]):
+@dataclass(frozen=True, kw_only=True)
+class DirectoryInput(Input):
     """An Input that lists all files recursively within a provided directory.
 
     Attributes:
-        _files (List[str]): A cached list of the files provided by the Input.
-        _params (DirectoryInputParams): Contains the directory to walk.
+        path (str): The path of the directory to fetch all files within.
+        name (ClassVar[InputName]): The name of the component.
     """
 
-    _files: List[str]
-    _params: DirectoryInputParams
+    path: str
 
-    def __init__(self, params: DirectoryInputParams):
-        """Initializes the files for the input to an empty list to be populated later.
+    name: ClassVar[InputName] = InputName.DIRECTORY
 
-        Args:
-            params (DirectoryInputParams): The paramaters used to set up the DirectoryInput.
-        """
-        Input.__init__(self, params)
-        self._files = []
+    def __post_init__(self):
+        """Set up the files for the DirectoryInput."""
 
-    @staticmethod
-    def get_type() -> InputType:
-        """Used to map Input components 1:1 with an enum, allowing construction from JSON.
+    @cached_property
+    def _files(self) -> List[str]:
+        """A cached list of files within the directory."""
 
-        Returns:
-            InputType: The unique type associated with this Input.
-        """
-        return InputType.DIRECTORY
-
-    def populate_files(self, path: Path) -> None:
-        """Populates the file cache for this input. Recursively called to walk all directories
-        under the path.
-
-        Args:
-            path (Path): The path from which to populate files.
-        """
-        for file in path.iterdir():
-            if file.is_file():
-                file_name: str = str(file.absolute().resolve())
-                self._files.append(file_name)
-            else:
-                self.populate_files(file)
+        files = []
+        for path, _, dir_files in os.walk(Path(self.path)):
+            files.extend([f"{path}/{file}" for file in dir_files])
+        files = [file.replace("\\", "/") for file in files]
+        return files
 
     def get_items(self) -> Sequence[FileItem]:
-        """Gets a list of files recursively contained within the path in the DirectoryInput params.
+        """Gets a list of files recursively contained within the path.
 
         Returns:
             Sequence[FileItem]: The eligible files for transformation.
         """
-        if not self._files:
-            self.populate_files(Path(self._params["path"]))
+
         return [FileItem(f) for f in self._files]
-
-    @staticmethod
-    def from_data(data: Mapping[str, Any]) -> DirectoryInput:
-        """Produces a DirectoryInput from the provided data.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-
-        Returns:
-            DirectoryInput: An instance of the DirectoryInput with the provided params.
-        """
-
-        path = data["path"]
-        assert isinstance(path, str)
-        return DirectoryInput({"path": path})

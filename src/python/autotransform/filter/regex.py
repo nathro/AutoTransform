@@ -37,7 +37,7 @@ class RegexFilter(Filter):
     name: ClassVar[FilterName] = FilterName.REGEX
 
     def _is_valid(self, item: Item) -> bool:
-        """Check whether the key contains the pattern in the params.
+        """Check whether the key contains the pattern.
 
         Args:
             item (Item): The Item to check.

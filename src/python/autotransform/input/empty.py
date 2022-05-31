@@ -11,35 +11,23 @@
 
 from __future__ import annotations
 
-from typing import Any, Mapping, Sequence, TypedDict
+from dataclasses import dataclass
+from typing import ClassVar, Sequence
 
-from autotransform.input.base import Input
-from autotransform.input.type import InputType
+from autotransform.input.base import Input, InputName
 from autotransform.item.base import Item
 
 
-class EmptyInputParams(TypedDict):
-    """The param type for a EmptyInput."""
-
-
-class EmptyInput(Input[EmptyInputParams]):
+@dataclass(frozen=True, kw_only=True)
+class EmptyInput(Input):
     """An Input that simply returns an empty list. Used when a Transformer operates
     on the whole codebase, rather than on an individual Item/set of Items.
 
     Attributes:
-        _params (EmptyInputParams): Contains the directory to walk.
+        name (ClassVar[InputName]): The name of the component.
     """
 
-    _params: EmptyInputParams
-
-    @staticmethod
-    def get_type() -> InputType:
-        """Used to map Input components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            InputType: The unique type associated with this Input.
-        """
-        return InputType.EMPTY
+    name: ClassVar[InputName] = InputName.EMPTY
 
     def get_items(self) -> Sequence[Item]:
         """Returns an empty list of Items, useful for Transformers that operate
@@ -49,16 +37,3 @@ class EmptyInput(Input[EmptyInputParams]):
             Sequence[Item]: An empty list of Items.
         """
         return []
-
-    @staticmethod
-    def from_data(data: Mapping[str, Any]) -> EmptyInput:
-        """Produces an EmptyInput from the provided data.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-
-        Returns:
-            EmptyInput: An instance of the EmptyInput with the provided params.
-        """
-
-        return EmptyInput({})

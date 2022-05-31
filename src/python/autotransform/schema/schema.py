@@ -26,8 +26,8 @@ from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.filter.base import FACTORY as filter_factory
 from autotransform.filter.base import Filter
+from autotransform.input.base import FACTORY as input_factory
 from autotransform.input.base import Input
-from autotransform.input.factory import InputFactory
 from autotransform.item.base import Item
 from autotransform.repo.base import Repo
 from autotransform.repo.factory import RepoFactory
@@ -400,7 +400,7 @@ class AutoTransformSchema:
             AutoTransformSchema: The Schema represented by the bundle.
         """
 
-        inp = InputFactory.get(bundle["input"])
+        inp = input_factory.get_instance(bundle["input"])
         batcher = batcher_factory.get_instance(bundle["batcher"])
         transformer = TransformerFactory.get(bundle["transformer"])
         config = SchemaConfig.from_data(bundle["config"])

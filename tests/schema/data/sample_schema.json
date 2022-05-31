@@ -1,9 +1,7 @@
 {
     "input": {
-        "params": {
-            "path": "<<REPO ROOT>>"
-        },
-        "type": "directory"
+        "name": "directory",
+        "path": "<<REPO ROOT>>"
     },
     "batcher": {
         "name": "single",

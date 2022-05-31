@@ -9,16 +9,7 @@ Components
 .. toctree::
    :maxdepth: 4
 
+   autotransform.input.base
    autotransform.input.directory
    autotransform.input.empty
    autotransform.input.gitgrep
-
-Core
-----
-
-.. toctree::
-   :maxdepth: 4
-
-   autotransform.input.base
-   autotransform.input.type
-   autotransform.input.factory

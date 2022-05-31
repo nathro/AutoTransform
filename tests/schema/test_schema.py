@@ -39,7 +39,7 @@ def get_sample_schema() -> AutoTransformSchema:
 
     repo_root = str(pathlib.Path(__file__).parent.parent.parent.resolve()).replace("\\", "/")
     return AutoTransformSchema(
-        DirectoryInput({"path": repo_root}),
+        DirectoryInput(path=repo_root),
         SingleBatcher(title=EXPECTED_TITLE, metadata=EXPECTED_METADATA),
         RegexTransformer({"pattern": "input", "replacement": "inputsource"}),
         SchemaConfig("Sample", owners=["foo", "bar"]),
@@ -300,12 +300,7 @@ def test_json_decoding(_mocked_checkout):
     actual_schema = AutoTransformSchema.from_json(actual_json)
 
     # Check Input
-    actual_input = actual_schema.get_input()
-    expected_input = expected_schema.get_input()
-    assert type(actual_input) is type(expected_input), "Inputs are not the same"
-    assert (
-        actual_input.get_params() == expected_input.get_params()
-    ), "Inputs do not have the same params"
+    assert actual_schema.get_input() == expected_schema.get_input()
 
     # Check batcher
     assert actual_schema.get_batcher() == expected_schema.get_batcher()
@@ -330,11 +325,10 @@ def test_json_decoding(_mocked_checkout):
         ), "Repos do not have the same params"
 
     # Check Filters
-    actual_filters = actual_schema.get_filters()
-    expected_filters = expected_schema.get_filters()
-    assert len(actual_filters) == len(expected_filters), "Filter length does not match"
-    for i in range(len(actual_filters)):
-        assert actual_filters[i] == expected_filters[i], "Filters are not the same"
+    assert len(actual_schema.get_filters()) == len(expected_schema.get_filters())
+    filters = zip(actual_schema.get_filters(), expected_schema.get_filters())
+    for actual_filter, expected_filter in filters:
+        assert actual_filter == expected_filter
 
     # Check validators
     actual_validators = actual_schema.get_validators()
