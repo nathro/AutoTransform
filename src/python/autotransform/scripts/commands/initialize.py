@@ -174,7 +174,7 @@ def get_config_runner(
     inputs: Dict[str, Any] = {}
 
     # Get local runner
-    default_local = json.dumps(LocalRunner({}).bundle())
+    default_local = json.dumps(LocalRunner().bundle())
     if simple:
         local_runner = default_local
     else:
@@ -182,7 +182,7 @@ def get_config_runner(
             "Enter a JSON encoded runner for local runs:",
             "local runner",
             previous=prev_inputs.get("runner_local"),
-            default=json.dumps(LocalRunner({}).bundle()),
+            default=json.dumps(LocalRunner().bundle()),
         )
     section["local"] = local_runner
     inputs["runner_local"] = local_runner
@@ -190,10 +190,8 @@ def get_config_runner(
     # Get remote runner
     default_remote = json.dumps(
         GithubRunner(
-            {
-                "run_workflow": "autotransform.run.yml",
-                "update_workflow": "autotransform.update.yml",
-            }
+            run_workflow="autotransform.run.yml",
+            update_workflow="autotransform.update.yml",
         ).bundle()
     )
     prev_remote = prev_inputs.get("runner_remote")
@@ -341,10 +339,8 @@ def get_manage_bundle(
     prev_remote = prev_inputs.get("runner_remote")
     if use_github_actions:
         remote_runner: Any = GithubRunner(
-            {
-                "run_workflow": "autotransform.run.yml",
-                "update_workflow": "autotransform.update.yml",
-            }
+            run_workflow="autotransform.run.yml",
+            update_workflow="autotransform.update.yml",
         ).bundle()
     elif simple and prev_remote is not None:
         remote_runner = str(prev_remote)

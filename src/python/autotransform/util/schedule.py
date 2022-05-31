@@ -19,7 +19,6 @@ from typing import Any, Dict, List, TypedDict
 from typing_extensions import NotRequired
 
 from autotransform.filter.base import FilterName
-from autotransform.runner.base import RunnerBundle
 from autotransform.util.console import (
     choose_option,
     choose_yes_or_no,
@@ -104,7 +103,7 @@ class ScheduleBundle(TypedDict):
     """The information required to set up scheduling of AutoTransform."""
 
     base_time: int
-    runner: RunnerBundle
+    runner: Dict[str, Any]
     excluded_days: List[int]
     schemas: List[ScheduledSchema]
 
@@ -156,12 +155,12 @@ def input_scheduled_schema() -> ScheduledSchema:
 
 
 def input_schedule_bundle(
-    runner: RunnerBundle, use_sample_schema: bool = False, simple: bool = False
+    runner: Dict[str, Any], use_sample_schema: bool = False, simple: bool = False
 ) -> ScheduleBundle:
     """Get the bundle needed to create the schedule.json file.
 
     Args:
-        runner (Any): The runner bundle to use for scheduling.
+        runner (Dict[str, Any]): The runner bundle to use for scheduling.
         use_sample_schema (bool, optional): Whether to include the sample schema. Defaults to False.
         simple (bool, optional): Whether to use simple inputs. Defaults to False.
 

@@ -13,7 +13,8 @@ runs a schema."""
 from __future__ import annotations
 
 import json
-from typing import Any, Mapping, TypedDict, Union
+from dataclasses import dataclass
+from typing import ClassVar
 
 from autotransform.change.base import Change
 from autotransform.event.debug import DebugEvent
@@ -21,38 +22,26 @@ from autotransform.event.handler import EventHandler
 from autotransform.event.remoterun import RemoteRunEvent
 from autotransform.event.update import RemoteUpdateEvent
 from autotransform.repo.github import GithubRepo
-from autotransform.runner.base import Runner
-from autotransform.runner.type import RunnerType
+from autotransform.runner.base import Runner, RunnerName
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.util.github import GithubUtils
 
 
-class GithubRunnerParams(TypedDict):
-    """The params required for a GithubRunner instance."""
-
-    run_workflow: Union[str, int]
-    update_workflow: Union[str, int]
-
-
-class GithubRunner(Runner[GithubRunnerParams]):
+@dataclass(frozen=True, kw_only=True)
+class GithubRunner(Runner):
     """A Runner component that is used to trigger Github workflows. See
     data/workflows/autotransform_runner.yml.
 
     Attributes:
-        _params (GithubRunnerParams): The paramaters that control operation of the Runner.
+        run_workflow (str): The name of the workflow to use for running a Schema.
+        update_workflow (str): The name of the workflow to use for updating a Change.
+        name (ClassVar[RunnerName]): The name of the component.
     """
 
-    _params: GithubRunnerParams
+    run_workflow: str
+    update_workflow: str
 
-    @staticmethod
-    def get_type() -> RunnerType:
-        """Used to map Runner components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            RunnerType: The unique type associated with this Runner.
-        """
-
-        return RunnerType.GITHUB
+    name: ClassVar[RunnerName] = RunnerName.GITHUB
 
     def run(self, schema: AutoTransformSchema) -> None:
         """Triggers a full run of a Schema by submitting a workflow run to the
@@ -73,7 +62,7 @@ class GithubRunner(Runner[GithubRunnerParams]):
 
         # Dispatch a Workflow run
         workflow_url = GithubUtils.get(repo.full_github_name).create_workflow_dispatch(
-            self._params["run_workflow"],
+            self.run_workflow,
             repo.base_branch_name,
             {"schema": schema.to_json()},
         )
@@ -114,7 +103,7 @@ class GithubRunner(Runner[GithubRunnerParams]):
 
         # Dispatch a Workflow run
         workflow_url = GithubUtils.get(repo.full_github_name).create_workflow_dispatch(
-            self._params["update_workflow"],
+            self.update_workflow,
             repo.base_branch_name,
             {"change": json.dumps(change.bundle())},
         )
@@ -132,21 +121,3 @@ class GithubRunner(Runner[GithubRunnerParams]):
             )
         )
         event_handler.handle(RemoteUpdateEvent({"change": change, "ref": workflow_url}))
-
-    @staticmethod
-    def from_data(data: Mapping[str, Any]) -> GithubRunner:
-        """Produces an instance of the component from decoded params. Implementations should
-        assert that the data provided matches expected types and is valid.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-
-        Returns:
-            GithubRunner: An instance of the GithubRunner.
-        """
-
-        run_workflow = data["run_workflow"]
-        assert isinstance(run_workflow, (int, str))
-        update_workflow = data["update_workflow"]
-        assert isinstance(update_workflow, (int, str))
-        return GithubRunner({"run_workflow": run_workflow, "update_workflow": update_workflow})

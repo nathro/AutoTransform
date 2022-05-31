@@ -18,7 +18,7 @@ from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.run import ScriptRunEvent
 from autotransform.repo.base import FACTORY as repo_factory
-from autotransform.runner.factory import RunnerFactory
+from autotransform.runner.base import FACTORY as runner_factory
 from autotransform.step.action import ActionType
 from autotransform.step.factory import StepFactory
 
@@ -73,7 +73,7 @@ def manage_command_main(args: Namespace) -> None:
     event_handler.handle(ScriptRunEvent({"script": "manage", "args": event_args}))
 
     # Get needed info/objects for scheduling
-    runner = RunnerFactory.get(manager_data["runner"])
+    runner = runner_factory.get_instance(manager_data["runner"])
     repo = repo_factory.get_instance(manager_data["repo"])
     steps = [StepFactory.get(step) for step in manager_data["steps"]]
     changes = repo.get_outstanding_changes()

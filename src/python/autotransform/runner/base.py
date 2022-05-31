@@ -11,51 +11,31 @@
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-from typing import Any, Generic, Mapping, TypedDict, TypeVar
+from abc import abstractmethod
+from enum import Enum
+from typing import ClassVar
 
 from autotransform.change.base import Change
-from autotransform.runner.type import RunnerType
 from autotransform.schema.schema import AutoTransformSchema
-
-TParams = TypeVar("TParams", bound=Mapping[str, Any])
-
-
-class RunnerBundle(TypedDict):
-    """A bundled version of the Runner object used for JSON encoding."""
-
-    params: Mapping[str, Any]
-    type: RunnerType
+from autotransform.util.component import Component, ComponentFactory, ComponentImport
 
 
-class Runner(Generic[TParams], ABC):
+class RunnerName(str, Enum):
+    """A simple enum for 1:1 Runner to type mapping."""
+
+    GITHUB = "github"
+    LOCAL = "local"
+
+
+class Runner(Component):
     """The base for Runner components. Used by AutoTransform to run an AutoTransformSchema,
     either locally on the machine or on remote infrastructure.
 
     Attributes:
-        _params (TParams): The paramaters that control operation of the Runner.
-            Should be defined using a TypedDict in subclasses.
+        name (ClassVar[RunnerName]): The name of the component.
     """
 
-    _params: TParams
-
-    def __init__(self, params: TParams):
-        """A simple constructor.
-
-        Args:
-            params (TParams): The paramaters used to set up the Runner.
-        """
-
-        self._params = params
-
-    @staticmethod
-    @abstractmethod
-    def get_type() -> RunnerType:
-        """Used to map Runner components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            RunnerType: The unique type associated with this Runner.
-        """
+    name: ClassVar[RunnerName]
 
     @abstractmethod
     def run(self, schema: AutoTransformSchema) -> None:
@@ -73,29 +53,16 @@ class Runner(Generic[TParams], ABC):
             change (Change): The Change to update.
         """
 
-    def bundle(self) -> RunnerBundle:
-        """Generates a JSON encodable bundle.
-        If a component's params are not JSON encodable this method should be overridden to provide
-        an encodable version.
 
-        Returns:
-            RunnerBundle: The encodable bundle.
-        """
-
-        return {
-            "params": self._params,
-            "type": self.get_type(),
-        }
-
-    @staticmethod
-    @abstractmethod
-    def from_data(data: Mapping[str, Any]) -> Runner:
-        """Produces an instance of the component from decoded params. Implementations should
-        assert that the data provided matches expected types and is valid.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-
-        Returns:
-            Runner: An instance of the Runner.
-        """
+FACTORY = ComponentFactory(
+    {
+        RunnerName.GITHUB: ComponentImport(
+            class_name="GithubRunner", module="autotransform.runner.github"
+        ),
+        RunnerName.LOCAL: ComponentImport(
+            class_name="LocalRunner", module="autotransform.runner.local"
+        ),
+    },
+    Runner,  # type: ignore [misc]
+    "runner.json",
+)

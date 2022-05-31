@@ -12,36 +12,23 @@ runs a schema."""
 
 from __future__ import annotations
 
-from typing import Any, Mapping, TypedDict
+from dataclasses import dataclass
+from typing import ClassVar
 
 from autotransform.change.base import Change
-from autotransform.runner.base import Runner
-from autotransform.runner.type import RunnerType
+from autotransform.runner.base import Runner, RunnerName
 from autotransform.schema.schema import AutoTransformSchema
 
 
-class LocalRunnerParams(TypedDict):
-    """The params required for a LocalRunner instance."""
-
-
-class LocalRunner(Runner[LocalRunnerParams]):
+@dataclass(frozen=True, kw_only=True)
+class LocalRunner(Runner):
     """A Runner component that runs a Schema locally on the machine.
 
     Attributes:
-        _params (LocalRunnerParams): The paramaters that control operation of the Runner.
+        name (ClassVar[RunnerName]): The name of the component.
     """
 
-    _params: LocalRunnerParams
-
-    @staticmethod
-    def get_type() -> RunnerType:
-        """Used to map Runner components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            RunnerType: The unique type associated with this Runner.
-        """
-
-        return RunnerType.LOCAL
+    name: ClassVar[RunnerName] = RunnerName.LOCAL
 
     def run(self, schema: AutoTransformSchema) -> None:
         """Triggers a full run of a Schema locally.
@@ -62,17 +49,3 @@ class LocalRunner(Runner[LocalRunnerParams]):
         schema = change.get_schema()
         batch = change.get_batch()
         schema.execute_batch(batch, change)
-
-    @staticmethod
-    def from_data(data: Mapping[str, Any]) -> LocalRunner:
-        """Produces an instance of the component from decoded params. Implementations should
-        assert that the data provided matches expected types and is valid.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-
-        Returns:
-            LocalRunner: An instance of the LocalRunner.
-        """
-
-        return LocalRunner({})

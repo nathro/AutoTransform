@@ -20,7 +20,7 @@ from autotransform.event.run import ScriptRunEvent
 from autotransform.event.schedulerun import ScheduleRunEvent
 from autotransform.filter.base import FACTORY as filter_factory
 from autotransform.filter.shard import ShardFilter
-from autotransform.runner.factory import RunnerFactory
+from autotransform.runner.base import FACTORY as runner_factory
 from autotransform.schema.factory import SchemaBuilderFactory
 from autotransform.schema.schema import AutoTransformSchema
 
@@ -84,7 +84,7 @@ def schedule_command_main(args: Namespace) -> None:
     event_handler.handle(ScriptRunEvent({"script": "schedule", "args": event_args}))
 
     # Get needed info/objects for scheduling
-    runner = RunnerFactory.get(schedule_data["runner"])
+    runner = runner_factory.get_instance(schedule_data["runner"])
     excluded_days = [int(day) for day in schedule_data["excluded_days"]]
     elapsed_time = start_time - int(schedule_data["base_time"])
 

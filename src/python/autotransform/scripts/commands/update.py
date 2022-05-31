@@ -19,8 +19,8 @@ from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.run import ScriptRunEvent
+from autotransform.runner.base import FACTORY as runner_factory
 from autotransform.runner.base import Runner
-from autotransform.runner.factory import RunnerFactory
 from autotransform.runner.local import LocalRunner
 
 
@@ -134,15 +134,15 @@ def run_command_main(args: Namespace) -> None:
         runner_str = Config.get_runner_local()
         if runner_str is None:
             event_handler.handle(DebugEvent({"message": "No runner defined, using default"}))
-            runner: Runner = LocalRunner({})
+            runner: Runner = LocalRunner()
         else:
-            runner = RunnerFactory.get(json.loads(runner_str))
+            runner = runner_factory.get_instance(json.loads(runner_str))
     else:
         event_handler.handle(DebugEvent({"message": "Updating remote"}))
         event_args["remote"] = True
         runner_str = Config.get_runner_remote()
         assert runner_str is not None, "Remote not specified in config"
-        runner = RunnerFactory.get(json.loads(runner_str))
+        runner = runner_factory.get_instance(json.loads(runner_str))
 
     event_args["runner"] = json.dumps(runner.bundle())
     event_handler.handle(ScriptRunEvent({"script": "update", "args": event_args}))
