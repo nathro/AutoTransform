@@ -29,8 +29,8 @@ from autotransform.filter.base import Filter
 from autotransform.input.base import FACTORY as input_factory
 from autotransform.input.base import Input
 from autotransform.item.base import Item
+from autotransform.repo.base import FACTORY as repo_factory
 from autotransform.repo.base import Repo
-from autotransform.repo.factory import RepoFactory
 from autotransform.schema.config import SchemaConfig
 from autotransform.transformer.base import Transformer
 from autotransform.transformer.factory import TransformerFactory
@@ -267,7 +267,7 @@ class AutoTransformSchema:
         repo = self._repo
         if repo is not None:
             event_handler.handle(DebugEvent({"message": "Clean repo"}))
-            repo.clean(batch)
+            repo.rewind(batch)
 
         # Execute transformation
         result = self._transformer.transform(batch)
@@ -409,7 +409,7 @@ class AutoTransformSchema:
         validators = [ValidatorFactory.get(validator) for validator in bundle["validators"]]
         commands = [command_factory.get_instance(command) for command in bundle["commands"]]
 
-        repo = RepoFactory.get(bundle["repo"]) if "repo" in bundle else None
+        repo = repo_factory.get_instance(bundle["repo"]) if "repo" in bundle else None
 
         return AutoTransformSchema(
             inp,

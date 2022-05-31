@@ -44,7 +44,7 @@ def get_sample_schema() -> AutoTransformSchema:
         RegexTransformer({"pattern": "input", "replacement": "inputsource"}),
         SchemaConfig("Sample", owners=["foo", "bar"]),
         filters=[RegexFilter(pattern=".*\\.py$")],
-        repo=GithubRepo({"base_branch_name": "master", "full_github_name": "nathro/AutoTransform"}),
+        repo=GithubRepo(base_branch_name="master", full_github_name="nathro/AutoTransform"),
     )
 
 
@@ -204,10 +204,10 @@ def test_run_with_changes(
     assert [transformed_key] == [item.key for item in ALLOWED_ITEMS]
 
     # Check repo calls
-    mocked_clean.assert_called_once()
+    assert mocked_clean.call_count == 0
     mocked_has_changes.assert_called_once()
     mocked_submit.assert_called_once()
-    mocked_rewind.assert_called_once()
+    assert mocked_rewind.call_count == 2
 
 
 # patches are in reverse order
@@ -262,10 +262,10 @@ def test_run_with_no_changes(
     assert [transformed_key] == [item.key for item in ALLOWED_ITEMS]
 
     # Check repo calls
-    mocked_clean.assert_called_once()
+    assert mocked_clean.call_count == 0
     mocked_has_changes.assert_called_once()
     assert mocked_submit.call_count == 0
-    assert mocked_rewind.call_count == 0
+    mocked_rewind.assert_called_once()
 
 
 @patch.object(Head, "checkout")
@@ -314,15 +314,7 @@ def test_json_decoding(_mocked_checkout):
     ), "Transformers do not have the same params"
 
     # Check repo
-    actual_repo = actual_schema.get_repo()
-    expected_repo = expected_schema.get_repo()
-    if actual_repo is None:
-        assert expected_repo is None, "Repo missing from decoded schema"
-    else:
-        assert type(actual_repo) is type(expected_repo), "Repos are not the same"
-        assert (
-            actual_repo.get_params() == expected_repo.get_params()
-        ), "Repos do not have the same params"
+    assert actual_schema.get_repo() == expected_schema.get_repo()
 
     # Check Filters
     assert len(actual_schema.get_filters()) == len(expected_schema.get_filters())

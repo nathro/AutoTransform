@@ -72,10 +72,9 @@ class GithubRunner(Runner[GithubRunnerParams]):
         ), "GithubRunner can only run using schemas that have Github repos"
 
         # Dispatch a Workflow run
-        repo_name = str(repo.get_params().get("full_github_name"))
-        workflow_url = GithubUtils.get(repo_name).create_workflow_dispatch(
+        workflow_url = GithubUtils.get(repo.full_github_name).create_workflow_dispatch(
             self._params["run_workflow"],
-            repo.get_params()["base_branch_name"],
+            repo.base_branch_name,
             {"schema": schema.to_json()},
         )
         assert workflow_url is not None, "Failed to dispatch workflow request"
@@ -114,10 +113,9 @@ class GithubRunner(Runner[GithubRunnerParams]):
         ), "GithubRunner can only update changes using schemas that have Github repos"
 
         # Dispatch a Workflow run
-        repo_name = str(repo.get_params().get("full_github_name"))
-        workflow_url = GithubUtils.get(repo_name).create_workflow_dispatch(
+        workflow_url = GithubUtils.get(repo.full_github_name).create_workflow_dispatch(
             self._params["update_workflow"],
-            repo.get_params()["base_branch_name"],
+            repo.base_branch_name,
             {"change": json.dumps(change.bundle())},
         )
         assert workflow_url is not None, "Failed to dispatch workflow request"

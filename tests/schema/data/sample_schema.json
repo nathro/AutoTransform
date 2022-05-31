@@ -37,10 +37,11 @@
         ]
     },
     "repo": {
-        "params": {
-            "base_branch_name": "master",
-            "full_github_name": "nathro/AutoTransform"
-        },
-        "type": "github"
+        "name": "github",
+        "base_branch_name": "master",
+        "full_github_name": "nathro/AutoTransform",
+        "required_labels": [],
+        "hide_automation_info": false,
+        "hide_autotransform_docs": false
     }
 }

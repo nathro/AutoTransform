@@ -12,9 +12,8 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Dict, List, Mapping, Optional, Sequence
-
-from typing_extensions import NotRequired
+from dataclasses import dataclass, field
+from typing import Any, ClassVar, Dict, List, Mapping, Optional, Sequence
 
 import autotransform.schema
 from autotransform.batcher.base import Batch
@@ -22,51 +21,34 @@ from autotransform.change.base import Change
 from autotransform.change.github import GithubChange
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
-from autotransform.repo.git import GitRepo, GitRepoParams
-from autotransform.repo.type import RepoType
+from autotransform.repo.base import RepoName
+from autotransform.repo.git import GitRepo
 from autotransform.util.github import GithubUtils
 
 
-class GithubRepoParams(GitRepoParams):
-    """The param type for a GithubRepo."""
-
-    full_github_name: str
-    required_labels: NotRequired[List[str]]
-    hide_automation_info: NotRequired[bool]
-    hide_autotransform_docs: NotRequired[bool]
-
-
+@dataclass(kw_only=True)
 class GithubRepo(GitRepo):
     """A Repo that provides support for submitting changes as a pull request against
     a Github repo.
 
     Attributes:
-        _params (GithubRepoParams): Contains all git params as well as the Github repo
-            name and any required labels.
-        __github_repos (Dict[str, Repository.Repository]): A mapping of repo names to repos. Used
-            for caching.
+        base_branch_name (str): The name of the base branch for the repository.
+        full_github_name (str): The fully qualified name of the Github Repo.
+        required_labels (List[str], optional): The labels to add to pull requests. Defaults to [].
+        hide_automation_info (bool, optional): Whether to hide information on how automation was
+            done from the pull request body. Defaults to False.
+        hide_autotransform_docs (bool, optional): Whether to hide links to AutoTransform docs
+            from the pull request body. Defaults to False.
+        name (ClassVar[RepoName]): The name of the component.
     """
 
-    _params: GithubRepoParams
+    base_branch_name: str
+    full_github_name: str
+    required_labels: List[str] = field(default_factory=list)
+    hide_automation_info: bool = False
+    hide_autotransform_docs: bool = False
 
-    def __init__(self, params: GithubRepoParams):
-        """Establishes the Github object to enable API access.
-
-        Args:
-            params (GithubRepoParams): The paramaters used to set up the GithubRepo.
-        """
-
-        GitRepo.__init__(self, params)
-
-    @staticmethod
-    def get_type() -> RepoType:
-        """Used to map Repo components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            RepoType: The unique type associated with this Repo
-        """
-
-        return RepoType.GITHUB
+    name: ClassVar[RepoName] = RepoName.GITHUB
 
     def submit(
         self,
@@ -98,13 +80,13 @@ class GithubRepo(GitRepo):
 
         body = batch["metadata"].get("body", None)
 
-        if self._params.get("hide_automation_info", False):
+        if self.hide_automation_info:
             automation_info = ""
         else:
             automation_info = "\n\n" + self.get_automation_info(batch)
 
         assert body is not None, "All pull requests must have a body."
-        pull_request = GithubUtils.get(self._params["full_github_name"]).create_pull_request(
+        pull_request = GithubUtils.get(self.full_github_name).create_pull_request(
             title,
             f"{str(body)}{automation_info}",
             self._base_branch.name,
@@ -118,7 +100,7 @@ class GithubRepo(GitRepo):
         # Add labels
         labels = batch["metadata"].get("labels", [])
         assert isinstance(labels, List)
-        labels.extend(self._params.get("required_labels", []))
+        labels.extend(self.required_labels)
         if len(labels) > 0:
             pull_request.add_labels(labels)
 
@@ -134,7 +116,7 @@ class GithubRepo(GitRepo):
 
         # Create body content with information on replicating the change
         automation_info_lines = ["ADDED AUTOMATICALLY BY AUTOTRANSFORM"]
-        if not self._params.get("hide_autotransform_docs", False):
+        if not self.hide_autotransform_docs:
             automation_info_lines.append(
                 "Learn more about AutoTransform [here](https://autotransform.readthedocs.io)"
             )
@@ -188,52 +170,13 @@ class GithubRepo(GitRepo):
             Sequence[GithubChange]: The outstanding Changes against the Repo.
         """
 
-        pulls = GithubUtils.get(self._params["full_github_name"]).get_open_pull_requests(
-            self._params["base_branch_name"]
-        )
-        authenticated_user_id = GithubUtils.get(self._params["full_github_name"]).get_user_id()
+        pulls = GithubUtils.get(self.full_github_name).get_open_pull_requests(self.base_branch_name)
+        authenticated_user_id = GithubUtils.get(self.full_github_name).get_user_id()
         return [
             GithubChange(
-                full_github_name=self._params["full_github_name"],
+                full_github_name=self.full_github_name,
                 pull_number=pull.number,
             )
             for pull in pulls
             if pull.owner_id == authenticated_user_id
         ]
-
-    @staticmethod
-    def from_data(data: Mapping[str, Any]) -> GithubRepo:
-        """Produces a GithubRepo from the provided data.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle
-
-        Returns:
-            GithubRepo: An instance of the GithubRepo
-        """
-
-        base_branch_name = data["base_branch_name"]
-        assert isinstance(base_branch_name, str)
-        full_github_name = data["full_github_name"]
-        assert isinstance(full_github_name, str)
-        params: GithubRepoParams = {
-            "base_branch_name": base_branch_name,
-            "full_github_name": full_github_name,
-        }
-
-        required_labels = data.get("required_labels")
-        if required_labels is not None:
-            assert isinstance(required_labels, List)
-            params["required_labels"] = required_labels
-
-        hide_automation_info = data.get("hide_automation_info")
-        if hide_automation_info is not None:
-            assert isinstance(hide_automation_info, bool)
-            params["hide_automation_info"] = hide_automation_info
-
-        hide_autotransform_docs = data.get("hide_autotransform_docs")
-        if hide_autotransform_docs is not None:
-            assert isinstance(hide_autotransform_docs, bool)
-            params["hide_autotransform_docs"] = hide_autotransform_docs
-
-        return GithubRepo(params)

@@ -11,60 +11,31 @@
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-from typing import Any, Generic, List, Mapping, Optional, Sequence, TypedDict, TypeVar
+from abc import abstractmethod
+from enum import Enum
+from typing import Any, ClassVar, List, Mapping, Optional, Sequence
 
 from autotransform.batcher.base import Batch
 from autotransform.change.base import Change
-from autotransform.repo.type import RepoType
-
-TParams = TypeVar("TParams", bound=Mapping[str, Any])
+from autotransform.util.component import Component, ComponentFactory, ComponentImport
 
 
-class RepoBundle(TypedDict):
-    """A bundled version of the Repo object used for JSON encoding."""
+class RepoName(str, Enum):
+    """A simple enum for mapping."""
 
-    params: Mapping[str, Any]
-    type: RepoType
+    GIT = "git"
+    GITHUB = "github"
 
 
-class Repo(Generic[TParams], ABC):
+class Repo(Component):
     """The base for Repo components. Used by AutoTransform to interact with version
     control and code review systems.
 
     Attributes:
-        _params (TParams): The paramaters that control operation of the Repo.
-            Should be defined using a TypedDict in subclasses.
+        name (ClassVar[RepoName]): The name of the component.
     """
 
-    _params: TParams
-
-    def __init__(self, params: TParams):
-        """A simple constructor.
-
-        Args:
-            params (TParams): The paramaters used to set up the Repo.
-        """
-
-        self._params = params
-
-    def get_params(self) -> TParams:
-        """Gets the paramaters used to set up the Repo.
-
-        Returns:
-            TParams: The paramaters used to set up the Repo.
-        """
-
-        return self._params
-
-    @staticmethod
-    @abstractmethod
-    def get_type() -> RepoType:
-        """Used to map Repo components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            RepoType: The unique type associated with this Repo.
-        """
+    name: ClassVar[RepoName]
 
     @abstractmethod
     def get_changed_files(self, batch: Batch) -> List[str]:
@@ -132,29 +103,14 @@ class Repo(Generic[TParams], ABC):
             Sequence[Change]: The outstanding Changes against the Repo.
         """
 
-    def bundle(self) -> RepoBundle:
-        """Generates a JSON encodable bundle.
-        If a component's params are not JSON encodable this method should be overridden to provide
-        an encodable version.
 
-        Returns:
-            RepoBundle: The encodable bundle.
-        """
-
-        return {
-            "params": self._params,
-            "type": self.get_type(),
-        }
-
-    @staticmethod
-    @abstractmethod
-    def from_data(data: Mapping[str, Any]) -> Repo:
-        """Produces an instance of the component from decoded params. Implementations should
-        assert that the data provided matches expected types and is valid.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-
-        Returns:
-            Repo: An instance of the Repo.
-        """
+FACTORY = ComponentFactory(
+    {
+        RepoName.GIT: ComponentImport(class_name="GitRepo", module="autotransform.repo.git"),
+        RepoName.GITHUB: ComponentImport(
+            class_name="GithubRepo", module="autotransform.repo.github"
+        ),
+    },
+    Repo,  # type: ignore [misc]
+    "repo.json",
+)

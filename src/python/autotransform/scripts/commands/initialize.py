@@ -443,11 +443,9 @@ def initialize_repo(
     )
     if github:
         github_name = get_str("Enter the fully qualified name of the github repo(owner/repo): ")
-        repo: Repo = GithubRepo(
-            {"base_branch_name": base_branch_name, "full_github_name": github_name}
-        )
+        repo: Repo = GithubRepo(base_branch_name=base_branch_name, full_github_name=github_name)
     else:
-        repo = GitRepo({"base_branch_name": base_branch_name})
+        repo = GitRepo(base_branch_name=base_branch_name)
 
     # Set up the sample schema
     use_sample_schema = simple or choose_yes_or_no("Would you like to include the sample schema?")

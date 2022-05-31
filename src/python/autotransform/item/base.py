@@ -19,7 +19,7 @@ from autotransform.util.component import Component, ComponentFactory, ComponentI
 
 
 class ItemName(str, Enum):
-    """A simple enum for 1:1 Type to type mapping."""
+    """A simple enum for mapping."""
 
     FILE = "file"
     GENERIC = "generic"
@@ -45,8 +45,8 @@ class Item(Component):
 
 FACTORY = ComponentFactory(
     {
-        ItemName.GENERIC: ComponentImport(class_name="Item", module="autotransform.item.base"),
         ItemName.FILE: ComponentImport(class_name="FileItem", module="autotransform.item.file"),
+        ItemName.GENERIC: ComponentImport(class_name="Item", module="autotransform.item.base"),
     },
     Item,  # type: ignore [misc]
     "item.json",

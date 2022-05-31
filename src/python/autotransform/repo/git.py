@@ -13,7 +13,9 @@ from __future__ import annotations
 
 import re
 import subprocess
-from typing import Any, List, Mapping, Optional, Sequence, TypedDict
+from dataclasses import dataclass
+from functools import cached_property
+from typing import Any, ClassVar, List, Mapping, Optional, Sequence
 
 from git import Head
 from git import Repo as GitPython
@@ -21,32 +23,26 @@ from git import Repo as GitPython
 import autotransform.schema
 from autotransform.batcher.base import Batch
 from autotransform.change.base import Change
-from autotransform.repo.base import Repo
-from autotransform.repo.type import RepoType
+from autotransform.repo.base import Repo, RepoName
 
 
-class GitRepoParams(TypedDict):
-    """The param type for a GitRepo."""
-
-    base_branch_name: str
-
-
-class GitRepo(Repo[GitRepoParams]):
+@dataclass(kw_only=True)
+class GitRepo(Repo):
     """A Repo that provides support for commiting changes to git.
 
     Attributes:
-        _params (GitRepoParams): Contains the base branch name that the changes will be
-            made on top of.
-        _local_repo (GitPython): An object representing the repo used for git operations.
-        _base_branch (Head): The base branch to use for changes.
+        base_branch_name (str): The name of the base branch for the repository.
+        name (ClassVar[str]): The name of the component.
+        BRANCH_NAME_PREFIX (ClassVar[str]): The prefix to apply to branches that are created.
+        COMMIT_MESSAGE_PREFIX (ClassVar[str]): The prefix to apply to commits that are created.
     """
 
-    _params: GitRepoParams
-    _local_repo: GitPython
-    _base_branch: Head
+    base_branch_name: str
 
-    BRANCH_NAME_PREFIX: str = "AUTO_TRANSFORM"
-    COMMIT_MESSAGE_PREFIX: str = "[AutoTransform]"
+    name: ClassVar[RepoName] = RepoName.GIT
+
+    BRANCH_NAME_PREFIX: ClassVar[str] = "AUTO_TRANSFORM"
+    COMMIT_MESSAGE_PREFIX: ClassVar[str] = "[AutoTransform]"
 
     @staticmethod
     def get_branch_name(title: str) -> str:
@@ -87,32 +83,30 @@ class GitRepo(Repo[GitRepoParams]):
             schema_name = ""
         return f"{GitRepo.COMMIT_MESSAGE_PREFIX}{schema_name}{title}"
 
-    def __init__(self, params: GitRepoParams):
-        """Gets the local repo object for future operations and attains the initial active branch.
-
-        Args:
-            params (GitRepoParams): The paramaters used to set up the GitRepo.
-        """
-
-        Repo.__init__(self, params)
-        dir_cmd = ["git", "rev-parse", "--show-toplevel"]
-        repo_dir = subprocess.check_output(dir_cmd, encoding="UTF-8").replace("\\", "/").strip()
-        self._local_repo = GitPython(repo_dir)
-        for branch in self._local_repo.heads:
-            if branch.name == self._params["base_branch_name"]:
-                branch.checkout()
-                self._base_branch = branch
-                break
-
-    @staticmethod
-    def get_type() -> RepoType:
-        """Used to map Repo components 1:1 with an enum, allowing construction from JSON.
+    @cached_property
+    def _local_repo(self) -> GitPython:
+        """Returns a cached instance of the local repo
 
         Returns:
-            RepoType: The unique type associated with this Repo
+            GitPython: The local repository.
         """
 
-        return RepoType.GIT
+        dir_cmd = ["git", "rev-parse", "--show-toplevel"]
+        repo_dir = subprocess.check_output(dir_cmd, encoding="UTF-8").replace("\\", "/").strip()
+        return GitPython(repo_dir)
+
+    @cached_property
+    def _base_branch(self) -> Head:
+        """Returns a cached instance of the base branch.
+
+        Returns:
+            Head: The base branch.
+        """
+
+        for branch in self._local_repo.heads:
+            if branch.name == self.base_branch_name:
+                return branch
+        raise ValueError("Invalid base branch name, branch not found.")
 
     def get_changed_files(self, _: Batch) -> List[str]:
         """Uses git status to get all changed files.
@@ -192,18 +186,3 @@ class GitRepo(Repo[GitRepoParams]):
         """
 
         return []
-
-    @staticmethod
-    def from_data(data: Mapping[str, Any]) -> GitRepo:
-        """Produces a GitRepo from the provided data.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-
-        Returns:
-            GitRepo: An instance of the GitRepo.
-        """
-
-        base_branch_name = data["base_branch_name"]
-        assert isinstance(base_branch_name, str)
-        return GitRepo({"base_branch_name": base_branch_name})
