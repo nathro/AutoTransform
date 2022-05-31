@@ -11,61 +11,30 @@
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-from typing import Any, Generic, Mapping, TypedDict, TypeVar
+from abc import abstractmethod
+from enum import Enum
+from typing import ClassVar
 
 from autotransform.change.base import Change
 from autotransform.step.action import Action
-from autotransform.step.type import StepType
+from autotransform.util.component import Component, ComponentFactory, ComponentImport
 
 
-class StepBundle(TypedDict):
-    """A bundled version of the Step object used for JSON encoding."""
+class StepName(str, Enum):
+    """A simple enum for mapping."""
 
-    params: Mapping[str, Any]
-    type: StepType
-
-
-TParams = TypeVar("TParams", bound=Mapping[str, Any])
+    CONDITIONAL = "conditional"
 
 
-class Step(Generic[TParams], ABC):
+class Step(Component):
     """The base for Step components. Used by AutoTransform to manage outstanding
     Changes, determining what actions to take.
 
     Attributes:
-        _params (TParams): The paramaters that control operation of the Step.
-            Should be defined using a TypedDict in subclasses.
+        name (ClassVar[StepName]): The name of the component.
     """
 
-    _params: TParams
-
-    def __init__(self, params: TParams):
-        """A simple constructor.
-
-        Args:
-            params (TParams): The paramaters used to set up the Step.
-        """
-
-        self._params = params
-
-    def get_params(self) -> TParams:
-        """Gets the paramaters used to set up the Step.
-
-        Returns:
-            TParams: The paramaters used to set up the Step.
-        """
-
-        return self._params
-
-    @staticmethod
-    @abstractmethod
-    def get_type() -> StepType:
-        """Used to map Step components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            StepType: The unique type associated with this Step.
-        """
+    name: ClassVar[StepName]
 
     @abstractmethod
     def get_action(self, change: Change) -> Action:
@@ -79,29 +48,13 @@ class Step(Generic[TParams], ABC):
             Action: The Action the Step wants to take.
         """
 
-    def bundle(self) -> StepBundle:
-        """Generates a JSON encodable bundle.
-        If a component's params are not JSON encodable this method should be overridden to provide
-        an encodable version.
 
-        Returns:
-            StepBundle: The encodable bundle.
-        """
-
-        return {
-            "params": self._params,
-            "type": self.get_type(),
-        }
-
-    @staticmethod
-    @abstractmethod
-    def from_data(data: Mapping[str, Any]) -> Step:
-        """Produces an instance of the component from decoded params. Implementations should
-        assert that the data provided matches expected types and is valid.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-
-        Returns:
-            Step: An instance of the Step.
-        """
+FACTORY = ComponentFactory(
+    {
+        StepName.CONDITIONAL: ComponentImport(
+            class_name="ConditionalStep", module="autotransform.step.conditional"
+        ),
+    },
+    Step,  # type: ignore [misc]
+    "step.json",
+)

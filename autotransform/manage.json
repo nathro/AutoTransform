@@ -1,60 +1,46 @@
 {
     "repo": {
-        "params": {
-            "base_branch_name": "master",
-            "full_github_name": "nathro/AutoTransform"
-        },
-        "type": "github"
+        "name": "github:",
+        "base_branch_name": "master",
+        "full_github_name": "nathro/AutoTransform"
     },
     "runner": {
-        "type": "github",
-        "params": {
-            "run_workflow": "autotransform.run.yml",
-            "update_workflow": "autotransform.update.yml"
-        }
+        "name": "github",
+        "run_workflow": "autotransform.run.yml",
+        "update_workflow": "autotransform.update.yml"
     },
     "steps": [
         {
-            "params": {
-                "condition": {
-                    "params": {
-                        "comparison": "eq",
-                        "state": "approved"
-                    },
-                    "type": "change_state"
-                },
-                "action_type": "merge",
-                "continue_if_passed": false
+            "name": "conditional",
+            "action": "merge",
+            "condition": {
+                "name": "change_state",
+                "comparison": "eq",
+                "state": "approved"
             },
-            "type": "conditional"
+            "continue_if_passed": false
         },
         {
-            "params": {
-                "condition": {
-                    "params": {
-                        "comparison": "eq",
-                        "state": "changes_requested"
-                    },
-                    "type": "change_state"
-                },
-                "action_type": "abandon",
-                "continue_if_passed": false
+            "name": "conditional",
+            "action": "abandon",
+            "condition": {
+                "name": "change_state",
+                "comparison": "eq",
+                "state": "changes_requested"
             },
-            "type": "conditional"
+            "continue_if_passed": false
         },
         {
-            "params": {
-                "condition": {
-                    "params": {
-                        "comparison": "gte",
-                        "time": 259200
-                    },
-                    "type": "updated_ago"
+            "name": "conditional",
+            "action": "update",
+            "condition": {
+                "params": {
+                    "comparison": "gte",
+                    "time": 259200
                 },
-                "action_type": "update",
-                "continue_if_passed": false
+                "type": "updated_ago"
             },
-            "type": "conditional"
+            "continue_if_passed": false
         }
     ]
 }

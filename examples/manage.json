@@ -11,28 +11,24 @@
     },
     "steps": [
         {
-            "params": {
-                "condition": {
-                    "name": "change_state",
-                    "comparison": "eq",
-                    "state": "approved"
-                },
-                "action_type": "merge",
-                "continue_if_passed": false
+            "name": "conditional",
+            "action": "merge",
+            "condition": {
+                "name": "change_state",
+                "comparison": "eq",
+                "state": "approved"
             },
-            "type": "conditional"
+            "continue_if_passed": false
         },
         {
-            "params": {
-                "condition": {
-                    "name": "change_state",
-                    "comparison": "eq",
-                    "state": "changes_requested"
-                },
-                "action_type": "abandon",
-                "continue_if_passed": false
+            "name": "conditional",
+            "action": "abandon",
+            "condition": {
+                "name": "change_state",
+                "comparison": "eq",
+                "state": "changes_requested"
             },
-            "type": "conditional"
+            "continue_if_passed": false
         }
     ]
 }

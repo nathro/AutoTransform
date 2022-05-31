@@ -11,46 +11,34 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Mapping, TypedDict
-
-from typing_extensions import NotRequired
+from dataclasses import dataclass
+from typing import Any, ClassVar, Dict, Type
 
 from autotransform.change.base import Change
 from autotransform.step.action import Action, ActionType
-from autotransform.step.base import Step, StepBundle
+from autotransform.step.base import Step, StepName
 from autotransform.step.condition.base import FACTORY as condition_factory
 from autotransform.step.condition.base import Condition
-from autotransform.step.type import StepType
 
 
-class ConditionalStepParams(TypedDict):
-    """The param type for a ConditionalStep."""
-
-    condition: Condition
-    action_type: ActionType
-    continue_if_passed: NotRequired[bool]
-
-
+@dataclass(frozen=True, kw_only=True)
 class ConditionalStep(Step):
     """The base for Step components. Used by AutoTransform to manage outstanding
     Changes, determining what actions to take.
 
     Attributes:
-        _params (TParams): The paramaters that control operation of the Step.
-            Should be defined using a TypedDict in subclasses.
+        action (ActionType): The action to perform if the condition passes.
+        condition (Condition): The condition to check.
+        continue_if_passed (bool, optional): Whether to continue on to the next step after
+            performing the action if the condition passes. Defaults to False.
+        name (ClassVar[StepName]): The name of the component.
     """
 
-    _params: ConditionalStepParams
+    action: ActionType
+    condition: Condition
+    continue_if_passed: bool = False
 
-    @staticmethod
-    def get_type() -> StepType:
-        """Used to map Step components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            StepType: The unique type associated with this Step.
-        """
-
-        return StepType.CONDITIONAL
+    name: ClassVar[StepName] = StepName.CONDITIONAL
 
     def get_action(self, change: Change) -> Action:
         """Checks the Change against the provided Condition and returns the appropriate action
@@ -63,61 +51,47 @@ class ConditionalStep(Step):
             Action: The Action the Step wants to take.
         """
 
-        if self._params["condition"].check(change):
+        if self.condition.check(change):
             return {
-                "type": self._params["action_type"],
-                "stop_steps": not self._params.get("continue_if_passed", False),
+                "type": self.action,
+                "stop_steps": not self.continue_if_passed,
             }
         return {
             "type": ActionType.NONE,
             "stop_steps": False,
         }
 
-    def bundle(self) -> StepBundle:
+    def bundle(self) -> Dict[str, Any]:
         """Generates a JSON encodable bundle.
-        If a component's params are not JSON encodable this method should be overridden to provide
+        If a component is not JSON encodable this method should be overridden to provide
         an encodable version.
 
         Returns:
-            StepBundle: The encodable bundle.
+            Dict[str, Any]: The encodable bundle.
         """
-        bundled_params: Dict[str, Any] = {
-            "condition": self._params["condition"].bundle(),
-            "action_type": self._params["action_type"],
-        }
-        continue_if_passed = self._params.get("continue_if_passed", None)
-        if continue_if_passed is not None:
-            bundled_params["continue_if_passed"] = continue_if_passed
+
+        action = self.action.value if isinstance(self.action, ActionType) else str(self.action)
 
         return {
-            "params": bundled_params,
-            "type": self.get_type(),
+            "name": self.name,
+            "action": action,
+            "condition": self.condition.bundle(),
         }
 
-    def __str__(self) -> str:
-        return (
-            f"Condition: {str(self._params['condition'])} - Action: {self._params['action_type']}"
-        )
-
-    @staticmethod
-    def from_data(data: Mapping[str, Any]) -> ConditionalStep:
-        """Produces an instance of the component from decoded params. Implementations should
-        assert that the data provided matches expected types and is valid.
+    @classmethod
+    def from_data(cls: Type[ConditionalStep], data: Dict[str, Any]) -> ConditionalStep:
+        """Produces an instance of the component from decoded data. Override if
+        the component had to be modified to encode.
 
         Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
+            data (Mapping[str, Any]): The JSON decoded data.
 
         Returns:
-            ConditionalStep: An instance of the ConditionalStep.
+            ConditionalStep: An instance of the component.
         """
 
-        params: ConditionalStepParams = {
-            "action_type": data["action_type"],
-            "condition": condition_factory.get_instance(data["condition"]),
-        }
-
-        continue_if_passed = data.get("continue_if_passed", None)
-        if continue_if_passed is not None:
-            params["continue_if_passed"] = continue_if_passed
-
-        return ConditionalStep(params)
+        action = (
+            data["action"] if isinstance(data["action"], ActionType) else ActionType(data["action"])
+        )
+        condition = condition_factory.get_instance(data["condition"])
+        return cls(action=action, condition=condition)

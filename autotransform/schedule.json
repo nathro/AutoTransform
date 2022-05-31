@@ -1,11 +1,9 @@
 {
     "base_time": 1650870000,
     "runner": {
-        "type": "github",
-        "params": {
-            "run_workflow": "autotransform.run.yml",
-            "update_workflow": "autotransform.update.yml"
-        }
+        "name": "github",
+        "run_workflow": "autotransform.run.yml",
+        "update_workflow": "autotransform.update.yml"
     },
     "excluded_days": [
         5,

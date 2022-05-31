@@ -87,10 +87,10 @@ class AggregateCondition(Condition):
         the component had to be modified to encode.
 
         Args:
-            data (Mapping[str, Any]): The JSON decoded data.
+            data (Dict[str, Any]): The JSON decoded data.
 
         Returns:
-            TComponent: An instance of the component.
+            AggregateCondition: An instance of the component.
         """
 
         aggregator = (
@@ -99,4 +99,4 @@ class AggregateCondition(Condition):
             else AggregatorType(data["aggregator"])
         )
         conditions = [condition_factory.get_instance(condition) for condition in data["conditions"]]
-        return AggregateCondition(aggregator=aggregator, conditions=conditions)
+        return cls(aggregator=aggregator, conditions=conditions)

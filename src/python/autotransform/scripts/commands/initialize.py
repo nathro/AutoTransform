@@ -357,12 +357,10 @@ def get_manage_bundle(
     if simple or choose_yes_or_no("Automatically merge approved changes?"):
         steps.append(
             ConditionalStep(
-                {
-                    "condition": ChangeStateCondition(
-                        comparison=ComparisonType.EQUAL, state=ChangeState.APPROVED
-                    ),
-                    "action_type": ActionType.MERGE,
-                }
+                condition=ChangeStateCondition(
+                    comparison=ComparisonType.EQUAL, state=ChangeState.APPROVED
+                ),
+                action=ActionType.MERGE,
             )
         )
 
@@ -370,12 +368,10 @@ def get_manage_bundle(
     if simple or choose_yes_or_no("Automatically abandon rejected changes?"):
         steps.append(
             ConditionalStep(
-                {
-                    "condition": ChangeStateCondition(
-                        comparison=ComparisonType.EQUAL, state=ChangeState.CHANGES_REQUESTED
-                    ),
-                    "action_type": ActionType.ABANDON,
-                }
+                condition=ChangeStateCondition(
+                    comparison=ComparisonType.EQUAL, state=ChangeState.CHANGES_REQUESTED
+                ),
+                action=ActionType.ABANDON,
             )
         )
 
@@ -387,13 +383,11 @@ def get_manage_bundle(
             days_stale = input_int("How many days to consider a change stale?", min_val=1)
         steps.append(
             ConditionalStep(
-                {
-                    "condition": UpdatedAgoCondition(
-                        comparison=ComparisonType.GREATER_THAN_OR_EQUAL,
-                        time=days_stale * 24 * 60 * 60,
-                    ),
-                    "action_type": ActionType.ABANDON,
-                }
+                condition=UpdatedAgoCondition(
+                    comparison=ComparisonType.GREATER_THAN_OR_EQUAL,
+                    time=days_stale * 24 * 60 * 60,
+                ),
+                action=ActionType.ABANDON,
             )
         )
 

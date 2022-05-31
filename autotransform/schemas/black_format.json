@@ -1,25 +1,19 @@
 {
     "input": {
-        "params": {
-            "pattern": "@black_format"
-        },
-        "type": "git_grep"
+        "name": "git_grep",
+        "pattern": "@black_format"
     },
     "filters": [
         {
-            "params": {
-                "pattern": ".*\\.py$"
-            },
-            "type": "regex"
+            "name": "regex",
+            "pattern": ".*\\.py$"
         }
     ],
     "batcher": {
         "name": "single",
-        "params": {
-            "title": "Format all python files",
-            "metadata": {
-                "body": "Apply Black formatting to all python files with @black_format"
-            }
+        "title": "Format all python files",
+        "metadata": {
+            "body": "Apply Black formatting to all python files with @black_format"
         }
     },
     "transformer": {
@@ -63,13 +57,14 @@
     "commands": [],
     "config": {
         "name": "Black Format",
-        "allowed_validation_level": 1
+        "allowed_validation_level": 1,
+        "owners": [
+            "@nathro"
+        ]
     },
     "repo": {
-        "params": {
-            "base_branch_name": "master",
-            "full_github_name": "nathro/AutoTransform"
-        },
-        "type": "github"
+        "name": "github:",
+        "base_branch_name": "master",
+        "full_github_name": "nathro/AutoTransform"
     }
 }
