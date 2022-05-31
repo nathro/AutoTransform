@@ -23,7 +23,7 @@ def test_non_used_comparisons():
     """Checks that all unused comparisons assert as expected."""
 
     mock_config = mock.create_autospec(SchemaConfig)
-    mock_config.get_name.return_value = "foo"
+    mock_config.schema_name = "foo"
     mock_schema = mock.create_autospec(AutoTransformSchema)
     mock_schema.get_config.return_value = mock_config
     mock_change = mock.create_autospec(Change)

@@ -42,7 +42,7 @@ def get_sample_schema() -> AutoTransformSchema:
         DirectoryInput(path=repo_root),
         SingleBatcher(title=EXPECTED_TITLE, metadata=EXPECTED_METADATA),
         RegexTransformer({"pattern": "input", "replacement": "inputsource"}),
-        SchemaConfig("Sample", owners=["foo", "bar"]),
+        SchemaConfig(schema_name="Sample", owners=["foo", "bar"]),
         filters=[RegexFilter(pattern=".*\\.py$")],
         repo=GithubRepo(base_branch_name="master", full_github_name="nathro/AutoTransform"),
     )
@@ -345,19 +345,4 @@ def test_json_decoding(_mocked_checkout):
         ), "Commands do not have the same params"
 
     # Check config
-    actual_config = actual_schema.get_config()
-    expected_config = expected_schema.get_config()
-    assert type(actual_config) is type(expected_config), "Configs are not the same"
-    assert actual_config.get_name() == expected_config.get_name(), "Names do not match"
-    assert (
-        actual_config.get_allowed_validation_level()
-        == expected_config.get_allowed_validation_level()
-    ), "Allowed validation level does not match"
-    missing_owners = [
-        owner for owner in expected_config.get_owners() if owner not in actual_config.get_owners()
-    ]
-    assert len(missing_owners) == 0, f"Missing owners: {missing_owners}"
-    extra_owners = [
-        owner for owner in actual_config.get_owners() if owner not in expected_config.get_owners()
-    ]
-    assert len(extra_owners) == 0, f"Extra owners: {extra_owners}"
+    assert actual_schema.get_config() == expected_schema.get_config()

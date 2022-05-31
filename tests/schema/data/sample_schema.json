@@ -29,7 +29,7 @@
     "validators": [],
     "commands": [],
     "config": {
-        "name": "Sample",
+        "schema_name": "Sample",
         "allowed_validation_level": 0,
         "owners": [
             "foo",

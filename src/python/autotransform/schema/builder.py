@@ -116,7 +116,7 @@ class SchemaBuilder(Component):
 
         # pylint: disable=no-self-use
 
-        return SchemaConfig(type(self).__name__)
+        return SchemaConfig(schema_name=type(self).__name__)
 
     def build(self) -> AutoTransformSchema:
         """Builds a Schema based on the state of the SchemaBuilder.

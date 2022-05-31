@@ -51,7 +51,7 @@ class SchemaNameCondition(Condition):
             ComparisonType.NOT_EQUAL,
         ], "SchemaNameCondition may only use equal or not_equal comparison"
         return compare(
-            change.get_schema().get_config().get_name(),
+            change.get_schema().get_config().schema_name,
             self.schema_name,
             self.comparison,
         )

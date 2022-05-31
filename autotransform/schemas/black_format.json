@@ -56,7 +56,7 @@
     ],
     "commands": [],
     "config": {
-        "name": "Black Format",
+        "schema_name": "Black Format",
         "allowed_validation_level": 1,
         "owners": [
             "@nathro"

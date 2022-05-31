@@ -56,7 +56,10 @@ class Component(ABC):
 
             return dict((k, convert_value(v)) for k, v in data)
 
-        return {"name": self.name} | asdict(self, dict_factory=custom_asdict_factory)
+        component_as_dict = asdict(self, dict_factory=custom_asdict_factory)
+        if hasattr(self, "name"):
+            component_as_dict = {"name": self.name} | component_as_dict
+        return component_as_dict
 
     @classmethod
     def from_data(cls: Type[TComponent], data: Dict[str, Any]) -> TComponent:
@@ -80,13 +83,10 @@ class ComponentImport(Component):
     Attributes:
         class_name (str): The name of the class of the component.
         module (str): The fully qualified module where the class can be imported.
-        name (ClassVar[str]): The name of the Component.
     """
 
     class_name: str
     module: str
-
-    name: ClassVar[str] = "component_import"
 
 
 T = TypeVar("T", bound=Component)

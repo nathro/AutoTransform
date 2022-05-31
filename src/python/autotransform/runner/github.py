@@ -80,7 +80,7 @@ class GithubRunner(Runner):
             )
         )
         event_handler.handle(
-            RemoteRunEvent({"schema_name": schema.get_config().get_name(), "ref": workflow_url})
+            RemoteRunEvent({"schema_name": schema.get_config().schema_name, "ref": workflow_url})
         )
 
     def update(self, change: Change) -> None:
