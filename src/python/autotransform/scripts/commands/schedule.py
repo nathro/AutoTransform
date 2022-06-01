@@ -9,7 +9,6 @@
 
 """The schedule command is used to schedule runs of AutoTransform."""
 
-import json
 import time
 from argparse import ArgumentParser, Namespace
 
@@ -67,18 +66,12 @@ def schedule_command_main(args: Namespace) -> None:
     if args.verbose:
         event_handler.set_logging_level(LoggingLevel.DEBUG)
 
-    # Get Schedule Data
+    # Get Schedule
     schedule_file = args.schedule
     event_args = {"schedule_file": schedule_file}
-    with open(schedule_file, "r") as file:
-        schedule_json = file.read()
-    event_args["schedule"] = schedule_json
-    event_handler.handle(DebugEvent({"message": f"Schedule: ({args.schedule})\n{schedule_json}"}))
-    schedule_data = json.loads(schedule_json)
-
+    schedule = Schedule.read(schedule_file, start_time)
+    event_args["schedule"] = schedule
     event_handler.handle(ScriptRunEvent({"script": "schedule", "args": event_args}))
 
-    # Get needed info/objects for scheduling
-    schedule = Schedule.from_data(schedule_data, start_time)
     event_handler.get().handle(DebugEvent({"message": f"Running schedule: {schedule}"}))
     schedule.run(start_time)

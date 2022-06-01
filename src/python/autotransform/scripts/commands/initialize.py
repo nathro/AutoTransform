@@ -475,10 +475,7 @@ def initialize_repo(
     # Set up schedule file
     schedule = Schedule.from_console(manage_bundle["runner"], use_sample_schema, simple)
     schedule_path = f"{repo_config_dir}/schedule.json"
-    os.makedirs(os.path.dirname(schedule_path), exist_ok=True)
-    with open(schedule_path, "w+", encoding="UTF-8") as schedule_file:
-        schedule_file.write(json.dumps(schedule.bundle(), indent=4))
-        schedule_file.flush()
+    schedule.write(schedule_path)
 
     if use_github_actions:
         info(

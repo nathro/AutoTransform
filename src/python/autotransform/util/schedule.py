@@ -12,10 +12,11 @@
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Dict, List, Optional
 
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
@@ -108,10 +109,8 @@ class SchemaScheduleSettings:
 
         return bundle
 
-    @classmethod
-    def from_data(
-        cls: Type[SchemaScheduleSettings], data: Dict[str, Any], elapsed_days: int
-    ) -> SchemaScheduleSettings:
+    @staticmethod
+    def from_data(data: Dict[str, Any], elapsed_days: int) -> SchemaScheduleSettings:
         """Produces an instance of the SchemaScheduleSettings from decoded data.
 
         Args:
@@ -147,7 +146,7 @@ class SchemaScheduleSettings:
         else:
             shard_filter = None
 
-        return cls(
+        return SchemaScheduleSettings(
             repeats=repeats, hour_of_day=hour_of_day, day_of_week=day_of_week, sharding=shard_filter
         )
 
@@ -234,10 +233,8 @@ class ScheduledSchema:
 
         return {"type": self.type.value, "schema": self.schema, "schedule": self.schedule.bundle()}
 
-    @classmethod
-    def from_data(
-        cls: Type[ScheduledSchema], data: Dict[str, Any], elapsed_days: int
-    ) -> ScheduledSchema:
+    @staticmethod
+    def from_data(data: Dict[str, Any], elapsed_days: int) -> ScheduledSchema:
         """Produces an instance of the ScheduledSchema from decoded data.
 
         Args:
@@ -252,7 +249,7 @@ class ScheduledSchema:
         schema = data["schema"]
         assert isinstance(schema, str)
         schedule = SchemaScheduleSettings.from_data(data["schedule"], elapsed_days)
-        return cls(type=schema_type, schema=schema, schedule=schedule)
+        return ScheduledSchema(type=schema_type, schema=schema, schedule=schedule)
 
     @staticmethod
     def from_console() -> ScheduledSchema:
@@ -276,7 +273,7 @@ class ScheduledSchema:
 
 @dataclass(kw_only=True)
 class Schedule:
-    """The information required to set up scheduling of AutoTransform.
+    """The information and functionality required to schedule Schemas.
 
     Attributes:
         base_time (int): The base time to use when determining hour_of_day, day_of_week,
@@ -359,6 +356,18 @@ class Schedule:
             )
             self.runner.run(schema)
 
+    def write(self, file_path: str) -> None:
+        """Writes the schedule to a file as JSON.
+
+        Args:
+            file_path (str): The file to write to.
+        """
+
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path, "w+", encoding="UTF-8") as schedule_file:
+            schedule_file.write(json.dumps(self.bundle(), indent=4))
+            schedule_file.flush()
+
     def bundle(self) -> Dict[str, Any]:
         """Generates a JSON encodable bundle.
 
@@ -373,8 +382,41 @@ class Schedule:
             "schemas": [schema.bundle() for schema in self.schemas],
         }
 
-    @classmethod
-    def from_data(cls: Type[Schedule], data: Dict[str, Any], start_time: int) -> Schedule:
+    @staticmethod
+    def read(file_path: str, start_time: int) -> Schedule:
+        """Reads a schedule from a JSON encoded file.
+
+        Args:
+            file_path (str): The path where the JSON for the Schedule is located.
+            start_time (int): The start time to use for setting up sharding/running.
+
+        Returns:
+            Schedule: The Schedule from the file.
+        """
+
+        with open(file_path, "r", encoding="UTF-8") as schedule_file:
+            schedule_json = schedule_file.read()
+        EventHandler.get().handle(
+            DebugEvent({"message": f"Schedule: ({file_path})\n{schedule_json}"})
+        )
+        return Schedule.from_json(schedule_json, start_time)
+
+    @staticmethod
+    def from_json(schedule_json: str, start_time: int) -> Schedule:
+        """Builds a schedule from JSON encoded values.
+
+        Args:
+            schedule_json (str): The JSON encoded schedule.
+            start_time (int): The start time to use for setting up sharding/running.
+
+        Returns:
+            Schedule: The Schedule from the JSON.
+        """
+
+        return Schedule.from_data(json.loads(schedule_json), start_time)
+
+    @staticmethod
+    def from_data(data: Dict[str, Any], start_time: int) -> Schedule:
         """Produces an instance of the Schedule from decoded data.
 
         Args:
@@ -395,7 +437,9 @@ class Schedule:
         runner = runner_factory.get_instance(data["runner"])
         elapsed_days = (start_time - base_time) // 60 // 60 // 24
         schemas = [ScheduledSchema.from_data(schema, elapsed_days) for schema in data["schemas"]]
-        return cls(base_time=base_time, excluded_days=excluded_days, runner=runner, schemas=schemas)
+        return Schedule(
+            base_time=base_time, excluded_days=excluded_days, runner=runner, schemas=schemas
+        )
 
     @staticmethod
     def from_console(
