@@ -19,7 +19,7 @@ types-mock >= 4.0.13
 types-pytz >= 2021.3.7
 
 # Linting
-pylint >= 2.13.8
+pylint >= 2.14.0
 
 # Unit Tests
 pytest >= 7.1.2
