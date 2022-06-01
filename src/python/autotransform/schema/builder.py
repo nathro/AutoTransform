@@ -51,8 +51,6 @@ class SchemaBuilder(Component):
             List[Filter]: The Filters that will be used in the built Schema.
         """
 
-        # pylint: disable=no-self-use
-
         return []
 
     def get_batcher(self) -> Batcher:
@@ -61,8 +59,6 @@ class SchemaBuilder(Component):
         Returns:
             Batcher: The Batcher that will be used in the built Schema.
         """
-
-        # pylint: disable=no-self-use
 
         return SingleBatcher(title="")
 
@@ -81,8 +77,6 @@ class SchemaBuilder(Component):
             List[Validator]: The Validators that will be used in the built Schema.
         """
 
-        # pylint: disable=no-self-use
-
         return []
 
     def get_commands(self) -> List[Command]:
@@ -91,8 +85,6 @@ class SchemaBuilder(Component):
         Returns:
             List[Command]: The Commands that will be used in the built Schema.
         """
-
-        # pylint: disable=no-self-use
 
         return []
 
@@ -103,8 +95,6 @@ class SchemaBuilder(Component):
             Repo: The Repo that will be used in the built Schema.
         """
 
-        # pylint: disable=no-self-use
-
         return None
 
     def get_config(self) -> SchemaConfig:
@@ -113,8 +103,6 @@ class SchemaBuilder(Component):
         Returns:
             SchemaConfig: The SchemaConfig that will be used in the built Schema.
         """
-
-        # pylint: disable=no-self-use
 
         return SchemaConfig(schema_name=type(self).__name__)
 
