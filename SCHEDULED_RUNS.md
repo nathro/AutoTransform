@@ -22,9 +22,9 @@ To get scheduled runs going, a JSON file with all scheduling information is requ
                 "hour_of_day": <0-23>,
                 "day_of_week": <0-6>,
                 "sharding": {
-                    "num_shards": <int>,
                     "shard_filter": {
                         "name": <FilterName>,
+                        "num_shards": <int>,
                         ...
                     }
                 }
@@ -51,8 +51,7 @@ The following settings are used when scheduling schemas to run automatically.
       * **hour_of_day**: Which hour of the day, using the logic described for base_time, that the schema will be run. Defaults to 0.
       * **day_of_week**: Which day of the week, using the logic described for base_time, that the schema will be run. Defaults to 0. Only applies to weekly runs.
       * **Sharding**: A Sharded schema is run on a subset of it's input each time it is run. This subset is determined by the sharding settings and can be used to break large runs over a codebase in to smaller pieces. Optional to include.
-        * **num_shards**: The total number of shards to spread the input across.
-        * **shard_filter**: A ShardFilter object that will be used to perform the actual sharding. It will get the num_shards and current_shard from the scheduler when constructed.
+        * **shard_filter**: A ShardFilter object that will be used to perform the actual sharding. It will get the valid_shard from the scheduler when constructed.
 
 ### **Invoking Scheduled Runs**
 

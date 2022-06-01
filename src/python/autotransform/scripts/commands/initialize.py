@@ -15,23 +15,17 @@ import pathlib
 import subprocess
 from argparse import ArgumentParser, Namespace
 from configparser import ConfigParser
-from typing import Any, Dict, List, Mapping, Optional, Tuple
+from typing import Any, Dict, Mapping, Optional, Tuple
 
-from autotransform.change.base import ChangeState
 from autotransform.config.default import DefaultConfigFetcher
-from autotransform.repo.base import Repo
-from autotransform.repo.git import GitRepo
-from autotransform.repo.github import GithubRepo
+from autotransform.repo.base import RepoName
+from autotransform.runner.base import FACTORY as runner_factory
+from autotransform.runner.base import Runner
 from autotransform.runner.github import GithubRunner
 from autotransform.runner.local import LocalRunner
 from autotransform.schema.schema import AutoTransformSchema
-from autotransform.step.action import ActionType
-from autotransform.step.base import Step
-from autotransform.step.condition.comparison import ComparisonType
-from autotransform.step.condition.state import ChangeStateCondition
-from autotransform.step.condition.updated import UpdatedAgoCondition
-from autotransform.step.conditional import ConditionalStep
-from autotransform.util.console import choose_yes_or_no, get_str, info, input_int, input_string
+from autotransform.util.console import choose_yes_or_no, get_str, info, input_string
+from autotransform.util.manager import Manager
 from autotransform.util.package import get_config_dir, get_examples_dir
 from autotransform.util.scheduler import Scheduler
 
@@ -321,83 +315,6 @@ def initialize_workflows(repo_dir: str, examples_dir: str, prev_inputs: Mapping[
             workflow_file.flush()
 
 
-def get_manage_bundle(
-    use_github_actions: bool, repo: Repo, prev_inputs: Mapping[str, Any], simple: bool = False
-) -> Mapping[str, Any]:
-    """Get the bundle needed to create the manage.json file.
-
-    Args:
-        use_github_actions (bool): Whether the repo uses Github Actions.
-        repo (Repo): The repo being managed.
-        prev_inputs (Mapping[str, Any]): Previous inputs from configuration.
-        simple (bool, optional): Whether to use the simple setup. Defaults to False.
-
-    Returns:
-        Mapping[str, Any]: The manage bundle.
-    """
-
-    prev_remote = prev_inputs.get("runner_remote")
-    if use_github_actions:
-        remote_runner: Any = GithubRunner(
-            run_workflow="autotransform.run.yml",
-            update_workflow="autotransform.update.yml",
-        ).bundle()
-    elif simple and prev_remote is not None:
-        remote_runner = str(prev_remote)
-    else:
-        remote_runner = input_string(
-            "Enter a JSON encoded runner for remote runs: ",
-            "remote runner",
-            previous=prev_remote,
-        )
-        remote_runner = json.loads(remote_runner)
-    steps: List[Step] = []
-
-    # Merge approved changes
-    if simple or choose_yes_or_no("Automatically merge approved changes?"):
-        steps.append(
-            ConditionalStep(
-                condition=ChangeStateCondition(
-                    comparison=ComparisonType.EQUAL, state=ChangeState.APPROVED
-                ),
-                action=ActionType.MERGE,
-            )
-        )
-
-    # Abandon rejected changes
-    if simple or choose_yes_or_no("Automatically abandon rejected changes?"):
-        steps.append(
-            ConditionalStep(
-                condition=ChangeStateCondition(
-                    comparison=ComparisonType.EQUAL, state=ChangeState.CHANGES_REQUESTED
-                ),
-                action=ActionType.ABANDON,
-            )
-        )
-
-    # Update stale changes
-    if simple or choose_yes_or_no("Automatically update stale changes?"):
-        if simple:
-            days_stale = 7
-        else:
-            days_stale = input_int("How many days to consider a change stale?", min_val=1)
-        steps.append(
-            ConditionalStep(
-                condition=UpdatedAgoCondition(
-                    comparison=ComparisonType.GREATER_THAN_OR_EQUAL,
-                    time=days_stale * 24 * 60 * 60,
-                ),
-                action=ActionType.ABANDON,
-            )
-        )
-
-    return {
-        "repo": repo.bundle(),
-        "runner": remote_runner,
-        "steps": [step.bundle() for step in steps],
-    }
-
-
 def initialize_repo(
     repo_dir: str,
     prev_inputs: Mapping[str, Any],
@@ -427,15 +344,23 @@ def initialize_repo(
     if use_github_actions:
         initialize_workflows(repo_dir, examples_dir, prev_inputs)
 
-    # Get the repo
-    base_branch_name = get_str(
-        "Enter the name of the base branch for the repo(i.e. main, master): "
+    # Get the Manager
+    prev_remote = prev_inputs.get("runner_remote")
+    if use_github_actions:
+        prev_runner: Optional[Runner] = GithubRunner(
+            run_workflow="autotransform.run.yml",
+            update_workflow="autotransform.update.yml",
+        )
+    elif prev_remote is not None:
+        try:
+            prev_runner = runner_factory.get_instance(json.loads(str(prev_remote)))
+        except Exception:  # pylint: disable=broad-except
+            prev_runner = None
+    manager = Manager.from_console(
+        repo_name=RepoName.GITHUB if github else RepoName.GIT,
+        prev_runner=prev_runner,
+        simple=simple,
     )
-    if github:
-        github_name = get_str("Enter the fully qualified name of the github repo(owner/repo): ")
-        repo: Repo = GithubRepo(base_branch_name=base_branch_name, full_github_name=github_name)
-    else:
-        repo = GitRepo(base_branch_name=base_branch_name)
 
     # Set up the sample schema
     use_sample_schema = simple or choose_yes_or_no("Would you like to include the sample schema?")
@@ -443,7 +368,7 @@ def initialize_repo(
         sample_schema_path = f"{examples_dir}/schemas/black_format.json"
         with open(sample_schema_path, "r", encoding="UTF-8") as sample_schema_file:
             schema = AutoTransformSchema.from_json(sample_schema_file.read())
-        schema._repo = repo  # pylint: disable=protected-access
+        schema._repo = manager.repo  # pylint: disable=protected-access
 
         schema_path = f"{repo_config_dir}/schemas/black_format.json"
         os.makedirs(os.path.dirname(schema_path), exist_ok=True)
@@ -465,15 +390,11 @@ def initialize_repo(
         requirements_file.flush()
 
     # Set up manage file
-    manage_bundle = get_manage_bundle(use_github_actions, repo, prev_inputs, simple)
-    manage_path = f"{repo_config_dir}/manage.json"
-    os.makedirs(os.path.dirname(manage_path), exist_ok=True)
-    with open(manage_path, "w+", encoding="UTF-8") as manage_file:
-        manage_file.write(json.dumps(manage_bundle, indent=4))
-        manage_file.flush()
+    manager_path = f"{repo_config_dir}/manager.json"
+    manager.write(manager_path)
 
     # Set up schedule file
-    scheduler = Scheduler.from_console(manage_bundle["runner"], use_sample_schema, simple)
+    scheduler = Scheduler.from_console(manager.runner, use_sample_schema, simple)
     scheduler_path = f"{repo_config_dir}/scheduler.json"
     scheduler.write(scheduler_path)
 

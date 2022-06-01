@@ -14,18 +14,26 @@ from __future__ import annotations
 import json
 import os
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
+from autotransform.change.base import ChangeState
 from autotransform.event.action import ManageActionEvent
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.repo.base import FACTORY as repo_factory
-from autotransform.repo.base import Repo
+from autotransform.repo.base import Repo, RepoName
+from autotransform.repo.git import GitRepo
+from autotransform.repo.github import GithubRepo
 from autotransform.runner.base import FACTORY as runner_factory
 from autotransform.runner.base import Runner
 from autotransform.step.action import ActionType
 from autotransform.step.base import FACTORY as step_factory
 from autotransform.step.base import Step
+from autotransform.step.condition.comparison import ComparisonType
+from autotransform.step.condition.state import ChangeStateCondition
+from autotransform.step.condition.updated import UpdatedAgoCondition
+from autotransform.step.conditional import ConditionalStep
+from autotransform.util.console import choose_yes_or_no, error, get_str, input_int, input_string
 
 
 @dataclass(kw_only=True)
@@ -135,3 +143,102 @@ class Manager:
             runner=runner_factory.get_instance(data["runner"]),
             steps=[step_factory.get_instance(step) for step in data.get("steps", [])],
         )
+
+    # pylint: disable=too-many-branches
+    @staticmethod
+    def from_console(
+        repo_name: Optional[RepoName] = None,
+        prev_runner: Optional[Runner] = None,
+        simple: bool = False,
+    ) -> Manager:
+        """Gets a Manager using console inputs.
+
+        Args:
+            repo_name (Optional[RepoName], optional): The name of the repo to use. Defaults to None.
+            prev_runner (Optional[Runner], optional): A previously input runner. Defaults to None.
+            simple (bool, optional): Whether to use simple options for setting up the manager.
+                Defaults to False.
+
+        Returns:
+            Manager: The input Manager.
+        """
+
+        if repo_name == RepoName.GITHUB:
+            base_branch_name = get_str(
+                "Enter the name of the base branch for the repo(i.e. main, master): "
+            )
+            github_name = get_str("Enter the fully qualified name of the github repo(owner/repo): ")
+            repo: Repo = GithubRepo(base_branch_name=base_branch_name, full_github_name=github_name)
+        elif repo_name == RepoName.GIT:
+            base_branch_name = get_str(
+                "Enter the name of the base branch for the repo(i.e. main, master): "
+            )
+            repo = GitRepo(base_branch_name=base_branch_name)
+        else:
+            valid = False
+            while not valid:
+                try:
+                    repo_json = get_str("Enter the JSON encoded Repo object: ")
+                    repo = repo_factory.get_instance(json.loads(repo_json))
+                    valid = True
+                except Exception as err:  # pylint: disable=broad-except
+                    error(f"Invalid repo, please input a valid repo: {err}")
+
+        if simple and prev_runner is not None:
+            runner = prev_runner
+        else:
+            valid = False
+            while not valid:
+                try:
+                    runner_json = input_string(
+                        "Enter a JSON encoded runner for remote runs: ",
+                        "remote runner",
+                        previous=json.dumps(prev_runner.bundle())
+                        if prev_runner is not None
+                        else None,
+                    )
+                    runner = runner_factory.get_instance(json.loads(runner_json))
+                    valid = True
+                except Exception as err:  # pylint: disable=broad-except
+                    error(f"Invalid runner, please input a valid runner: {err}")
+
+        # Merge approved changes
+        steps: List[Step] = []
+        if simple or choose_yes_or_no("Automatically merge approved changes?"):
+            steps.append(
+                ConditionalStep(
+                    condition=ChangeStateCondition(
+                        comparison=ComparisonType.EQUAL, state=ChangeState.APPROVED
+                    ),
+                    action=ActionType.MERGE,
+                )
+            )
+
+        # Abandon rejected changes
+        if simple or choose_yes_or_no("Automatically abandon rejected changes?"):
+            steps.append(
+                ConditionalStep(
+                    condition=ChangeStateCondition(
+                        comparison=ComparisonType.EQUAL, state=ChangeState.CHANGES_REQUESTED
+                    ),
+                    action=ActionType.ABANDON,
+                )
+            )
+
+        # Update stale changes
+        if simple or choose_yes_or_no("Automatically update stale changes?"):
+            if simple:
+                days_stale = 7
+            else:
+                days_stale = input_int("How many days to consider a change stale?", min_val=1)
+            steps.append(
+                ConditionalStep(
+                    condition=UpdatedAgoCondition(
+                        comparison=ComparisonType.GREATER_THAN_OR_EQUAL,
+                        time=days_stale * 24 * 60 * 60,
+                    ),
+                    action=ActionType.ABANDON,
+                )
+            )
+
+        return Manager(repo=repo, runner=runner, steps=steps)

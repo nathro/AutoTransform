@@ -13,5 +13,6 @@ Utilities
    autotransform.util.component
    autotransform.util.console
    autotransform.util.github
+   autotransform.util.manager
    autotransform.util.package
-   autotransform.util.schedule
+   autotransform.util.scheduler
