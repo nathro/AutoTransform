@@ -357,16 +357,16 @@ class Scheduler:
             self.runner.run(schema)
 
     def write(self, file_path: str) -> None:
-        """Writes the schedule to a file as JSON.
+        """Writes the Scheduler to a file as JSON.
 
         Args:
             file_path (str): The file to write to.
         """
 
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, "w+", encoding="UTF-8") as schedule_file:
-            schedule_file.write(json.dumps(self.bundle(), indent=4))
-            schedule_file.flush()
+        with open(file_path, "w+", encoding="UTF-8") as scheduler_file:
+            scheduler_file.write(json.dumps(self.bundle(), indent=4))
+            scheduler_file.flush()
 
     def bundle(self) -> Dict[str, Any]:
         """Generates a JSON encodable bundle.
@@ -384,7 +384,7 @@ class Scheduler:
 
     @staticmethod
     def read(file_path: str, start_time: int) -> Scheduler:
-        """Reads a schedule from a JSON encoded file.
+        """Reads a Scheduler from a JSON encoded file.
 
         Args:
             file_path (str): The path where the JSON for the Schedule is located.
@@ -394,26 +394,26 @@ class Scheduler:
             Scheduler: The Scheduler from the file.
         """
 
-        with open(file_path, "r", encoding="UTF-8") as schedule_file:
-            schedule_json = schedule_file.read()
+        with open(file_path, "r", encoding="UTF-8") as scheduler_file:
+            scheduler_json = scheduler_file.read()
         EventHandler.get().handle(
-            DebugEvent({"message": f"Scheduler: ({file_path})\n{schedule_json}"})
+            DebugEvent({"message": f"Scheduler: ({file_path})\n{scheduler_json}"})
         )
-        return Scheduler.from_json(schedule_json, start_time)
+        return Scheduler.from_json(scheduler_json, start_time)
 
     @staticmethod
-    def from_json(schedule_json: str, start_time: int) -> Scheduler:
-        """Builds a schedule from JSON encoded values.
+    def from_json(scheduler_json: str, start_time: int) -> Scheduler:
+        """Builds a Scheduler from JSON encoded values.
 
         Args:
-            schedule_json (str): The JSON encoded schedule.
+            scheduler_json (str): The JSON encoded Scheduler.
             start_time (int): The start time to use for setting up sharding/running.
 
         Returns:
             Scheduler: The Scheduler from the JSON.
         """
 
-        return Scheduler.from_data(json.loads(schedule_json), start_time)
+        return Scheduler.from_data(json.loads(scheduler_json), start_time)
 
     @staticmethod
     def from_data(data: Dict[str, Any], start_time: int) -> Scheduler:
@@ -436,7 +436,9 @@ class Scheduler:
             assert day in range(7)
         runner = runner_factory.get_instance(data["runner"])
         elapsed_days = (start_time - base_time) // 60 // 60 // 24
-        schemas = [ScheduledSchema.from_data(schema, elapsed_days) for schema in data["schemas"]]
+        schemas = [
+            ScheduledSchema.from_data(schema, elapsed_days) for schema in data.get("schemas", [])
+        ]
         return Scheduler(
             base_time=base_time, excluded_days=excluded_days, runner=runner, schemas=schemas
         )

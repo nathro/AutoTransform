@@ -396,11 +396,11 @@ class AutoTransformSchema:
         transformer = transformer_factory.get_instance(bundle["transformer"])
         config = SchemaConfig.from_data(bundle["config"])
 
-        filters = [filter_factory.get_instance(f) for f in bundle["filters"]]
+        filters = [filter_factory.get_instance(f) for f in bundle.get("filters", [])]
         validators = [
-            validator_factory.get_instance(validator) for validator in bundle["validators"]
+            validator_factory.get_instance(validator) for validator in bundle.get("validators", [])
         ]
-        commands = [command_factory.get_instance(command) for command in bundle["commands"]]
+        commands = [command_factory.get_instance(command) for command in bundle.get("commands", [])]
 
         repo = repo_factory.get_instance(bundle["repo"]) if "repo" in bundle else None
 
