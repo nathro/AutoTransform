@@ -33,7 +33,7 @@ from autotransform.step.condition.updated import UpdatedAgoCondition
 from autotransform.step.conditional import ConditionalStep
 from autotransform.util.console import choose_yes_or_no, get_str, info, input_int, input_string
 from autotransform.util.package import get_config_dir, get_examples_dir
-from autotransform.util.schedule import Schedule
+from autotransform.util.scheduler import Scheduler
 
 
 def add_args(parser: ArgumentParser) -> None:
@@ -473,9 +473,9 @@ def initialize_repo(
         manage_file.flush()
 
     # Set up schedule file
-    schedule = Schedule.from_console(manage_bundle["runner"], use_sample_schema, simple)
-    schedule_path = f"{repo_config_dir}/schedule.json"
-    schedule.write(schedule_path)
+    scheduler = Scheduler.from_console(manage_bundle["runner"], use_sample_schema, simple)
+    scheduler_path = f"{repo_config_dir}/scheduler.json"
+    scheduler.write(scheduler_path)
 
     if use_github_actions:
         info(

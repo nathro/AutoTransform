@@ -32,7 +32,7 @@ jobs:
     - name: Install Dependencies
       run: pip install -r requirements.txt
     - name: Schedule AutoTransform
-      run: python3 -m autotransform.scripts.main schedule --verbose autotransform/schedule.json
+      run: python3 -m autotransform.scripts.main schedule --verbose autotransform/scheduler.json
       env:
         PYTHONPATH: /home/runner/work/AutoTransform/AutoTransform/src/python
         AUTO_TRANSFORM_CONFIG: environment

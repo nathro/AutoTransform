@@ -272,7 +272,7 @@ class ScheduledSchema:
 
 
 @dataclass(kw_only=True)
-class Schedule:
+class Scheduler:
     """The information and functionality required to schedule Schemas.
 
     Attributes:
@@ -383,7 +383,7 @@ class Schedule:
         }
 
     @staticmethod
-    def read(file_path: str, start_time: int) -> Schedule:
+    def read(file_path: str, start_time: int) -> Scheduler:
         """Reads a schedule from a JSON encoded file.
 
         Args:
@@ -391,18 +391,18 @@ class Schedule:
             start_time (int): The start time to use for setting up sharding/running.
 
         Returns:
-            Schedule: The Schedule from the file.
+            Scheduler: The Scheduler from the file.
         """
 
         with open(file_path, "r", encoding="UTF-8") as schedule_file:
             schedule_json = schedule_file.read()
         EventHandler.get().handle(
-            DebugEvent({"message": f"Schedule: ({file_path})\n{schedule_json}"})
+            DebugEvent({"message": f"Scheduler: ({file_path})\n{schedule_json}"})
         )
-        return Schedule.from_json(schedule_json, start_time)
+        return Scheduler.from_json(schedule_json, start_time)
 
     @staticmethod
-    def from_json(schedule_json: str, start_time: int) -> Schedule:
+    def from_json(schedule_json: str, start_time: int) -> Scheduler:
         """Builds a schedule from JSON encoded values.
 
         Args:
@@ -410,21 +410,21 @@ class Schedule:
             start_time (int): The start time to use for setting up sharding/running.
 
         Returns:
-            Schedule: The Schedule from the JSON.
+            Scheduler: The Scheduler from the JSON.
         """
 
-        return Schedule.from_data(json.loads(schedule_json), start_time)
+        return Scheduler.from_data(json.loads(schedule_json), start_time)
 
     @staticmethod
-    def from_data(data: Dict[str, Any], start_time: int) -> Schedule:
-        """Produces an instance of the Schedule from decoded data.
+    def from_data(data: Dict[str, Any], start_time: int) -> Scheduler:
+        """Produces an instance of the Scheduler from decoded data.
 
         Args:
             data (Mapping[str, Any]): The JSON decoded data.
             start_time (int): The time that the schedule is starting to run on.
 
         Returns:
-            Schedule: An instance of the Schedule.
+            Scheduler: An instance of the Scheduler.
         """
 
         base_time = data["base_time"]
@@ -437,24 +437,24 @@ class Schedule:
         runner = runner_factory.get_instance(data["runner"])
         elapsed_days = (start_time - base_time) // 60 // 60 // 24
         schemas = [ScheduledSchema.from_data(schema, elapsed_days) for schema in data["schemas"]]
-        return Schedule(
+        return Scheduler(
             base_time=base_time, excluded_days=excluded_days, runner=runner, schemas=schemas
         )
 
     @staticmethod
     def from_console(
         runner: Optional[Runner] = None, use_sample_schema: bool = False, simple: bool = False
-    ) -> Schedule:
-        """Gets a Schedule using console input.
+    ) -> Scheduler:
+        """Gets a Scheduler using console input.
 
         Args:
-            runner (Optional[Runner], optional): The Runner for the Schedule. Defaults to None.
+            runner (Optional[Runner], optional): The Runner for the Scheduler. Defaults to None.
             use_sample_schema (bool, optional): Whether to include the sample Schema. Defaults
                 to False.
             simple (bool, optional): Whether to use simple settings. Defaults to False.
 
         Returns:
-            Schedule: The input Schedule.
+            Scheduler: The input Scheduler.
         """
 
         # Gets base time
@@ -508,7 +508,7 @@ class Schedule:
             while choose_yes_or_no("Add a schema to the schedule?"):
                 schemas.append(ScheduledSchema.from_console())
 
-        return Schedule(
+        return Scheduler(
             base_time=int(datetime.fromisoformat("2022-05-23T00:00:00").timestamp())
             + base_modifier,
             excluded_days=excluded_days,

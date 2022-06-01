@@ -16,7 +16,7 @@ from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.run import ScriptRunEvent
-from autotransform.util.schedule import Schedule
+from autotransform.util.scheduler import Scheduler
 
 
 def add_args(parser: ArgumentParser) -> None:
@@ -68,10 +68,10 @@ def schedule_command_main(args: Namespace) -> None:
 
     # Get Schedule
     schedule_file = args.schedule
-    event_args = {"schedule_file": schedule_file}
-    schedule = Schedule.read(schedule_file, start_time)
-    event_args["schedule"] = schedule
+    event_args = {"scheduler_file": schedule_file}
+    scheduler = Scheduler.read(schedule_file, start_time)
+    event_args["scheduler"] = scheduler
     event_handler.handle(ScriptRunEvent({"script": "schedule", "args": event_args}))
 
-    event_handler.get().handle(DebugEvent({"message": f"Running schedule: {schedule}"}))
-    schedule.run(start_time)
+    event_handler.get().handle(DebugEvent({"message": f"Running scheduler: {scheduler}"}))
+    scheduler.run(start_time)
