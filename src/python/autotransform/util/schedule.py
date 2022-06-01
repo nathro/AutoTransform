@@ -327,6 +327,8 @@ class Schedule:
                 try:
                     schema = json.loads(scheduled_schema.schema)
                 except json.JSONDecodeError:
+                    schema = {"name": scheduled_schema.schema}
+                if isinstance(schema, str):
                     schema = {"name": schema}
                 schema = schema_builder_factory.get_instance(schema).build()
             else:
