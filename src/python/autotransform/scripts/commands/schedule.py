@@ -66,7 +66,7 @@ def schedule_command_main(args: Namespace) -> None:
     if args.verbose:
         event_handler.set_logging_level(LoggingLevel.DEBUG)
 
-    # Get Schedule
+    # Get Scheduler
     schedule_file = args.schedule
     event_args = {"scheduler_file": schedule_file}
     scheduler = Scheduler.read(schedule_file, start_time)

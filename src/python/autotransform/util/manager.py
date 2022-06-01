@@ -16,12 +16,14 @@ import os
 from dataclasses import dataclass
 from typing import Any, Dict, List
 
+from autotransform.event.action import ManageActionEvent
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.repo.base import FACTORY as repo_factory
 from autotransform.repo.base import Repo
 from autotransform.runner.base import FACTORY as runner_factory
 from autotransform.runner.base import Runner
+from autotransform.step.action import ActionType
 from autotransform.step.base import FACTORY as step_factory
 from autotransform.step.base import Step
 
@@ -39,6 +41,26 @@ class Manager:
     repo: Repo
     runner: Runner
     steps: List[Step]
+
+    def run(self) -> None:
+        """Runs the management."""
+
+        changes = self.repo.get_outstanding_changes()
+        for change in changes:
+            EventHandler.get().handle(DebugEvent({"message": f"Checking steps for {str(change)}"}))
+            for step in self.steps:
+                EventHandler.get().handle(DebugEvent({"message": f"Checking step {str(step)}"}))
+                action = step.get_action(change)
+                if action["type"] != ActionType.NONE:
+                    EventHandler.get().handle(
+                        ManageActionEvent({"action": action, "change": change, "step": step})
+                    )
+                    change.take_action(action["type"], self.runner)
+                if action["stop_steps"]:
+                    EventHandler.get().handle(
+                        DebugEvent({"message": f"Steps ended for change {str(change)}"})
+                    )
+                    break
 
     def write(self, file_path: str) -> None:
         """Writes the management information to a file as JSON.

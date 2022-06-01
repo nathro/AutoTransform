@@ -9,18 +9,13 @@
 
 """The manage command is used to manage outstanding Changes for AutoTransform."""
 
-import json
 from argparse import ArgumentParser, Namespace
 
-from autotransform.event.action import ManageActionEvent
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.run import ScriptRunEvent
-from autotransform.repo.base import FACTORY as repo_factory
-from autotransform.runner.base import FACTORY as runner_factory
-from autotransform.step.action import ActionType
-from autotransform.step.base import FACTORY as step_factory
+from autotransform.util.manager import Manager
 
 
 def add_args(parser: ArgumentParser) -> None:
@@ -61,35 +56,12 @@ def manage_command_main(args: Namespace) -> None:
     if args.verbose:
         event_handler.set_logging_level(LoggingLevel.DEBUG)
 
-    # Get Schedule Data
+    # Get Manager
     manager_file = args.manager
     event_args = {"manager_file": manager_file}
-    with open(manager_file, "r") as file:
-        manager_json = file.read()
-    event_args["manager"] = manager_json
-    event_handler.handle(DebugEvent({"message": f"Manager: ({args.manager})\n{manager_json}"}))
-    manager_data = json.loads(manager_json)
-
+    manager = Manager.read(manager_file)
+    event_args["manager"] = manager
     event_handler.handle(ScriptRunEvent({"script": "manage", "args": event_args}))
 
-    # Get needed info/objects for scheduling
-    runner = runner_factory.get_instance(manager_data["runner"])
-    repo = repo_factory.get_instance(manager_data["repo"])
-    steps = [step_factory.get_instance(step) for step in manager_data["steps"]]
-    changes = repo.get_outstanding_changes()
-
-    for change in changes:
-        event_handler.handle(DebugEvent({"message": f"Checking steps for {str(change)}"}))
-        for step in steps:
-            event_handler.handle(DebugEvent({"message": f"Checking step {str(step)}"}))
-            action = step.get_action(change)
-            if action["type"] != ActionType.NONE:
-                event_handler.handle(
-                    ManageActionEvent({"action": action, "change": change, "step": step})
-                )
-                change.take_action(action["type"], runner)
-            if action["stop_steps"]:
-                event_handler.handle(
-                    DebugEvent({"message": f"Steps ended for change {str(change)}"})
-                )
-                break
+    event_handler.handle(DebugEvent({"message": f"Running manager: {manager}"}))
+    manager.run()
