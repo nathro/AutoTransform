@@ -217,15 +217,15 @@ class ComponentFactory(Generic[T], ABC):
 
         component_json_path = f"{Config.get_imports_components()}/{component_file_name}"
         custom_components: Dict[str, ComponentImport] = {}
+        EventHandler.get().handle(
+            DebugEvent({"message": f"Importing custom components from: {component_json_path}"})
+        )
         try:
             with open(component_json_path, "r", encoding="UTF-8") as component_file:
                 json_components = json.load(component_file)
         except FileNotFoundError:
             EventHandler.get().handle(WarningEvent({"message": "Could not find components file."}))
             json_components = {}
-        EventHandler.get().handle(
-            DebugEvent({"message": f"Importing custom batchers from: {component_json_path}"})
-        )
         if not isinstance(json_components, Dict):
             message = f"Malformed custom component file: {component_json_path}"
             if strict:

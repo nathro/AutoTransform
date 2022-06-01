@@ -12,7 +12,7 @@
 import os
 import subprocess
 from configparser import ConfigParser
-from typing import List, Optional
+from typing import Optional
 
 from autotransform.config.fetcher import ConfigFetcher
 from autotransform.util.package import get_config_dir
@@ -104,22 +104,18 @@ class DefaultConfigFetcher(ConfigFetcher):
         credentials = self.config["CREDENTIALS"]
         return credentials.get("github_base_url", None)
 
-    def get_imports_components(self) -> List[str]:
-        """The modules containing the custom components to use: see
-        autotransform.thirdparty.components.
+    def get_imports_components(self) -> Optional[str]:
+        """Gets the directory where custom import components are located.
 
         Returns:
-            List[str]: A list of the modules containing custom components that are not part base
-                AutoTransform.
+            Optional[str]: The directory containing custom component
+                import files.
         """
 
         if "IMPORTS" not in self.config:
-            return []
+            return None
         imports = self.config["IMPORTS"]
-        module_list = imports.get("components", None)
-        if module_list is None:
-            return []
-        return [module.strip() for module in module_list.split(",")]
+        return imports.get("components", None)
 
     def get_runner_local(self) -> Optional[str]:
         """Gets the JSON encoded Runner component to use for local runs.

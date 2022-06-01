@@ -10,7 +10,7 @@
 """A config fetcher that utilizes environment variables for storing config settings."""
 
 import os
-from typing import List, Optional
+from typing import Optional
 
 from autotransform.config.default import DefaultConfigFetcher
 from autotransform.config.fetcher import ConfigFetcher
@@ -59,21 +59,18 @@ class EnvironmentVariableConfigFetcher(ConfigFetcher):
             return self._default_config.get_credentials_github_base_url()
         return github_base_url
 
-    def get_imports_components(self) -> List[str]:
-        """The modules containing the custom components to use: see
-        autotransform.thirdparty.components from AUTO_TRANSFORM_CREDENTIALS_IMPORTS_COMPONENTS.
+    def get_imports_components(self) -> Optional[str]:
+        """Gets the directory where custom import components are located.
 
         Returns:
-            List[str]: A list of the modules containing custom components that are not part base
-                AutoTransform.
+            Optional[str]: The directory containing custom component
+                import files.
         """
 
-        module_list = os.getenv("AUTO_TRANSFORM_IMPORTS_COMPONENTS")
-        if module_list is None and self._default_config is not None:
+        directory = os.getenv("AUTO_TRANSFORM_IMPORTS_COMPONENTS")
+        if directory is None and self._default_config is not None:
             return self._default_config.get_imports_components()
-        if module_list is None or module_list == "":
-            return []
-        return [module.strip() for module in module_list.split(",")]
+        return directory
 
     def get_runner_local(self) -> Optional[str]:
         """Gets the JSON encoded Runner component to use for local runs.

@@ -11,7 +11,7 @@
 so that different components can be used that store configuration in different ways."""
 
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import Optional
 
 
 class ConfigFetcher(ABC):
@@ -34,13 +34,12 @@ class ConfigFetcher(ABC):
         """
 
     @abstractmethod
-    def get_imports_components(self) -> List[str]:
-        """The modules containing the custom components to use: see
-        autotransform.thirdparty.components.
+    def get_imports_components(self) -> Optional[str]:
+        """Gets the directory where custom import components are located.
 
         Returns:
-            List[str]: A list of the modules containing custom components that are not part base
-                AutoTransform.
+            Optional[str]: The directory containing custom component
+                import files.
         """
 
     @abstractmethod
