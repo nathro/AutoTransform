@@ -336,7 +336,9 @@ class Schedule:
             # Check if should run
             if not scheduled_schema.schedule.should_run(hour_of_day, day_of_week):
                 EventHandler.get().handle(
-                    DebugEvent({"message": f"Skipping run of schema: {schema.get_config().name}"})
+                    DebugEvent(
+                        {"message": f"Skipping run of schema: {schema.get_config().schema_name}"}
+                    )
                 )
                 continue
             shard_filter = scheduled_schema.schedule.sharding
