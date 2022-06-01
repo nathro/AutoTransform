@@ -14,7 +14,7 @@ from __future__ import annotations
 from abc import abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, ClassVar, Mapping, Optional
+from typing import Any, ClassVar, Dict, Mapping, Optional
 
 from autotransform.batcher.base import Batch
 from autotransform.util.component import Component, ComponentFactory, ComponentImport
@@ -26,6 +26,39 @@ class ValidationResultLevel(str, Enum):
     NONE = "none"
     WARNING = "warning"
     ERROR = "error"
+
+    def compare(self, other: str) -> int:
+        """Compares two result levels and returns an integer indicating the comparison.
+
+        Args:
+            other (str): The value to compare against.
+
+        Returns:
+            int: A negative number if lt, 0 if equal, and a positive number if gt.
+        """
+
+        if self.value is other:
+            return 0
+        val_order: Dict[str, int] = {"none": 0, "warning": 1, "error": 2}
+        return val_order[self.value] - val_order[other]
+
+    def __eq__(self, other: object) -> bool:
+        return self.compare(str(other.value) if isinstance(other, Enum) else str(other)) == 0
+
+    def __ne__(self, other: object) -> bool:
+        return self.compare(str(other.value) if isinstance(other, Enum) else str(other)) != 0
+
+    def __lt__(self, other: object) -> bool:
+        return self.compare(str(other.value) if isinstance(other, Enum) else str(other)) < 0
+
+    def __lte__(self, other: object) -> bool:
+        return self.compare(str(other.value) if isinstance(other, Enum) else str(other)) <= 0
+
+    def __gt__(self, other: object) -> bool:
+        return self.compare(str(other.value) if isinstance(other, Enum) else str(other)) > 0
+
+    def __gte__(self, other: object) -> bool:
+        return self.compare(other.value if isinstance(other, Enum) else str(other)) >= 0
 
 
 @dataclass
