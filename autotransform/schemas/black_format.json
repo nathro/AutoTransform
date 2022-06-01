@@ -57,7 +57,7 @@
         ]
     },
     "repo": {
-        "name": "github:",
+        "name": "github",
         "base_branch_name": "master",
         "full_github_name": "nathro/AutoTransform"
     }
