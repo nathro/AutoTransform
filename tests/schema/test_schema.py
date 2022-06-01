@@ -41,7 +41,7 @@ def get_sample_schema() -> AutoTransformSchema:
     return AutoTransformSchema(
         DirectoryInput(path=repo_root),
         SingleBatcher(title=EXPECTED_TITLE, metadata=EXPECTED_METADATA),
-        RegexTransformer({"pattern": "input", "replacement": "inputsource"}),
+        RegexTransformer(pattern="input", replacement="inputsource"),
         SchemaConfig(schema_name="Sample", owners=["foo", "bar"]),
         filters=[RegexFilter(pattern=".*\\.py$")],
         repo=GithubRepo(base_branch_name="master", full_github_name="nathro/AutoTransform"),
@@ -306,12 +306,7 @@ def test_json_decoding(_mocked_checkout):
     assert actual_schema.get_batcher() == expected_schema.get_batcher()
 
     # Check transformer
-    actual_transformer = actual_schema.get_transformer()
-    expected_transformer = expected_schema.get_transformer()
-    assert type(actual_transformer) is type(expected_transformer), "Transformers are not the same"
-    assert (
-        actual_transformer.get_params() == expected_transformer.get_params()
-    ), "Transformers do not have the same params"
+    assert actual_schema.get_transformer() == expected_schema.get_transformer()
 
     # Check repo
     assert actual_schema.get_repo() == expected_schema.get_repo()

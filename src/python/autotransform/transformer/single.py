@@ -11,16 +11,13 @@
 
 
 from abc import abstractmethod
-from typing import Any, Generic, Mapping, TypeVar
 
 from autotransform.batcher.base import Batch
 from autotransform.item.base import Item
 from autotransform.transformer.base import Transformer
 
-TParams = TypeVar("TParams", bound=Mapping[str, Any])
 
-
-class SingleTransformer(Generic[TParams], Transformer[TParams, None]):
+class SingleTransformer(Transformer[None]):
     """A simple interface for writing a Transformer that operates on an individual Item level."""
 
     @abstractmethod

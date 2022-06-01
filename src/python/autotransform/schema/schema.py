@@ -32,8 +32,8 @@ from autotransform.item.base import Item
 from autotransform.repo.base import FACTORY as repo_factory
 from autotransform.repo.base import Repo
 from autotransform.schema.config import SchemaConfig
+from autotransform.transformer.base import FACTORY as transformer_factory
 from autotransform.transformer.base import Transformer
-from autotransform.transformer.factory import TransformerFactory
 from autotransform.validator.base import ValidationError, Validator
 from autotransform.validator.factory import ValidatorFactory
 
@@ -402,7 +402,7 @@ class AutoTransformSchema:
 
         inp = input_factory.get_instance(bundle["input"])
         batcher = batcher_factory.get_instance(bundle["batcher"])
-        transformer = TransformerFactory.get(bundle["transformer"])
+        transformer = transformer_factory.get_instance(bundle["transformer"])
         config = SchemaConfig.from_data(bundle["config"])
 
         filters = [filter_factory.get_instance(f) for f in bundle["filters"]]

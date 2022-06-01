@@ -17,17 +17,15 @@
         }
     },
     "transformer": {
-        "params": {
-            "script": "black",
-            "args": [
-                "-l",
-                "100",
-                "<<KEY>>"
-            ],
-            "timeout": 360,
-            "per_item": true
-        },
-        "type": "script"
+        "name": "script",
+        "script": "black",
+        "args": [
+            "-l",
+            "100",
+            "<<KEY>>"
+        ],
+        "timeout": 360,
+        "per_item": true
     },
     "validators": [
         {

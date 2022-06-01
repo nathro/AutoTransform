@@ -11,24 +11,24 @@
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-from typing import Any, Generic, Mapping, Optional, TypedDict, TypeVar
+from abc import abstractmethod
+from enum import Enum
+from typing import Any, ClassVar, Generic, Mapping, Optional, TypeVar
 
 from autotransform.batcher.base import Batch
-from autotransform.transformer.type import TransformerType
+from autotransform.util.component import Component, ComponentFactory, ComponentImport
 
-TParams = TypeVar("TParams", bound=Mapping[str, Any])
 TResult = TypeVar("TResult", bound=Optional[Mapping[str, Any]])
 
 
-class TransformerBundle(TypedDict):
-    """A bundled version of the Transformer object used for JSON encoding."""
+class TransformerName(str, Enum):
+    """A simple enum for mapping."""
 
-    params: Mapping[str, Any]
-    type: TransformerType
+    REGEX = "regex"
+    SCRIPT = "script"
 
 
-class Transformer(Generic[TParams, TResult], ABC):
+class Transformer(Generic[TResult], Component):
     """The base for Transformer components. Transformers are used to execute changes to a codebase.
     A Transformer takes in a Batch and then executes all changes associated with the Batch.
 
@@ -37,34 +37,7 @@ class Transformer(Generic[TParams, TResult], ABC):
             Should be defined using a TypedDict in subclasses
     """
 
-    _params: TParams
-
-    def __init__(self, params: TParams):
-        """A simple constructor.
-
-        Args:
-            params (TParams): The paramaters used to set up the Transformer.
-        """
-
-        self._params = params
-
-    def get_params(self) -> TParams:
-        """Gets the paramaters used to set up the Transformer.
-
-        Returns:
-            TParams: The paramaters used to set up the Transformer.
-        """
-
-        return self._params
-
-    @staticmethod
-    @abstractmethod
-    def get_type() -> TransformerType:
-        """Used to map Transformer components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            TransformerType: The unique type associated with this Transformer.
-        """
+    name: ClassVar[TransformerName]
 
     @abstractmethod
     def transform(self, batch: Batch) -> TResult:
@@ -76,29 +49,16 @@ class Transformer(Generic[TParams, TResult], ABC):
             batch (Batch): The Batch that will be transformed.
         """
 
-    def bundle(self) -> TransformerBundle:
-        """Generates a JSON encodable bundle.
-        If a component's params are not JSON encodable this method should be overridden to provide
-        an encodable version.
 
-        Returns:
-            TransformerBundle: The encodable bundle.
-        """
-
-        return {
-            "params": self._params,
-            "type": self.get_type(),
-        }
-
-    @staticmethod
-    @abstractmethod
-    def from_data(data: Mapping[str, Any]) -> Transformer:
-        """Produces an instance of the component from decoded params. Implementations should
-        assert that the data provided matches expected types and is valid.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-
-        Returns:
-            Transformer: An instance of the Transformer.
-        """
+FACTORY = ComponentFactory(
+    {
+        TransformerName.REGEX: ComponentImport(
+            class_name="RegexTransformer", module="autotransform.transformer.regex"
+        ),
+        TransformerName.SCRIPT: ComponentImport(
+            class_name="ScriptTransformer", module="autotransform.transformer.script"
+        ),
+    },
+    Transformer,  # type: ignore [misc]
+    "transformer.json",
+)

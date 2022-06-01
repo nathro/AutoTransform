@@ -18,7 +18,7 @@ def test_pattern_found():
     """A simple check that the regex executes as expected when found."""
 
     tester = TransformerTester(
-        "regex/pattern_found", RegexTransformer({"pattern": "TEST", "replacement": "REP"})
+        "regex/pattern_found", RegexTransformer(pattern="TEST", replacement="REP")
     )
     tester.check()
 
@@ -27,6 +27,6 @@ def test_pattern_not_found():
     """A simple check that the regex does not change anything when not found."""
 
     tester = TransformerTester(
-        "regex/pattern_not_found", RegexTransformer({"pattern": "TEST", "replacement": "REP"})
+        "regex/pattern_not_found", RegexTransformer(pattern="TEST", replacement="REP")
     )
     tester.check()

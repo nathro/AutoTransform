@@ -13,11 +13,9 @@
         "skip_empty_batch": false
     },
     "transformer": {
-        "params": {
-            "pattern": "input",
-            "replacement": "inputsource"
-        },
-        "type": "regex"
+        "name": "regex",
+        "pattern": "input",
+        "replacement": "inputsource"
     },
     "filters": [
         {

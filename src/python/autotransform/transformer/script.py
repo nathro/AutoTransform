@@ -13,29 +13,19 @@ from __future__ import annotations
 
 import json
 import subprocess
+from dataclasses import dataclass
 from tempfile import NamedTemporaryFile as TmpFile
-from typing import Any, List, Mapping, Optional, TypedDict
-
-from typing_extensions import NotRequired
+from typing import Any, ClassVar, List, Mapping, Optional
 
 from autotransform.batcher.base import Batch
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.item.base import Item
-from autotransform.transformer.base import Transformer
-from autotransform.transformer.type import TransformerType
+from autotransform.transformer.base import Transformer, TransformerName
 
 
-class ScriptTransformerParams(TypedDict):
-    """The param type for a ScriptTransformer."""
-
-    script: str
-    args: List[str]
-    timeout: int
-    per_item: NotRequired[bool]
-
-
-class ScriptTransformer(Transformer[ScriptTransformerParams, None]):
+@dataclass(frozen=True, kw_only=True)
+class ScriptTransformer(Transformer[None]):
     """A Transformer that makes changes using an invoked script. Sentinel values can be used in the
     args to supply information from the Batch.
     The available sentinel values for args are:
@@ -49,21 +39,19 @@ class ScriptTransformer(Transformer[ScriptTransformerParams, None]):
      with a path to a file containing the value.
 
     Attributes:
-        _params (ScriptTransformerParams): The script and args, along with the timeout and a
-            per_item flag for invoking the script on each Item.
+        script (str): The script to run.
+        args (List[str]): The arguments to supply to the script.
+        timeout (int): The timeout to use for the script process.
+        per_item (bool, optional): Whether to run the script on each item. Defaults to False.
+        name (ClassVar[TransformerName]): The name of the Component.
     """
 
-    _params: ScriptTransformerParams
+    script: str
+    args: List[str]
+    timeout: int
+    per_item: bool = False
 
-    @staticmethod
-    def get_type() -> TransformerType:
-        """Used to map Transformer components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            TransformerType: The unique type associated with this Transformer.
-        """
-
-        return TransformerType.SCRIPT
+    name: ClassVar[TransformerName] = TransformerName.SCRIPT
 
     def transform(self, batch: Batch) -> None:
         """Runs the script transformation against the Batch, either on each item individually or
@@ -73,7 +61,7 @@ class ScriptTransformer(Transformer[ScriptTransformerParams, None]):
             batch (Batch): The Batch being transformed.
         """
 
-        if self._params.get("per_item", False):
+        if self.per_item:
             for item in batch["items"]:
                 self._transform_single(item, batch.get("metadata", None))
         else:
@@ -98,7 +86,7 @@ class ScriptTransformer(Transformer[ScriptTransformerParams, None]):
 
         event_handler = EventHandler.get()
 
-        cmd = [self._params["script"]]
+        cmd = [self.script]
 
         extra_data = item.extra_data
         if extra_data is None:
@@ -128,7 +116,7 @@ class ScriptTransformer(Transformer[ScriptTransformerParams, None]):
             arg_replacements["<<METADATA_FILE>>"] = meta.name
 
             # Create command
-            for arg in self._params["args"]:
+            for arg in self.args:
                 if arg in arg_replacements:
                     cmd.append(arg_replacements[arg])
                 else:
@@ -141,7 +129,7 @@ class ScriptTransformer(Transformer[ScriptTransformerParams, None]):
                 capture_output=True,
                 encoding="utf-8",
                 check=False,
-                timeout=self._params["timeout"],
+                timeout=self.timeout,
             )
         if proc.stdout.strip() != "":
             event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
@@ -170,7 +158,7 @@ class ScriptTransformer(Transformer[ScriptTransformerParams, None]):
 
         event_handler = EventHandler.get()
 
-        cmd = [self._params["script"]]
+        cmd = [self.script]
 
         item_keys = [item.key for item in batch["items"]]
         extra_data = {
@@ -200,7 +188,7 @@ class ScriptTransformer(Transformer[ScriptTransformerParams, None]):
             arg_replacements["<<METADATA_FILE>>"] = meta.name
 
             # Create command
-            for arg in self._params["args"]:
+            for arg in self.args:
                 if arg in arg_replacements:
                     cmd.append(arg_replacements[arg])
                 else:
@@ -213,7 +201,7 @@ class ScriptTransformer(Transformer[ScriptTransformerParams, None]):
                 capture_output=True,
                 encoding="utf-8",
                 check=False,
-                timeout=self._params["timeout"],
+                timeout=self.timeout,
             )
         if proc.stdout.strip() != "":
             event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
@@ -224,31 +212,3 @@ class ScriptTransformer(Transformer[ScriptTransformerParams, None]):
         else:
             event_handler.handle(DebugEvent({"message": "No STDERR"}))
         proc.check_returncode()
-
-    @staticmethod
-    def from_data(data: Mapping[str, Any]) -> ScriptTransformer:
-        """Produces a ScriptTransformer from the provided data.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-
-        Returns:
-            ScriptTransformer: An instance of the ScriptTransformer.
-        """
-
-        script = data["script"]
-        assert isinstance(script, str)
-        args = data["args"]
-        assert isinstance(args, List)
-        args = [str(arg) for arg in args]
-        timeout = data["timeout"]
-        assert isinstance(timeout, int)
-
-        params: ScriptTransformerParams = {"script": script, "args": args, "timeout": timeout}
-
-        per_item = data.get("per_item", None)
-        if per_item is not None:
-            assert isinstance(per_item, bool)
-            params["per_item"] = per_item
-
-        return ScriptTransformer(params)
