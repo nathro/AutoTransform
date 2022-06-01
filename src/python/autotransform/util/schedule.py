@@ -324,9 +324,11 @@ class Schedule:
         for scheduled_schema in self.schemas:
             # Get the Schema
             if scheduled_schema.type == SchemaType.BUILDER:
-                schema = schema_builder_factory.get_instance(
-                    json.loads(scheduled_schema.schema)
-                ).build()
+                try:
+                    schema = json.loads(scheduled_schema.schema)
+                except json.JSONDecodeError:
+                    schema = {"name": schema}
+                schema = schema_builder_factory.get_instance(schema).build()
             else:
                 with open(scheduled_schema.schema, "r", encoding="UTF-8") as schema_file:
                     schema = AutoTransformSchema.from_json(schema_file.read())

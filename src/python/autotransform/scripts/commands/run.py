@@ -127,6 +127,10 @@ def run_command_main(args: Namespace) -> None:
     event_handler.handle(DebugEvent({"message": f"Schema: ({args.schema_type}) {args.schema}"}))
     event_args = {"schema": args.schema, "schema_type": args.schema_type}
     if args.schema_type == "builder":
+        try:
+            schema = json.loads(schema)
+        except json.JSONDecodeError:
+            schema = {"name": schema}
         schema = schema_builder_factory.get_instance(schema).build()
     elif args.schema_type == "file":
         with open(schema, "r") as schema_file:
