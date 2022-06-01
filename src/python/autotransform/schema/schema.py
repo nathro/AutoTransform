@@ -391,53 +391,18 @@ class AutoTransformSchema:
             AutoTransformSchema: The Schema represented by the bundle.
         """
 
-        # Get Input
-        input_bundle = bundle["input"]
-        if isinstance(input_bundle, str):
-            input_bundle = {"name": input_bundle}
-        inp = input_factory.get_instance(input_bundle)
-
-        # Get Batcher
-        batcher_bundle = bundle["batcher"]
-        if isinstance(batcher_bundle, str):
-            batcher_bundle = {"name": batcher_bundle}
-        batcher = batcher_factory.get_instance(batcher_bundle)
-
-        # Get Transformer
-        transformer_bundle = bundle["transformer"]
-        if isinstance(transformer_bundle, str):
-            transformer_bundle = {"name": transformer_bundle}
-        transformer = transformer_factory.get_instance(transformer_bundle)
-
-        # Get Config
+        inp = input_factory.get_instance(bundle["input"])
+        batcher = batcher_factory.get_instance(bundle["batcher"])
+        transformer = transformer_factory.get_instance(bundle["transformer"])
         config = SchemaConfig.from_data(bundle["config"])
 
-        # Get Filters
-        filters = [
-            filter_factory.get_instance({"name": f} if isinstance(f, str) else f)
-            for f in bundle.get("filters", [])
-        ]
-
-        # Get Validators
+        filters = [filter_factory.get_instance(f) for f in bundle["filters"]]
         validators = [
-            validator_factory.get_instance({"name": v} if isinstance(v, str) else v)
-            for v in bundle.get("validators", [])
+            validator_factory.get_instance(validator) for validator in bundle["validators"]
         ]
+        commands = [command_factory.get_instance(command) for command in bundle["commands"]]
 
-        # Get Commands
-        commands = [
-            command_factory.get_instance({"name": c} if isinstance(c, str) else c)
-            for c in bundle.get("commands", [])
-        ]
-
-        # Get Repo
-        repo_bundle = bundle.get("repo", None)
-        if repo_bundle is None:
-            repo = None
-        else:
-            repo = repo_factory.get_instance(
-                {"name": repo_bundle} if isinstance(repo_bundle, str) else repo_bundle
-            )
+        repo = repo_factory.get_instance(bundle["repo"]) if "repo" in bundle else None
 
         return AutoTransformSchema(
             inp,
