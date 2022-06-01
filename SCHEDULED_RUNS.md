@@ -9,10 +9,8 @@ To get scheduled runs going, a JSON file with all scheduling information is requ
 {
     "base_time": <int>,
     "runner": {
-        "type": <RunnerType>,
-        "params": {
-            ...
-        }
+        "name": <RunnerName>,
+        ...
     },
     "excluded_days": [<0-6>],
     "schemas": [
@@ -26,10 +24,8 @@ To get scheduled runs going, a JSON file with all scheduling information is requ
                 "sharding": {
                     "num_shards": <int>,
                     "shard_filter": {
-                        "type": FilterType,
-                        "params": {
-                            ...
-                        }
+                        "name": <FilterName>,
+                        ...
                     }
                 }
             }
@@ -39,22 +35,22 @@ To get scheduled runs going, a JSON file with all scheduling information is requ
 ```
 To see an example, check out `data/autotransform_schedule.json`.
 
-### **Scheduling Params**
+### **Scheduling Settings**
 
-The following params are used when scheduling schemas to run automatically.
-  * **Overall Params**
+The following settings are used when scheduling schemas to run automatically.
+  * **Overall Settings**
     * **base_time**: This serves as the basis for determining hour of day and day of week. When scheduling is invoked, this time is subtracted from the current time to determine day of week and hour of day, with the base time treated as hour 0 on day 0.
     * **runner**: This is an encoded runner object. All schemas that have been scheduled will be run using this object. It should trigger runs on the organization's CI infrastructure.
     * **excluded_days**: A list of days of the week that schemas will not run. Defaults to empty.
     * **schemas**: A list of schemas that are automatically scheduled.
-  * **Schema Params**
-    * **type**: Either the string "builder" or the string "file". This is used to determine whether the value of the schema param refers to a SchemaBuilderType or a file path.
+  * **Schema Settings**
+    * **type**: Either the string "builder" or the string "file". This is used to determine whether the value of the schema setting refers to a SchemaBuilderType or a file path.
     * **schema**: Either a SchemaBuilderType or a file path.
     * **Schedule**
       * **repeats**: Either the string "daily" or the string "weekly". How often the schema will be run.
       * **hour_of_day**: Which hour of the day, using the logic described for base_time, that the schema will be run. Defaults to 0.
       * **day_of_week**: Which day of the week, using the logic described for base_time, that the schema will be run. Defaults to 0. Only applies to weekly runs.
-      * **Sharding**: A Sharded schema is run on a subset of it's input each time it is run. This subset is determined by the sharding params and can be used to break large runs over a codebase in to smaller pieces. Optional to include.
+      * **Sharding**: A Sharded schema is run on a subset of it's input each time it is run. This subset is determined by the sharding settings and can be used to break large runs over a codebase in to smaller pieces. Optional to include.
         * **num_shards**: The total number of shards to spread the input across.
         * **shard_filter**: A ShardFilter object that will be used to perform the actual sharding. It will get the num_shards and current_shard from the scheduler when constructed.
 

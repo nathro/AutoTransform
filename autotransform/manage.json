@@ -34,11 +34,9 @@
             "name": "conditional",
             "action": "update",
             "condition": {
-                "params": {
-                    "comparison": "gte",
-                    "time": 259200
-                },
-                "type": "updated_ago"
+                "name": "updated_ago",
+                "comparison": "gte",
+                "time": 259200
             },
             "continue_if_passed": false
         }

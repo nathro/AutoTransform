@@ -33,8 +33,7 @@ class Transformer(Generic[TResult], Component):
     A Transformer takes in a Batch and then executes all changes associated with the Batch.
 
     Attributes:
-        _params (TParams): The paramaters that control operation of the Transformer.
-            Should be defined using a TypedDict in subclasses
+        name (ClassVar[TransformerName]): The name of the component.
     """
 
     name: ClassVar[TransformerName]

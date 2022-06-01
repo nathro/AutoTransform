@@ -8,23 +8,17 @@ To manage outstanding Changes, a JSON file with all manager information is requi
 ```
 {
     "repo": {
-        "type": <RepoType>,
-        "params": {
-            ...
-        }
+        "name": <RepoName>,
+        ...
     },
     "runner": {
-        "type": <RunnerType>,
-        "params": {
-            ...
-        }
+        "name": <RunnerName>,
+        ...
     },
     "steps": [
         {
-            "type": <StepType>,
-            "params": {
-                ...
-            }
+            "name": <StepName>,
+            ...
         },
         ...
     ]
@@ -33,7 +27,7 @@ To manage outstanding Changes, a JSON file with all manager information is requi
 ```
 To see an example, check out `data/autotransform_manage.json`.
 
-### **Managing Params**
+### **Managing Settings**
 
 * **Repo**: The Repo to fetch outstanding Changes for.
 * **Runner**: The Runner to use for updating outstanding Changes.

@@ -15,9 +15,7 @@ import json
 import subprocess
 from dataclasses import dataclass
 from tempfile import NamedTemporaryFile as TmpFile
-from typing import Any, ClassVar, List, Mapping, Optional, Sequence, TypedDict
-
-from typing_extensions import NotRequired
+from typing import Any, ClassVar, List, Mapping, Optional, Sequence
 
 import autotransform.schema
 from autotransform.batcher.base import Batch
@@ -33,16 +31,6 @@ from autotransform.validator.base import (
 )
 
 
-class ScriptValidatorParams(TypedDict):
-    """The param type for a ScriptValidator."""
-
-    script: str
-    args: List[str]
-    failure_level: ValidationResultLevel
-    per_item: NotRequired[bool]
-    run_on_changes: NotRequired[bool]
-
-
 @dataclass(frozen=True, kw_only=True)
 class ScriptValidator(Validator):
     """Runs a script with the supplied arguments to perform validation. If the per_item flag is
@@ -51,11 +39,11 @@ class ScriptValidator(Validator):
     indicates the result level if the script returns a non-zero exit code. Sentinel values can
     be used in args to provide custom arguments for a run.
     The available sentinel values for args are:
-        <<KEY>>: A json encoded list of the Items for a batch. If the per_item flag is set in
-            params, this will simply be the key of an Item.
+        <<KEY>>: A json encoded list of the Items for a batch. If the per_item flag is set in,
+            this will simply be the key of an Item.
         <<EXTRA_DATA>>: A JSON encoded mapping from Item key to that Item's extra_data. If the
-            per_item flag is set in params, this will simply be a JSON encoding of the Item's
-            extra_data. If extra_data is not present for an item, it is treated as an empty Dict.
+            per_item flag is set, this will simply be a JSON encoding of the Item's extra_data.
+            If extra_data is not present for an item, it is treated as an empty Dict.
         <<METADATA>>: A JSON encoded version of the Batch's metadata.
     _FILE can be appended to any of these (i.e. <<KEY_FILE>>) and the arg will instead be replaced
      with a path to a file containing the value.

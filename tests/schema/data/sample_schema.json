@@ -28,7 +28,7 @@
     "commands": [],
     "config": {
         "schema_name": "Sample",
-        "allowed_validation_level": 0,
+        "allowed_validation_level": "none",
         "owners": [
             "foo",
             "bar"

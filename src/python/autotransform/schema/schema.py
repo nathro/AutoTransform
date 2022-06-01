@@ -285,7 +285,7 @@ class AutoTransformSchema:
             validation_result = validator.validate(batch, result)
             event_handler.handle(DebugEvent({"message": f"Validation Result: {validation_result}"}))
 
-            if validation_result.level.value > self._config.allowed_validation_level.value:
+            if validation_result.level > self._config.allowed_validation_level:
                 event_handler.handle(DebugEvent({"message": "Validation Failed"}))
                 raise ValidationError(issue=validation_result, message=validation_result.message)
 

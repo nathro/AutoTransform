@@ -312,32 +312,13 @@ def test_json_decoding(_mocked_checkout):
     assert actual_schema.get_repo() == expected_schema.get_repo()
 
     # Check Filters
-    assert len(actual_schema.get_filters()) == len(expected_schema.get_filters())
-    filters = zip(actual_schema.get_filters(), expected_schema.get_filters())
-    for actual_filter, expected_filter in filters:
-        assert actual_filter == expected_filter
+    assert actual_schema.get_filters() == expected_schema.get_filters()
 
     # Check validators
-    actual_validators = actual_schema.get_validators()
-    expected_validators = expected_schema.get_validators()
-    assert len(actual_validators) == len(expected_validators), "Validators length does not match"
-    for i in range(len(actual_validators)):
-        assert type(actual_validators[i]) is type(
-            expected_validators[i]
-        ), "Validators are not the same"
-        assert (
-            actual_validators[i].get_params() == expected_validators[i].get_params()
-        ), "Validators do not have the same params"
+    assert actual_schema.get_validators() == expected_schema.get_validators()
 
     # Check commands
-    actual_commands = actual_schema.get_commands()
-    expected_commands = expected_schema.get_commands()
-    assert len(actual_commands) == len(expected_commands), "Commands length does not match"
-    for i in range(len(actual_commands)):
-        assert type(actual_commands[i]) is type(expected_commands[i]), "Commands are not the same"
-        assert (
-            actual_commands[i].get_params() == expected_commands[i].get_params()
-        ), "Commands do not have the same params"
+    assert actual_schema.get_commands() == expected_schema.get_commands()
 
     # Check config
     assert actual_schema.get_config() == expected_schema.get_config()

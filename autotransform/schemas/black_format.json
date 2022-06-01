@@ -35,7 +35,7 @@
                 "autotransform",
                 "tests"
             ],
-            "failure_level": 2
+            "failure_level": "error"
         },
         {
             "name": "script",
@@ -45,13 +45,13 @@
                 "ignore::DeprecationWarning",
                 "tests/"
             ],
-            "failure_level": 2
+            "failure_level": "error"
         }
     ],
     "commands": [],
     "config": {
         "schema_name": "Black Format",
-        "allowed_validation_level": 1,
+        "allowed_validation_level": "warning",
         "owners": [
             "@nathro"
         ]

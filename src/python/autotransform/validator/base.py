@@ -14,18 +14,18 @@ from __future__ import annotations
 from abc import abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Mapping, Optional
+from typing import Any, ClassVar, Mapping, Optional
 
 from autotransform.batcher.base import Batch
 from autotransform.util.component import Component, ComponentFactory, ComponentImport
 
 
-class ValidationResultLevel(int, Enum):
+class ValidationResultLevel(str, Enum):
     """The result level of a validation indicating how bad a validation failure is."""
 
-    NONE = 0
-    WARNING = 1
-    ERROR = 2
+    NONE = "none"
+    WARNING = "warning"
+    ERROR = "error"
 
 
 @dataclass
@@ -67,9 +67,10 @@ class Validator(Component):
     healthy after a transformation.
 
     Attributes:
-        _params (TParams): The paramaters that control operation of the Validator.
-            Should be defined using a TypedDict in subclasses.
+        name (ClassVar[ValidatorName]): The name of the component.
     """
+
+    name: ClassVar[ValidatorName]
 
     @abstractmethod
     def validate(
