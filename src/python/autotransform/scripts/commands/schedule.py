@@ -17,12 +17,7 @@ from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.run import ScriptRunEvent
-from autotransform.event.schedulerun import ScheduleRunEvent
-from autotransform.filter.base import FACTORY as filter_factory
-from autotransform.filter.shard import ShardFilter
-from autotransform.runner.base import FACTORY as runner_factory
-from autotransform.schema.builder import FACTORY as schema_builder_factory
-from autotransform.schema.schema import AutoTransformSchema
+from autotransform.util.schedule import Schedule
 
 
 def add_args(parser: ArgumentParser) -> None:
@@ -84,85 +79,6 @@ def schedule_command_main(args: Namespace) -> None:
     event_handler.handle(ScriptRunEvent({"script": "schedule", "args": event_args}))
 
     # Get needed info/objects for scheduling
-    runner = runner_factory.get_instance(schedule_data["runner"])
-    excluded_days = [int(day) for day in schedule_data["excluded_days"]]
-    elapsed_time = start_time - int(schedule_data["base_time"])
-
-    elapsed_hours = int(elapsed_time / 60 / 60)
-    elapsed_days, hour_of_day = divmod(elapsed_hours, 24)
-    elapsed_weeks, day_of_week = divmod(elapsed_days, 7)
-
-    event_handler.handle(
-        DebugEvent({"message": f"Running for hour {hour_of_day}, day {day_of_week}"})
-    )
-    event_handler.handle(
-        DebugEvent({"message": f"Elapsed days {elapsed_days}, weeks {elapsed_weeks}"})
-    )
-
-    if day_of_week in excluded_days:
-        event_handler.handle(
-            DebugEvent(
-                {
-                    "message": f"Day {day_of_week} is excluded, skipping run",
-                }
-            )
-        )
-        return
-
-    for schema_data in schedule_data["schemas"]:
-        # Get the Schema
-        schema_type = schema_data["type"]
-        if schema_type == "builder":
-            schema = schema_builder_factory.get_instance(schema_data["schema"]).build()
-        elif schema_type == "file":
-            with open(schema_data["schema"], "r") as schema_file:
-                schema = AutoTransformSchema.from_json(schema_file.read())
-
-        # Check if should run
-        schedule_info = schema_data["schedule"]
-        repeats = schedule_info["repeats"]
-        if schedule_info["hour_of_day"] != hour_of_day:
-            event_handler.handle(
-                DebugEvent(
-                    {
-                        "message": f"Skipping schema {schema.get_config().schema_name}:"
-                        + f" only runs on hour {schedule_info['hour_of_day']}",
-                    }
-                )
-            )
-            continue
-        if repeats == "weekly" and schedule_info["day_of_week"] != day_of_week:
-            event_handler.handle(
-                DebugEvent(
-                    {
-                        "message": f"Skipping schema {schema.get_config().schema_name}:"
-                        + f" only runs on day {schedule_info['day_of_week']}",
-                    }
-                )
-            )
-            continue
-
-        # Handle sharding
-        shard_info = schedule_info.get("sharding")
-        if shard_info is not None:
-            num_shards = shard_info["num_shards"]
-            if repeats == "daily":
-                valid_shard = elapsed_days % num_shards
-            else:
-                valid_shard = elapsed_weeks % num_shards
-            event_handler.handle(
-                DebugEvent(
-                    {
-                        "message": f"Sharding: valid = {valid_shard}, num = {num_shards}",
-                    }
-                )
-            )
-            filter_bundle = shard_info["shard_filter"]
-            filter_bundle["num_shards"] = num_shards
-            filter_bundle["valid_shard"] = valid_shard
-            shard_filter = filter_factory.get_instance(filter_bundle)
-            assert isinstance(shard_filter, ShardFilter)
-            schema.add_filter(shard_filter)
-
-        event_handler.handle(ScheduleRunEvent({"schema_name": schema.get_config().schema_name}))
-        runner.run(schema)
+    schedule = Schedule.from_data(schedule_data, start_time)
+    event_handler.get().handle(DebugEvent({"message": f"Running schedule: {schedule}"}))
+    schedule.run(start_time)
