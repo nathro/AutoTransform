@@ -9,14 +9,5 @@ Components
 .. toctree::
    :maxdepth: 4
 
-   autotransform.validator.script
-
-Core
-----
-
-.. toctree::
-   :maxdepth: 4
-
    autotransform.validator.base
-   autotransform.validator.type
-   autotransform.validator.factory
+   autotransform.validator.script

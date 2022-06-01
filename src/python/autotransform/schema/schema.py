@@ -34,8 +34,8 @@ from autotransform.repo.base import Repo
 from autotransform.schema.config import SchemaConfig
 from autotransform.transformer.base import FACTORY as transformer_factory
 from autotransform.transformer.base import Transformer
+from autotransform.validator.base import FACTORY as validator_factory
 from autotransform.validator.base import ValidationError, Validator
-from autotransform.validator.factory import ValidatorFactory
 
 
 class AutoTransformSchema:
@@ -283,20 +283,11 @@ class AutoTransformSchema:
         # Validate the changes
         for validator in self._validators:
             validation_result = validator.validate(batch, result)
-            event_handler.handle(
-                DebugEvent(
-                    {
-                        "message": f"[{validation_result['validator']}] Validation Result: "
-                        + validation_result["level"].name
-                    }
-                )
-            )
+            event_handler.handle(DebugEvent({"message": f"Validation Result: {validation_result}"}))
 
-            if validation_result["level"].value > self._config.allowed_validation_level.value:
-                event_handler.handle(
-                    DebugEvent({"message": f"[{validation_result['validator']}] Validation Failed"})
-                )
-                raise ValidationError(validation_result)
+            if validation_result.level.value > self._config.allowed_validation_level.value:
+                event_handler.handle(DebugEvent({"message": "Validation Failed"}))
+                raise ValidationError(issue=validation_result, message=validation_result.message)
 
         # Run post-validation commands
         post_validation_commands = [
@@ -406,7 +397,9 @@ class AutoTransformSchema:
         config = SchemaConfig.from_data(bundle["config"])
 
         filters = [filter_factory.get_instance(f) for f in bundle["filters"]]
-        validators = [ValidatorFactory.get(validator) for validator in bundle["validators"]]
+        validators = [
+            validator_factory.get_instance(validator) for validator in bundle["validators"]
+        ]
         commands = [command_factory.get_instance(command) for command in bundle["commands"]]
 
         repo = repo_factory.get_instance(bundle["repo"]) if "repo" in bundle else None

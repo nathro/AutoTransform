@@ -29,27 +29,23 @@
     },
     "validators": [
         {
-            "params": {
-                "script": "mypy",
-                "args": [
-                    "autotransform",
-                    "tests"
-                ],
-                "failure_level": 2
-            },
-            "type": "script"
+            "name": "script",
+            "script": "mypy",
+            "args": [
+                "autotransform",
+                "tests"
+            ],
+            "failure_level": 2
         },
         {
-            "params": {
-                "script": "pytest",
-                "args": [
-                    "-W",
-                    "ignore::DeprecationWarning",
-                    "tests/"
-                ],
-                "failure_level": 2
-            },
-            "type": "script"
+            "name": "script",
+            "script": "pytest",
+            "args": [
+                "-W",
+                "ignore::DeprecationWarning",
+                "tests/"
+            ],
+            "failure_level": 2
         }
     ],
     "commands": [],

@@ -13,8 +13,9 @@ from __future__ import annotations
 
 import json
 import subprocess
+from dataclasses import dataclass
 from tempfile import NamedTemporaryFile as TmpFile
-from typing import Any, List, Mapping, Optional, Sequence, TypedDict
+from typing import Any, ClassVar, List, Mapping, Optional, Sequence, TypedDict
 
 from typing_extensions import NotRequired
 
@@ -24,8 +25,12 @@ from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
-from autotransform.validator.base import ValidationResult, ValidationResultLevel, Validator
-from autotransform.validator.type import ValidatorType
+from autotransform.validator.base import (
+    ValidationResult,
+    ValidationResultLevel,
+    Validator,
+    ValidatorName,
+)
 
 
 class ScriptValidatorParams(TypedDict):
@@ -38,7 +43,8 @@ class ScriptValidatorParams(TypedDict):
     run_on_changes: NotRequired[bool]
 
 
-class ScriptValidator(Validator[ScriptValidatorParams]):
+@dataclass(frozen=True, kw_only=True)
+class ScriptValidator(Validator):
     """Runs a script with the supplied arguments to perform validation. If the per_item flag is
     set to True, the script will be invoked on each Item. If run_on_changes is set to True, the
     script will replace the Batch Items with FileItems for each changed file. The failure_level
@@ -55,27 +61,30 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
      with a path to a file containing the value.
 
     Attributes:
-        _params (ScriptValidatorParams): Contains the args and set-up for the script.
+        script (str): The script to run.
+        args (List[str]): The arguments to supply to the script.
+        failure_level (ValidationResultLevel, optional): The result level to use if validation
+            fails. Defaults to ValidationResultLevel.ERROR.
+        per_item (bool, optional): Whether to run the script on each item. Defaults to False.
+        run_on_changes (bool, optional): Whether to replace the Items in the batch with
+            FileItems for the changed files. Defaults to False.
+        name (ClassVar[ValidatorName]): The name of the Component.
     """
 
-    _params: ScriptValidatorParams
+    script: str
+    args: List[str]
+    failure_level: ValidationResultLevel = ValidationResultLevel.ERROR
+    per_item: bool = False
+    run_on_changes: bool = False
 
-    @staticmethod
-    def get_type() -> ValidatorType:
-        """Used to map Validator components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            ValidatorType: The unique type associated with this Validator.
-        """
-
-        return ValidatorType.SCRIPT
+    name: ClassVar[ValidatorName] = ValidatorName.SCRIPT
 
     def validate(
         self, batch: Batch, _transform_data: Optional[Mapping[str, Any]]
     ) -> ValidationResult:
         """Runs the script validation against the Batch, either on each item individually or
         on the entire Batch, based on the per_item flag. If the script returns a non-zero exit
-        code, the failure_level in params will be in the result.
+        code, the failure_level will be in the result.
 
         Args:
             batch (Batch): The transformed Batch to validate.
@@ -85,9 +94,9 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
             ValidationResult: The result of the validation check indicating the severity of any
                 validation failures as well as an associated message
         """
-        if not self._params.get("per_item", False):
+        if not self.per_item:
             return self._validate_batch(batch)
-        if self._params.get("run_on_changes", False):
+        if self.run_on_changes:
             current_schema = autotransform.schema.current
             assert current_schema is not None
             repo = current_schema.get_repo()
@@ -98,13 +107,9 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
 
         for item in items:
             result = self._validate_single(item, batch.get("metadata", None))
-            if result["level"] != ValidationResultLevel.NONE:
+            if result.level != ValidationResultLevel.NONE:
                 return result
-        return {
-            "level": ValidationResultLevel.NONE,
-            "message": "",
-            "validator": self.get_type(),
-        }
+        return ValidationResult(level=ValidationResultLevel.NONE, validator=self)
 
     def _validate_single(
         self, item: Item, batch_metadata: Optional[Mapping[str, Any]]
@@ -127,7 +132,7 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
 
         event_handler = EventHandler.get()
 
-        cmd = [self._params["script"]]
+        cmd = [self.script]
 
         extra_data = item.extra_data
         if extra_data is None:
@@ -156,7 +161,7 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
             arg_replacements["<<METADATA_FILE>>"] = meta.name
 
             # Create command
-            for arg in self._params["args"]:
+            for arg in self.args:
                 if arg in arg_replacements:
                     cmd.append(arg_replacements[arg])
                 else:
@@ -165,9 +170,7 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
             # Run script
             event_handler.handle(DebugEvent({"message": f"Running command: {cmd}"}))
             proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", check=False)
-        level = (
-            self._params["failure_level"] if proc.returncode != 0 else ValidationResultLevel.NONE
-        )
+        level = self.failure_level if proc.returncode != 0 else ValidationResultLevel.NONE
         if proc.stdout.strip() != "":
             event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
         else:
@@ -176,11 +179,11 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
             event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
         else:
             event_handler.handle(DebugEvent({"message": "No STDERR"}))
-        return {
-            "level": level,
-            "message": (f"[{cmd}]\nSTDOUT:\n{proc.stdout.strip()}\nSTDERR:\n{proc.stderr.strip()}"),
-            "validator": self.get_type(),
-        }
+        return ValidationResult(
+            level=level,
+            message=f"[{cmd}]\nSTDOUT:\n{proc.stdout.strip()}\nSTDERR:\n{proc.stderr.strip()}",
+            validator=self,
+        )
 
     def _validate_batch(self, batch: Batch) -> ValidationResult:
         """Executes a simple script to validate the given Batch. Sentinel values can be used
@@ -199,8 +202,8 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
 
         event_handler = EventHandler.get()
 
-        cmd = [self._params["script"]]
-        if self._params.get("run_on_changes", False):
+        cmd = [self.script]
+        if self.run_on_changes:
             current_schema = autotransform.schema.current
             assert current_schema is not None
             repo = current_schema.get_repo()
@@ -235,7 +238,7 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
             arg_replacements["<<METADATA_FILE>>"] = meta.name
 
             # Create command
-            for arg in self._params["args"]:
+            for arg in self.args:
                 if arg in arg_replacements:
                     cmd.append(arg_replacements[arg])
                 else:
@@ -244,9 +247,7 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
             # Run script
             event_handler.handle(DebugEvent({"message": f"Running command: {cmd}"}))
             proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", check=False)
-        level = (
-            self._params["failure_level"] if proc.returncode != 0 else ValidationResultLevel.NONE
-        )
+        level = self.failure_level if proc.returncode != 0 else ValidationResultLevel.NONE
         if proc.stdout.strip() != "":
             event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
         else:
@@ -255,50 +256,8 @@ class ScriptValidator(Validator[ScriptValidatorParams]):
             event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
         else:
             event_handler.handle(DebugEvent({"message": "No STDERR"}))
-        return {
-            "level": level,
-            "message": f"[{cmd}]\nSTDOUT:\n{proc.stdout.strip()}\nSTDERR:\n{proc.stderr.strip()}",
-            "validator": self.get_type(),
-        }
-
-    @staticmethod
-    def from_data(data: Mapping[str, Any]) -> ScriptValidator:
-        """Produces an instance of the component from decoded params. Implementations should
-        assert that the data provided matches expected types and is valid.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-
-        Returns:
-            ScriptValidator: An instance of the ScriptValidator.
-        """
-
-        script = data["script"]
-        assert isinstance(script, str)
-        args = data["args"]
-        assert isinstance(args, List)
-        for arg in args:
-            assert isinstance(arg, str)
-        failure_level = data["failure_level"]
-        failure_level = (
-            ValidationResultLevel.from_value(failure_level)
-            if ValidationResultLevel.has_value(failure_level)
-            else ValidationResultLevel.from_name(failure_level)
+        return ValidationResult(
+            level=level,
+            message=f"[{cmd}]\nSTDOUT:\n{proc.stdout.strip()}\nSTDERR:\n{proc.stderr.strip()}",
+            validator=self,
         )
-        params: ScriptValidatorParams = {
-            "script": script,
-            "args": args,
-            "failure_level": failure_level,  # type: ignore
-        }
-
-        per_item = data.get("per_item", None)
-        if per_item is not None:
-            assert isinstance(per_item, bool)
-            params["per_item"] = per_item
-
-        run_on_changes = data.get("run_on_changes", None)
-        if run_on_changes is not None:
-            assert isinstance(run_on_changes, bool)
-            params["run_on_changes"] = run_on_changes
-
-        return ScriptValidator(params)

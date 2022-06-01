@@ -11,14 +11,13 @@
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Generic, Mapping, Optional, TypedDict, TypeVar
+from typing import Any, Mapping, Optional
 
 from autotransform.batcher.base import Batch
-from autotransform.validator.type import ValidatorType
-
-TParams = TypeVar("TParams", bound=Mapping[str, Any])
+from autotransform.util.component import Component, ComponentFactory, ComponentImport
 
 
 class ValidationResultLevel(int, Enum):
@@ -28,103 +27,42 @@ class ValidationResultLevel(int, Enum):
     WARNING = 1
     ERROR = 2
 
-    @staticmethod
-    def has_value(value: Any) -> bool:
-        """Checks is the provided value is a valid value for this enum.
 
-        Args:
-            value (Any): An unknown value.
+@dataclass
+class ValidationResult:
+    """Represents the result of an attempt at validation.
 
-        Returns:
-            [bool]: Whether the value is present in the enum.
-        """
-
-        # pylint: disable=no-member
-
-        return value in ValidationResultLevel._value2member_map_
-
-    @staticmethod
-    def from_name(name: str) -> Enum:
-        """Gets the enum value associated with a name.
-
-        Args:
-            name (str): The name of a member of the enum.
-
-        Returns:
-            ValidationResultLevel: The associated enum value.
-        """
-
-        # pylint: disable=no-member
-
-        return ValidationResultLevel._member_map_[name]
-
-    @staticmethod
-    def from_value(value: int) -> Enum:
-        """Gets the enum value associated with an int value.
-
-        Args:
-            value (str): The value of a member of the enum.
-
-        Returns:
-            ValidationResultLevel: The associated enum value.
-        """
-
-        # pylint: disable=no-member
-
-        return ValidationResultLevel._value2member_map_[value]
-
-
-class ValidationResult(TypedDict):
-    """Represents the result of an attempt at validation."""
+    Attributes:
+        level (ValidationResultLevel): The level of the validation issue raised.
+        message (Optional[str], optional): The message associated with the validation
+            result. Defaults to None.
+    """
 
     level: ValidationResultLevel
-    message: Optional[str]
-    validator: ValidatorType
+    validator: Validator
+    message: Optional[str] = None
 
 
+@dataclass
 class ValidationError(Exception):
     """An error raised by validation failing on a run.
 
     Attributes:
-        _issue (ValidationResult): The validation result that triggered the error.
-        _message (str): A message representing why the validation failed.
+        issue (ValidationResult): The validation result that triggered the error.
+        message (str): A message representing why the validation failed.
     """
 
-    _issue: ValidationResult
-    _message: Optional[str]
-
-    def __init__(self, issue: ValidationResult):
-        """A simple constructor.
-
-        Args:
-            issue (ValidationResult): The issue responsible for the validation error.
-        """
-
-        super().__init__(issue["message"])
-        self._message = issue["message"]
-        self._issue = issue
-
-    def __str__(self) -> str:
-        """Override the default str casting of the error to include useful information.
-
-        Returns:
-            str: A string representation of the error.
-        """
-
-        level = ValidationResultLevel(self._issue["level"]).name
-        validator = self._issue["validator"]
-
-        return f"[{level}][{validator}]: {self._message}"
+    issue: ValidationResult
+    message: Optional[str]
 
 
-class ValidatorBundle(TypedDict):
-    """A bundled version of the Validator object used for JSON encoding."""
+class ValidatorName(str, Enum):
+    """A simple enum for mapping."""
 
-    params: Mapping[str, Any]
-    type: ValidatorType
+    SCRIPT = "script"
 
 
-class Validator(Generic[TParams], ABC):
+class Validator(Component):
     """The base for Validator components. Validators test that the codebase is still
     healthy after a transformation.
 
@@ -132,35 +70,6 @@ class Validator(Generic[TParams], ABC):
         _params (TParams): The paramaters that control operation of the Validator.
             Should be defined using a TypedDict in subclasses.
     """
-
-    _params: TParams
-
-    def __init__(self, params: TParams):
-        """A simple constructor.
-
-        Args:
-            params (TParams): The paramaters used to set up the Validator.
-        """
-
-        self._params = params
-
-    def get_params(self) -> TParams:
-        """Gets the paramaters used to set up the Validator.
-
-        Returns:
-            TParams: The paramaters used to set up the Validator.
-        """
-
-        return self._params
-
-    @staticmethod
-    @abstractmethod
-    def get_type() -> ValidatorType:
-        """Used to map Validator components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            ValidatorType: The unique type associated with this Validator.
-        """
 
     @abstractmethod
     def validate(
@@ -178,29 +87,13 @@ class Validator(Generic[TParams], ABC):
                 validation failures as well as an associated message
         """
 
-    def bundle(self) -> ValidatorBundle:
-        """Generates a JSON encodable bundle.
-        If a component's params are not JSON encodable this method should be overridden to provide
-        an encodable version.
 
-        Returns:
-            ValidatorBundle: The encodable bundle.
-        """
-
-        return {
-            "params": self._params,
-            "type": self.get_type(),
-        }
-
-    @staticmethod
-    @abstractmethod
-    def from_data(data: Mapping[str, Any]) -> Validator:
-        """Produces an instance of the component from decoded params. Implementations should
-        assert that the data provided matches expected types and is valid.
-
-        Args:
-            data (Mapping[str, Any]): The JSON decoded params from an encoded bundle.
-
-        Returns:
-            Validator: An instance of the Validator.
-        """
+FACTORY = ComponentFactory(
+    {
+        ValidatorName.SCRIPT: ComponentImport(
+            class_name="ScriptValidator", module="autotransform.validator.script"
+        ),
+    },
+    Validator,  # type: ignore [misc]
+    "validator.json",
+)
