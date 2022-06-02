@@ -13,13 +13,12 @@ import json
 import os
 from argparse import ArgumentParser, Namespace
 
+import autotransform.config
 from autotransform.change.base import FACTORY as change_factory
-from autotransform.config import fetcher as Config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.run import ScriptRunEvent
-from autotransform.runner.base import FACTORY as runner_factory
 from autotransform.runner.base import Runner
 from autotransform.runner.local import LocalRunner
 
@@ -129,20 +128,20 @@ def run_command_main(args: Namespace) -> None:
         event_handler.handle(DebugEvent({"message": f"JSON Change: {json.dumps(change.bundle())}"}))
 
     if args.run_local:
-        event_handler.handle(DebugEvent({"message": "Updating locally"}))
+        event_handler.handle(DebugEvent({"message": "Running locally"}))
         event_args["remote"] = False
-        runner_str = Config.get_runner_local()
-        if runner_str is None:
+        config_runner = autotransform.config.CONFIG.local_runner
+        if config_runner is None:
             event_handler.handle(DebugEvent({"message": "No runner defined, using default"}))
             runner: Runner = LocalRunner()
         else:
-            runner = runner_factory.get_instance(json.loads(runner_str))
+            runner = config_runner
     else:
-        event_handler.handle(DebugEvent({"message": "Updating remote"}))
+        event_handler.handle(DebugEvent({"message": "Running remote"}))
         event_args["remote"] = True
-        runner_str = Config.get_runner_remote()
-        assert runner_str is not None, "Remote not specified in config"
-        runner = runner_factory.get_instance(json.loads(runner_str))
+        config_runner = autotransform.config.CONFIG.remote_runner
+        assert config_runner is not None
+        runner = config_runner
 
     event_args["runner"] = json.dumps(runner.bundle())
     event_handler.handle(ScriptRunEvent({"script": "update", "args": event_args}))

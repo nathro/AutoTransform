@@ -17,17 +17,19 @@ from abc import ABC
 from dataclasses import asdict, dataclass
 from enum import Enum
 from functools import cached_property
-from typing import Any, ClassVar, Dict, Generic, Type, TypeVar
+from typing import Any, ClassVar, Dict, Generic, Optional, Type, TypeVar
 
 from dacite import DaciteError, from_dict
 from dacite.config import Config as DaciteConfig
 
-from autotransform.config import fetcher as Config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.warning import WarningEvent
+from autotransform.util.console import choose_yes_or_no, error, get_str
 
 TComponent = TypeVar("TComponent")
+
+UNSET_VALUE = object()
 
 
 class Component(ABC):
@@ -98,8 +100,6 @@ class ComponentFactory(Generic[T], ABC):
     Attributes:
         _components (Dict[str, ComponentImport]): A mapping from a component name
             to the information needed to import and use that component.
-        _custom_components (Dict[str, ComponentImport]): A mapping from a custom
-            component name to the information needed to import and use that component.
         _custom_components_file (str): The name of the file containing custom component JSON.
         _type (Type[T]): The type this factory will produce.
     """
@@ -163,6 +163,54 @@ class ComponentFactory(Generic[T], ABC):
 
         return ComponentFactory._get_custom_components(self._custom_components_file, strict=True)
 
+    # pylint: disable=too-many-arguments
+    def from_console(
+        self,
+        name: str,
+        previous_value: Optional[T] = UNSET_VALUE,  # type: ignore
+        default_value: Optional[T] = UNSET_VALUE,  # type: ignore
+        simple: bool = False,
+        allow_none: bool = True,
+    ) -> Optional[T]:
+        """Gets a component from console inputs.
+
+        Args:
+            name (str): The name of the component being entered.
+            previous_value (Optional[T], optional): A previously used value for the
+                component. Defaults to UNSET_VALUE.
+            default_value (Optional[T], optional): A default value for the component.
+                Defaults to UNSET_VALUE.
+            simple (bool, optional): Whether to choose simple options. Defaults to False.
+            allow_none (bool, optional): Whether None is a valid value. Defaults to True.
+
+        Returns:
+            Optional[T]: The component or None.
+        """
+
+        if (isinstance(previous_value, self._type) or (previous_value is None and allow_none)) and (
+            simple or choose_yes_or_no(f"Use previous {name}: {previous_value}?")
+        ):
+            return previous_value
+
+        if (isinstance(default_value, self._type) or (default_value is None and allow_none)) and (
+            simple or choose_yes_or_no(f"Use default {name}: {default_value}?")
+        ):
+            return default_value
+
+        none_prompt = "(blank for none)" if allow_none else ""
+        while True:
+            component_json = get_str(f"Enter JSON encoded {name}{none_prompt}: ")
+            if allow_none and (component_json in ["", "None"] or component_json is None):
+                return None
+            try:
+                return self.get_instance(json.loads(component_json))
+            except DaciteError as err:
+                error(f"Could not decode component: {err}")
+            except json.JSONDecodeError as err:
+                error(f"Invalid JSON: {err}")
+            except ValueError as err:
+                error(str(err))
+
     def get_instance(self, data: Dict[str, Any]) -> T:
         """Simple method to get an instance from a bundle.
 
@@ -215,7 +263,12 @@ class ComponentFactory(Generic[T], ABC):
                 start with custom/ for their name.
         """
 
-        component_json_path = f"{Config.get_imports_components()}/{component_file_name}"
+        # Importing here to avoid a cyclic import
+        import autotransform.config  # pylint: disable=import-outside-toplevel
+
+        component_json_path = (
+            f"{autotransform.config.CONFIG.component_directory}/{component_file_name}"
+        )
         custom_components: Dict[str, ComponentImport] = {}
         EventHandler.get().handle(
             DebugEvent({"message": f"Importing custom components from: {component_json_path}"})

@@ -78,9 +78,9 @@ class Manager:
         """
 
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, "w+", encoding="UTF-8") as schedule_file:
-            schedule_file.write(json.dumps(self.bundle(), indent=4))
-            schedule_file.flush()
+        with open(file_path, "w+", encoding="UTF-8") as manager_file:
+            manager_file.write(json.dumps(self.bundle(), indent=4))
+            manager_file.flush()
 
     def bundle(self) -> Dict[str, Any]:
         """Generates a JSON encodable bundle.
@@ -103,7 +103,7 @@ class Manager:
             file_path (str): The path where the JSON for the management info is located.
 
         Returns:
-            Manager: The Schedule from the file.
+            Manager: The Manager from the file.
         """
 
         with open(file_path, "r", encoding="UTF-8") as manager_file:
@@ -115,7 +115,7 @@ class Manager:
 
     @staticmethod
     def from_json(manager_json: str) -> Manager:
-        """Builds a schedule from JSON encoded values.
+        """Builds a Manager from JSON encoded values.
 
         Args:
             manager_json (str): The JSON encoded Manager.
@@ -128,14 +128,13 @@ class Manager:
 
     @staticmethod
     def from_data(data: Dict[str, Any]) -> Manager:
-        """Produces an instance of the Schedule from decoded data.
+        """Produces an instance of the Manager from decoded data.
 
         Args:
             data (Mapping[str, Any]): The JSON decoded data.
-            start_time (int): The time that the schedule is starting to run on.
 
         Returns:
-            Schedule: An instance of the Schedule.
+            Manager: An instance of the Manager.
         """
 
         return Manager(
@@ -175,14 +174,9 @@ class Manager:
             )
             repo = GitRepo(base_branch_name=base_branch_name)
         else:
-            valid = False
-            while not valid:
-                try:
-                    repo_json = get_str("Enter the JSON encoded Repo object: ")
-                    repo = repo_factory.get_instance(json.loads(repo_json))
-                    valid = True
-                except Exception as err:  # pylint: disable=broad-except
-                    error(f"Invalid repo, please input a valid repo: {err}")
+            input_repo = repo_factory.from_console("repo", allow_none=False)
+            assert input_repo is not None
+            repo = input_repo
 
         if simple and prev_runner is not None:
             runner = prev_runner

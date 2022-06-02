@@ -9,27 +9,40 @@
 
 """The config command is used to update the config files for AutoTransform."""
 
-import os
+import json
 from argparse import ArgumentParser, Namespace
-from configparser import ConfigParser
-from typing import List, Optional, Tuple, TypedDict, TypeVar
+from dataclasses import dataclass
+from typing import Any, List, Optional, Tuple
 
+from autotransform.config.config import Config
 from autotransform.config.default import DefaultConfigFetcher
-from autotransform.util.console import choose_option_from_list, get_str, info
+from autotransform.runner.base import FACTORY as runner_factory
+from autotransform.util.console import (
+    choose_option_from_list,
+    choose_yes_or_no,
+    error,
+    get_str,
+    info,
+)
 from autotransform.util.package import get_config_dir
 
-T = TypeVar("T")
 
+@dataclass(frozen=True, kw_only=True)
+class ConfigSetting:
+    """The information required to display and update a configuration setting from a config.json
+    file.
 
-class ConfigSetting(TypedDict):
-    """The information required to display and update a configuration setting from a config.ini
-    file."""
+    Attributes:
+        description (str): Describes the setting being updated.
+        name (str): A simple name for the setting being updated.
+        secret (bool): Whether to hide the input of this value.
+        field (str): The field on the config object this setting represents.
+    """
 
     description: str
     name: str
     secret: bool
-    section: str
-    setting: str
+    field: str
 
 
 def add_args(parser: ArgumentParser) -> None:
@@ -75,49 +88,34 @@ def get_all_config_settings() -> List[ConfigSetting]:
     """
     return [
         ConfigSetting(
-            {
-                "description": "The token used to authenticate with Github.",
-                "name": "Github Token",
-                "secret": True,
-                "section": "CREDENTIALS",
-                "setting": "github_token",
-            }
+            description="The token used to authenticate with Github.",
+            name="Github Token",
+            secret=True,
+            field="github_token",
         ),
         ConfigSetting(
-            {
-                "description": "The base URL for api requests to a Github Entrerprise instance.",
-                "name": "Github URL",
-                "secret": False,
-                "section": "CREDENTIALS",
-                "setting": "github_base_url",
-            }
+            description="The base URL for api requests to a Github Entrerprise instance.",
+            name="Github URL",
+            secret=False,
+            field="github_base_url",
         ),
         ConfigSetting(
-            {
-                "description": "The directory where custom components are stored.",
-                "name": "Custom Components",
-                "secret": False,
-                "section": "IMPORTS",
-                "setting": "components",
-            }
+            description="The directory where custom components are stored.",
+            name="Custom Component Directory",
+            secret=False,
+            field="component_directory",
         ),
         ConfigSetting(
-            {
-                "description": "A JSON encoded Runner object used when performing a local run.",
-                "name": "Local Runner",
-                "secret": False,
-                "section": "RUNNER",
-                "setting": "local",
-            }
+            description="A JSON encoded Runner object used when performing a local run.",
+            name="Local Runner",
+            secret=False,
+            field="local_runner",
         ),
         ConfigSetting(
-            {
-                "description": "A JSON encoded Runner object used when performing a remote run.",
-                "name": "Remote Runner",
-                "secret": False,
-                "section": "RUNNER",
-                "setting": "remote",
-            }
+            description="A JSON encoded Runner object used when performing a remote run.",
+            name="Remote Runner",
+            secret=False,
+            field="remote_runner",
         ),
     ]
 
@@ -129,22 +127,22 @@ def config_command_main(_args: Namespace) -> None:
     Args:
         _args (Namespace): The arguments supplied to the config command.
     """
+
     config_options: List[Tuple[Optional[str], str]] = get_config_options()
     config_setting_options: List[Tuple[Optional[ConfigSetting], str]] = [
-        (setting, f"{setting['name']}: {setting['description']}")
-        for setting in get_all_config_settings()
+        (setting, f"{setting.name}: {setting.description}") for setting in get_all_config_settings()
     ]
     config_setting_options.append((None, "Done."))
-    config_setting_action_options = [(False, "Get existing value"), (True, "Update value")]
 
+    # pylint: disable=too-many-nested-blocks
     while True:
         path = choose_option_from_list("Select config to update or view", config_options)
         if path is None:
             break
-        path = f"{path}/{DefaultConfigFetcher.CONFIG_NAME}"
-        parser = ConfigParser()
+        path = f"{path}/{DefaultConfigFetcher.FILE_NAME}"
+
         info(f"Reading config at path: {path}\n\n")
-        parser.read(path)
+        config = Config.read(path)
 
         has_updates = False
         while True:
@@ -154,33 +152,37 @@ def config_command_main(_args: Namespace) -> None:
             print("\n")
             if config_setting is None:
                 break
-            is_update = choose_option_from_list(
-                f"What action would you like to take on setting {config_setting['name']}",
-                config_setting_action_options,
+            is_update = choose_yes_or_no(
+                f"Would you like to update the value of {config_setting.name}",
             )
 
             if is_update:
                 has_updates = True
-                new_value = get_str(
-                    f"Input new {config_setting['name']}: ", secret=config_setting["secret"]
-                )
-                if config_setting["section"] not in parser:
-                    parser[config_setting["section"]] = {}
-                parser[config_setting["section"]][config_setting["setting"]] = new_value
+                valid = False
+                while not valid:
+                    new_value: Any = get_str(
+                        f"Input new {config_setting.name}: ", secret=config_setting.secret
+                    )
+                    if config_setting.field in ["local_runner", "remote_runner"]:
+                        try:
+                            new_value = runner_factory.get_instance(json.loads(new_value))
+                            valid = True
+                        except Exception as err:  # pylint: disable=broad-except
+                            error(f"Invalid runner object: {err}")
+                    else:
+                        valid = True
+                if new_value == "":
+                    new_value = None
+                setattr(config, config_setting.field, new_value)
                 print("\n")
                 continue
 
-            if config_setting["section"] not in parser:
-                info(f"No value for setting {config_setting['name']}\n\n")
+            config_value = getattr(config, config_setting.field)
+            if config_value is None:
+                info(f"No value for setting {config_setting.name}\n\n")
                 continue
 
-            section = parser[config_setting["section"]]
-            if config_setting["setting"] not in section:
-                info(f"No existing value for setting {config_setting['name']}\n\n")
-                continue
-            info(f"{config_setting['name']}: {section[config_setting['setting']]}\n\n")
+            info(f"{config_setting.name}: {config_value}\n\n")
 
         if has_updates:
-            os.makedirs(os.path.dirname(path), exist_ok=True)
-            with open(path, "w+", encoding="UTF-8") as config_file:
-                parser.write(config_file)
+            config.write(path)

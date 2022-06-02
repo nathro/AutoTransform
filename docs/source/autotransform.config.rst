@@ -7,20 +7,13 @@ Config Package (autotransform.config)
    :show-inheritance:
 
 
-Fetchers
---------
+Components
+----------
 
 .. toctree::
    :maxdepth: 4
 
+   autotransform.config.config
+   autotransform.config.fetcher
    autotransform.config.default
-   autotransform.config.envvar
-   autotransform.config.fetcher
-
-Core
-----
-
-.. toctree::
-   :maxdepth: 4
-
-   autotransform.config.fetcher
+   autotransform.config.environment

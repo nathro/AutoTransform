@@ -14,12 +14,11 @@ import json
 import os
 from argparse import ArgumentParser, Namespace
 
-from autotransform.config import fetcher as Config
+import autotransform.config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.run import ScriptRunEvent
-from autotransform.runner.base import FACTORY as runner_factory
 from autotransform.runner.base import Runner
 from autotransform.runner.local import LocalRunner
 from autotransform.schema.builder import FACTORY as schema_builder_factory
@@ -148,19 +147,19 @@ def run_command_main(args: Namespace) -> None:
     if args.run_local:
         event_handler.handle(DebugEvent({"message": "Running locally"}))
         event_args["remote"] = False
-        runner_str = Config.get_runner_local()
-        if runner_str is None:
+        config_runner = autotransform.config.CONFIG.local_runner
+        if config_runner is None:
             event_handler.handle(DebugEvent({"message": "No runner defined, using default"}))
             runner: Runner = LocalRunner()
         else:
-            runner = runner_factory.get_instance(json.loads(runner_str))
+            runner = config_runner
     else:
         event_handler.handle(DebugEvent({"message": "Running remote"}))
         event_args["remote"] = True
-        runner_str = Config.get_runner_remote()
-        assert runner_str is not None, "Remote not specified in config"
-        runner = runner_factory.get_instance(json.loads(runner_str))
+        config_runner = autotransform.config.CONFIG.remote_runner
+        assert config_runner is not None
+        runner = config_runner
 
-    event_args["runner"] = json.dumps(runner.bundle())
+    event_args["runner"] = runner
     event_handler.handle(ScriptRunEvent({"script": "run", "args": event_args}))
     runner.run(schema)

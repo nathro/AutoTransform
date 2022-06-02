@@ -10,50 +10,41 @@
 """A base class for configuration fetching. Defines the API for fetching configuration
 so that different components can be used that store configuration in different ways."""
 
-from abc import ABC, abstractmethod
-from typing import Optional
+from abc import abstractmethod
+from enum import Enum
+
+from autotransform.config.config import Config
+from autotransform.util.component import Component, ComponentFactory, ComponentImport
 
 
-class ConfigFetcher(ABC):
+class ConfigFetcherName(str, Enum):
+    """A simple enum for mapping."""
+
+    DEFAULT = "default"
+    ENVIRONMENT = "environment"
+
+
+class ConfigFetcher(Component):
     """An object representing the API needed for config fetching."""
 
     @abstractmethod
-    def get_credentials_github_token(self) -> Optional[str]:
-        """Fetch the github token from configuration.
+    def get_config(self) -> Config:
+        """Fetch the Config.
 
         Returns:
-            Optional[str]: The github token.
+            Config: The Config for AutoTransform.
         """
 
-    @abstractmethod
-    def get_credentials_github_base_url(self) -> Optional[str]:
-        """Fetch the github base URL from configuration.
 
-        Returns:
-            Optional[str]: The github base URL.
-        """
-
-    @abstractmethod
-    def get_imports_components(self) -> Optional[str]:
-        """Gets the directory where custom import components are located.
-
-        Returns:
-            Optional[str]: The directory containing custom component
-                import files.
-        """
-
-    @abstractmethod
-    def get_runner_local(self) -> Optional[str]:
-        """Gets the JSON encoded Runner component to use for local runs.
-
-        Returns:
-            str: The JSON encoded Runner component to use for local runs.
-        """
-
-    @abstractmethod
-    def get_runner_remote(self) -> Optional[str]:
-        """Gets the JSON encoded Runner component to use for remote runs.
-
-        Returns:
-            str: The JSON encoded Runner component to use for remote runs.
-        """
+FACTORY = ComponentFactory(
+    {
+        ConfigFetcherName.DEFAULT: ComponentImport(
+            class_name="DefaultConfigFetcher", module="autotransform.config.default"
+        ),
+        ConfigFetcherName.ENVIRONMENT: ComponentImport(
+            class_name="EnvironmentConfigFetcher", module="autotransform.config.environment"
+        ),
+    },
+    ConfigFetcher,  # type: ignore [misc]
+    "config_fetcher.json",
+)

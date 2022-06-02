@@ -20,7 +20,6 @@ import pytz
 from fastcore.basics import AttrDict  # type: ignore
 from ghapi.all import GhApi, gh2date  # type: ignore
 
-from autotransform.config import fetcher as Config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 
@@ -51,9 +50,12 @@ class GithubUtils:
             fully_qualified_repo (str): The fully qualified name of the repo, uses the
                 format {owner}/{repo}.
         """
+
+        import autotransform.config  # pylint: disable=import-outside-toplevel
+
         assert fully_qualified_repo not in GithubUtils.__instances
-        token = Config.get_credentials_github_token()
-        url = Config.get_credentials_github_base_url()
+        token = autotransform.config.CONFIG.github_token
+        url = autotransform.config.CONFIG.github_base_url
         repo_parts = fully_qualified_repo.split("/")
         self._api = GhApi(token=token, gh_host=url, owner=repo_parts[0], repo=repo_parts[1])
 
