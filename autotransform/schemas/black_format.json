@@ -32,7 +32,7 @@
             "name": "script",
             "script": "mypy",
             "args": [
-                "autotransform",
+                "src/pyton",
                 "tests"
             ],
             "failure_level": "error"
