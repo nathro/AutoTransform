@@ -126,7 +126,12 @@ class GithubRepo(GitRepo):
         current_schema = autotransform.schema.current
         if current_schema is not None:
             automation_info_lines.extend(
-                GithubRepo._get_encoded_json_lines("Schema", current_schema.bundle())
+                GithubRepo._get_encoded_json_lines(
+                    "Schema",
+                    current_schema.bundle(),
+                    GithubUtils.BEGIN_SCHEMA,
+                    GithubUtils.END_SCHEMA,
+                )
             )
 
         # Add batch JSON
@@ -136,17 +141,25 @@ class GithubRepo(GitRepo):
         }
         if "metadata" in batch:
             encodable_batch["metadata"] = batch["metadata"]
-        automation_info_lines.extend(GithubRepo._get_encoded_json_lines("batch", encodable_batch))
+        automation_info_lines.extend(
+            GithubRepo._get_encoded_json_lines(
+                "batch", encodable_batch, GithubUtils.BEGIN_BATCH, GithubUtils.END_BATCH
+            )
+        )
 
         return "\n".join(automation_info_lines)
 
     @staticmethod
-    def _get_encoded_json_lines(title: str, encodable_object: Any) -> List[str]:
+    def _get_encoded_json_lines(
+        title: str, encodable_object: Any, begin_section: str, end_section: str
+    ) -> List[str]:
         """Gets the details section for an encoded json object as a list of lines.
 
         Args:
             title (str): The title of the section.
             encodable_object (Any): The object to json encode.
+            begin_section (str): The beginning of the encoded section.
+            end_section (str): The end of the encoded section.
 
         Returns:
             List[str]: _description_
@@ -155,9 +168,9 @@ class GithubRepo(GitRepo):
             f"<details><summary>{title} JSON</summary>",
             "",
             "```",
-            GithubUtils.BEGIN_BATCH,
+            begin_section,
             json.dumps(encodable_object, indent=4),
-            GithubUtils.END_BATCH,
+            end_section,
             "```",
             "",
             "</details>",

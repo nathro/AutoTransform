@@ -110,7 +110,7 @@ class GithubUtils:
             PullRequest: The pull request.
         """
 
-        return PullRequest(self, self._api.pulls.get(pull_number))
+        return PullRequest(self._api, self._api.pulls.get(pull_number))
 
     def get_open_pull_requests(self, base: Optional[str] = None) -> List[PullRequest]:
         """Gets all outstanding pull requests from the repo.
@@ -189,10 +189,9 @@ class PullRequest:
     _state: str
 
     def __init__(self, api: GhApi, pull: AttrDict):
-
         self.body = pull.body
         self.branch = pull.head.ref
-        self.merged = pull.merged
+        self.merged = pull.merged if "merged" in pull else False
         self.number = pull.number
         self.owner_id = pull.user.id
         self._created_at = pull.created_at
