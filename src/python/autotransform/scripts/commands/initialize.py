@@ -114,11 +114,7 @@ def initialize_workflows(repo_dir: str, examples_dir: str, prev_config: Optional
     bot_name = get_str("Enter the name of the account used for automation: ")
     bot_email = get_str("Enter the email of the account used for automation: ")
     component_directory = prev_config.component_directory if prev_config is not None else None
-    repo_config_dir = DefaultConfigFetcher.get_repo_config_dir()
-    if repo_config_dir is not None:
-        relative_config_dir = repo_config_dir.removeprefix(repo_dir)
-    else:
-        relative_config_dir = "autotransform"
+    relative_config_dir = DefaultConfigFetcher.get_repo_config_relative_path()
 
     workflows = [
         "autotransform.manage.yml",
