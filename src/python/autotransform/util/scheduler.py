@@ -476,31 +476,16 @@ class Scheduler:
 
         # Gets the Runner
         input_runner = runner_factory.from_console(
-            "Schedule runner",
+            "scheduler runner",
             previous_value=runner,
             default_value=GithubRunner(
                 run_workflow="autotransform.run.yml",
                 update_workflow="autotransform.update.yml",
             ),
+            simple=simple,
+            allow_none=False,
         )
-        if runner is None:
-            while input_runner is None:
-                try:
-                    runner_json = input_string(
-                        "Enter a JSON encoded runner:",
-                        "runner",
-                        default=json.dumps(
-                            GithubRunner(
-                                run_workflow="autotransform.run.yml",
-                                update_workflow="autotransform.update.yml",
-                            ).bundle()
-                        ),
-                    )
-                    input_runner = runner_factory.get_instance(json.loads(runner_json))
-                except Exception:  # pylint: disable=broad-except
-                    error("Invalid runner provided, please input a valid runner.")
-        else:
-            input_runner = runner
+        assert input_runner is not None
 
         # Gets Schemas
         if use_sample_schema:

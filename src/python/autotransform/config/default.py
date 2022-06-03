@@ -68,7 +68,7 @@ class DefaultConfigFetcher(ConfigFetcher):
         try:
             dir_cmd = ["git", "rev-parse", "--show-toplevel"]
             repo_dir = subprocess.check_output(dir_cmd, encoding="UTF-8").replace("\\", "/").strip()
-            return f"{repo_dir}/{DefaultConfigFetcher.get_repo_config_relative_path}"
+            return f"{repo_dir}/{DefaultConfigFetcher.get_repo_config_relative_path()}"
         except Exception:  # pylint: disable=broad-except
             return None
 
