@@ -38,4 +38,4 @@ jobs:
       env:
         PYTHONPATH: /home/runner/work/AutoTransform/AutoTransform/src/python
         AUTO_TRANSFORM_CONFIG: environment
-        AUTO_TRANSFORM_CREDENTIALS_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}
+        AUTO_TRANSFORM_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}
