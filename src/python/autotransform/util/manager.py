@@ -33,7 +33,7 @@ from autotransform.step.condition.comparison import ComparisonType
 from autotransform.step.condition.state import ChangeStateCondition
 from autotransform.step.condition.updated import UpdatedAgoCondition
 from autotransform.step.conditional import ConditionalStep
-from autotransform.util.console import choose_yes_or_no, error, get_str, input_int, input_string
+from autotransform.util.console import choose_yes_or_no, get_str, input_int
 
 
 @dataclass(kw_only=True)
@@ -178,23 +178,12 @@ class Manager:
             assert input_repo is not None
             repo = input_repo
 
-        if simple and prev_runner is not None:
-            runner = prev_runner
-        else:
-            valid = False
-            while not valid:
-                try:
-                    runner_json = input_string(
-                        "Enter a JSON encoded runner for remote runs: ",
-                        "remote runner",
-                        previous=json.dumps(prev_runner.bundle())
-                        if prev_runner is not None
-                        else None,
-                    )
-                    runner = runner_factory.get_instance(json.loads(runner_json))
-                    valid = True
-                except Exception as err:  # pylint: disable=broad-except
-                    error(f"Invalid runner, please input a valid runner: {err}")
+        # Get the runner
+        args: Dict[str, Any] = {"simple": simple, "allow_none": False}
+        if prev_runner is not None:
+            args["previous_value"] = prev_runner
+        runner = runner_factory.from_console("manager runner", **args)
+        assert runner is not None
 
         # Merge approved changes
         steps: List[Step] = []
