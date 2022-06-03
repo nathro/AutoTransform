@@ -25,7 +25,7 @@ jobs:
     - name: Install requirements
       run: pip install -r <CONFIG DIR>/requirements.txt
     - name: Manage AutoTransform
-      run: autotransform manage --verbose <CONFIG DIR>/manage.json
+      run: autotransform manage --verbose <CONFIG DIR>/manager.json
       env:
         AUTO_TRANSFORM_CONFIG: environment
         AUTO_TRANSFORM_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}
