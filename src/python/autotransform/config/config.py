@@ -66,18 +66,16 @@ class Config:
             Dict[str, Any]: The encodable bundle.
         """
 
-        bundle: Dict[str, Any] = {}
-        if self.github_token is not None:
-            bundle["github_token"] = self.github_token
-        if self.github_base_url is not None:
-            bundle["github_base_url"] = self.github_base_url
-        if self.component_directory is not None:
-            bundle["component_directory"] = self.component_directory
-        if self.local_runner is not None:
-            bundle["local_runner"] = self.local_runner.bundle()
-        if self.remote_runner is not None:
-            bundle["remote_runner"] = self.remote_runner.bundle()
-        return bundle
+        bundle: Dict[str, Any] = {
+            "github_token": self.github_token,
+            "github_base_url": self.github_base_url,
+            "component_directory": self.component_directory,
+            "local_runner": self.local_runner.bundle() if self.local_runner is not None else None,
+            "remote_runner": self.remote_runner.bundle()
+            if self.remote_runner is not None
+            else None,
+        }
+        return dict(filter(lambda i: i[1], bundle.items()))
 
     @staticmethod
     def read(file_path: str) -> Config:
