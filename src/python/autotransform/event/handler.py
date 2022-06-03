@@ -8,11 +8,19 @@
 # @black_format
 
 """The EventHandler receives event dispatches and triggers appropriate behavior for
-the event, such as logging.
+the event, such as logging. Set AUTO_TRANSFORM_EVENT_HANDLER environment variable to
+{
+    class_name: <The name of a class extending EventHandler>,
+    module: <The fully qualified module where the class is>
+}
+as JSON to override the default event handling.
 """
 
 from __future__ import annotations
 
+import importlib
+import json
+import os
 from datetime import datetime
 from typing import Dict, Optional
 
@@ -55,8 +63,20 @@ class EventHandler:
         Returns:
             EventHandler: The singleton instance of the EventHandler
         """
+
         if EventHandler.__instance is None:
-            EventHandler.__instance = EventHandler()
+            event_handler_to_use = os.getenv("AUTO_TRANSFORM_EVENT_HANDLER")
+            if event_handler_to_use is not None:
+                try:
+                    event_handler_info = json.loads(event_handler_to_use)
+                    module = importlib.import_module(event_handler_info["module"])
+                    event_handler = getattr(module, event_handler_info["class_name"])()
+                    assert isinstance(event_handler, EventHandler)
+                    EventHandler.__instance = event_handler
+                except Exception:  # pylint: disable=broad-except
+                    EventHandler.__instance = EventHandler()
+            else:
+                EventHandler.__instance = EventHandler()
         return EventHandler.__instance
 
     def set_logging_level(self, logging_level: LoggingLevel) -> None:

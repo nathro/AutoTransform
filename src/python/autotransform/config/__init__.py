@@ -21,7 +21,6 @@ from typing import Dict
 
 from autotransform.config.default import DefaultConfigFetcher
 from autotransform.config.environment import EnvironmentConfigFetcher
-from autotransform.config.fetcher import FACTORY as config_fetcher_factory
 from autotransform.config.fetcher import ConfigFetcher, ConfigFetcherName
 
 fetcher_to_use = os.getenv("AUTO_TRANSFORM_CONFIG")

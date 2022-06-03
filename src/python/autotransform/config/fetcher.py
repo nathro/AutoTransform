@@ -14,7 +14,7 @@ from abc import abstractmethod
 from enum import Enum
 
 from autotransform.config.config import Config
-from autotransform.util.component import Component, ComponentFactory, ComponentImport
+from autotransform.util.component import Component
 
 
 class ConfigFetcherName(str, Enum):
@@ -34,17 +34,3 @@ class ConfigFetcher(Component):
         Returns:
             Config: The Config for AutoTransform.
         """
-
-
-FACTORY = ComponentFactory(
-    {
-        ConfigFetcherName.DEFAULT: ComponentImport(
-            class_name="DefaultConfigFetcher", module="autotransform.config.default"
-        ),
-        ConfigFetcherName.ENVIRONMENT: ComponentImport(
-            class_name="EnvironmentConfigFetcher", module="autotransform.config.environment"
-        ),
-    },
-    ConfigFetcher,  # type: ignore [misc]
-    "config_fetcher.json",
-)

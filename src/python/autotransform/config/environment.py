@@ -11,7 +11,6 @@
 
 import json
 import os
-from typing import Optional
 
 from autotransform.config.config import Config
 from autotransform.config.default import DefaultConfigFetcher
@@ -26,13 +25,7 @@ class EnvironmentConfigFetcher(ConfigFetcher):
     DefaultConfigFetcher will be used for fallbacks where environment variables are not
     present. Set AUTO_TRANSFORM_CONFIG_USE_FALLBACK to "False" if you do not want to use
     a fallback.
-
-    Attributes:
-        _default_config (Optional[DefaultConfigFetcher]): A fallback config fetcher when
-            values are not present as environment variables.
     """
-
-    _default_config: Optional[DefaultConfigFetcher]
 
     def get_config(self) -> Config:
         """Fetch the Config.
