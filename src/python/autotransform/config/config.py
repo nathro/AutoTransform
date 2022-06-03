@@ -296,7 +296,7 @@ class Config:
                 run_workflow="autotransform.run.yml", update_workflow="autotransform.update.yml"
             )
         if prev_config is not None:
-            args["previous_value"] = prev_config.local_runner
+            args["previous_value"] = prev_config.remote_runner
         return runner_factory.from_console("remote runner", **args)
 
     @staticmethod
