@@ -68,10 +68,19 @@ class DefaultConfigFetcher(ConfigFetcher):
         try:
             dir_cmd = ["git", "rev-parse", "--show-toplevel"]
             repo_dir = subprocess.check_output(dir_cmd, encoding="UTF-8").replace("\\", "/").strip()
-            relative_path = os.getenv("AUTO_TRANSFORM_REPO_CONFIG_PATH", "autotransform")
-            return f"{repo_dir}/{relative_path}"
+            return f"{repo_dir}/{DefaultConfigFetcher.get_repo_config_relative_path}"
         except Exception:  # pylint: disable=broad-except
             return None
+
+    @staticmethod
+    def get_repo_config_relative_path() -> str:
+        """Gets the relative path used for the repo config directory.
+
+        Returns:
+            str: The relative path to the config.
+        """
+
+        return os.getenv("AUTO_TRANSFORM_REPO_CONFIG_PATH", "autotransform")
 
     @staticmethod
     def get_cwd_config_dir() -> str:

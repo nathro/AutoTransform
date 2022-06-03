@@ -18,6 +18,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
+from autotransform.config.default import DefaultConfigFetcher
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.schedulerun import ScheduleRunEvent
@@ -474,8 +475,15 @@ class Scheduler:
             excluded_days = [5, 6]
 
         # Gets the Runner
+        input_runner = runner_factory.from_console(
+            "Schedule runner",
+            previous_value=runner,
+            default_value=GithubRunner(
+                run_workflow="autotransform.run.yml",
+                update_workflow="autotransform.update.yml",
+            ),
+        )
         if runner is None:
-            input_runner: Optional[Runner] = None
             while input_runner is None:
                 try:
                     runner_json = input_string(
@@ -495,18 +503,18 @@ class Scheduler:
             input_runner = runner
 
         # Gets Schemas
-        if simple and use_sample_schema:
+        if use_sample_schema:
+            relative_path = DefaultConfigFetcher.get_repo_config_relative_path()
             schemas = [
                 ScheduledSchema(
                     type=SchemaType.FILE,
-                    schema="autotransform/schemas/black_format.json",
+                    schema=f"{relative_path}/schemas/black_format.json",
                     schedule=SchemaScheduleSettings(repeats=RepeatSetting.DAILY, hour_of_day=7),
                 )
             ]
-        elif simple:
-            schemas = []
         else:
             schemas = []
+        if not simple:
             while choose_yes_or_no("Add a schema to the schedule?"):
                 schemas.append(ScheduledSchema.from_console())
 
