@@ -32,7 +32,7 @@ jobs:
     - name: Install requirements
       run: pip install -r <CONFIG DIR>/requirements.txt
     - name: Run AutoTransform
-      run: autotransform run --environment AUTO_TRANSFORM_SCHEMA
+      run: autotransform run --environment --verbose AUTO_TRANSFORM_SCHEMA
       env:
         AUTO_TRANSFORM_CONFIG: environment
         AUTO_TRANSFORM_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}
