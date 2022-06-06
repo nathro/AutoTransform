@@ -1,22 +1,22 @@
 # Requirements for core AutoTransform
-GitPython >= 3.1.27
-ghapi >= 0.1.20
-typing-extensions >= 4.2.0
-colorama >= 0.4.4
-pytz >= 2022.1
-dacite >= 1.6.0
+GitPython>=3.1.27
+ghapi>=0.1.20
+typing-extensions>=4.2.0
+colorama>=0.4.4
+pytz>=2022.1
+pydantic>=1.9.1
 
 
 # Requirements for Schemas
 
 # Formatting
-black >= 22.3.0
+black>=22.3.0
 
 # Type Checking
-mypy >= 0.950
-types-colorama >= 0.4.13
-types-mock >= 4.0.13
-types-pytz >= 2021.3.7
+mypy>=0.950
+types-colorama>=0.4.13
+types-mock>=4.0.13
+types-pytz>=2021.3.7
 
 # Linting
 pylint >= 2.14.0

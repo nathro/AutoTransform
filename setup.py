@@ -73,7 +73,7 @@ setuptools.setup(
         "typing-extensions>=4.2.0",
         "colorama>=0.4.4",
         "pytz>=2022.1",
-        "dacite>=1.6.0",
+        "pydantic>=1.9.1",
     ],
     python_requires=">=3.10",
     data_files=generate_datafiles(),

@@ -1,5 +1,10 @@
 # Change Log
 
+## Release 0.3.1
+
+#### Misc
+ - Moved off of python dataclasses to Pydantic
+
 ## Release 0.3.0 - Production Beta
 
 #### API Changes
