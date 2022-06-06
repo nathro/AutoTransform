@@ -143,7 +143,7 @@ class GithubRepo(GitRepo):
             encodable_batch["metadata"] = batch["metadata"]
         automation_info_lines.extend(
             GithubRepo._get_encoded_json_lines(
-                "batch", encodable_batch, GithubUtils.BEGIN_BATCH, GithubUtils.END_BATCH
+                "Batch", encodable_batch, GithubUtils.BEGIN_BATCH, GithubUtils.END_BATCH
             )
         )
 
