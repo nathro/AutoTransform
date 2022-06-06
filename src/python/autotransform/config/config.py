@@ -13,8 +13,9 @@ from __future__ import annotations
 
 import json
 import os
-from dataclasses import dataclass
 from typing import Any, Dict, Optional, Tuple
+
+from pydantic import BaseModel  # pylint: disable=no-name-in-module
 
 from autotransform.runner.base import FACTORY as runner_factory
 from autotransform.runner.base import Runner
@@ -23,8 +24,7 @@ from autotransform.runner.local import LocalRunner
 from autotransform.util.console import choose_yes_or_no, get_str
 
 
-@dataclass(kw_only=True)
-class Config:
+class Config(BaseModel):
     """A collection of settings for configuring the functionality of AutoTransform.
 
     Attributes:

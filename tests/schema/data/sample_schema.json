@@ -9,8 +9,7 @@
         "metadata": {
             "summary": "",
             "tests": ""
-        },
-        "skip_empty_batch": false
+        }
     },
     "transformer": {
         "name": "regex",
@@ -20,15 +19,13 @@
     "filters": [
         {
             "name": "regex",
-            "pattern": ".*\\.py$",
-            "inverted": false
+            "pattern": ".*\\.py$"
         }
     ],
     "validators": [],
     "commands": [],
     "config": {
         "schema_name": "Sample",
-        "allowed_validation_level": "none",
         "owners": [
             "foo",
             "bar"
@@ -38,8 +35,6 @@
         "name": "github",
         "base_branch_name": "master",
         "full_github_name": "nathro/AutoTransform",
-        "required_labels": [],
-        "hide_automation_info": false,
-        "hide_autotransform_docs": false
+        "hide_autotransform_docs": true
     }
 }

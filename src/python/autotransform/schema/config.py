@@ -11,15 +11,14 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from typing import List
 
-from autotransform.util.component import Component
+from pydantic import BaseModel, Field  # pylint: disable=no-name-in-module
+
 from autotransform.validator.base import ValidationResultLevel
 
 
-@dataclass(frozen=True, kw_only=True)
-class SchemaConfig(Component):
+class SchemaConfig(BaseModel):  # pylint: disable=too-few-public-methods
     """An object containing all configuration information for a Schema.
 
     Attributes:
@@ -32,4 +31,4 @@ class SchemaConfig(Component):
 
     schema_name: str
     allowed_validation_level: ValidationResultLevel = ValidationResultLevel.NONE
-    owners: List[str] = field(default_factory=list)
+    owners: List[str] = Field(default_factory=list)

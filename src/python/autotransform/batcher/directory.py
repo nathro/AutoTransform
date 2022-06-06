@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import pathlib
 from copy import deepcopy
-from dataclasses import dataclass
 from typing import Any, ClassVar, Dict, List, Optional, Sequence
 
 from autotransform.batcher.base import Batch, Batcher, BatcherName
@@ -21,7 +20,6 @@ from autotransform.item.base import Item
 from autotransform.item.file import FileItem
 
 
-@dataclass(frozen=True, kw_only=True)
 class DirectoryBatcher(Batcher):
     """A batcher which separates FileItems by directory. Batches are given a title that is based
     on a prefix and the directory that the batch is using.

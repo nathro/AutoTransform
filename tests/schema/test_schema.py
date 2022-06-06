@@ -44,7 +44,11 @@ def get_sample_schema() -> AutoTransformSchema:
         RegexTransformer(pattern="input", replacement="inputsource"),
         SchemaConfig(schema_name="Sample", owners=["foo", "bar"]),
         filters=[RegexFilter(pattern=".*\\.py$")],
-        repo=GithubRepo(base_branch_name="master", full_github_name="nathro/AutoTransform"),
+        repo=GithubRepo(
+            base_branch_name="master",
+            full_github_name="nathro/AutoTransform",
+            hide_autotransform_docs=True,
+        ),
     )
 
 

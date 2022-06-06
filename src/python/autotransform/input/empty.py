@@ -11,14 +11,12 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import ClassVar, Sequence
 
 from autotransform.input.base import Input, InputName
 from autotransform.item.base import Item
 
 
-@dataclass(frozen=True, kw_only=True)
 class EmptyInput(Input):
     """An Input that simply returns an empty list. Used when a Transformer operates
     on the whole codebase, rather than on an individual Item/set of Items.

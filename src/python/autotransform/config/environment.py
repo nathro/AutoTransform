@@ -18,7 +18,7 @@ from autotransform.config.fetcher import ConfigFetcher
 from autotransform.runner.base import FACTORY as runner_factory
 
 
-class EnvironmentConfigFetcher(ConfigFetcher):
+class EnvironmentConfigFetcher(ConfigFetcher):  # pylint: disable=too-few-public-methods
     """A ConfigFetcher that utilizes environment variables as configuration storage.
     Environment variable names are of the form AUTO_TRANSFORM_<SECTION>_<SETTING>, using
     the sections and settings from autotransform/config/sample_config.ini. The

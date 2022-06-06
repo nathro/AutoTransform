@@ -11,7 +11,6 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import ClassVar
 
 from autotransform.filter.base import FilterName
@@ -19,7 +18,6 @@ from autotransform.filter.shard import ShardFilter
 from autotransform.item.base import Item
 
 
-@dataclass(kw_only=True)
 class KeyHashShardFilter(ShardFilter):
     """A Filter which produces a shard from the key of an Item, using simple hashing.
 

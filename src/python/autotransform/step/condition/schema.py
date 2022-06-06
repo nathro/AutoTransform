@@ -11,7 +11,6 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import ClassVar
 
 from autotransform.change.base import Change
@@ -19,7 +18,6 @@ from autotransform.step.condition.base import Condition, ConditionName
 from autotransform.step.condition.comparison import ComparisonType, compare
 
 
-@dataclass(frozen=True, kw_only=True)
 class SchemaNameCondition(Condition):
     """A condition which checks the name of the Schema that produced a change against the supplied
     name, using the supplied comparison. Note: only equals and not equals are valid, all others will

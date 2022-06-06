@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import json
 import subprocess
-from dataclasses import dataclass
 from tempfile import NamedTemporaryFile as TmpFile
 from typing import Any, ClassVar, List, Mapping, Optional, Sequence
 
@@ -31,7 +30,6 @@ from autotransform.validator.base import (
 )
 
 
-@dataclass(frozen=True, kw_only=True)
 class ScriptValidator(Validator):
     """Runs a script with the supplied arguments to perform validation. If the per_item flag is
     set to True, the script will be invoked on each Item. If run_on_changes is set to True, the
@@ -67,9 +65,7 @@ class ScriptValidator(Validator):
 
     name: ClassVar[ValidatorName] = ValidatorName.SCRIPT
 
-    def validate(
-        self, batch: Batch, _transform_data: Optional[Mapping[str, Any]]
-    ) -> ValidationResult:
+    def check(self, batch: Batch, _transform_data: Optional[Mapping[str, Any]]) -> ValidationResult:
         """Runs the script validation against the Batch, either on each item individually or
         on the entire Batch, based on the per_item flag. If the script returns a non-zero exit
         code, the failure_level will be in the result.
@@ -83,7 +79,7 @@ class ScriptValidator(Validator):
                 validation failures as well as an associated message
         """
         if not self.per_item:
-            return self._validate_batch(batch)
+            return self._check_batch(batch)
         if self.run_on_changes:
             current_schema = autotransform.schema.current
             assert current_schema is not None
@@ -94,12 +90,12 @@ class ScriptValidator(Validator):
             items = batch["items"]
 
         for item in items:
-            result = self._validate_single(item, batch.get("metadata", None))
+            result = self._check_single(item, batch.get("metadata", None))
             if result.level != ValidationResultLevel.NONE:
                 return result
         return ValidationResult(level=ValidationResultLevel.NONE, validator=self)
 
-    def _validate_single(
+    def _check_single(
         self, item: Item, batch_metadata: Optional[Mapping[str, Any]]
     ) -> ValidationResult:
         """Executes a simple script to validate a single Item. Sentinel values can be used
@@ -173,7 +169,7 @@ class ScriptValidator(Validator):
             validator=self,
         )
 
-    def _validate_batch(self, batch: Batch) -> ValidationResult:
+    def _check_batch(self, batch: Batch) -> ValidationResult:
         """Executes a simple script to validate the given Batch. Sentinel values can be used
         in args that will be replaced when the script is invoked.
         The available sentinel values for args are:

@@ -282,7 +282,7 @@ class AutoTransformSchema:
 
         # Validate the changes
         for validator in self._validators:
-            validation_result = validator.validate(batch, result)
+            validation_result = validator.check(batch, result)
             event_handler.handle(DebugEvent({"message": f"Validation Result: {validation_result}"}))
 
             if validation_result.level > self._config.allowed_validation_level:
@@ -345,7 +345,7 @@ class AutoTransformSchema:
             "filters": [f.bundle() for f in self._filters],
             "validators": [validator.bundle() for validator in self._validators],
             "commands": [command.bundle() for command in self._commands],
-            "config": self._config.bundle(),
+            "config": self._config.dict(exclude_unset=True),
         }
         repo = self._repo
         if isinstance(repo, Repo):
@@ -394,7 +394,7 @@ class AutoTransformSchema:
         inp = input_factory.get_instance(bundle["input"])
         batcher = batcher_factory.get_instance(bundle["batcher"])
         transformer = transformer_factory.get_instance(bundle["transformer"])
-        config = SchemaConfig.from_data(bundle["config"])
+        config = SchemaConfig.parse_obj(bundle["config"])
 
         filters = [filter_factory.get_instance(f) for f in bundle.get("filters", [])]
         validators = [

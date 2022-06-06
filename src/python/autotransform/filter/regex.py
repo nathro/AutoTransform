@@ -12,7 +12,6 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
 from typing import ClassVar
 
 from autotransform.filter.base import Filter, FilterName
@@ -20,7 +19,6 @@ from autotransform.item.base import Item
 from autotransform.item.file import FileItem
 
 
-@dataclass(kw_only=True)
 class RegexFilter(Filter):
     """A Filter which only passes Items where the Item's key matches a provided regex pattern.
     Uses re.search rather than re.match.
@@ -49,7 +47,6 @@ class RegexFilter(Filter):
         return re.search(self.pattern, item.key) is not None
 
 
-@dataclass(kw_only=True)
 class RegexFileContentFilter(Filter):
     """A Filter which only passes FileItems where the file's content contains a match to the
     provided regex pattern. Uses re.search rather than re.match.

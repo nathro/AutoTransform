@@ -12,7 +12,6 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
 from typing import ClassVar
 
 from autotransform.item.base import Item
@@ -21,7 +20,6 @@ from autotransform.transformer.base import TransformerName
 from autotransform.transformer.single import SingleTransformer
 
 
-@dataclass(frozen=True, kw_only=True)
 class RegexTransformer(SingleTransformer):
     """A Transformer that makes regex based changes, replacing instances of the provided
     pattern with the provided replacement. Useful for simple transformations. Operates on

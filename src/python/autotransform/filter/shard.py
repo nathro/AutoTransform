@@ -12,13 +12,11 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from dataclasses import dataclass
 
 from autotransform.filter.base import Filter
 from autotransform.item.base import Item
 
 
-@dataclass(kw_only=True)  # type: ignore [misc]
 class ShardFilter(Filter):
     """A base for sharding filters that checks that an Item fits the current valid shard.
 

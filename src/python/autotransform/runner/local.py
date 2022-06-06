@@ -12,7 +12,6 @@ runs a schema."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import ClassVar
 
 from autotransform.change.base import Change
@@ -20,7 +19,6 @@ from autotransform.runner.base import Runner, RunnerName
 from autotransform.schema.schema import AutoTransformSchema
 
 
-@dataclass(frozen=True, kw_only=True)
 class LocalRunner(Runner):
     """A Runner component that runs a Schema locally on the machine.
 

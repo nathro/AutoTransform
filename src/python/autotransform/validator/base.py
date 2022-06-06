@@ -106,9 +106,7 @@ class Validator(Component):
     name: ClassVar[ValidatorName]
 
     @abstractmethod
-    def validate(
-        self, batch: Batch, transform_data: Optional[Mapping[str, Any]]
-    ) -> ValidationResult:
+    def check(self, batch: Batch, transform_data: Optional[Mapping[str, Any]]) -> ValidationResult:
         """Validate that a Batch that has undergone transformation does not produce any issues
         such as test failures or type errors.
 

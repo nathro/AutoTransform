@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import re
 import subprocess
-from dataclasses import dataclass
 from functools import cached_property
 from typing import Any, ClassVar, List, Mapping, Optional, Sequence
 
@@ -26,7 +25,6 @@ from autotransform.change.base import Change
 from autotransform.repo.base import Repo, RepoName
 
 
-@dataclass(kw_only=True)
 class GitRepo(Repo):
     """A Repo that provides support for commiting changes to git.
 

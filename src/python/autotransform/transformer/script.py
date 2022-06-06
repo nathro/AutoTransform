@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import json
 import subprocess
-from dataclasses import dataclass
 from tempfile import NamedTemporaryFile as TmpFile
 from typing import Any, ClassVar, List, Mapping, Optional
 
@@ -24,7 +23,6 @@ from autotransform.item.base import Item
 from autotransform.transformer.base import Transformer, TransformerName
 
 
-@dataclass(frozen=True, kw_only=True)
 class ScriptTransformer(Transformer[None]):
     """A Transformer that makes changes using an invoked script. Sentinel values can be used in the
     args to supply information from the Batch.

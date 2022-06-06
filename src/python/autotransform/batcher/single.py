@@ -12,14 +12,12 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from dataclasses import dataclass
 from typing import Any, ClassVar, Dict, List, Optional, Sequence
 
 from autotransform.batcher.base import Batch, Batcher, BatcherName
 from autotransform.item.base import Item
 
 
-@dataclass(frozen=True, kw_only=True)
 class SingleBatcher(Batcher):
     """A batcher which puts all Items together in to a single batch
 

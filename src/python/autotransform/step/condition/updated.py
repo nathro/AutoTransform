@@ -12,7 +12,6 @@
 from __future__ import annotations
 
 import time
-from dataclasses import dataclass
 from typing import ClassVar
 
 from autotransform.change.base import Change
@@ -20,7 +19,6 @@ from autotransform.step.condition.base import Condition, ConditionName
 from autotransform.step.condition.comparison import ComparisonType, compare
 
 
-@dataclass(frozen=True, kw_only=True)
 class UpdatedAgoCondition(Condition):
     """A condition which checks how long ago a Change was updated against the supplied time, all
     in seconds, using the supplied comparison.

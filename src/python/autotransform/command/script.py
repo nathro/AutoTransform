@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import json
 import subprocess
-from dataclasses import dataclass
 from tempfile import NamedTemporaryFile as TmpFile
 from typing import Any, ClassVar, List, Mapping, Optional, Sequence
 
@@ -26,7 +25,6 @@ from autotransform.item.base import Item
 from autotransform.item.file import FileItem
 
 
-@dataclass(frozen=True, kw_only=True)
 class ScriptCommand(Command):
     """Runs a script with the supplied arguments to perform a command. If the per_item flag is
     set to True, the script will be invoked on each Item. If run_on_changes is set to True, the

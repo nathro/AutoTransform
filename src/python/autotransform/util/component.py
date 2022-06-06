@@ -14,25 +14,22 @@ from __future__ import annotations
 import importlib
 import json
 from abc import ABC
-from dataclasses import asdict, dataclass
-from enum import Enum
 from functools import cached_property
 from typing import Any, ClassVar, Dict, Generic, Optional, Type, TypeVar
 
-from dacite import DaciteError, from_dict
-from dacite.config import Config as DaciteConfig
+from pydantic import BaseModel  # pylint: disable=no-name-in-module
 
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.warning import WarningEvent
 from autotransform.util.console import choose_yes_or_no, error, get_str
 
-TComponent = TypeVar("TComponent")
+TComponent = TypeVar("TComponent", bound=BaseModel)
 
 UNSET_VALUE = object()
 
 
-class Component(ABC):
+class Component(BaseModel):
     """A base class for AutoTransform components, such as Batchers.
 
     Attributes:
@@ -50,15 +47,7 @@ class Component(ABC):
             Dict[str, Any]: The encodable bundle.
         """
 
-        def custom_asdict_factory(data):
-            def convert_value(obj):
-                if isinstance(obj, Enum):
-                    return obj.value
-                return obj
-
-            return dict((k, convert_value(v)) for k, v in data)
-
-        component_as_dict = asdict(self, dict_factory=custom_asdict_factory)
+        component_as_dict = self.dict(exclude_unset=True)
         if hasattr(self, "name"):
             component_as_dict = {"name": self.name} | component_as_dict
         return component_as_dict
@@ -75,10 +64,9 @@ class Component(ABC):
             TComponent: An instance of the component.
         """
 
-        return from_dict(data_class=cls, data=data, config=DaciteConfig(cast=[Enum]))
+        return cls.parse_obj(data)
 
 
-@dataclass(frozen=True, kw_only=True)
 class ComponentImport(Component):
     """The information required to import and return a component.
 
@@ -204,8 +192,6 @@ class ComponentFactory(Generic[T], ABC):
                 return None
             try:
                 return self.get_instance(json.loads(component_json))
-            except DaciteError as err:
-                error(f"Could not decode component: {err}")
             except json.JSONDecodeError as err:
                 error(f"Invalid JSON: {err}")
             except ValueError as err:
@@ -295,7 +281,7 @@ class ComponentFactory(Generic[T], ABC):
                 continue
             try:
                 custom_components[f"custom/{name}"] = ComponentImport.from_data(import_info)
-            except DaciteError as err:
+            except Exception as err:  # pylint: disable=broad-except
                 if strict:
                     raise err
                 EventHandler.get().handle(WarningEvent({"message": str(err)}))

@@ -12,14 +12,12 @@
 from __future__ import annotations
 
 import subprocess
-from dataclasses import dataclass
 from typing import ClassVar, Sequence
 
 from autotransform.input.base import Input, InputName
 from autotransform.item.file import FileItem
 
 
-@dataclass(frozen=True, kw_only=True)
 class GitGrepInput(Input):
     """An Input that uses git grep to search a repository for a pattern and returns all files
     that contain a match of the supplied pattern.

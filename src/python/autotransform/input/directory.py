@@ -12,7 +12,6 @@
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
 from typing import ClassVar, List, Sequence
@@ -21,7 +20,6 @@ from autotransform.input.base import Input, InputName
 from autotransform.item.file import FileItem
 
 
-@dataclass(frozen=True, kw_only=True)
 class DirectoryInput(Input):
     """An Input that lists all files recursively within a provided directory.
 

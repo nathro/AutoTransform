@@ -11,7 +11,6 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from enum import Enum
 from typing import Any, ClassVar, Dict, List, Type
 
@@ -27,7 +26,6 @@ class AggregatorType(str, Enum):
     ANY = "any"
 
 
-@dataclass(frozen=True, kw_only=True)
 class AggregateCondition(Condition):
     """A Condition which aggregates a list of Conditions using the supplied aggregator and
     returns the result of the aggregation.

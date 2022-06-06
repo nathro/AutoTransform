@@ -11,7 +11,6 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import ClassVar
 
 from autotransform.change.base import Change, ChangeState
@@ -19,7 +18,6 @@ from autotransform.step.condition.base import Condition, ConditionName
 from autotransform.step.condition.comparison import ComparisonType, compare
 
 
-@dataclass(frozen=True, kw_only=True)
 class ChangeStateCondition(Condition):
     """A condition which checks the ChangeState against the state supplied using the supplied
     comparison. Note: only equals and not equals are valid, all others willresult in an error.

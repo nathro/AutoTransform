@@ -11,7 +11,6 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from enum import Enum
 from typing import Any, ClassVar, Dict, Optional
 
@@ -25,7 +24,6 @@ class ItemName(str, Enum):
     GENERIC = "generic"
 
 
-@dataclass(frozen=True, kw_only=True)
 class Item(Component):
     """The base for Item components. Returned by Input components and act as the units on which
     AutoTransform operates.

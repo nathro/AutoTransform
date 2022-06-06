@@ -12,8 +12,9 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field
 from typing import Any, ClassVar, Dict, List, Mapping, Optional, Sequence
+
+from pydantic import Field
 
 import autotransform.schema
 from autotransform.batcher.base import Batch
@@ -26,7 +27,6 @@ from autotransform.repo.git import GitRepo
 from autotransform.util.github import GithubUtils
 
 
-@dataclass(kw_only=True)
 class GithubRepo(GitRepo):
     """A Repo that provides support for submitting changes as a pull request against
     a Github repo.
@@ -44,7 +44,7 @@ class GithubRepo(GitRepo):
 
     base_branch_name: str
     full_github_name: str
-    required_labels: List[str] = field(default_factory=list)
+    required_labels: List[str] = Field(default_factory=list)
     hide_automation_info: bool = False
     hide_autotransform_docs: bool = False
 

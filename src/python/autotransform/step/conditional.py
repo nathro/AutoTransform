@@ -11,7 +11,6 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import Any, ClassVar, Dict, Type
 
 from autotransform.change.base import Change
@@ -21,7 +20,6 @@ from autotransform.step.condition.base import FACTORY as condition_factory
 from autotransform.step.condition.base import Condition
 
 
-@dataclass(frozen=True, kw_only=True)
 class ConditionalStep(Step):
     """The base for Step components. Used by AutoTransform to manage outstanding
     Changes, determining what actions to take.

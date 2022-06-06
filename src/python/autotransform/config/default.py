@@ -11,15 +11,13 @@
 
 import os
 import subprocess
-from dataclasses import dataclass
 from typing import ClassVar, Optional
 
 from autotransform.config.config import Config
-from autotransform.config.fetcher import ConfigFetcher, ConfigFetcherName
+from autotransform.config.fetcher import ConfigFetcher
 from autotransform.util.package import get_config_dir
 
 
-@dataclass(frozen=True, kw_only=True)
 class DefaultConfigFetcher(ConfigFetcher):
     """The default configuration fetcher that pulls from the config files. Three possible
     files are used:
@@ -30,11 +28,9 @@ class DefaultConfigFetcher(ConfigFetcher):
     configs will have the greatest priority, followed by repo configs, then the overall config.
 
     Attributes:
-        name (ClassVar[ConfigFetcherName]): The name of the component.
         FILE_NAME (ClassVar[str]): The name of the file that stores the Config.
     """
 
-    name: ClassVar[str] = ConfigFetcherName.DEFAULT
     FILE_NAME: ClassVar[str] = "config.json"
 
     def get_config(self) -> Config:

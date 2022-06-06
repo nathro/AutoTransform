@@ -13,7 +13,6 @@ runs a schema."""
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
 from typing import ClassVar
 
 from autotransform.change.base import Change
@@ -27,7 +26,6 @@ from autotransform.schema.schema import AutoTransformSchema
 from autotransform.util.github import GithubUtils
 
 
-@dataclass(frozen=True, kw_only=True)
 class GithubRunner(Runner):
     """A Runner component that is used to trigger Github workflows. See
     data/workflows/autotransform_runner.yml.

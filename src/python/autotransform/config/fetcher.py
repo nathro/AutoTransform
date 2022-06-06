@@ -14,7 +14,6 @@ from abc import abstractmethod
 from enum import Enum
 
 from autotransform.config.config import Config
-from autotransform.util.component import Component
 
 
 class ConfigFetcherName(str, Enum):
@@ -24,7 +23,7 @@ class ConfigFetcherName(str, Enum):
     ENVIRONMENT = "environment"
 
 
-class ConfigFetcher(Component):
+class ConfigFetcher:  # pylint: disable=too-few-public-methods
     """An object representing the API needed for config fetching."""
 
     @abstractmethod

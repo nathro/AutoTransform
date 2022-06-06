@@ -11,7 +11,6 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
 from functools import cached_property
 from typing import TYPE_CHECKING, ClassVar, Dict, List, Tuple
 
@@ -24,7 +23,6 @@ if TYPE_CHECKING:
     from autotransform.schema.schema import AutoTransformSchema
 
 
-@dataclass(frozen=True, kw_only=True)
 class GithubChange(Change):
     """A Change representing a pull request on a Github repo.
 

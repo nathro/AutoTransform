@@ -9,14 +9,12 @@
 
 """The implementation for the FileItem."""
 
-from dataclasses import dataclass
 from typing import ClassVar
 
 from autotransform.item.base import Item, ItemName
 from autotransform.util.cachedfile import CachedFile
 
 
-@dataclass(frozen=True, kw_only=True)
 class FileItem(Item):
     """An item representing a file that can be used by AutoTransform. Provides some utility methods
     for interacting with the file.
