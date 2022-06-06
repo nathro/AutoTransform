@@ -17,7 +17,7 @@ from typing import ClassVar
 
 from autotransform.change.base import Change
 from autotransform.schema.schema import AutoTransformSchema
-from autotransform.util.component import Component, ComponentFactory, ComponentImport
+from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
 
 
 class RunnerName(str, Enum):
@@ -27,7 +27,7 @@ class RunnerName(str, Enum):
     LOCAL = "local"
 
 
-class Runner(Component):
+class Runner(NamedComponent):
     """The base for Runner components. Used by AutoTransform to run an AutoTransformSchema,
     either locally on the machine or on remote infrastructure.
 

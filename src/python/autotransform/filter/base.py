@@ -16,7 +16,7 @@ from enum import Enum
 from typing import ClassVar
 
 from autotransform.item.base import Item
-from autotransform.util.component import Component, ComponentFactory, ComponentImport
+from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
 
 
 class FilterName(str, Enum):
@@ -29,7 +29,7 @@ class FilterName(str, Enum):
     KEY_HASH_SHARD = "key_hash_shard"
 
 
-class Filter(Component):
+class Filter(NamedComponent):
     """The base for Filter components. Used by AutoTransform to determine if an Item from an Input
     is eligible for transformation.
 

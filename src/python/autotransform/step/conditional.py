@@ -59,23 +59,6 @@ class ConditionalStep(Step):
             "stop_steps": False,
         }
 
-    def bundle(self) -> Dict[str, Any]:
-        """Generates a JSON encodable bundle.
-        If a component is not JSON encodable this method should be overridden to provide
-        an encodable version.
-
-        Returns:
-            Dict[str, Any]: The encodable bundle.
-        """
-
-        action = self.action.value if isinstance(self.action, ActionType) else str(self.action)
-
-        return {
-            "name": self.name,
-            "action": action,
-            "condition": self.condition.bundle(),
-        }
-
     @classmethod
     def from_data(cls: Type[ConditionalStep], data: Dict[str, Any]) -> ConditionalStep:
         """Produces an instance of the component from decoded data. Override if

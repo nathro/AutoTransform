@@ -18,7 +18,7 @@ from typing import Any, ClassVar, List, Mapping, Sequence, TypedDict
 from typing_extensions import NotRequired
 
 from autotransform.item.base import Item
-from autotransform.util.component import Component, ComponentFactory, ComponentImport
+from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
 
 
 class BatcherName(str, Enum):
@@ -37,7 +37,7 @@ class Batch(TypedDict):
     title: str
 
 
-class Batcher(Component):
+class Batcher(NamedComponent):
     """The base for Batcher components. Used by AutoTransform to separate Items in to logical
     groupings that can be acted on indepently and have associated metadata.
 

@@ -17,7 +17,12 @@ from enum import Enum
 from typing import Any, ClassVar, Dict, Mapping, Optional
 
 from autotransform.batcher.base import Batch
-from autotransform.util.component import Component, ComponentFactory, ComponentImport
+from autotransform.util.component import (
+    ComponentFactory,
+    ComponentImport,
+    ComponentModel,
+    NamedComponent,
+)
 
 
 class ValidationResultLevel(str, Enum):
@@ -61,8 +66,7 @@ class ValidationResultLevel(str, Enum):
         return self.compare(other.value if isinstance(other, Enum) else str(other)) >= 0
 
 
-@dataclass
-class ValidationResult:
+class ValidationResult(ComponentModel):
     """Represents the result of an attempt at validation.
 
     Attributes:
@@ -76,7 +80,7 @@ class ValidationResult:
     message: Optional[str] = None
 
 
-@dataclass
+@dataclass(frozen=True, kw_only=True)
 class ValidationError(Exception):
     """An error raised by validation failing on a run.
 
@@ -95,7 +99,7 @@ class ValidatorName(str, Enum):
     SCRIPT = "script"
 
 
-class Validator(Component):
+class Validator(NamedComponent):
     """The base for Validator components. Validators test that the codebase is still
     healthy after a transformation.
 

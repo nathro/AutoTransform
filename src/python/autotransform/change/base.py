@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING, ClassVar
 
 from autotransform.batcher.base import Batch
 from autotransform.step.action import ActionType
-from autotransform.util.component import Component, ComponentFactory, ComponentImport
+from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
 
 if TYPE_CHECKING:
     from autotransform.runner.base import Runner
@@ -41,7 +41,7 @@ class ChangeName(str, Enum):
     GITHUB = "github"
 
 
-class Change(Component):
+class Change(NamedComponent):
     """The base for Change components. Used by AutoTransform to manage submissions to
     code review and source control systems.
 

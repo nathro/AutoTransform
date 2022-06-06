@@ -16,7 +16,7 @@ from enum import Enum
 from typing import Any, ClassVar, Mapping, Optional
 
 from autotransform.batcher.base import Batch
-from autotransform.util.component import Component, ComponentFactory, ComponentImport
+from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
 
 
 class CommandName(str, Enum):
@@ -25,7 +25,7 @@ class CommandName(str, Enum):
     SCRIPT = "script"
 
 
-class Command(Component):
+class Command(NamedComponent):
     """The base for Command components. Used by AutoTransform to perform post-processing
     operations after validation, such as code generation.
 

@@ -22,7 +22,7 @@ from autotransform.repo.base import Repo
 from autotransform.schema.config import SchemaConfig
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.transformer.base import Transformer
-from autotransform.util.component import Component, ComponentFactory
+from autotransform.util.component import NamedComponent, ComponentFactory
 from autotransform.validator.base import Validator
 
 
@@ -30,7 +30,7 @@ class SchemaBuilderName(str, Enum):
     """A simple enum for mapping."""
 
 
-class SchemaBuilder(Component):
+class SchemaBuilder(NamedComponent):
     """The base for SchemaBuilders. SchemaBuilders are used for programatic Schema generation.
     This can be used in conjunction with inputs or configuration to customize Schemas run
     through automation. Can also be used to generate JSON Schemas that can be utilized.

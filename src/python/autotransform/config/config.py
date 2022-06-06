@@ -15,16 +15,15 @@ import json
 import os
 from typing import Any, Dict, Optional, Tuple
 
-from pydantic import BaseModel  # pylint: disable=no-name-in-module
-
 from autotransform.runner.base import FACTORY as runner_factory
 from autotransform.runner.base import Runner
 from autotransform.runner.github import GithubRunner
 from autotransform.runner.local import LocalRunner
+from autotransform.util.component import ComponentModel
 from autotransform.util.console import choose_yes_or_no, get_str
 
 
-class Config(BaseModel):
+class Config(ComponentModel):
     """A collection of settings for configuring the functionality of AutoTransform.
 
     Attributes:
@@ -58,24 +57,6 @@ class Config(BaseModel):
         with open(file_path, "w+", encoding="UTF-8") as schedule_file:
             schedule_file.write(json.dumps(self.bundle(), indent=4))
             schedule_file.flush()
-
-    def bundle(self) -> Dict[str, Any]:
-        """Generates a JSON encodable bundle.
-
-        Returns:
-            Dict[str, Any]: The encodable bundle.
-        """
-
-        bundle: Dict[str, Any] = {
-            "github_token": self.github_token,
-            "github_base_url": self.github_base_url,
-            "component_directory": self.component_directory,
-            "local_runner": self.local_runner.bundle() if self.local_runner is not None else None,
-            "remote_runner": self.remote_runner.bundle()
-            if self.remote_runner is not None
-            else None,
-        }
-        return dict(filter(lambda i: i[1], bundle.items()))
 
     @staticmethod
     def read(file_path: str) -> Config:

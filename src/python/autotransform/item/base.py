@@ -14,7 +14,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any, ClassVar, Dict, Optional
 
-from autotransform.util.component import Component, ComponentFactory, ComponentImport
+from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
 
 
 class ItemName(str, Enum):
@@ -24,7 +24,7 @@ class ItemName(str, Enum):
     GENERIC = "generic"
 
 
-class Item(Component):
+class Item(NamedComponent):
     """The base for Item components. Returned by Input components and act as the units on which
     AutoTransform operates.
 

@@ -14,8 +14,9 @@ from __future__ import annotations
 import importlib
 import json
 from abc import ABC
+from enum import Enum
 from functools import cached_property
-from typing import Any, ClassVar, Dict, Generic, Optional, Type, TypeVar
+from typing import Any, ClassVar, Dict, Generic, List, Optional, Type, TypeVar
 
 from pydantic import BaseModel  # pylint: disable=no-name-in-module
 
@@ -29,14 +30,9 @@ TComponent = TypeVar("TComponent", bound=BaseModel)
 UNSET_VALUE = object()
 
 
-class Component(BaseModel):
-    """A base class for AutoTransform components, such as Batchers.
-
-    Attributes:
-        name (ClassVar[str]): The name of the Component.
-    """
-
-    name: ClassVar[str]
+class ComponentModel(BaseModel):
+    """A base class for AutoTransform components that need to handle bundling/unbundling
+    for JSON."""
 
     def bundle(self) -> Dict[str, Any]:
         """Generates a JSON encodable bundle.
@@ -47,10 +43,20 @@ class Component(BaseModel):
             Dict[str, Any]: The encodable bundle.
         """
 
-        component_as_dict = self.dict(exclude_unset=True)
-        if hasattr(self, "name"):
-            component_as_dict = {"name": self.name} | component_as_dict
-        return component_as_dict
+        bundle = dict(self._iter(to_dict=False, exclude_unset=True))
+        for key, value in bundle.items():
+            if isinstance(value, ComponentModel):
+                bundle[key] = value.bundle()
+            elif isinstance(value, List) and all(
+                isinstance(item, ComponentModel) for item in value
+            ):
+                bundle[key] = [item.bundle() for item in value]
+            elif isinstance(value, Dict) and all(
+                isinstance(item, ComponentModel) for item in value.values()
+            ):
+                bundle[key] = {item_key: item.bundle() for item_key, item in value.items()}
+
+        return bundle
 
     @classmethod
     def from_data(cls: Type[TComponent], data: Dict[str, Any]) -> TComponent:
@@ -67,7 +73,28 @@ class Component(BaseModel):
         return cls.parse_obj(data)
 
 
-class ComponentImport(Component):
+class NamedComponent(ComponentModel):
+    """A base class for AutoTransform components, such as Batchers.
+
+    Attributes:
+        name (ClassVar[Enum]): The name of the Component.
+    """
+
+    name: ClassVar[Enum]
+
+    def bundle(self) -> Dict[str, Any]:
+        """Generates a JSON encodable bundle.
+        If a component is not JSON encodable this method should be overridden to provide
+        an encodable version.
+
+        Returns:
+            Dict[str, Any]: The encodable bundle.
+        """
+
+        return {"name": self.name} | super().bundle()
+
+
+class ComponentImport(NamedComponent):
     """The information required to import and return a component.
 
     Attributes:
@@ -79,7 +106,7 @@ class ComponentImport(Component):
     module: str
 
 
-T = TypeVar("T", bound=Component)
+T = TypeVar("T", bound=NamedComponent)
 
 
 class ComponentFactory(Generic[T], ABC):

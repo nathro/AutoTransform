@@ -16,7 +16,7 @@ from enum import Enum
 from typing import ClassVar
 
 from autotransform.change.base import Change
-from autotransform.util.component import Component, ComponentFactory, ComponentImport
+from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
 
 
 class ConditionName(str, Enum):
@@ -29,7 +29,7 @@ class ConditionName(str, Enum):
     UPDATED_AGO = "updated_ago"
 
 
-class Condition(Component):
+class Condition(NamedComponent):
     """The base for Condition components. Used by ConditionalStep to determine whether to
     take an Action.
 

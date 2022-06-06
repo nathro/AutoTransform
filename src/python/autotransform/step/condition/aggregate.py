@@ -59,26 +59,6 @@ class AggregateCondition(Condition):
 
         raise ValueError(f"Unknown aggregator type {self.aggregator}")
 
-    def bundle(self) -> Dict[str, Any]:
-        """Generates a JSON encodable bundle.
-        If a component is not JSON encodable this method should be overridden to provide
-        an encodable version.
-
-        Returns:
-            Dict[str, Any]: The encodable bundle.
-        """
-
-        aggregator = (
-            self.aggregator.value
-            if isinstance(self.aggregator, AggregatorType)
-            else str(self.aggregator)
-        )
-        return {
-            "name": self.name,
-            "aggregator": aggregator,
-            "conditions": [condition.bundle() for condition in self.conditions],
-        }
-
     @classmethod
     def from_data(cls: Type[AggregateCondition], data: Dict[str, Any]) -> AggregateCondition:
         """Produces an instance of the component from decoded data. Override if

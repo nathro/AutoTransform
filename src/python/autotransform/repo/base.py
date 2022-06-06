@@ -17,7 +17,7 @@ from typing import Any, ClassVar, List, Mapping, Optional, Sequence
 
 from autotransform.batcher.base import Batch
 from autotransform.change.base import Change
-from autotransform.util.component import Component, ComponentFactory, ComponentImport
+from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
 
 
 class RepoName(str, Enum):
@@ -27,7 +27,7 @@ class RepoName(str, Enum):
     GITHUB = "github"
 
 
-class Repo(Component):
+class Repo(NamedComponent):
     """The base for Repo components. Used by AutoTransform to interact with version
     control and code review systems.
 

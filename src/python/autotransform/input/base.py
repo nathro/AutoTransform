@@ -16,7 +16,7 @@ from enum import Enum
 from typing import ClassVar, Sequence
 
 from autotransform.item.base import Item
-from autotransform.util.component import Component, ComponentFactory, ComponentImport
+from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
 
 
 class InputName(str, Enum):
@@ -27,7 +27,7 @@ class InputName(str, Enum):
     GIT_GREP = "git_grep"
 
 
-class Input(Component):
+class Input(NamedComponent):
     """The base for Input components. Used by AutoTransform to get Items that
     represent potentially transformable units for a Schema. Usually returns files but
     any Item can be returned as long as Schema components work with it.

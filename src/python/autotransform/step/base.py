@@ -17,7 +17,7 @@ from typing import ClassVar
 
 from autotransform.change.base import Change
 from autotransform.step.action import Action
-from autotransform.util.component import Component, ComponentFactory, ComponentImport
+from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
 
 
 class StepName(str, Enum):
@@ -26,7 +26,7 @@ class StepName(str, Enum):
     CONDITIONAL = "conditional"
 
 
-class Step(Component):
+class Step(NamedComponent):
     """The base for Step components. Used by AutoTransform to manage outstanding
     Changes, determining what actions to take.
 

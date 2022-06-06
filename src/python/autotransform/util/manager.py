@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import json
 import os
-from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
 from autotransform.change.base import ChangeState
@@ -33,11 +32,11 @@ from autotransform.step.condition.comparison import ComparisonType
 from autotransform.step.condition.state import ChangeStateCondition
 from autotransform.step.condition.updated import UpdatedAgoCondition
 from autotransform.step.conditional import ConditionalStep
+from autotransform.util.component import ComponentModel
 from autotransform.util.console import choose_yes_or_no, get_str, input_int
 
 
-@dataclass(kw_only=True)
-class Manager:
+class Manager(ComponentModel):
     """The information and functionality required for managing outstanding changes.
 
     Attributes:
@@ -81,19 +80,6 @@ class Manager:
         with open(file_path, "w+", encoding="UTF-8") as manager_file:
             manager_file.write(json.dumps(self.bundle(), indent=4))
             manager_file.flush()
-
-    def bundle(self) -> Dict[str, Any]:
-        """Generates a JSON encodable bundle.
-
-        Returns:
-            Dict[str, Any]: The encodable bundle.
-        """
-
-        return {
-            "repo": self.repo.bundle(),
-            "runner": self.runner.bundle(),
-            "steps": [step.bundle() for step in self.steps],
-        }
 
     @staticmethod
     def read(file_path: str) -> Manager:
