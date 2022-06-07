@@ -218,11 +218,17 @@ class ComponentFactory(Generic[T], ABC):
             if allow_none and (component_json in ["", "None"] or component_json is None):
                 return None
             try:
-                return self.get_instance(json.loads(component_json))
+                component_data = json.loads(component_json)
+                if not isinstance(component_data, Dict):
+                    error("Invalid JSON data, must be Dict")
+                    continue
+                return self.get_instance(component_data)
             except json.JSONDecodeError as err:
-                error(f"Invalid JSON: {err}")
+                error(f"Failed to parse JSON\n{err}")
+            except TypeError as err:
+                error(f"Invalid type found\n{err}")
             except ValueError as err:
-                error(str(err))
+                error(f"Invalid value found\n{err}")
 
     def get_instance(self, data: Dict[str, Any]) -> T:
         """Simple method to get an instance from a bundle.
@@ -258,7 +264,8 @@ class ComponentFactory(Generic[T], ABC):
         if component_info is not None:
             return self._get_component_class(component_info)
 
-        raise ValueError(f"No component found with name: {component_name}")
+        names = json.dumps(list(self.get_components().keys() | self.get_custom_components().keys()))
+        raise ValueError(f"No component found with name {component_name}, valid names: {names}")
 
     @staticmethod
     def _get_custom_components(
