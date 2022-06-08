@@ -10,7 +10,6 @@
 """The settings command is used to update AutoTransform settings, such as scheduler.json files,
 manager.json files, configs and imported components."""
 
-import json
 from argparse import ArgumentParser, Namespace
 
 from autotransform.config.config import Config
@@ -66,20 +65,20 @@ def settings_command_main(args: Namespace) -> None:
         path = f"{get_config_dir}/{DefaultConfigFetcher.FILE_NAME}"
         config = Config.read(path)
         if not args.update_settings:
-            info(f"Current User Config: {json.dumps(config.bundle(), indent=4)}")
+            info(f"Current User Config: {config!r}")
         else:
             config.from_console(config, user_config=True)[0].write(path)
     elif args.setting_type == "repo_config":
         path = f"{DefaultConfigFetcher.get_repo_config_dir()}/{DefaultConfigFetcher.FILE_NAME}"
         config = Config.read(path)
         if not args.update_settings:
-            info(f"Current Repo Config: {json.dumps(config.bundle(), indent=4)}")
+            info(f"Current Repo Config: {config!r}")
         else:
             config.from_console(config, user_config=False)[0].write(path)
     elif args.setting_type == "cwd_config":
         path = f"{DefaultConfigFetcher.get_cwd_config_dir()}/{DefaultConfigFetcher.FILE_NAME}"
         config = Config.read(path)
         if not args.update_settings:
-            info(f"Current CWD Config: {json.dumps(config.bundle(), indent=4)}")
+            info(f"Current CWD Config: {config!r}")
         else:
             config.from_console(config, user_config=False)[0].write(path)
