@@ -5,6 +5,9 @@
 #### Misc
  - Moved off of python dataclasses to Pydantic
 
+#### Scripts
+ - Moved config setting/viewing to settings command which will include all settings
+
 ## Release 0.3.0 - Production Beta
 
 #### API Changes

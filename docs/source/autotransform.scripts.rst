@@ -13,7 +13,7 @@ Commands
    autotransform.scripts.commands.schedule
    autotransform.scripts.commands.manage
    autotransform.scripts.commands.update
-   autotransform.scripts.commands.config
+   autotransform.scripts.commands.settings
    autotransform.scripts.commands.initialize
 
 Script

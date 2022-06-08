@@ -203,12 +203,15 @@ class ComponentFactory(Generic[T], ABC):
         """
 
         if (isinstance(previous_value, self._type) or (previous_value is None and allow_none)) and (
-            simple or choose_yes_or_no(f"Use previous {name}: {previous_value}?")
+            simple or choose_yes_or_no(f"Use previous {name}: {previous_value!r}?")
         ):
             return previous_value
 
-        if (isinstance(default_value, self._type) or (default_value is None and allow_none)) and (
-            simple or choose_yes_or_no(f"Use default {name}: {default_value}?")
+        # pylint: disable=too-many-boolean-expressions
+        if (
+            (isinstance(default_value, self._type) or (default_value is None and allow_none))
+            and default_value != previous_value
+            and (simple or choose_yes_or_no(f"Use default {name}: {default_value!r}?"))
         ):
             return default_value
 

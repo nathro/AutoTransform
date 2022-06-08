@@ -14,7 +14,7 @@ Different CLI commands are handled as subparsers. Includes the following command
 
 from argparse import ArgumentParser
 
-from autotransform.scripts.commands import config, initialize, manage, run, schedule, update
+from autotransform.scripts.commands import initialize, manage, run, schedule, settings, update
 
 
 def get_arg_parser() -> ArgumentParser:
@@ -58,19 +58,19 @@ def get_arg_parser() -> ArgumentParser:
     )
     update.add_args(update_parser)
 
-    # Add config command
-    config_parser = subparsers.add_parser(
-        "config",
-        help="Update/view AutoTransform configs",
+    # Add settings command
+    settings_parser = subparsers.add_parser(
+        "settings",
+        help="Update/view AutoTransform settings",
     )
-    config.add_args(config_parser)
+    settings.add_args(settings_parser)
 
     # Add initialize command
-    config_parser = subparsers.add_parser(
+    init_parser = subparsers.add_parser(
         "init",
         help="Initialize AutoTransform for the user/repo",
     )
-    initialize.add_args(config_parser)
+    initialize.add_args(init_parser)
 
     return parser
 

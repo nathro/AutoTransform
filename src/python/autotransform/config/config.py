@@ -303,8 +303,6 @@ class Config(ComponentModel):
             github = True
         elif use_github is not None:
             github = False
-        elif prev_config is not None:
-            github = prev_config.github_token is not None or prev_config.github_base_url is not None
         else:
             github = choose_yes_or_no("Use Github for this config?")
 

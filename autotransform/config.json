@@ -1,10 +1,13 @@
 {
+    "github_token": null,
+    "github_base_url": null,
+    "component_directory": null,
     "local_runner": {
         "name": "local"
     },
     "remote_runner": {
         "name": "github",
-        "run_workflow": "autotransform/run.yml",
-        "update_workflow": "autotransform/update.yml"
+        "run_workflow": "autotransform.run.yml",
+        "update_workflow": "autotransform.update.yml"
     }
 }
