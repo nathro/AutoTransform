@@ -94,7 +94,7 @@ class NamedComponent(ComponentModel):
         return {"name": self.name} | super().bundle()
 
 
-class ComponentImport(NamedComponent):
+class ComponentImport(ComponentModel):
     """The information required to import and return a component.
 
     Attributes:
@@ -166,7 +166,9 @@ class ComponentFactory(Generic[T], ABC):
             Dict[str, ComponentImport]: Non-strict custom components.
         """
 
-        return ComponentFactory._get_custom_components(self._custom_components_file, strict=False)
+        return ComponentFactory.get_custom_components_dict(
+            self._custom_components_file, strict=False
+        )
 
     @cached_property
     def _custom_components_strict(self) -> Dict[str, ComponentImport]:
@@ -176,7 +178,9 @@ class ComponentFactory(Generic[T], ABC):
             Dict[str, ComponentImport]: Strict custom components.
         """
 
-        return ComponentFactory._get_custom_components(self._custom_components_file, strict=True)
+        return ComponentFactory.get_custom_components_dict(
+            self._custom_components_file, strict=True
+        )
 
     # pylint: disable=too-many-arguments
     def from_console(
@@ -271,7 +275,7 @@ class ComponentFactory(Generic[T], ABC):
         raise ValueError(f"No component found with name {component_name}, valid names: {names}")
 
     @staticmethod
-    def _get_custom_components(
+    def get_custom_components_dict(
         component_file_name: str, strict: bool = False
     ) -> Dict[str, ComponentImport]:
         """Builds a custom component dictionary for importing.
@@ -286,13 +290,8 @@ class ComponentFactory(Generic[T], ABC):
                 start with custom/ for their name.
         """
 
-        # Importing here to avoid a cyclic import
-        import autotransform.config  # pylint: disable=import-outside-toplevel
-
-        component_json_path = (
-            f"{autotransform.config.CONFIG.component_directory}/{component_file_name}"
-        )
         custom_components: Dict[str, ComponentImport] = {}
+        component_json_path = ComponentFactory.get_custom_components_path(component_file_name)
         EventHandler.get().handle(
             DebugEvent({"message": f"Importing custom components from: {component_json_path}"})
         )
@@ -323,6 +322,21 @@ class ComponentFactory(Generic[T], ABC):
                     raise err
                 EventHandler.get().handle(WarningEvent({"message": str(err)}))
         return custom_components
+
+    @staticmethod
+    def get_custom_components_path(component_file_name: str) -> str:
+        """Gets the path for the custom component file.
+
+        Args:
+            component_file_name (str): The name of the file that contains the custom components.
+
+        Returns:
+            str: The path where the custom component JSON is located.
+        """
+        # Importing here to avoid a cyclic import
+        import autotransform.config  # pylint: disable=import-outside-toplevel
+
+        return f"{autotransform.config.CONFIG.component_directory}/{component_file_name}"
 
     def _get_component_class(
         self,
