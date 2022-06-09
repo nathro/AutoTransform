@@ -308,7 +308,7 @@ class ComponentFactory(Generic[T], ABC):
             EventHandler.get().handle(WarningEvent({"message": message}))
             return custom_components
 
-        for name, import_info in json_components:
+        for name, import_info in json_components.items():
             if not isinstance(name, str):
                 message = f"Invalid name: {name}"
                 if strict:
