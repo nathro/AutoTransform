@@ -74,7 +74,7 @@ def schedule_command_main(args: Namespace) -> None:
     if schedule_file is None:
         schedule_file = f"{DefaultConfigFetcher.get_repo_config_relative_path()}/scheduler.json"
     event_args = {"scheduler_file": schedule_file}
-    scheduler = Scheduler.read(schedule_file, start_time)
+    scheduler = Scheduler.read(schedule_file)
     event_args["scheduler"] = scheduler
     event_handler.handle(ScriptRunEvent({"script": "schedule", "args": event_args}))
 

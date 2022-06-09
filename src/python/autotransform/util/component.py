@@ -197,7 +197,7 @@ class ComponentFactory(Generic[T], ABC):
             self._custom_components_file, strict=True
         )
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-branches
     def from_console(
         self,
         name: str,

@@ -16,17 +16,15 @@ To get scheduled runs going, a JSON file with all scheduling information is requ
     "schemas": [
         {
             "type": <builder, file>,
-            "schema": <string>,
+            "target": <string>,
             "schedule": {
                 "repeats": <daily, weekly>,
                 "hour_of_day": <0-23>,
                 "day_of_week": <0-6>,
-                "sharding": {
-                    "shard_filter": {
-                        "name": <FilterName>,
-                        "num_shards": <int>,
-                        ...
-                    }
+                "shard_filter": {
+                    "name": <FilterName>,
+                    "num_shards": <int>,
+                    ...
                 }
             }
         }
@@ -45,13 +43,12 @@ The following settings are used when scheduling schemas to run automatically.
     * **schemas**: A list of schemas that are automatically scheduled.
   * **Schema Settings**
     * **type**: Either the string "builder" or the string "file". This is used to determine whether the value of the schema setting refers to a SchemaBuilderType or a file path.
-    * **schema**: Either a SchemaBuilderType or a file path.
+    * **target**: Either a SchemaBuilderType or a file path.
     * **Schedule**
       * **repeats**: Either the string "daily" or the string "weekly". How often the schema will be run.
       * **hour_of_day**: Which hour of the day, using the logic described for base_time, that the schema will be run. Defaults to 0.
       * **day_of_week**: Which day of the week, using the logic described for base_time, that the schema will be run. Defaults to 0. Only applies to weekly runs.
-      * **Sharding**: A Sharded schema is run on a subset of it's input each time it is run. This subset is determined by the sharding settings and can be used to break large runs over a codebase in to smaller pieces. Optional to include.
-        * **shard_filter**: A ShardFilter object that will be used to perform the actual sharding. It will get the valid_shard from the scheduler when constructed.
+      * **shard_filter**: A ShardFilter object that will be used to perform the actual sharding. It will get the valid_shard from the scheduler when constructed.
 
 ### **Invoking Scheduled Runs**
 

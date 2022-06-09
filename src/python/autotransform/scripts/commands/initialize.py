@@ -221,7 +221,7 @@ def initialize_repo(
     manager.write(manager_path)
 
     # Set up schedule file
-    scheduler = Scheduler.from_console(manager.runner, use_sample_schema, simple)
+    scheduler = Scheduler.init_from_console(manager.runner, use_sample_schema, simple)
     scheduler_path = f"{repo_config_dir}/scheduler.json"
     scheduler.write(scheduler_path)
 
@@ -256,7 +256,7 @@ def initialize_command_main(args: Namespace) -> None:
         dir_cmd = ["git", "rev-parse", "--show-toplevel"]
         repo_dir = subprocess.check_output(dir_cmd, encoding="UTF-8").replace("\\", "/").strip()
         info(f"Repo found at {repo_dir}")
-        setup_repo = choose_yes_or_no("Should AutoTransoform set up the repo?")
+        setup_repo = choose_yes_or_no("Should AutoTransform set up the repo?")
     except Exception:  # pylint: disable=broad-except
         info("No git repo to set up, run inside a git repo to set it up.")
         repo_dir = ""

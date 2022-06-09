@@ -26,7 +26,7 @@ class ShardFilter(Filter):
     """
 
     num_shards: int
-    valid_shard: int
+    valid_shard: int = -1
 
     @abstractmethod
     def _shard(self, item: Item) -> int:
@@ -49,4 +49,5 @@ class ShardFilter(Filter):
             bool: Returns True if the Item's shard matches the current valid shard.
         """
 
+        assert self.valid_shard >= 0, "Shard filter not initialized correctly"
         return self._shard(item) == self.valid_shard

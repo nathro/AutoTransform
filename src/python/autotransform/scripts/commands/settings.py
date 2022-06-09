@@ -21,6 +21,7 @@ from autotransform.util.component import ComponentFactory, ComponentImport
 from autotransform.util.console import choose_options_from_list, error, get_str, info
 from autotransform.util.manager import Manager
 from autotransform.util.package import get_config_dir
+from autotransform.util.scheduler import Scheduler
 
 
 def add_args(parser: ArgumentParser) -> None:
@@ -110,7 +111,7 @@ def handle_config(path: str, config_type: str, update: bool) -> None:
     """
 
     config = Config.read(path)
-    info(f"Current {config_type} Config: {config!r}")
+    info(f"Current {config_type} Config\n{config!r}")
     if not update:
         return
     config.from_console(config, user_config=config_type == "User")[0].write(path)
@@ -257,3 +258,29 @@ def handle_manager(update: bool) -> None:
     if not update:
         return
     Manager.from_console(manager).write(path)
+
+
+def handle_scheduler(update: bool) -> None:
+    """Handle updating/viewing the Scheduler.
+
+    Args:
+        update (bool): Whether to apply updates to the Scheduler.
+    """
+
+    path = f"{DefaultConfigFetcher.get_repo_config_dir()}/scheduler.json"
+    scheduler = None
+    try:
+        scheduler = Scheduler.read(path)
+        info(f"Current Scheduler\n{scheduler!r}")
+    except FileNotFoundError:
+        error("No Manager file found")
+    except json.JSONDecodeError as err:
+        error(f"Failed to decode Manager JSON\n{err}")
+    except ValueError as err:
+        error(f"Invalid Manager value\n{err}")
+    except TypeError as err:
+        error(f"Invalid Manager type\n{err}")
+
+    if not update:
+        return
+    Scheduler.from_console(scheduler).write(path)

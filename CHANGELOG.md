@@ -4,10 +4,13 @@
 
 #### Misc
  - Moved off of python dataclasses to Pydantic
+ - Modified scheduler file format to have "target" instead of "schema" for the path/builder name of the scheduled schemas
 
 #### Scripts
  - Moved config setting/viewing to settings command which will include all settings
  - Added custom components to settings command
+ - Added manager to settings command
+ - Added scheduler to settings command
  - Made files options for schedule/manage commands, no longer positional arguments
 
 ## Release 0.3.0 - Production Beta
