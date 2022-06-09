@@ -170,13 +170,13 @@ class SchemaScheduleSettings:
 
         # Get hour_of_day
         hour_of_day = input_int(
-            "What hour of the day should the schema run?", min_val=0, max_val=23
+            "Enter the hour of the day to run the schema", min_val=0, max_val=23
         )
 
         # Get day_of_week
         if repeats == RepeatSetting.WEEKLY:
             day_of_week = input_int(
-                "What day of the week should the schema run?", min_val=0, max_val=6
+                "Enter the day of the week to run the schema", min_val=0, max_val=6
             )
         else:
             day_of_week = None
@@ -464,7 +464,7 @@ class Scheduler:
         info("Using local time to establish a base")
         info("Midnight Monday local is day_of_week 0, hour_of_day 0")
         if not simple and choose_yes_or_no("Apply a modifier to local time for scheduling?"):
-            base_modifier = input_int("Enter the modifier in secords:")
+            base_modifier = input_int("Enter the modifier in seconds")
         else:
             base_modifier = 0
 

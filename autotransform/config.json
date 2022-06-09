@@ -1,7 +1,4 @@
 {
-    "github_token": null,
-    "github_base_url": null,
-    "component_directory": null,
     "local_runner": {
         "name": "local"
     },

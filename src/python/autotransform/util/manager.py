@@ -33,7 +33,12 @@ from autotransform.step.condition.state import ChangeStateCondition
 from autotransform.step.condition.updated import UpdatedAgoCondition
 from autotransform.step.conditional import ConditionalStep
 from autotransform.util.component import ComponentModel
-from autotransform.util.console import choose_yes_or_no, get_str, input_int
+from autotransform.util.console import (
+    choose_options_from_list,
+    choose_yes_or_no,
+    get_str,
+    input_int,
+)
 
 
 class Manager(ComponentModel):
@@ -131,7 +136,7 @@ class Manager(ComponentModel):
 
     # pylint: disable=too-many-branches
     @staticmethod
-    def from_console(
+    def init_from_console(
         repo_name: Optional[RepoName] = None,
         prev_runner: Optional[Runner] = None,
         simple: bool = False,
@@ -199,7 +204,7 @@ class Manager(ComponentModel):
             if simple:
                 days_stale = 7
             else:
-                days_stale = input_int("How many days to consider a change stale?", min_val=1)
+                days_stale = input_int("Enter number of days until stale", min_val=1)
             steps.append(
                 ConditionalStep(
                     condition=UpdatedAgoCondition(
@@ -209,5 +214,45 @@ class Manager(ComponentModel):
                     action=ActionType.ABANDON,
                 )
             )
+
+        return Manager(repo=repo, runner=runner, steps=steps)
+
+    @staticmethod
+    def from_console(prev_manager: Optional[Manager] = None) -> Manager:
+        """Gets a Manager using console inputs.
+
+        Args:
+            prev_manager (Optional[Manager], optional): A previously input Manager.
+                Defaults to None.
+
+        Returns:
+            Manager: The input Manager.
+        """
+
+        args: Dict[str, Any] = {"allow_none": False}
+        if prev_manager is not None:
+            args["previous_value"] = prev_manager.repo
+        repo = repo_factory.from_console("repo", **args)
+        assert repo is not None
+
+        args = {"allow_none": False}
+        if prev_manager is not None:
+            args["previous_value"] = prev_manager.runner
+        runner = runner_factory.from_console("runner", **args)
+        assert runner is not None
+
+        if prev_manager is not None and bool(prev_manager.steps):
+            steps = choose_options_from_list(
+                "Choose steps to keep",
+                [(step, f"{step!r}") for step in prev_manager.steps],
+                min_choices=0,
+                max_choices=len(prev_manager.steps),
+            )
+        else:
+            steps = []
+        while choose_yes_or_no("Would you like to add another step?"):
+            step = step_factory.from_console("step", allow_none=False)
+            assert step is not None
+            steps.append(step)
 
         return Manager(repo=repo, runner=runner, steps=steps)

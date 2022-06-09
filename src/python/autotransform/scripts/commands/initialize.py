@@ -183,7 +183,7 @@ def initialize_repo(
         prev_runner = prev_config.remote_runner
     else:
         prev_runner = None
-    manager = Manager.from_console(
+    manager = Manager.init_from_console(
         repo_name=RepoName.GITHUB if github else RepoName.GIT,
         prev_runner=prev_runner,
         simple=simple,

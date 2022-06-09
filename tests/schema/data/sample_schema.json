@@ -35,6 +35,7 @@
         "name": "github",
         "base_branch_name": "master",
         "full_github_name": "nathro/AutoTransform",
+        "required_labels": [],
         "hide_autotransform_docs": true
     }
 }

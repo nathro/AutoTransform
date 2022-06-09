@@ -16,14 +16,20 @@ import json
 from abc import ABC
 from enum import Enum
 from functools import cached_property
-from typing import Any, ClassVar, Dict, Generic, List, Optional, Type, TypeVar
+from typing import Any, ClassVar, Dict, Generic, List, Optional, Tuple, Type, TypeVar
 
 from pydantic import BaseModel  # pylint: disable=no-name-in-module
 
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.warning import WarningEvent
-from autotransform.util.console import choose_yes_or_no, error, get_str
+from autotransform.util.console import (
+    choose_options_from_list,
+    choose_yes_or_no,
+    error,
+    get_str,
+    info,
+)
 
 TComponent = TypeVar("TComponent", bound=BaseModel)
 
@@ -43,7 +49,7 @@ class ComponentModel(BaseModel):
             Dict[str, Any]: The encodable bundle.
         """
 
-        bundle = dict(self._iter(to_dict=False, exclude_unset=True))
+        bundle = dict(self._iter(to_dict=False, exclude_defaults=True))
         for key, value in bundle.items():
             if isinstance(value, ComponentModel):
                 bundle[key] = value.bundle()
@@ -71,6 +77,15 @@ class ComponentModel(BaseModel):
         """
 
         return cls.parse_obj(data)
+
+    def __repr__(self) -> str:
+        if len(self.__fields__) < 2:
+            return super().__repr__()
+        lines = [f"{self.__class__.__name__}("]
+        lines.extend([f"\t{name}={getattr(self, name)!r}," for name in self.__fields__.keys()])
+        lines.append(")")
+        lines = [line.replace("\n", "\n\t") for line in lines]
+        return "\n".join(lines)
 
 
 class NamedComponent(ComponentModel):
@@ -218,18 +233,35 @@ class ComponentFactory(Generic[T], ABC):
             and (simple or choose_yes_or_no(f"Use default {name}: {default_value!r}?"))
         ):
             return default_value
+        all_components = self.get_components() | self.get_custom_components()
+        options: List[Tuple[str, str]] = [(key, key) for key in all_components.keys()]
+        component_name = choose_options_from_list(
+            f"Choose a {name}", options, min_choices=0 if allow_none else 1
+        )
+        if allow_none and not bool(component_name):
+            return None
+        component_class = self.get_class(component_name[0])
+        if not bool(component_class.__fields__):
+            return component_class.from_data({})
+        info(f"{component_class.__name__} Fields:")
+        for field_name, field in component_class.__fields__.items():
+            # pylint: disable=protected-access
+            if field.required:
+                info(f"\t{field_name}: {field._type_display()}")
+            else:
+                info(f"\t{field_name}: {field._type_display()} = {field.get_default()}")
 
-        none_prompt = "(blank for none)" if allow_none else ""
         while True:
-            component_json = get_str(f"Enter JSON encoded {name}{none_prompt}: ")
-            if allow_none and (component_json in ["", "None"] or component_json is None):
-                return None
+            component_json = get_str(f"Enter JSON encoded {component_class.__name__}: ")
             try:
-                component_data = json.loads(component_json)
+                if component_json != "":
+                    component_data = json.loads(component_json)
+                else:
+                    component_data = {}
                 if not isinstance(component_data, Dict):
                     error("Invalid JSON data, must be Dict")
                     continue
-                return self.get_instance(component_data)
+                return component_class.from_data(component_data)
             except json.JSONDecodeError as err:
                 error(f"Failed to parse JSON\n{err}")
             except TypeError as err:

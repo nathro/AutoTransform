@@ -18,7 +18,8 @@ from typing import Dict, List
 from autotransform.config.config import Config
 from autotransform.config.default import DefaultConfigFetcher
 from autotransform.util.component import ComponentFactory, ComponentImport
-from autotransform.util.console import choose_option_from_list, error, get_str, info
+from autotransform.util.console import choose_options_from_list, error, get_str, info
+from autotransform.util.manager import Manager
 from autotransform.util.package import get_config_dir
 
 
@@ -52,11 +53,18 @@ def add_args(parser: ArgumentParser) -> None:
         help="Update or view the current working directory configuration for AutoTransform",
     )
     setting_type_group.add_argument(
-        "--custom_components",
+        "--custom-components",
         dest="setting_type",
         action="store_const",
         const="custom_components",
         help="Update or view custom components",
+    )
+    setting_type_group.add_argument(
+        "--manager",
+        dest="setting_type",
+        action="store_const",
+        const="manager",
+        help="Update or view manager settings",
     )
 
     parser.add_argument(
@@ -87,7 +95,9 @@ def settings_command_main(args: Namespace) -> None:
         path = f"{DefaultConfigFetcher.get_cwd_config_dir()}/{DefaultConfigFetcher.FILE_NAME}"
         handle_config(path, "CWD", args.update_settings)
     elif args.setting_type == "custom_components":
-        handle_custom_components(args)
+        handle_custom_components(args.update_settings)
+    elif args.setting_type == "manager":
+        handle_manager(args.update_settings)
 
 
 def handle_config(path: str, config_type: str, update: bool) -> None:
@@ -101,19 +111,20 @@ def handle_config(path: str, config_type: str, update: bool) -> None:
 
     config = Config.read(path)
     info(f"Current {config_type} Config: {config!r}")
-    if update:
-        config.from_console(config, user_config=config_type == "User")[0].write(path)
+    if not update:
+        return
+    config.from_console(config, user_config=config_type == "User")[0].write(path)
 
 
-def handle_custom_components(args: Namespace) -> None:
-    """Handle updating/viewing custom components
+def handle_custom_components(update: bool) -> None:
+    """Handle updating/viewing custom components.
 
     Args:
-        args (Namespace): The arguments supplied to the settings command.
+        update (bool): Whether to apply updates to the custom components.
     """
 
-    component_file_name = choose_option_from_list(
-        "Select a component type:",
+    component_file_name = choose_options_from_list(
+        "Select a component type",
         [
             ("input.json", "Inputs"),
             ("filter.json", "Filters"),
@@ -128,7 +139,7 @@ def handle_custom_components(args: Namespace) -> None:
             ("step.json", "Steps"),
             ("condition.json", "Conditions"),
         ],
-    )
+    )[0]
     component_dict = ComponentFactory.get_custom_components_dict(component_file_name, strict=False)
     if component_dict:
         info("Custom components:")
@@ -136,29 +147,30 @@ def handle_custom_components(args: Namespace) -> None:
             info(f"\t{name.removeprefix('custom/')}: {component_import!r}")
     else:
         info("No existing custom components")
-    if args.update_settings:
-        # Remove components
-        components_to_remove = get_components_to_remove(component_dict)
-        changed = bool(components_to_remove)
-        for component in components_to_remove:
-            del component_dict[component]
+    if not update:
+        return
+    # Remove components
+    components_to_remove = get_components_to_remove(component_dict)
+    changed = bool(components_to_remove)
+    for component in components_to_remove:
+        del component_dict[component]
 
-        # Add components
-        components_to_add = get_components_to_add(component_dict)
-        changed = changed or bool(components_to_add)
-        component_dict = component_dict | components_to_add
+    # Add components
+    components_to_add = get_components_to_add(component_dict)
+    changed = changed or bool(components_to_add)
+    component_dict = component_dict | components_to_add
 
-        if changed:
-            file_path = ComponentFactory.get_custom_components_path(component_file_name)
-            os.makedirs(os.path.dirname(file_path), exist_ok=True)
-            with open(file_path, "w+", encoding="UTF-8") as component_file:
-                component_file.write(
-                    json.dumps(
-                        {k.removeprefix("custom/"): v.bundle() for k, v in component_dict.items()},
-                        indent=4,
-                    )
+    if changed:
+        file_path = ComponentFactory.get_custom_components_path(component_file_name)
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path, "w+", encoding="UTF-8") as component_file:
+            component_file.write(
+                json.dumps(
+                    {k.removeprefix("custom/"): v.bundle() for k, v in component_dict.items()},
+                    indent=4,
                 )
-                component_file.flush()
+            )
+            component_file.flush()
 
 
 def get_components_to_remove(component_dict: Dict[str, ComponentImport]) -> List[str]:
@@ -219,3 +231,29 @@ def get_components_to_add(component_dict: Dict[str, ComponentImport]) -> Dict[st
         name = get_str("Enter component name to add(blank to skip): ")
 
     return components_to_add
+
+
+def handle_manager(update: bool) -> None:
+    """Handle updating/viewing the Manager.
+
+    Args:
+        update (bool): Whether to apply updates to the Manager.
+    """
+
+    path = f"{DefaultConfigFetcher.get_repo_config_dir()}/manager.json"
+    manager = None
+    try:
+        manager = Manager.read(path)
+        info(f"Current Manager\n{manager!r}")
+    except FileNotFoundError:
+        error("No Manager file found")
+    except json.JSONDecodeError as err:
+        error(f"Failed to decode Manager JSON\n{err}")
+    except ValueError as err:
+        error(f"Invalid Manager value\n{err}")
+    except TypeError as err:
+        error(f"Invalid Manager type\n{err}")
+
+    if not update:
+        return
+    Manager.from_console(manager).write(path)
