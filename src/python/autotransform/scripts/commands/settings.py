@@ -74,24 +74,30 @@ def settings_command_main(args: Namespace) -> None:
 
     if args.setting_type == "user_config":
         path = f"{get_config_dir}/{DefaultConfigFetcher.FILE_NAME}"
-        config = Config.read(path)
-        info(f"Current User Config: {config!r}")
-        if args.update_settings:
-            config.from_console(config, user_config=True)[0].write(path)
+        handle_config(path, "User", args.update_settings)
     elif args.setting_type == "repo_config":
         path = f"{DefaultConfigFetcher.get_repo_config_dir()}/{DefaultConfigFetcher.FILE_NAME}"
-        config = Config.read(path)
-        info(f"Current Repo Config: {config!r}")
-        if args.update_settings:
-            config.from_console(config, user_config=False)[0].write(path)
+        handle_config(path, "Repo", args.update_settings)
     elif args.setting_type == "cwd_config":
         path = f"{DefaultConfigFetcher.get_cwd_config_dir()}/{DefaultConfigFetcher.FILE_NAME}"
-        config = Config.read(path)
-        info(f"Current CWD Config: {config!r}")
-        if args.update_settings:
-            config.from_console(config, user_config=False)[0].write(path)
+        handle_config(path, "CWD", args.update_settings)
     elif args.setting_type == "custom_components":
         handle_custom_components(args)
+
+
+def handle_config(path: str, config_type: str, update: bool) -> None:
+    """Handles updating a config file.
+
+    Args:
+        path (str): The path to the file.
+        config_type (str): The type of config being updated (i.e. user).
+        update (bool): Whether to update the config.
+    """
+
+    config = Config.read(path)
+    info(f"Current {config_type} Config: {config!r}")
+    if update:
+        config.from_console(config, user_config=config_type == "User")[0].write(path)
 
 
 def handle_custom_components(args: Namespace) -> None:
