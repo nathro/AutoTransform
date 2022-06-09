@@ -12,6 +12,7 @@
 import time
 from argparse import ArgumentParser, Namespace
 
+from autotransform.config.default import DefaultConfigFetcher
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
@@ -27,8 +28,9 @@ def add_args(parser: ArgumentParser) -> None:
     """
 
     parser.add_argument(
-        "schedule",
-        metavar="schedule",
+        "--path",
+        metavar="path",
+        required=False,
         type=str,
         help="A file path to the JSON encoded schedule of schema runs to execute.",
     )
@@ -67,7 +69,9 @@ def schedule_command_main(args: Namespace) -> None:
         event_handler.set_logging_level(LoggingLevel.DEBUG)
 
     # Get Scheduler
-    schedule_file = args.schedule
+    schedule_file = args.path
+    if schedule_file is None:
+        schedule_file = f"{DefaultConfigFetcher.get_repo_config_relative_path()}/scheduler.json"
     event_args = {"scheduler_file": schedule_file}
     scheduler = Scheduler.read(schedule_file, start_time)
     event_args["scheduler"] = scheduler
