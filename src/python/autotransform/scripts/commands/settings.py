@@ -59,7 +59,12 @@ def add_args(parser: ArgumentParser) -> None:
         help="Update or view custom components",
     )
 
-    parser.add_argument("--update", dest="update_settings", action="store_true")
+    parser.add_argument(
+        "--update",
+        dest="update_settings",
+        action="store_true",
+        help="Used to indicate updates are to be made to the settings.",
+    )
 
     parser.set_defaults(func=settings_command_main, update_settings=False)
 

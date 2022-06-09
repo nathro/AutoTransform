@@ -32,8 +32,9 @@ def add_args(parser: ArgumentParser) -> None:
         metavar="path",
         required=False,
         type=str,
-        help="A file path to the JSON encoded schedule of schema runs to execute.",
+        help="A file path to the JSON encoded file, only use if file is in a non-usual place.",
     )
+
     parser.add_argument(
         "-t",
         "--time",

@@ -31,7 +31,7 @@ def add_args(parser: ArgumentParser) -> None:
         metavar="path",
         required=False,
         type=str,
-        help="A file path to the JSON encoded manager information.",
+        help="A file path to the JSON encoded file, only use if file is in a non-usual place.",
     )
 
     parser.add_argument(
