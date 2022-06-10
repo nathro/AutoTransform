@@ -2,6 +2,10 @@
 
 ## Release 0.3.1
 
+#### Components
+ - Added reviewer functionality to GithubRepo
+ - Renamed required_labels to labels for GithubRepo
+
 #### Misc
  - Moved off of python dataclasses to Pydantic
  - Modified scheduler file format to have "target" instead of "schema" for the path/builder name of the scheduled schemas

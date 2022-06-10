@@ -34,19 +34,24 @@ class GithubRepo(GitRepo):
     Attributes:
         base_branch_name (str): The name of the base branch for the repository.
         full_github_name (str): The fully qualified name of the Github Repo.
-        required_labels (List[str], optional): The labels to add to pull requests. Defaults to [].
         hide_automation_info (bool, optional): Whether to hide information on how automation was
             done from the pull request body. Defaults to False.
         hide_autotransform_docs (bool, optional): Whether to hide links to AutoTransform docs
             from the pull request body. Defaults to False.
+        labels (List[str], optional): The labels to add to pull requests. Defaults to [].
+        reviewers (List[str], optional): The reviewers to request for pull requests. Defaults to [].
+        team_reviewers (List[str], optional): The team reviewers to request for pull requests.
+            Defaults to [].
         name (ClassVar[RepoName]): The name of the component.
     """
 
     base_branch_name: str
     full_github_name: str
-    required_labels: List[str] = Field(default_factory=list)
     hide_automation_info: bool = False
     hide_autotransform_docs: bool = False
+    labels: List[str] = Field(default_factory=list)
+    reviewers: List[str] = Field(default_factory=list)
+    team_reviewers: List[str] = Field(default_factory=list)
 
     name: ClassVar[RepoName] = RepoName.GITHUB
 
@@ -67,6 +72,7 @@ class GithubRepo(GitRepo):
         """
 
         title = GitRepo.get_commit_message(batch["title"])
+        batch_metadata = batch.get("metadata", {})
 
         self.commit(batch["title"], change is not None)
 
@@ -78,7 +84,7 @@ class GithubRepo(GitRepo):
 
         self._local_repo.git.push(remote.name, "-u", commit_branch)
 
-        body = batch["metadata"].get("body", None)
+        body = batch_metadata.get("body", None)
 
         if self.hide_automation_info:
             automation_info = ""
@@ -98,11 +104,18 @@ class GithubRepo(GitRepo):
         )
 
         # Add labels
-        labels = batch["metadata"].get("labels", [])
-        assert isinstance(labels, List)
-        labels.extend(self.required_labels)
-        if len(labels) > 0:
+        labels = batch_metadata.get("labels", [])
+        labels.extend(self.labels)
+        if labels:
             pull_request.add_labels(labels)
+
+        # Request reviewers
+        reviewers = batch_metadata.get("reviewers", [])
+        reviewers.extend(self.reviewers)
+        team_reviewers = batch_metadata.get("team_reviewers", [])
+        team_reviewers.extend(self.team_reviewers)
+        if reviewers or team_reviewers:
+            pull_request.add_reviewers(reviewers, team_reviewers)
 
     def get_automation_info(self, batch: Batch) -> str:
         """Gets information on automating with AutoTransform.

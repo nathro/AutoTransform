@@ -110,7 +110,7 @@ class GithubUtils:
             PullRequest: The pull request.
         """
 
-        return PullRequest(self._api, self._api.pulls.get(pull_number))
+        return PullRequest(self._api, self._api.pulls.get(pull_number=pull_number))
 
     def get_open_pull_requests(self, base: Optional[str] = None) -> List[PullRequest]:
         """Gets all outstanding pull requests from the repo.
@@ -143,16 +143,16 @@ class GithubUtils:
         try:
             current_time = datetime.now().replace(microsecond=0)
             check_time = current_time - timedelta(days=1)
-            self._api.actions.create_workflow_dispatch(workflow, ref, inputs)
+            self._api.actions.create_workflow_dispatch(workflow_id=workflow, ref=ref, inputs=inputs)
             # We wait a bit to make sure Github's API is updated before printing a best guess of the
             # Workflow run's URL
             time.sleep(2)
             EventHandler.get().handle(DebugEvent({"message": "Checking for workflow run URL"}))
             res = self._api.actions.list_workflow_runs(
-                workflow,
-                self._api.users.get_authenticated().login,
-                ref,
-                "workflow_dispatch",
+                workflow_id=workflow,
+                actor=self._api.users.get_authenticated().login,
+                branch=ref,
+                event="workflow_dispatch",
                 created=f">={check_time.isoformat()}",
             )
             if not res.workflow_runs:
@@ -211,7 +211,7 @@ class PullRequest:
             PullRequest: The pull request associated with the number.
         """
 
-        pull = api.pulls.get(pull_number)
+        pull = api.pulls.get(pull_number=pull_number)
         return PullRequest(api, pull)
 
     def is_open(self) -> bool:
@@ -242,7 +242,7 @@ class PullRequest:
         """
 
         review_states = ["APPROVED", "CHANGES_REQUESTED"]
-        reviews = self._api.pulls.list_reviews(self.number)
+        reviews = self._api.pulls.list_reviews(pull_number=self.number)
         reviews.reverse()
         for review in reviews:
             if review.state in review_states:
@@ -269,10 +269,22 @@ class PullRequest:
         """Adds a list of labels to the pull request.
 
         Args:
-            labels (List[str]): the labels to add to the pull request.
+            labels (List[str]): The labels to add to the pull request.
         """
 
-        self._api.issues.add_labels(self.number, labels)
+        self._api.issues.add_labels(issue_number=self.number, labels=labels)
+
+    def add_reviewers(self, reviewers: List[str], team_reviewers: List[str]) -> None:
+        """Adds a list of labels to the pull request.
+
+        Args:
+            reviewers (List[str]): The reviewers to request for the pull request.
+            team_reviewers (List[str]): The team reviewers to request for the pull request.
+        """
+
+        self._api.pulls.request_reviewers(
+            pull_number=self.number, reviewers=reviewers, team_reviewers=team_reviewers
+        )
 
     def merge(self) -> bool:
         """Merges the pull request.
@@ -282,7 +294,7 @@ class PullRequest:
         """
 
         try:
-            res = self._api.pulls.merge(self.number)
+            res = self._api.pulls.merge(pull_number=self.number)
             return res.merged
         except HTTPError as err:
             EventHandler.get().handle(
@@ -298,7 +310,7 @@ class PullRequest:
         """
 
         try:
-            res = self._api.pulls.update(self.number, state="closed")
+            res = self._api.pulls.update(pull_number=self.number, state="closed")
             return res.state == "closed"
         except HTTPError as err:
             EventHandler.get().handle(
