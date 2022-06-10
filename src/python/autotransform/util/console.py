@@ -148,6 +148,7 @@ def input_ints(
         int_vals = []
         if min_choices == 0:
             vals = [val for val in vals if val != ""]
+        invalid_value = False
         for val in vals:
             if val.startswith("-"):
                 is_negative = True
@@ -156,15 +157,20 @@ def input_ints(
                 is_negative = False
             if not val.isdigit():
                 error("Only a decimal number may be entered")
-                continue
+                invalid_value = True
+                break
             int_val = -int(val) if is_negative else int(val)
             if min_val is not None and int_val < min_val:
                 error(f"{int_val} is too low, must be at least {min_val}")
-                continue
+                invalid_value = True
+                break
             if max_val is not None and int_val > max_val:
                 error(f"{int_val} is too high, must be less than {max_val}")
-                continue
+                invalid_value = True
+                break
             int_vals.append(int_val)
+        if invalid_value:
+            continue
         if len(vals) > max_choices:
             error(f"Too many selections, only {max_choices} allowed: {vals}")
             continue

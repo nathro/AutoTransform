@@ -16,6 +16,7 @@
  - Added custom components to settings command
  - Added manager to settings command
  - Added scheduler to settings command
+ - Added schema to settings command
  - Made files options for schedule/manage commands, no longer positional arguments
 
 ## Release 0.3.0 - Production Beta

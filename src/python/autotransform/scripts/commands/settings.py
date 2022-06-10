@@ -17,6 +17,7 @@ from typing import Dict, List
 
 from autotransform.config.config import Config
 from autotransform.config.default import DefaultConfigFetcher
+from autotransform.schema.schema import AutoTransformSchema
 from autotransform.util.component import ComponentFactory, ComponentImport
 from autotransform.util.console import choose_options_from_list, error, get_str, info
 from autotransform.util.manager import Manager
@@ -67,6 +68,11 @@ def add_args(parser: ArgumentParser) -> None:
         const="manager",
         help="Update or view manager settings",
     )
+    setting_type_group.add_argument(
+        "--schema",
+        type=str,
+        help="The path to an existing or to be created JSON encoded schema.",
+    )
 
     parser.add_argument(
         "--update",
@@ -99,6 +105,8 @@ def settings_command_main(args: Namespace) -> None:
         handle_custom_components(args.update_settings)
     elif args.setting_type == "manager":
         handle_manager(args.update_settings)
+    else:
+        handle_schema(args.update_settings, args.schema)
 
 
 def handle_config(path: str, config_type: str, update: bool) -> None:
@@ -284,3 +292,26 @@ def handle_scheduler(update: bool) -> None:
     if not update:
         return
     Scheduler.from_console(scheduler).write(path)
+
+
+def handle_schema(update: bool, file_path: str) -> None:
+    """Handle updating/viewing a Schema.
+
+    Args:
+        update (bool): Whether to apply updates to the Schema.
+        file_path (str): The path to the Schema file.
+    """
+    try:
+        with open(file_path, "r", encoding="UTF-8") as schema_file:
+            schema = AutoTransformSchema.from_data(json.loads(schema_file.read()))
+        info(f"Existing schema:\n{schema!r}")
+    except FileNotFoundError:
+        info(f"No schema found at path: {file_path}")
+        schema = None
+
+    if update:
+        schema = AutoTransformSchema.from_console(schema)
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path, "w+", encoding="UTF-8") as schema_file:
+            schema_file.write(json.dumps(schema.bundle(), indent=4))
+            schema_file.flush()

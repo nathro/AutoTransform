@@ -37,6 +37,7 @@ from autotransform.schema.config import SchemaConfig
 from autotransform.transformer.base import FACTORY as transformer_factory
 from autotransform.transformer.base import Transformer
 from autotransform.util.component import ComponentModel
+from autotransform.util.console import choose_options_from_list, choose_yes_or_no
 from autotransform.validator.base import FACTORY as validator_factory
 from autotransform.validator.base import ValidationError, Validator
 
@@ -246,4 +247,103 @@ class AutoTransformSchema(ComponentModel):
             commands=commands,
             repo=repo,
             config=config,
+        )
+
+    @staticmethod
+    def from_console(prev_schema: Optional[AutoTransformSchema] = None) -> AutoTransformSchema:
+        """Gets a AutoTransformSchema using console inputs.
+
+        Args:
+            prev_schema (Optional[AutoTransformSchema], optional): A previously input
+                AutoTransformSchema. Defaults to None.
+
+        Returns:
+            AutoTransformSchema: The input AutoTransformSchema.
+        """
+
+        # Get Config
+        config = SchemaConfig.from_console(prev_schema.config if prev_schema is not None else None)
+
+        # Get Input
+        args: Dict[str, Any] = {"allow_none": False}
+        if prev_schema is not None:
+            args["previous_value"] = prev_schema.input
+        inp = input_factory.from_console("input", **args)
+        assert inp is not None
+
+        # Get Filters
+        if prev_schema is not None and prev_schema.filters:
+            filters = choose_options_from_list(
+                "Choose filters to keep",
+                [(filt, f"{filt!r}") for filt in prev_schema.filters],
+                min_choices=0,
+                max_choices=len(prev_schema.filters),
+            )
+        else:
+            filters = []
+        while choose_yes_or_no("Would you like to add a filter?"):
+            filt = filter_factory.from_console("filter", allow_none=False)
+            assert filt is not None
+            filters.append(filt)
+
+        # Get Batcher
+        args = {"allow_none": False}
+        if prev_schema is not None:
+            args["previous_value"] = prev_schema.batcher
+        batcher = batcher_factory.from_console("batcher", **args)
+        assert batcher is not None
+
+        # Get Transformer
+        args = {"allow_none": False}
+        if prev_schema is not None:
+            args["previous_value"] = prev_schema.transformer
+        transformer = transformer_factory.from_console("transformer", **args)
+        assert transformer is not None
+
+        # Get Validators
+        if prev_schema is not None and prev_schema.validators:
+            validators = choose_options_from_list(
+                "Choose validators to keep",
+                [(validator, f"{validator!r}") for validator in prev_schema.validators],
+                min_choices=0,
+                max_choices=len(prev_schema.validators),
+            )
+        else:
+            validators = []
+        while choose_yes_or_no("Would you like to add a validator?"):
+            validator = validator_factory.from_console("validator", allow_none=False)
+            assert validator is not None
+            validators.append(validator)
+
+        # Get Commands
+        if prev_schema is not None and prev_schema.commands:
+            commands = choose_options_from_list(
+                "Choose commands to keep",
+                [(command, f"{command!r}") for command in prev_schema.commands],
+                min_choices=0,
+                max_choices=len(prev_schema.commands),
+            )
+        else:
+            commands = []
+        while choose_yes_or_no("Would you like to add a command?"):
+            command = command_factory.from_console("command", allow_none=False)
+            assert command is not None
+            commands.append(command)
+
+        # Get Repo
+        args = {"allow_none": False}
+        if prev_schema is not None:
+            args["previous_value"] = prev_schema.repo
+        repo = repo_factory.from_console("repo", **args)
+        assert repo is not None
+
+        return AutoTransformSchema(
+            input=inp,
+            batcher=batcher,
+            transformer=transformer,
+            config=config,
+            filters=filters,
+            validators=validators,
+            commands=commands,
+            repo=repo,
         )
