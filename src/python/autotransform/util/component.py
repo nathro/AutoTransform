@@ -82,9 +82,22 @@ class ComponentModel(BaseModel):
         if len(self.__fields__) < 2:
             return super().__repr__()
         lines = [f"{self.__class__.__name__}("]
-        lines.extend([f"\t{name}={getattr(self, name)!r}," for name in self.__fields__.keys()])
+        for name in self.__fields__.keys():
+            field_val = getattr(self, name)
+            if isinstance(field_val, list) and len(field_val) > 1:
+                lines.append(f"\t{name}=[")
+                lines.extend([f"\t\t{val!r},".replace("\n", "\n\t\t") for val in field_val])
+                lines.append("\t],")
+            elif isinstance(field_val, dict) and len(field_val) > 1:
+                lines.append(f"\t{name}=" + "{")
+                field_lines = [f"\t\t{key}={val!r}," for key, val in field_val.items()]
+                lines.extend([line.replace("\n", "\n\t\t") for line in field_lines])
+                lines.append("\t},")
+            elif isinstance(field_val, Enum):
+                lines.append(f"\t{name}={field_val.value!r},")
+            else:
+                lines.append(f"\t{name}={field_val!r},".replace("\n", "\n\t"))
         lines.append(")")
-        lines = [line.replace("\n", "\n\t") for line in lines]
         return "\n".join(lines)
 
 
