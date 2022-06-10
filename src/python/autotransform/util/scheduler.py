@@ -291,9 +291,7 @@ class Scheduler(ComponentModel):
             # Check if should run
             if not scheduled_schema.schedule.should_run(hour_of_day, day_of_week):
                 EventHandler.get().handle(
-                    DebugEvent(
-                        {"message": f"Skipping run of schema: {schema.get_config().schema_name}"}
-                    )
+                    DebugEvent({"message": f"Skipping run of schema: {schema.config.schema_name}"})
                 )
                 continue
             shard_filter = scheduled_schema.schedule.shard_filter
@@ -311,9 +309,7 @@ class Scheduler(ComponentModel):
                     )
                 )
                 schema.add_filter(shard_filter)
-            EventHandler.get().handle(
-                ScheduleRunEvent({"schema_name": schema.get_config().schema_name})
-            )
+            EventHandler.get().handle(ScheduleRunEvent({"schema_name": schema.config.schema_name}))
             self.runner.run(schema)
 
     def write(self, file_path: str) -> None:
