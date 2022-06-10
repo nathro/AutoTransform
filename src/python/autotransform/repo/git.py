@@ -56,7 +56,7 @@ class GitRepo(Repo):
         # Handle titles of the format "[1/2] foo" that can come from chunk batching
         fixed_title = re.sub(r"\[(\d+)/(\d+)\]", r"\1_\2", title)
         if autotransform.schema.current is not None:
-            schema_name = f"{autotransform.schema.current.get_config().schema_name}/"
+            schema_name = f"{autotransform.schema.current.config.schema_name}/"
         else:
             schema_name = ""
         return f"{GitRepo.BRANCH_NAME_PREFIX}/{schema_name}{fixed_title}".replace(" ", "_")
@@ -76,7 +76,7 @@ class GitRepo(Repo):
         if not title.startswith("["):
             title = f" {title}"
         if autotransform.schema.current is not None:
-            schema_name = f"[{autotransform.schema.current.get_config().schema_name}]"
+            schema_name = f"[{autotransform.schema.current.config.schema_name}]"
         else:
             schema_name = ""
         return f"{GitRepo.COMMIT_MESSAGE_PREFIX}{schema_name}{title}"

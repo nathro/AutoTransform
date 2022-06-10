@@ -9,6 +9,7 @@
 
 """The config command is used to update the config files for AutoTransform."""
 
+import json
 import os
 import subprocess
 from argparse import ArgumentParser, Namespace
@@ -194,13 +195,13 @@ def initialize_repo(
     if use_sample_schema:
         sample_schema_path = f"{examples_dir}/schemas/black_format.json"
         with open(sample_schema_path, "r", encoding="UTF-8") as sample_schema_file:
-            schema = AutoTransformSchema.from_json(sample_schema_file.read())
-        schema._repo = manager.repo  # pylint: disable=protected-access
+            schema = AutoTransformSchema.from_data(json.loads(sample_schema_file.read()))
+        schema.repo = manager.repo  # pylint: disable=protected-access
 
         schema_path = f"{repo_config_dir}/schemas/black_format.json"
         os.makedirs(os.path.dirname(schema_path), exist_ok=True)
         with open(schema_path, "w+", encoding="UTF-8") as schema_file:
-            schema_file.write(schema.to_json(pretty=True))
+            schema_file.write(json.dumps(schema.bundle(), indent=4))
             schema_file.flush()
 
         # Get requirements

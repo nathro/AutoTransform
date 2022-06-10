@@ -14,7 +14,9 @@ required to fully execute a change.
 from __future__ import annotations
 
 import json
-from typing import Any, Dict, List, Mapping, Optional
+from typing import Any, Dict, List, Optional
+
+from pydantic import Field
 
 import autotransform.schema
 from autotransform.batcher.base import FACTORY as batcher_factory
@@ -34,159 +36,40 @@ from autotransform.repo.base import Repo
 from autotransform.schema.config import SchemaConfig
 from autotransform.transformer.base import FACTORY as transformer_factory
 from autotransform.transformer.base import Transformer
+from autotransform.util.component import ComponentModel
 from autotransform.validator.base import FACTORY as validator_factory
 from autotransform.validator.base import ValidationError, Validator
 
 
-class AutoTransformSchema:
+class AutoTransformSchema(ComponentModel):
     """The heart of AutoTransform, pulls together all components required to execute
     a transformation.
 
     Attributes:
-        _input (Input): The Input which gets Items.
-        _batcher (Batcher): The Batcher which batches filtered Items in to logical groups.
-        _transformer (Transformer): The Transformer which actually modifies files.
-        _filters (List[Filter]): A list of Filters to apply to Items.
-        _validators (List[Validator]): A list of Validators to ensure the changes
-            did not break anything.
-        _commands (List[Command]): A list of Commands that run post-processing on
-            the changes.
-        _repo (Optional[Repo]): A Repo to control submission of changes to version
-            control or code review systems.
-        _config (SchemaConfig): Any configuration needed by the schema so that it can run.
+        input (Input): The Input which gets Items.
+        batcher (Batcher): The Batcher which batches filtered Items in to logical groups.
+        transformer (Transformer): The Transformer which actually modifies files.
+        config (SchemaConfig): Any configuration needed by the schema so that it can run.
+        filters (List[Filter], optional): A list of Filters to apply to Items. Defaults to [].
+        validators (List[Validator], optional): A list of Validators to ensure the changes
+            did not break anything. Defaults to [].
+        commands (List[Command], optional): A list of Commands that run post-processing on
+            the changes. Defaults to [].
+        repo (Optional[Repo], optional): A Repo to control submission of changes to version
+            control or code review systems. Defaults to None.
     """
 
     # pylint: disable=too-many-instance-attributes
 
-    _input: Input
-    _batcher: Batcher
-    _transformer: Transformer
-    _config: SchemaConfig
+    input: Input
+    batcher: Batcher
+    transformer: Transformer
+    config: SchemaConfig
 
-    _filters: List[Filter]
-    _validators: List[Validator]
-    _commands: List[Command]
-    _repo: Optional[Repo]
-
-    def __init__(
-        self,
-        inp: Input,
-        batcher: Batcher,
-        transformer: Transformer,
-        config: SchemaConfig,
-        filters: List[Filter] = None,
-        validators: List[Validator] = None,
-        commands: List[Command] = None,
-        repo: Optional[Repo] = None,
-    ):
-        """A simple constructor.
-
-        Args:
-            inp (Input): The Schema's Input.
-            batcher (Batcher): The Schema's Batcher.
-            transformer (Transformer): The Schema's Transformer.
-            config (SchemaConfig, optional): The Schema's Config.
-            filters (List[Filter], optional): The Schema's Filters. Defaults to None which is
-                converted in to an empty list.
-            validators (List[Validator], optional): The Schema's Validators. Defaults to None which
-                is converted in to an empty list.
-            commands (List[Command], optional): The Schema's Commands. Defaults to None which is
-                converted in to an empty list.
-            repo (Optional[Repo], optional): The Schema's Repo. Defaults to None.
-        """
-
-        # pylint: disable=too-many-arguments
-
-        self._input = inp
-        self._batcher = batcher
-        self._transformer = transformer
-        self._config = config
-
-        self._filters = filters if isinstance(filters, List) else []
-        self._validators = validators if isinstance(validators, List) else []
-        self._commands = commands if isinstance(commands, List) else []
-        self._repo = repo
-
-    def get_input(self) -> Input:
-        """Gets the Input object of the Schema.
-
-        Returns:
-            Input: The Input object of the Schema.
-        """
-
-        return self._input
-
-    def get_batcher(self) -> Batcher:
-        """Gets the Batcher object of the Schema.
-
-        Returns:
-            Batcher: The Batcher object of the Schema.
-        """
-
-        return self._batcher
-
-    def get_transformer(self) -> Transformer:
-        """Gets the Transformer object of the Schema.
-
-        Returns:
-            Transformer: The Transformer object of the Schema.
-        """
-
-        return self._transformer
-
-    def get_config(self) -> SchemaConfig:
-        """Gets the configuration of the Schema.
-
-        Returns:
-            SchemaConfig: The configuration of the Schema.
-        """
-
-        return self._config
-
-    def get_filters(self) -> List[Filter]:
-        """Gets the Filter objects of the Schema.
-
-        Returns:
-            List[Filter]: The Filter objects of the Schema.
-        """
-
-        return self._filters
-
-    def get_validators(self) -> List[Validator]:
-        """Gets the Validator objects of the Schema.
-
-        Returns:
-            List[Validator]: The Validator objects of the Schema.
-        """
-
-        return self._validators
-
-    def get_commands(self) -> List[Command]:
-        """Gets the Command objects of the Schema.
-
-        Returns:
-            List[Command]: The Command objects of the Schema.
-        """
-
-        return self._commands
-
-    def get_repo(self) -> Optional[Repo]:
-        """Gets the repo object of the Schema.
-
-        Returns:
-            Optional[Repo]: The Repo object of the Schema.
-        """
-
-        return self._repo
-
-    def add_filter(self, filt: Filter) -> None:
-        """Adds a filter to the list of filters for the Schema.
-
-        Args:
-            filt (Filter): The filter to add.
-        """
-
-        self._filters.append(filt)
+    filters: List[Filter] = Field(default_factory=list)
+    validators: List[Validator] = Field(default_factory=list)
+    commands: List[Command] = Field(default_factory=list)
+    repo: Optional[Repo] = None
 
     def get_batches(self) -> List[Batch]:
         """Runs the Input to get eligible Items, filters them, then batches them.
@@ -202,7 +85,7 @@ class AutoTransformSchema:
 
         # Get Items
         event_handler.handle(DebugEvent({"message": "Begin get_items"}))
-        all_items = self._input.get_items()
+        all_items = self.input.get_items()
         event_handler.handle(
             DebugEvent({"message": f"Items: {json.dumps([item.bundle() for item in all_items])}"})
         )
@@ -212,7 +95,7 @@ class AutoTransformSchema:
         valid_items: List[Item] = []
         for item in all_items:
             is_valid = True
-            for cur_filter in self._filters:
+            for cur_filter in self.filters:
                 if not cur_filter.is_valid(item):
                     is_valid = False
                     event = DebugEvent(
@@ -230,7 +113,7 @@ class AutoTransformSchema:
 
         # Batch Items
         event_handler.handle(DebugEvent({"message": "Begin batching"}))
-        batches = self._batcher.batch(valid_items)
+        batches = self.batcher.batch(valid_items)
         encodable_batches = [
             {"items": [item.bundle() for item in batch["items"]], "metadata": batch["metadata"]}
             for batch in batches
@@ -264,48 +147,47 @@ class AutoTransformSchema:
         )
 
         # Make sure repo is clean before executing
-        repo = self._repo
-        if repo is not None:
+        if self.repo is not None:
             event_handler.handle(DebugEvent({"message": "Clean repo"}))
-            repo.rewind(batch)
+            self.repo.rewind(batch)
 
         # Execute transformation
-        result = self._transformer.transform(batch)
+        result = self.transformer.transform(batch)
 
         # Run pre-validation commands
         pre_validation_commands = [
-            command for command in self._commands if command.run_pre_validation
+            command for command in self.commands if command.run_pre_validation
         ]
         for command in pre_validation_commands:
             event_handler.handle(DebugEvent({"message": f"Running command {command}"}))
             command.run(batch, result)
 
         # Validate the changes
-        for validator in self._validators:
+        for validator in self.validators:
             validation_result = validator.check(batch, result)
             event_handler.handle(DebugEvent({"message": f"Validation Result: {validation_result}"}))
 
-            if validation_result.level > self._config.allowed_validation_level:
+            if validation_result.level > self.config.allowed_validation_level:
                 event_handler.handle(DebugEvent({"message": "Validation Failed"}))
                 raise ValidationError(issue=validation_result, message=validation_result.message)
 
         # Run post-validation commands
         post_validation_commands = [
-            command for command in self._commands if not command.run_pre_validation
+            command for command in self.commands if not command.run_pre_validation
         ]
         for command in post_validation_commands:
             event_handler.handle(DebugEvent({"message": f"Running command {command}"}))
             command.run(batch, result)
 
         # Handle repo state, submitting changes if present and reseting the repo
-        if repo is not None:
+        if self.repo is not None:
             event_handler.handle(DebugEvent({"message": "Checking for changes"}))
-            if repo.has_changes(batch):
+            if self.repo.has_changes(batch):
                 event_handler.handle(DebugEvent({"message": "Changes found"}))
                 event_handler.handle(DebugEvent({"message": "Submitting changes"}))
-                repo.submit(batch, result, change=change)
+                self.repo.submit(batch, result, change=change)
                 event_handler.handle(DebugEvent({"message": "Rewinding repo"}))
-                repo.rewind(batch)
+                self.repo.rewind(batch)
             else:
                 if change is not None:
                     event_handler.handle(
@@ -331,83 +213,34 @@ class AutoTransformSchema:
             self.execute_batch(batch)
         autotransform.schema.current = None
 
-    def bundle(self) -> Dict[str, Any]:
-        """Bundles the Schema in to a format that can be JSON encoded.
-
-        Returns:
-            Dict[str, Any]: The bundled data of the Schema.
-        """
-
-        bundle = {
-            "input": self._input.bundle(),
-            "batcher": self._batcher.bundle(),
-            "transformer": self._transformer.bundle(),
-            "filters": [f.bundle() for f in self._filters],
-            "validators": [validator.bundle() for validator in self._validators],
-            "commands": [command.bundle() for command in self._commands],
-            "config": self._config.dict(exclude_unset=True),
-        }
-        repo = self._repo
-        if isinstance(repo, Repo):
-            bundle["repo"] = repo.bundle()
-        return bundle
-
-    def to_json(self, pretty: bool = False) -> str:
-        """Converts the Schema in to JSON that can be passed and stored.
-
-        Args:
-            pretty (bool, optional): Forces the JSON to be human readable. Defaults to False.
-
-        Returns:
-            str: The JSON representing the Schema
-        """
-
-        bundle = self.bundle()
-        if pretty:
-            return json.dumps(bundle, indent=4)
-        return json.dumps(bundle)
-
     @staticmethod
-    def from_json(json_bundle: str) -> AutoTransformSchema:
-        """Produces a Schema from supplied JSON
+    def from_data(data: Dict[str, Any]) -> AutoTransformSchema:
+        """Takes data from a source like JSON and produces the associated Schema.
 
         Args:
-            json_bundle (str): A JSON encoded bundle representing a Schema
+            data (Dict[str, Any]): The data representing the Schema.
 
         Returns:
-            AutoTransformSchema: The Schema represented by the JSON
+            AutoTransformSchema: The Schema represented by the data.
         """
 
-        return AutoTransformSchema.from_bundle(json.loads(json_bundle))
+        inp = input_factory.get_instance(data["input"])
+        batcher = batcher_factory.get_instance(data["batcher"])
+        transformer = transformer_factory.get_instance(data["transformer"])
+        config = SchemaConfig.parse_obj(data["config"])
 
-    @staticmethod
-    def from_bundle(bundle: Mapping[str, Any]) -> AutoTransformSchema:
-        """Takes a bundle of information from a source like JSON and produces the associated Schema.
-
-        Args:
-            bundle (Mapping[str, Any]): The bundle representing the Schema.
-
-        Returns:
-            AutoTransformSchema: The Schema represented by the bundle.
-        """
-
-        inp = input_factory.get_instance(bundle["input"])
-        batcher = batcher_factory.get_instance(bundle["batcher"])
-        transformer = transformer_factory.get_instance(bundle["transformer"])
-        config = SchemaConfig.parse_obj(bundle["config"])
-
-        filters = [filter_factory.get_instance(f) for f in bundle.get("filters", [])]
+        filters = [filter_factory.get_instance(f) for f in data.get("filters", [])]
         validators = [
-            validator_factory.get_instance(validator) for validator in bundle.get("validators", [])
+            validator_factory.get_instance(validator) for validator in data.get("validators", [])
         ]
-        commands = [command_factory.get_instance(command) for command in bundle.get("commands", [])]
+        commands = [command_factory.get_instance(command) for command in data.get("commands", [])]
 
-        repo = repo_factory.get_instance(bundle["repo"]) if "repo" in bundle else None
+        repo = repo_factory.get_instance(data["repo"]) if "repo" in data else None
 
         return AutoTransformSchema(
-            inp,
-            batcher,
-            transformer,
+            input=inp,
+            batcher=batcher,
+            transformer=transformer,
             filters=filters,
             validators=validators,
             commands=commands,

@@ -50,7 +50,7 @@ class GithubRunner(Runner):
         """
 
         event_handler = EventHandler.get()
-        repo = schema.get_repo()
+        repo = schema.repo
 
         # May add support for cross-repo usage but enforce that the workflow being invoked exists
         # in the target repo for now
@@ -62,7 +62,7 @@ class GithubRunner(Runner):
         workflow_url = GithubUtils.get(repo.full_github_name).create_workflow_dispatch(
             self.run_workflow,
             repo.base_branch_name,
-            {"schema": schema.to_json()},
+            {"schema": json.dumps(schema.bundle())},
         )
         assert workflow_url is not None, "Failed to dispatch workflow request"
         event_handler.handle(DebugEvent({"message": "Successfully dispatched workflow run"}))
@@ -78,7 +78,7 @@ class GithubRunner(Runner):
             )
         )
         event_handler.handle(
-            RemoteRunEvent({"schema_name": schema.get_config().schema_name, "ref": workflow_url})
+            RemoteRunEvent({"schema_name": schema.config.schema_name, "ref": workflow_url})
         )
 
     def update(self, change: Change) -> None:
@@ -91,7 +91,7 @@ class GithubRunner(Runner):
 
         event_handler = EventHandler.get()
         schema = change.get_schema()
-        repo = schema.get_repo()
+        repo = schema.repo
 
         # May add support for cross-repo usage but enforce that the workflow being invoked exists
         # in the target repo for now

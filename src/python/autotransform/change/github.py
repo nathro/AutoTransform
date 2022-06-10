@@ -162,7 +162,7 @@ class GithubChange(Change):
             elif cur_line_placement is not None:
                 data[cur_line_placement].append(line)
 
-        schema = AutoTransformSchema.from_json("\n".join(data["schema"]))
+        schema = AutoTransformSchema.from_data(json.loads("\n".join(data["schema"])))
         batch = json.loads("\n".join(data["batch"]))
         items = [item_factory.get_instance(item) for item in batch["items"]]
         batch = {

@@ -11,6 +11,7 @@
 
 # pylint: disable=too-many-arguments
 
+import json
 import pathlib
 from typing import Any, List, Mapping, Optional, Sequence
 
@@ -39,10 +40,10 @@ def get_sample_schema() -> AutoTransformSchema:
 
     repo_root = str(pathlib.Path(__file__).parent.parent.parent.resolve()).replace("\\", "/")
     return AutoTransformSchema(
-        DirectoryInput(path=repo_root),
-        SingleBatcher(title=EXPECTED_TITLE, metadata=EXPECTED_METADATA),
-        RegexTransformer(pattern="input", replacement="inputsource"),
-        SchemaConfig(schema_name="Sample", owners=["foo", "bar"]),
+        input=DirectoryInput(path=repo_root),
+        batcher=SingleBatcher(title=EXPECTED_TITLE, metadata=EXPECTED_METADATA),
+        transformer=RegexTransformer(pattern="input", replacement="inputsource"),
+        config=SchemaConfig(schema_name="Sample", owners=["foo", "bar"]),
         filters=[RegexFilter(pattern=".*\\.py$")],
         repo=GithubRepo(
             base_branch_name="master",
@@ -279,7 +280,7 @@ def test_json_encoding(_mocked_checkout):
     # pylint: disable=unspecified-encoding
 
     schema = get_sample_schema()
-    schema_json = schema.to_json(pretty=True)
+    schema_json = json.dumps(schema.bundle(), indent=4)
     print(schema_json)
     parent_dir = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
     with open(f"{parent_dir}/data/sample_schema.json", "r") as schema_file:
@@ -301,28 +302,6 @@ def test_json_decoding(_mocked_checkout):
         actual_json = schema_file.read()
     repo_root = str(pathlib.Path(__file__).parent.parent.parent.resolve()).replace("\\", "/")
     actual_json = actual_json.replace("<<REPO ROOT>>", repo_root)
-    actual_schema = AutoTransformSchema.from_json(actual_json)
+    actual_schema = AutoTransformSchema.from_data(json.loads(actual_json))
 
-    # Check Input
-    assert actual_schema.get_input() == expected_schema.get_input()
-
-    # Check batcher
-    assert actual_schema.get_batcher() == expected_schema.get_batcher()
-
-    # Check transformer
-    assert actual_schema.get_transformer() == expected_schema.get_transformer()
-
-    # Check repo
-    assert actual_schema.get_repo() == expected_schema.get_repo()
-
-    # Check Filters
-    assert actual_schema.get_filters() == expected_schema.get_filters()
-
-    # Check validators
-    assert actual_schema.get_validators() == expected_schema.get_validators()
-
-    # Check commands
-    assert actual_schema.get_commands() == expected_schema.get_commands()
-
-    # Check config
-    assert actual_schema.get_config() == expected_schema.get_config()
+    assert actual_schema == expected_schema

@@ -13,12 +13,13 @@ from __future__ import annotations
 
 from typing import List
 
-from pydantic import BaseModel, Field  # pylint: disable=no-name-in-module
+from pydantic import Field
 
+from autotransform.util.component import ComponentModel
 from autotransform.validator.base import ValidationResultLevel
 
 
-class SchemaConfig(BaseModel):  # pylint: disable=too-few-public-methods
+class SchemaConfig(ComponentModel):  # pylint: disable=too-few-public-methods
     """An object containing all configuration information for a Schema.
 
     Attributes:

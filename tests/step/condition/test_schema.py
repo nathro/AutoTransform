@@ -25,7 +25,7 @@ def test_non_used_comparisons():
     mock_config = mock.create_autospec(SchemaConfig)
     mock_config.schema_name = "foo"
     mock_schema = mock.create_autospec(AutoTransformSchema)
-    mock_schema.get_config.return_value = mock_config
+    mock_schema.config = mock_config
     mock_change = mock.create_autospec(Change)
     mock_change.get_schema.return_value = mock_schema
 

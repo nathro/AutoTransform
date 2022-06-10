@@ -16,6 +16,13 @@
         "pattern": "input",
         "replacement": "inputsource"
     },
+    "config": {
+        "schema_name": "Sample",
+        "owners": [
+            "foo",
+            "bar"
+        ]
+    },
     "filters": [
         {
             "name": "regex",
@@ -24,13 +31,6 @@
     ],
     "validators": [],
     "commands": [],
-    "config": {
-        "schema_name": "Sample",
-        "owners": [
-            "foo",
-            "bar"
-        ]
-    },
     "repo": {
         "name": "github",
         "base_branch_name": "master",

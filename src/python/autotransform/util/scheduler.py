@@ -286,7 +286,7 @@ class Scheduler(ComponentModel):
                 schema = schema_builder_factory.get_instance(schema).build()
             else:
                 with open(scheduled_schema.target, "r", encoding="UTF-8") as schema_file:
-                    schema = AutoTransformSchema.from_json(schema_file.read())
+                    schema = AutoTransformSchema.from_data(json.loads(schema_file.read()))
 
             # Check if should run
             if not scheduled_schema.schedule.should_run(hour_of_day, day_of_week):

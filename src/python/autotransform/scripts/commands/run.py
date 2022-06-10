@@ -133,13 +133,13 @@ def run_command_main(args: Namespace) -> None:
         schema = schema_builder_factory.get_instance(schema).build()
     elif args.schema_type == "file":
         with open(schema, "r") as schema_file:
-            schema = AutoTransformSchema.from_json(schema_file.read())
+            schema = AutoTransformSchema.from_data(json.loads(schema_file.read()))
     elif args.schema_type == "environment":
         schema = os.getenv(schema)
         assert isinstance(schema, str)
-        schema = AutoTransformSchema.from_json(schema)
+        schema = AutoTransformSchema.from_data(json.loads(schema))
     else:
-        schema = AutoTransformSchema.from_json(schema)
+        schema = AutoTransformSchema.from_data(json.loads(schema))
 
     if args.schema_type != "string":
         event_handler.handle(DebugEvent({"message": f"JSON Schema: {schema.to_json()}"}))

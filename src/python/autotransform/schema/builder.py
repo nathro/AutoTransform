@@ -9,6 +9,7 @@
 
 """The base class for SchemaBuilders which are used to programatically generate a Schema."""
 
+import json
 from abc import abstractmethod
 from enum import Enum
 from typing import List, Optional
@@ -22,7 +23,7 @@ from autotransform.repo.base import Repo
 from autotransform.schema.config import SchemaConfig
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.transformer.base import Transformer
-from autotransform.util.component import NamedComponent, ComponentFactory
+from autotransform.util.component import ComponentFactory, NamedComponent
 from autotransform.validator.base import Validator
 
 
@@ -114,9 +115,9 @@ class SchemaBuilder(NamedComponent):
         """
 
         return AutoTransformSchema(
-            self.get_input(),
-            self.get_batcher(),
-            self.get_transformer(),
+            input=self.get_input(),
+            batcher=self.get_batcher(),
+            transformer=self.get_transformer(),
             filters=self.get_filters(),
             validators=self.get_validators(),
             commands=self.get_commands(),
@@ -135,7 +136,7 @@ class SchemaBuilder(NamedComponent):
         # pylint: disable=unspecified-encoding
 
         with open(path, "w") as file:
-            file.write(self.build().to_json(pretty=True))
+            file.write(json.dumps(self.build().bundle(), indent=4))
 
 
 FACTORY = ComponentFactory(

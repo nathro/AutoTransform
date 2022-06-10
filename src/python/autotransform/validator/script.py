@@ -83,7 +83,7 @@ class ScriptValidator(Validator):
         if self.run_on_changes:
             current_schema = autotransform.schema.current
             assert current_schema is not None
-            repo = current_schema.get_repo()
+            repo = current_schema.repo
             assert repo is not None
             items: Sequence[Item] = [FileItem(key=file) for file in repo.get_changed_files(batch)]
         else:
@@ -190,7 +190,7 @@ class ScriptValidator(Validator):
         if self.run_on_changes:
             current_schema = autotransform.schema.current
             assert current_schema is not None
-            repo = current_schema.get_repo()
+            repo = current_schema.repo
             assert repo is not None
             items: Sequence[Item] = [FileItem(key=file) for file in repo.get_changed_files(batch)]
         else:

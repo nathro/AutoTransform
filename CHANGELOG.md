@@ -9,6 +9,7 @@
 #### Misc
  - Moved off of python dataclasses to Pydantic
  - Modified scheduler file format to have "target" instead of "schema" for the path/builder name of the scheduled schemas
+ - Converted AutoTransformSchema and SchemaConfig to use ComponentModel base
 
 #### Scripts
  - Moved config setting/viewing to settings command which will include all settings
