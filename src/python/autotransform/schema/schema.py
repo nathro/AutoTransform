@@ -249,6 +249,7 @@ class AutoTransformSchema(ComponentModel):
             config=config,
         )
 
+    # pylint: disable=too-many-branches
     @staticmethod
     def from_console(prev_schema: Optional[AutoTransformSchema] = None) -> AutoTransformSchema:
         """Gets a AutoTransformSchema using console inputs.
