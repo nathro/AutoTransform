@@ -142,7 +142,7 @@ def run_command_main(args: Namespace) -> None:
         schema = AutoTransformSchema.from_data(json.loads(schema))
 
     if args.schema_type != "string":
-        event_handler.handle(DebugEvent({"message": f"JSON Schema: {schema.to_json()}"}))
+        event_handler.handle(DebugEvent({"message": f"JSON Schema: {json.dumps(schema.bundle())}"}))
 
     if args.run_local:
         event_handler.handle(DebugEvent({"message": "Running locally"}))

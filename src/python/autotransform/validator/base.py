@@ -66,7 +66,8 @@ class ValidationResultLevel(str, Enum):
         return self.compare(other.value if isinstance(other, Enum) else str(other)) >= 0
 
 
-class ValidationResult(ComponentModel):
+@dataclass(frozen=True, kw_only=True)
+class ValidationResult:
     """Represents the result of an attempt at validation.
 
     Attributes:
