@@ -7,6 +7,6 @@
 
 # @black_format
 
-"""A change represents a submission from a run of AutoTransform on a particular Batch. They
-are used for managing submissions to code review/source control systems. A pull request is
-an example of a potential change."""
+"""A Change represents a submission from a run of AutoTransform on a particular Batch. They
+are used for managing submissions to code review/source control systems. A Pull Request is
+an example of a potential Change."""

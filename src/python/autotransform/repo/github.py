@@ -12,7 +12,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any, ClassVar, Dict, List, Mapping, Optional, Sequence
+from typing import TYPE_CHECKING, Any, ClassVar, Dict, List, Mapping, Optional, Sequence
 
 from pydantic import Field
 
@@ -25,6 +25,9 @@ from autotransform.event.handler import EventHandler
 from autotransform.repo.base import RepoName
 from autotransform.repo.git import GitRepo
 from autotransform.util.github import GithubUtils
+
+if TYPE_CHECKING:
+    from autotransform.schema.schema import AutoTransformSchema
 
 
 class GithubRepo(GitRepo):
@@ -85,13 +88,13 @@ class GithubRepo(GitRepo):
         self._local_repo.git.push(remote.name, "-u", commit_branch)
 
         body = batch_metadata.get("body", None)
+        assert body is not None, "All pull requests must have a body."
 
         if self.hide_automation_info:
             automation_info = ""
         else:
-            automation_info = "\n\n" + self.get_automation_info(batch)
+            automation_info = "\n\n" + self.get_automation_info(autotransform.schema.current, batch)
 
-        assert body is not None, "All pull requests must have a body."
         pull_request = GithubUtils.get(self.full_github_name).create_pull_request(
             title,
             f"{str(body)}{automation_info}",
@@ -117,11 +120,12 @@ class GithubRepo(GitRepo):
         if reviewers or team_reviewers:
             pull_request.add_reviewers(reviewers, team_reviewers)
 
-    def get_automation_info(self, batch: Batch) -> str:
+    def get_automation_info(self, schema: Optional[AutoTransformSchema], batch: Batch) -> str:
         """Gets information on automating with AutoTransform.
 
         Args:
-            batch (Batch): The Batch the change is being made for.
+            schema (Optional[AutoTransformSchema]): The Schema making the Change.
+            batch (Batch): The Batch the Change is being made for.
 
         Returns:
             str: The text for automating.
@@ -136,12 +140,11 @@ class GithubRepo(GitRepo):
         automation_info_lines.append("Schema and batch information for the change below")
 
         # Add schema JSON
-        current_schema = autotransform.schema.current
-        if current_schema is not None:
+        if schema is not None:
             automation_info_lines.extend(
                 GithubRepo._get_encoded_json_lines(
                     "Schema",
-                    current_schema.bundle(),
+                    schema.bundle(),
                     GithubUtils.BEGIN_SCHEMA,
                     GithubUtils.END_SCHEMA,
                 )

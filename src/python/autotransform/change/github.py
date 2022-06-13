@@ -8,6 +8,7 @@
 # @black_format
 
 """The implementation for the GithubChange."""
+
 from __future__ import annotations
 
 import json
@@ -24,12 +25,12 @@ if TYPE_CHECKING:
 
 
 class GithubChange(Change):
-    """A Change representing a pull request on a Github repo.
+    """A Change representing a Pull Request on a Github repo.
 
     Attributes:
         full_github_name (str): The fully qualified name of the Github Repo the
-            pull request is against.
-        pull_number (int): The number for the pull request.
+            Pull Request is against.
+        pull_number (int): The number for the Pull Request.
         name (ClassVar[ChangeName]): The name of the Component.
     """
 
@@ -85,50 +86,48 @@ class GithubChange(Change):
         return ChangeState.OPEN
 
     def get_created_timestamp(self) -> int:
-        """Returns the timestamp when the pull request was created.
+        """Returns the timestamp when the Pull Request was created.
 
         Returns:
-            int: The timestamp in seconds when the pull request was created.
+            int: The timestamp in seconds when the Pull Request was created.
         """
 
         return self._pull_request.get_created_at()
 
     def get_last_updated_timestamp(self) -> int:
-        """Returns the timestamp when the pull request was last updated.
+        """Returns the timestamp when the Pull Request was last updated.
 
         Returns:
-            int: The timestamp in seconds when the pull request was last updated.
+            int: The timestamp in seconds when the Pull Request was last updated.
         """
 
         return self._pull_request.get_updated_at()
 
     def _merge(self) -> bool:
-        """Merges the pull request and deletes the branch.
+        """Merges the Pull Request and deletes the branch.
 
         Returns:
             bool: Whether the merge was completed successfully.
         """
 
-        merged = self._pull_request.merge()
-        if not merged:
+        if not self._pull_request.merge():
             return False
         return self._pull_request.delete_branch()
 
     def abandon(self) -> bool:
-        """Close the pull request and delete the associated branch.
+        """Close the Pull Request and delete the associated branch.
 
         Returns:
             bool: Whether the abandon was completed successfully.
         """
 
-        closed = self._pull_request.close()
-        if not closed:
+        if not self._pull_request.close():
             return False
         return self._pull_request.delete_branch()
 
     @cached_property
     def _pull_request(self) -> PullRequest:
-        """Gets the pull request as a cached property.
+        """Gets the Pull Request as a cached property.
 
         Returns:
             PullRequest: The PullRequest.
@@ -138,7 +137,7 @@ class GithubChange(Change):
 
     @cached_property
     def _body_data(self) -> Tuple[AutoTransformSchema, Batch]:
-        """Loads the Schema and Batch data for the GithubChange.
+        """Loads the Schema and Batch data for the GithubChange as a cached property.
 
         Returns:
             Tuple[AutoTransformSchema, Batch]: The Schema and Batch contained
