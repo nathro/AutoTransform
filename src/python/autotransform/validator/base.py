@@ -17,12 +17,7 @@ from enum import Enum
 from typing import Any, ClassVar, Dict, Mapping, Optional
 
 from autotransform.batcher.base import Batch
-from autotransform.util.component import (
-    ComponentFactory,
-    ComponentImport,
-    ComponentModel,
-    NamedComponent,
-)
+from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 
 class ValidationResultLevel(str, Enum):
