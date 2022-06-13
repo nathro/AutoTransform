@@ -9,13 +9,9 @@
 
 """Tests that the Batcher's factory is correctly setup."""
 
-import json
-from typing import Dict, List
+from typing import Any, Dict, List
 
-from autotransform.batcher.base import FACTORY, Batcher, BatcherName
-from autotransform.batcher.chunk import ChunkBatcher
-from autotransform.batcher.directory import DirectoryBatcher
-from autotransform.batcher.single import SingleBatcher
+from autotransform.batcher.base import FACTORY, BatcherName
 
 
 def test_all_enum_values_present():
@@ -49,25 +45,26 @@ def test_fetching_components():
         ), f"Component {component_name} has wrong name {component_class.name}"
 
 
-def test_encoding_and_decoding():
-    """Tests the encoding and decoding of components."""
+def test_fetching_and_bundling():
+    """Tests the fetching and bundling of components."""
 
-    test_components: Dict[BatcherName, List[Batcher]] = {
+    test_components: Dict[BatcherName, List[Dict[str, Any]]] = {
         BatcherName.CHUNK: [
-            ChunkBatcher(chunk_size=5, title="foo"),
-            ChunkBatcher(chunk_size=5, title="foo", max_chunks=5),
-            ChunkBatcher(chunk_size=5, title="foo", metadata={"body": "foo"}),
-            ChunkBatcher(chunk_size=5, title="foo", max_chunks=5, metadata={"body": "foo"}),
+            {"chunk_size": 5, "title": "foo"},
+            {"chunk_size": 5, "title": "foo"},
+            {"chunk_size": 5, "title": "foo", "max_chunks": 5},
+            {"chunk_size": 5, "title": "foo", "metadata": {"body": "bar"}},
+            {"chunk_size": 5, "title": "foo", "max_chunks": 5, "metadata": {"body": "bar"}},
         ],
         BatcherName.DIRECTORY: [
-            DirectoryBatcher(prefix="foo"),
-            DirectoryBatcher(prefix="foo", metadata={"body": "foo"}),
+            {"prefix": "foo"},
+            {"prefix": "foo", "metadata": {"body": "bar"}},
         ],
         BatcherName.SINGLE: [
-            SingleBatcher(title="foo"),
-            SingleBatcher(title="foo", metadata={"body": "foo"}),
-            SingleBatcher(title="foo", skip_empty_batch=True),
-            SingleBatcher(title="foo", metadata={"body": "foo"}, skip_empty_batch=True),
+            {"title": "foo"},
+            {"title": "foo", "metadata": {"body": "bar"}},
+            {"title": "foo", "skip_empty_batch": True},
+            {"title": "foo", "metadata": {"body": "bar"}, "skip_empty_batch": True},
         ],
     }
 
@@ -77,9 +74,9 @@ def test_encoding_and_decoding():
     for name, components in test_components.items():
         assert name in BatcherName, f"{name} is not a valid BatcherName"
         for component in components:
+            component_dict = {"name": name} | component
+            component_instance = FACTORY.get_instance(component_dict)
             assert (
-                component.name == name
-            ), f"Testing batcher of name {component.name} for name {name}"
-            assert (
-                FACTORY.get_instance(json.loads(json.dumps(component.bundle()))) == component
-            ), f"Component {component} does not bundle and unbundle correctly"
+                component_instance.name == name
+            ), f"Testing Batcher of name {component_instance.name} for name {name}"
+            assert component_dict == component_instance.bundle()

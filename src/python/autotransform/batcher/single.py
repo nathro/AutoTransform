@@ -19,14 +19,14 @@ from autotransform.item.base import Item
 
 
 class SingleBatcher(Batcher):
-    """A batcher which puts all Items together in to a single batch
+    """A batcher which puts all Items together in to a single batch.
 
     Attributes:
         title (str): The title to use for the Batch.
         metadata (Optional[Dict[str, Any]], optional): The metadata to use for the
             Batch. Defaults to None.
-        metadata (Optional[Dict[str, Any]], optional): The metadata to associate with
-            the Batch. Defaults to None.
+        skip_empty_batch (Optional[bool], optional): Whether to skip Batch creation if
+            there are no Items. Defaults to False.
         name (ClassVar[BatcherName]): The name of the Component.
     """
 
@@ -45,13 +45,18 @@ class SingleBatcher(Batcher):
         Returns:
             List[Batch]: A list containing a single Batch for all Items.
         """
+
+        # Skip if empty when setting is enabled
         if self.skip_empty_batch and len(items) == 0:
             return []
 
+        # Create Batch
         batch: Batch = {
             "items": items,
             "title": self.title,
         }
+
+        # Deepcopy metadata to ensure mutations don't apply to params
         if self.metadata is not None:
             batch["metadata"] = deepcopy(self.metadata)
         return [batch]

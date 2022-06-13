@@ -7,7 +7,7 @@
 
 # @black_format
 
-"""Tests for SingleBatcher component."""
+"""Tests for ChunkBatcher component."""
 
 from autotransform.batcher.chunk import ChunkBatcher
 from autotransform.item.base import Item
@@ -16,17 +16,17 @@ from .batcher_test import check_batcher
 
 
 def test_with_no_items():
-    """Checks that the batcher works with no Items."""
+    """Checks that the Batcher works with no Items."""
 
     title = "foo"
     metadata = {"summary": "bar", "tests": "baz"}
     items = []
     batcher = ChunkBatcher(title=title, metadata=metadata, chunk_size=10)
-    check_batcher(batcher, items, [{"metadata": metadata, "items": items, "title": title}])
+    check_batcher(batcher, items, [])
 
 
 def test_with_one_item():
-    """Checks that the batcher works with one Item."""
+    """Checks that the Batcher works with one Item."""
 
     title = "foo"
     metadata = {"summary": "bar", "tests": "baz"}
@@ -37,7 +37,7 @@ def test_with_one_item():
 
 
 def test_with_one_item_no_metadata():
-    """Checks that the batcher works with one Item and no metadata."""
+    """Checks that the Batcher works with one Item and no metadata."""
 
     title = "foo"
     expected_title = "[1/1] foo"
@@ -47,7 +47,7 @@ def test_with_one_item_no_metadata():
 
 
 def test_with_multiple_items():
-    """Checks that the batcher works with multiple Items."""
+    """Checks that the Batcher works with multiple Items."""
 
     title = "foo"
     metadata = {"summary": "bar", "tests": "baz"}
@@ -57,7 +57,7 @@ def test_with_multiple_items():
     check_batcher(batcher, items, [{"metadata": metadata, "items": items, "title": expected_title}])
 
 
-def test_with_multiple_files_and_multiple_batches():
+def test_with_multiple_items_and_multiple_batches():
     """Checks that the batcher works with multiple Items separated in to multiple batches."""
 
     title = "foo"
@@ -76,8 +76,8 @@ def test_with_multiple_files_and_multiple_batches():
     )
 
 
-def test_with_multiple_files_and_max_batches():
-    """Checks that the batcher works with multiple Items separated in to multiple Batches, with max
+def test_with_multiple_items_and_max_batches():
+    """Checks that the Batcher works with multiple Items separated in to multiple Batches, with max
     chunks used.
     """
 

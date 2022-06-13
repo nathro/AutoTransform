@@ -3,9 +3,6 @@ Batcher Package (autotransform.batcher)
 
 .. automodule:: autotransform.batcher
 
-Components
-----------
-
 .. toctree::
    :maxdepth: 4
 

@@ -7,7 +7,7 @@
 
 # @black_format
 
-"""Tests for SingleBatcher component."""
+"""Tests for DirectoryBatcher component."""
 
 from autotransform.batcher.directory import DirectoryBatcher
 from autotransform.item.file import FileItem

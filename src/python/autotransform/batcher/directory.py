@@ -7,7 +7,7 @@
 
 # @black_format
 
-"""The implementation for the directory Batcher."""
+"""The implementation for the DirectoryBatcher."""
 
 from __future__ import annotations
 
@@ -22,7 +22,7 @@ from autotransform.item.file import FileItem
 
 class DirectoryBatcher(Batcher):
     """A batcher which separates FileItems by directory. Batches are given a title that is based
-    on a prefix and the directory that the batch is using.
+    on a prefix and the directory that the Batch represents.
 
     Attributes:
         prefix (str): The prefix to apply to any titles for Batches.
@@ -37,15 +37,16 @@ class DirectoryBatcher(Batcher):
     name: ClassVar[BatcherName] = BatcherName.DIRECTORY
 
     def batch(self, items: Sequence[Item]) -> List[Batch]:
-        """Takes in a list FileItems and separates them based on their directory.
+        """Takes in a list of FileItems and separates them based on their directory.
 
         Args:
             items (Sequence[Item]): The filtered Items to separate.
 
         Returns:
-            List[Batch]: A list containing a batch for each folder containing files.
+            List[Batch]: A list containing a Batch for each directory containing files.
         """
 
+        # Get a mapping from directory to items within that directory
         item_map: Dict[str, List[FileItem]] = {}
         for item in items:
             assert isinstance(item, FileItem)
@@ -54,6 +55,7 @@ class DirectoryBatcher(Batcher):
                 item_map[directory] = []
             item_map[directory].append(item)
 
+        # Create Batches
         batches: List[Batch] = [
             {"items": batch_items, "title": self.prefix + ": " + directory}
             for directory, batch_items in item_map.items()
@@ -61,5 +63,6 @@ class DirectoryBatcher(Batcher):
 
         if self.metadata is not None:
             for batch in batches:
+                # Deepcopy metadata to ensure mutations don't apply to all Batches
                 batch["metadata"] = deepcopy(self.metadata)
         return batches
