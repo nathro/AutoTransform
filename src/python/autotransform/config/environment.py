@@ -20,11 +20,10 @@ from autotransform.runner.base import FACTORY as runner_factory
 
 class EnvironmentConfigFetcher(ConfigFetcher):  # pylint: disable=too-few-public-methods
     """A ConfigFetcher that utilizes environment variables as configuration storage.
-    Environment variable names are of the form AUTO_TRANSFORM_<SECTION>_<SETTING>, using
-    the sections and settings from autotransform/config/sample_config.ini. The
-    DefaultConfigFetcher will be used for fallbacks where environment variables are not
-    present. Set AUTO_TRANSFORM_CONFIG_USE_FALLBACK to "False" if you do not want to use
-    a fallback.
+    Environment variable names are of the form AUTO_TRANSFORM_<SETTING> using the settings
+    from the Config class. The DefaultConfigFetcher will be used for fallbacks where
+    environment variables are not present. Set AUTO_TRANSFORM_CONFIG_USE_FALLBACK to "False"
+    if you do not want to use a fallback.
     """
 
     def get_config(self) -> Config:
@@ -54,7 +53,7 @@ class EnvironmentConfigFetcher(ConfigFetcher):  # pylint: disable=too-few-public
             remote_runner=remote_runner,
         )
 
-        if bool(os.getenv("AUTO_TRANSFORM_CONFIG_USE_FALLBACK", "True")):
+        if os.getenv("AUTO_TRANSFORM_CONFIG_USE_FALLBACK", "True") != "False":
             config = DefaultConfigFetcher().get_config().merge(config)
 
         return config

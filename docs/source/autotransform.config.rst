@@ -6,10 +6,6 @@ Config Package (autotransform.config)
    :undoc-members:
    :show-inheritance:
 
-
-Components
-----------
-
 .. toctree::
    :maxdepth: 4
 

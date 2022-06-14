@@ -21,7 +21,7 @@ from autotransform.util.package import get_config_dir
 class DefaultConfigFetcher(ConfigFetcher):
     """The default configuration fetcher that pulls from the config files. Three possible
     files are used:
-     - a file within the AutoTransform package itself, located at autotransform/config/config.json
+     - a file within the AutoTransform package itself, located at autotransform-config/config.json
      - a file within the repo, located at {repo_root}/autotransform/config.json
      - a file relative to the current working directory, located at {cwd}/autotransform/config.json
     Settings from files later in the list will override settings from files earlier in the list. CWD

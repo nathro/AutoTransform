@@ -27,22 +27,22 @@ class Config(ComponentModel):
     """A collection of settings for configuring the functionality of AutoTransform.
 
     Attributes:
+        component_directory (Optional[str], optional): The directory where custom component
+            JSON files are located. If not provided, autotransform/ will be used.
+            Defaults to None.
         github_token (Optional[str], optional): The Github token to use for authentication.
             Defaults to None.
         github_base_url (Optional[str], optional): The base URL for API requests to Github.
             Used for Github Enterprise. Defaults to None.
-        component_directory (Optional[str], optional): The directory where custom component
-            JSON files are located. If not provided, autotransform/ will be used.
-            Defaults to None.
         local_runner (Optional[Runner], optional): The Runner to use for local runs.
             Defaults to None.
         remote_runner (Optional[Runner], optional): The runner to use for remote runs.
             Defaults to None.
     """
 
+    component_directory: Optional[str] = None
     github_token: Optional[str] = None
     github_base_url: Optional[str] = None
-    component_directory: Optional[str] = None
     local_runner: Optional[Runner] = None
     remote_runner: Optional[Runner] = None
 
@@ -137,7 +137,7 @@ class Config(ComponentModel):
         """Gets the Github token using console inputs.
 
         Args:
-            prev_config (Optional[Config[, optional]): Previously input Config. Defaults to None.
+            prev_config (Optional[Config], optional): Previously input Config. Defaults to None.
             simple (bool, optional): Whether to use the simple setup. Defaults to False.
             user_config (bool, optional): Whether this configuration is for a user level Config.
                 Defaults to False.
@@ -167,7 +167,7 @@ class Config(ComponentModel):
         """Gets the Github base URL using console inputs.
 
         Args:
-            prev_config (Optional[Config[, optional]): Previously input Config. Defaults to None.
+            prev_config (Optional[Config], optional): Previously input Config. Defaults to None.
             simple (bool, optional): Whether to use the simple setup. Defaults to False.
 
         Returns:
@@ -200,7 +200,7 @@ class Config(ComponentModel):
         """Gets the component directory using console inputs.
 
         Args:
-            prev_config (Optional[Config[, optional]): Previously input Config. Defaults to None.
+            prev_config (Optional[Config], optional): Previously input Config. Defaults to None.
             simple (bool, optional): Whether to use the simple setup. Defaults to False.
 
         Returns:
@@ -233,7 +233,7 @@ class Config(ComponentModel):
         """Gets the local runner using console inputs.
 
         Args:
-            prev_config (Optional[Config[, optional]): Previously input Config. Defaults to None.
+            prev_config (Optional[Config], optional): Previously input Config. Defaults to None.
             simple (bool, optional): Whether to use the simple setup. Defaults to False.
 
         Returns:
@@ -288,7 +288,7 @@ class Config(ComponentModel):
         """Gets a Config using console inputs.
 
         Args:
-            prev_config (Optional[Config[, optional]): Previously input Config. Defaults to None.
+            prev_config (Optional[Config], optional): Previously input Config. Defaults to None.
             simple (bool, optional): Whether to use the simple setup. Defaults to False.
             use_github (bool, optional): Whether to use Github or not. Defaults to None.
             user_config (bool, optional): Whether this configuration is for a user level Config.

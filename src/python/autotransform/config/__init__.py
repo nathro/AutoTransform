@@ -8,9 +8,10 @@
 # @black_format
 
 """Provides configuration to AutoTransform. By default this configuration is pulled from
-autotransform/config/config.json (see autotransform/config/sample_config.json). The configuration
-fetcher used can be overridden using the AUTO_TRANSFORM_CONFIG environment variable. This can
-support different methods of configuration, such as console input or environment variables.
+config files. The configuration fetcher used can be overridden using the AUTO_TRANSFORM_CONFIG
+environment variable. This can support different methods of configuration, such as environment
+variables or a custom approach where the environment variable is set to
+"{'class_name': <A ConfigFetcher Class>, 'module': <The module where the class is located>}".
 """
 
 
