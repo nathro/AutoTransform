@@ -27,12 +27,12 @@ from autotransform.item.file import FileItem
 
 class ScriptCommand(Command):
     """Runs a script with the supplied arguments to perform a command. If the per_item flag is
-    set to True, the script will be invoked on each Item. If run_on_changes is set to True, the
-    script will replace the Batch Items with FileItems for each changed file. Sentinel values can
-    be used in args to provide custom arguments for a run.
+    set, the script will be invoked on each Item. If run_on_changes is set to True, the script
+    will replace the Batch Items with FileItems for each changed file. Sentinel values can be
+    used in args to provide custom arguments for a run.
     The available sentinel values for args are:
         <<KEY>>: A json encoded list of the Items for a Batch. If the per_item flag is set
-            his will simply be the key of an Item.
+            this will simply be the key of an Item.
         <<EXTRA_DATA>>: A JSON encoded mapping from Item key to that Item's extra_data. If the
             per_item flag is set, this will simply be a JSON encoding of the Item's extra_data.
             If extra_data is not present for an item, it is treated as an empty Dict.
@@ -41,8 +41,8 @@ class ScriptCommand(Command):
      with a path to a file containing the value.
 
     Attributes:
-        script (str): The script to run.
         args (List[str]): The arguments to supply to the script.
+        script (str): The script to run.
         per_item (bool, optional): Whether to run the script on each item. Defaults to False.
         run_on_changes (bool, optional): Whether to replace the Items in the batch with
             FileItems for the changed files. Defaults to False.
@@ -51,23 +51,13 @@ class ScriptCommand(Command):
         name (ClassVar[CommandName]): The name of the Component.
     """
 
-    script: str
     args: List[str]
+    script: str
     per_item: bool = False
     run_on_changes: bool = False
     run_pre_validation: bool = False
 
     name: ClassVar[CommandName] = CommandName.SCRIPT
-
-    @staticmethod
-    def get_type() -> CommandName:
-        """Used to map Command components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            CommandType: The unique type associated with this Command.
-        """
-
-        return CommandName.SCRIPT
 
     def run(self, batch: Batch, _transform_data: Optional[Mapping[str, Any]]) -> None:
         """Runs the script command against the Batch, either on each item individually or
@@ -92,18 +82,11 @@ class ScriptCommand(Command):
 
             for item in items:
                 self._run_single(item, batch.get("metadata", None))
-        return self._run_batch(batch)
+        else:
+            self._run_batch(batch)
 
     def _run_single(self, item: Item, batch_metadata: Optional[Mapping[str, Any]]) -> None:
-        """Executes a simple script to run a command on a single Item. Sentinel values can be used
-        in args that will be replaced when the script is invoked.
-        The available sentinel values for args are:
-            <<KEY>>: The key of the Item being validated.
-            <<EXTRA_DATA>>: A JSON encoding of the Item's extra_data. If extra_data is not present,
-                it is treated as an empty Dict.
-            <<METADATA>>: A JSON encoded version of the Batch's metadata.
-        _FILE can be appended to any of these (i.e. <<KEY_FILE>>) and the arg will instead be
-            replaced with a path to a file containing the value.
+        """Executes a simple script to run a command on a single Item.
 
         Args:
             item (Item): The Item that will be validated.
@@ -151,6 +134,8 @@ class ScriptCommand(Command):
             # Run script
             event_handler.handle(DebugEvent({"message": f"Running command: {cmd}"}))
             proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", check=False)
+
+        # Handle output
         if proc.stdout.strip() != "":
             event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
         else:
@@ -162,15 +147,7 @@ class ScriptCommand(Command):
         proc.check_returncode()
 
     def _run_batch(self, batch: Batch) -> None:
-        """Executes a simple script against the given Batch. Sentinel values can be used
-        in args that will be replaced when the script is invoked.
-        The available sentinel values for args are:
-            <<KEY>>: A json encoded list of the Items for a batch.
-            <<EXTRA_DATA>>: A JSON encoded mapping from Item key to that Item's extra_data. If
-                extra_data is not present for an item, it is treated as an empty Dict.
-            <<METADATA>>: A JSON encoded version of the Batch's metadata.
-        _FILE can be appended to any of these (i.e. <<KEY_FILE>>) and the arg will instead be
-        replaced with a path to a file containing the value.
+        """Executes a simple script against the given Batch.
 
         Args:
             batch (Batch): The batch that will be run against.
@@ -223,6 +200,8 @@ class ScriptCommand(Command):
             # Run script
             event_handler.handle(DebugEvent({"message": f"Running command: {cmd}"}))
             proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", check=False)
+
+        # Handle output
         if proc.stdout.strip() != "":
             event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
         else:

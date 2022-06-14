@@ -9,11 +9,9 @@
 
 """Tests that the Command's factory is correctly setup."""
 
-import json
-from typing import Dict, List
+from typing import Any, Dict, List
 
-from autotransform.command.base import FACTORY, Command, CommandName
-from autotransform.command.script import ScriptCommand
+from autotransform.command.base import FACTORY, CommandName
 
 
 def test_all_enum_values_present():
@@ -47,29 +45,35 @@ def test_fetching_components():
         ), f"Component {component_name} has wrong name {component_class.name}"
 
 
-def test_encoding_and_decoding():
-    """Tests the encoding and decoding of components."""
+def test_fetching_and_bundling():
+    """Tests the fetching and bundling of components."""
 
-    test_components: Dict[CommandName, List[Command]] = {
+    test_components: Dict[CommandName, List[Dict[str, Any]]] = {
         CommandName.SCRIPT: [
-            ScriptCommand(script="black", args=["-l", "100"]),
-            ScriptCommand(script="black", args=["-l", "100"], per_item=True),
-            ScriptCommand(script="black", args=["-l", "100"], run_on_changes=True),
-            ScriptCommand(script="black", args=["-l", "100"], run_pre_validation=True),
-            ScriptCommand(script="black", args=["-l", "100"], per_item=True, run_on_changes=True),
-            ScriptCommand(
-                script="black", args=["-l", "100"], per_item=True, run_pre_validation=True
-            ),
-            ScriptCommand(
-                script="black", args=["-l", "100"], run_on_changes=True, run_pre_validation=True
-            ),
-            ScriptCommand(
-                script="black",
-                args=["-l", "100"],
-                per_item=True,
-                run_on_changes=True,
-                run_pre_validation=True,
-            ),
+            {"script": "black", "args": ["-l", "100"]},
+            {"script": "black", "args": ["-l", "100"], "per_item": True},
+            {"script": "black", "args": ["-l", "100"], "run_on_changes": True},
+            {"script": "black", "args": ["-l", "100"], "run_pre_validation": True},
+            {"script": "black", "args": ["-l", "100"], "per_item": True, "run_on_changes": True},
+            {
+                "script": "black",
+                "args": ["-l", "100"],
+                "per_item": True,
+                "run_pre_validation": True,
+            },
+            {
+                "script": "black",
+                "args": ["-l", "100"],
+                "run_on_changes": True,
+                "run_pre_validation": True,
+            },
+            {
+                "script": "black",
+                "args": ["-l", "100"],
+                "per_item": True,
+                "run_on_changes": True,
+                "run_pre_validation": True,
+            },
         ],
     }
 
@@ -79,9 +83,9 @@ def test_encoding_and_decoding():
     for name, components in test_components.items():
         assert name in CommandName, f"{name} is not a valid CommandName"
         for component in components:
+            component_dict = {"name": name} | component
+            component_instance = FACTORY.get_instance(component_dict)
             assert (
-                component.name == name
-            ), f"Testing command of name {component.name} for name {name}"
-            assert (
-                FACTORY.get_instance(json.loads(json.dumps(component.bundle()))) == component
-            ), f"Component {component} does not bundle and unbundle correctly"
+                component_instance.name == name
+            ), f"Testing Command of name {component_instance.name} for name {name}"
+            assert component_dict == component_instance.bundle()

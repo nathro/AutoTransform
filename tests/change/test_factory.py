@@ -45,8 +45,8 @@ def test_fetching_components():
         ), f"Component {component_name} has wrong name {component_class.name}"
 
 
-def test_encoding_and_decoding():
-    """Tests the encoding and decoding of components."""
+def test_fetching_and_bundling():
+    """Tests the fetching and bundling of components."""
 
     test_components: Dict[ChangeName, List[Dict[str, Any]]] = {
         ChangeName.GITHUB: [

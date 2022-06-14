@@ -7,5 +7,6 @@
 
 # @black_format
 
-"""Commands take a Batch that has already been transformed and validated and perform
-post-processing steps before the Batch is submitted, such as code generation."""
+"""Commands take a Batch that has already been transformed and perform post-processing
+steps before the Batch is submitted, such as code generation. These steps can be performed
+either pre or post-validation, depending on if the run_pre_validation flag is set."""

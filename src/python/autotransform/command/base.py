@@ -16,7 +16,7 @@ from enum import Enum
 from typing import Any, ClassVar, Mapping, Optional
 
 from autotransform.batcher.base import Batch
-from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
+from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 
 class CommandName(str, Enum):
@@ -36,6 +36,7 @@ class Command(NamedComponent):
     """
 
     run_pre_validation: bool = False
+
     name: ClassVar[CommandName]
 
     @abstractmethod

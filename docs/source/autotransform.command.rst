@@ -3,9 +3,6 @@ Command Package (autotransform.command)
 
 .. automodule:: autotransform.command
 
-Components
-----------
-
 .. toctree::
    :maxdepth: 4
 
