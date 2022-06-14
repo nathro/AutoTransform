@@ -9,11 +9,9 @@
 
 """Tests that the Validator's factory is correctly setup."""
 
-import json
-from typing import Dict, List
+from typing import Any, Dict, List
 
-from autotransform.validator.base import FACTORY, ValidationResultLevel, Validator, ValidatorName
-from autotransform.validator.script import ScriptValidator
+from autotransform.validator.base import FACTORY, ValidationResultLevel, ValidatorName
 
 
 def test_all_enum_values_present():
@@ -54,34 +52,36 @@ def test_fetching_components():
 def test_encoding_and_decoding():
     """Tests the encoding and decoding of components."""
 
-    test_components: Dict[ValidatorName, List[Validator]] = {
+    test_components: Dict[ValidatorName, List[Dict[str, Any]]] = {
         ValidatorName.SCRIPT: [
-            ScriptValidator(script="black", args=["-l", "100"]),
-            ScriptValidator(
-                script="black", args=["-l", "100"], failure_level=ValidationResultLevel.WARNING
-            ),
-            ScriptValidator(script="black", args=["-l", "100"], per_item=True),
-            ScriptValidator(script="black", args=["-l", "100"], run_on_changes=True),
-            ScriptValidator(
-                script="black",
-                args=["-l", "100"],
-                failure_level=ValidationResultLevel.WARNING,
-                per_item=True,
-            ),
-            ScriptValidator(
-                script="black",
-                args=["-l", "100"],
-                failure_level=ValidationResultLevel.WARNING,
-                run_on_changes=True,
-            ),
-            ScriptValidator(script="black", args=["-l", "100"], per_item=True, run_on_changes=True),
-            ScriptValidator(
-                script="black",
-                args=["-l", "100"],
-                failure_level=ValidationResultLevel.WARNING,
-                per_item=True,
-                run_on_changes=True,
-            ),
+            {"script": "black", "args": ["-l", "100"]},
+            {"script": "black", "args": ["-l", "100"], "per_item": True},
+            {"script": "black", "args": ["-l", "100"], "run_on_changes": True},
+            {
+                "script": "black",
+                "args": ["-l", "100"],
+                "failure_level": ValidationResultLevel.WARNING,
+            },
+            {"script": "black", "args": ["-l", "100"], "per_item": True, "run_on_changes": True},
+            {
+                "script": "black",
+                "args": ["-l", "100"],
+                "per_item": True,
+                "failure_level": ValidationResultLevel.WARNING,
+            },
+            {
+                "script": "black",
+                "args": ["-l", "100"],
+                "run_on_changes": True,
+                "failure_level": ValidationResultLevel.WARNING,
+            },
+            {
+                "script": "black",
+                "args": ["-l", "100"],
+                "per_item": True,
+                "run_on_changes": True,
+                "failure_level": ValidationResultLevel.WARNING,
+            },
         ],
     }
 
@@ -91,9 +91,9 @@ def test_encoding_and_decoding():
     for name, components in test_components.items():
         assert name in ValidatorName, f"{name} is not a valid ValidatorName"
         for component in components:
+            component_dict = {"name": name} | component
+            component_instance = FACTORY.get_instance(component_dict)
             assert (
-                component.name == name
-            ), f"Testing validator of name {component.name} for name {name}"
-            assert (
-                FACTORY.get_instance(json.loads(json.dumps(component.bundle()))) == component
-            ), f"Component {component} does not bundle and unbundle correctly"
+                component_instance.name == name
+            ), f"Testing Validator of name {component_instance.name} for name {name}"
+            assert component_dict == component_instance.bundle()

@@ -51,14 +51,14 @@ class ValidationResultLevel(str, Enum):
     def __lt__(self, other: object) -> bool:
         return self.compare(str(other.value) if isinstance(other, Enum) else str(other)) < 0
 
-    def __lte__(self, other: object) -> bool:
+    def __le__(self, other: object) -> bool:
         return self.compare(str(other.value) if isinstance(other, Enum) else str(other)) <= 0
 
     def __gt__(self, other: object) -> bool:
         return self.compare(str(other.value) if isinstance(other, Enum) else str(other)) > 0
 
-    def __gte__(self, other: object) -> bool:
-        return self.compare(other.value if isinstance(other, Enum) else str(other)) >= 0
+    def __ge__(self, other: object) -> bool:
+        return self.compare(str(other.value) if isinstance(other, Enum) else str(other)) >= 0
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -67,6 +67,7 @@ class ValidationResult:
 
     Attributes:
         level (ValidationResultLevel): The level of the validation issue raised.
+        validator (Validator): The Validator that returned this result.
         message (Optional[str], optional): The message associated with the validation
             result. Defaults to None.
     """
@@ -116,7 +117,7 @@ class Validator(NamedComponent):
 
         Returns:
             ValidationResult: The result of the validation check indicating the severity of any
-                validation failures as well as an associated message
+                validation failures as well as an associated message.
         """
 
 

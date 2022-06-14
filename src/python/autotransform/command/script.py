@@ -68,22 +68,20 @@ class ScriptCommand(Command):
             _transform_data (Optional[Mapping[str, Any]]): Data from the transformation. Unused.
         """
 
-        if self.per_item:
-            if self.run_on_changes:
-                current_schema = autotransform.schema.current
-                assert current_schema is not None
-                repo = current_schema.repo
-                assert repo is not None
-                items: Sequence[Item] = [
-                    FileItem(key=file) for file in repo.get_changed_files(batch)
-                ]
-            else:
-                items = batch["items"]
-
-            for item in items:
-                self._run_single(item, batch.get("metadata", None))
-        else:
+        if not self.per_item:
             self._run_batch(batch)
+            return
+        if self.run_on_changes:
+            current_schema = autotransform.schema.current
+            assert current_schema is not None
+            repo = current_schema.repo
+            assert repo is not None
+            items: Sequence[Item] = [FileItem(key=file) for file in repo.get_changed_files(batch)]
+        else:
+            items = batch["items"]
+
+        for item in items:
+            self._run_single(item, batch.get("metadata", None))
 
     def _run_single(self, item: Item, batch_metadata: Optional[Mapping[str, Any]]) -> None:
         """Executes a simple script to run a command on a single Item.
@@ -156,6 +154,8 @@ class ScriptCommand(Command):
         event_handler = EventHandler.get()
 
         cmd = [self.script]
+
+        # Get items
         if self.run_on_changes:
             current_schema = autotransform.schema.current
             assert current_schema is not None

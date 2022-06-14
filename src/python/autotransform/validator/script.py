@@ -37,7 +37,7 @@ class ScriptValidator(Validator):
     indicates the result level if the script returns a non-zero exit code. Sentinel values can
     be used in args to provide custom arguments for a run.
     The available sentinel values for args are:
-        <<KEY>>: A json encoded list of the Items for a batch. If the per_item flag is set in,
+        <<KEY>>: A json encoded list of the Items for a Batch. If the per_item flag is set
             this will simply be the key of an Item.
         <<EXTRA_DATA>>: A JSON encoded mapping from Item key to that Item's extra_data. If the
             per_item flag is set, this will simply be a JSON encoding of the Item's extra_data.
@@ -47,8 +47,8 @@ class ScriptValidator(Validator):
      with a path to a file containing the value.
 
     Attributes:
-        script (str): The script to run.
         args (List[str]): The arguments to supply to the script.
+        script (str): The script to run.
         failure_level (ValidationResultLevel, optional): The result level to use if validation
             fails. Defaults to ValidationResultLevel.ERROR.
         per_item (bool, optional): Whether to run the script on each item. Defaults to False.
@@ -57,8 +57,8 @@ class ScriptValidator(Validator):
         name (ClassVar[ValidatorName]): The name of the Component.
     """
 
-    script: str
     args: List[str]
+    script: str
     failure_level: ValidationResultLevel = ValidationResultLevel.ERROR
     per_item: bool = False
     run_on_changes: bool = False
@@ -98,15 +98,7 @@ class ScriptValidator(Validator):
     def _check_single(
         self, item: Item, batch_metadata: Optional[Mapping[str, Any]]
     ) -> ValidationResult:
-        """Executes a simple script to validate a single Item. Sentinel values can be used
-        in args that will be replaced when the script is invoked.
-        The available sentinel values for args are:
-            <<KEY>>: The key of the Item being validated.
-            <<EXTRA_DATA>>: A JSON encoding of the Item's extra_data. If extra_data is not present,
-                it is treated as an empty Dict.
-            <<METADATA>>: A JSON encoded version of the Batch's metadata.
-        _FILE can be appended to any of these (i.e. <<KEY_FILE>>) and the arg will instead be
-            replaced with a path to a file containing the value.
+        """Executes a simple script to validate a single Item.
 
         Args:
             item (Item): The Item that will be validated.
@@ -154,6 +146,8 @@ class ScriptValidator(Validator):
             # Run script
             event_handler.handle(DebugEvent({"message": f"Running command: {cmd}"}))
             proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", check=False)
+
+        # Handle output
         level = self.failure_level if proc.returncode != 0 else ValidationResultLevel.NONE
         if proc.stdout.strip() != "":
             event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
@@ -170,23 +164,17 @@ class ScriptValidator(Validator):
         )
 
     def _check_batch(self, batch: Batch) -> ValidationResult:
-        """Executes a simple script to validate the given Batch. Sentinel values can be used
-        in args that will be replaced when the script is invoked.
-        The available sentinel values for args are:
-            <<KEY>>: A json encoded list of the Items for a batch.
-            <<EXTRA_DATA>>: A JSON encoded mapping from Item key to that Item's extra_data. If
-                extra_data is not present for an item, it is treated as an empty Dict.
-            <<METADATA>>: A JSON encoded version of the Batch's metadata.
-        _FILE can be appended to any of these (i.e. <<KEY_FILE>>) and the arg will instead be
-        replaced with a path to a file containing the value.
+        """Executes a simple script to validate the given Batch.
 
         Args:
-            batch (Batch): The batch that will be transformed.
+            batch (Batch): The batch that will be validated.
         """
 
         event_handler = EventHandler.get()
 
         cmd = [self.script]
+
+        # Get items
         if self.run_on_changes:
             current_schema = autotransform.schema.current
             assert current_schema is not None
@@ -231,6 +219,8 @@ class ScriptValidator(Validator):
             # Run script
             event_handler.handle(DebugEvent({"message": f"Running command: {cmd}"}))
             proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", check=False)
+
+        # Handle output
         level = self.failure_level if proc.returncode != 0 else ValidationResultLevel.NONE
         if proc.stdout.strip() != "":
             event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
