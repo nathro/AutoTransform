@@ -25,12 +25,10 @@ class RegexFilter(Filter):
 
     Attributes:
         pattern (str): The pattern to use when checking the Item's key.
-        inverted (bool, optional): Whether to invert the results of the filter. Defaults to False.
         name (ClassVar[FilterName]): The name of the component.
     """
 
     pattern: str
-    inverted: bool = False
 
     name: ClassVar[FilterName] = FilterName.REGEX
 
@@ -53,17 +51,15 @@ class RegexFileContentFilter(Filter):
 
     Attributes:
         pattern (str): The pattern to use when checking the FileItem's content
-        inverted (bool, optional): Whether to invert the results of the filter. Defaults to False.
         name (ClassVar[FilterName]): The name of the component.
     """
 
     pattern: str
-    inverted: bool = False
 
     name: ClassVar[FilterName] = FilterName.REGEX_FILE_CONTENT
 
     def _is_valid(self, item: Item) -> bool:
-        """Check whether the contents of the file match the regex pattern in the parms.
+        """Check whether the contents of the file contains the pattern.
 
         Args:
             item (Item): The Item to check.

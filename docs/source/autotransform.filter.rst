@@ -3,9 +3,6 @@ Filter Package (autotransform.filter)
 
 .. automodule:: autotransform.filter
 
-Components
-----------
-
 .. toctree::
    :maxdepth: 4
 

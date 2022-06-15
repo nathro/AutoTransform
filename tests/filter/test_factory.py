@@ -9,12 +9,9 @@
 
 """Tests that the Filter's factory is correctly setup."""
 
-import json
-from typing import Dict, List
+from typing import Any, Dict, List
 
-from autotransform.filter.base import FACTORY, Filter, FilterName
-from autotransform.filter.key_hash_shard import KeyHashShardFilter
-from autotransform.filter.regex import RegexFileContentFilter, RegexFilter
+from autotransform.filter.base import FACTORY, FilterName
 
 
 def test_all_enum_values_present():
@@ -51,18 +48,20 @@ def test_fetching_components():
 def test_encoding_and_decoding():
     """Tests the encoding and decoding of components."""
 
-    test_components: Dict[FilterName, List[Filter]] = {
+    test_components: Dict[FilterName, List[Dict[str, Any]]] = {
         FilterName.REGEX: [
-            RegexFilter(pattern="foo"),
-            RegexFilter(pattern="foo", inverted=True),
+            {"pattern": "foo"},
+            {"pattern": "foo", "inverted": True},
         ],
         FilterName.REGEX_FILE_CONTENT: [
-            RegexFileContentFilter(pattern="foo"),
-            RegexFileContentFilter(pattern="foo", inverted=True),
+            {"pattern": "foo"},
+            {"pattern": "foo", "inverted": True},
         ],
         FilterName.KEY_HASH_SHARD: [
-            KeyHashShardFilter(num_shards=5, valid_shard=1),
-            KeyHashShardFilter(num_shards=5, valid_shard=1, inverted=True),
+            {"num_shards": 5},
+            {"num_shards": 5, "valid_shard": 1},
+            {"num_shards": 5, "inverted": True},
+            {"num_shards": 5, "valid_shard": 1, "inverted": True},
         ],
     }
 
@@ -72,9 +71,9 @@ def test_encoding_and_decoding():
     for name, components in test_components.items():
         assert name in FilterName, f"{name} is not a valid FilterName"
         for component in components:
+            component_dict = {"name": name} | component
+            component_instance = FACTORY.get_instance(component_dict)
             assert (
-                component.name == name
-            ), f"Testing filter of name {component.name} for name {name}"
-            assert (
-                FACTORY.get_instance(json.loads(json.dumps(component.bundle()))) == component
-            ), f"Component {component} does not bundle and unbundle correctly"
+                component_instance.name == name
+            ), f"Testing Filter of name {component_instance.name} for name {name}"
+            assert component_dict == component_instance.bundle()

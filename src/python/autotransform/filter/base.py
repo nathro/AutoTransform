@@ -16,7 +16,7 @@ from enum import Enum
 from typing import ClassVar
 
 from autotransform.item.base import Item
-from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
+from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 
 class FilterName(str, Enum):
@@ -49,7 +49,7 @@ class Filter(NamedComponent):
             item (Item): The Item to check.
 
         Returns:
-            bool: Returns True if the Item is eligible for transformation
+            bool: Returns True if the Item is eligible for transformation.
         """
 
         return self.inverted != self._is_valid(item)
@@ -59,10 +59,10 @@ class Filter(NamedComponent):
         """Check whether an Item is valid based on the Filter. Does not handle inversion.
 
         Args:
-            item (Item): The item to check.
+            item (Item): The Item to check.
 
         Returns:
-            bool: Returns True if the item is eligible for transformation
+            bool: Returns True if the Item is eligible for transformation.
         """
 
 

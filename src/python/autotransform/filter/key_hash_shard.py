@@ -7,10 +7,11 @@
 
 # @black_format
 
-"""The implementation for regex based filters, including RegexFilter and FileContentRegexFilter."""
+"""The implementation for the KeyHashShardFilter."""
 
 from __future__ import annotations
 
+from hashlib import md5
 from typing import ClassVar
 
 from autotransform.filter.base import FilterName
@@ -19,26 +20,13 @@ from autotransform.item.base import Item
 
 
 class KeyHashShardFilter(ShardFilter):
-    """A Filter which produces a shard from the key of an Item, using simple hashing.
+    """A Filter which produces a shard from the key of an Item using md5 hashing.
 
     Attributes:
-        inverted (bool, optional): Whether to invert the results of the filter. Defaults to False.
         name (ClassVar[FilterName]): The name of the component.
     """
 
-    inverted: bool = False
-
     name: ClassVar[FilterName] = FilterName.KEY_HASH_SHARD
-
-    @staticmethod
-    def get_type() -> FilterName:
-        """Used to map Filter components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            FilterType: The unique type associated with this Filter.
-        """
-
-        return FilterName.KEY_HASH_SHARD
 
     def _shard(self, item: Item) -> int:
         """Produces a shard from an item.
@@ -50,4 +38,4 @@ class KeyHashShardFilter(ShardFilter):
             int: The shard number for the Item.
         """
 
-        return hash(item.key) % self.num_shards
+        return int(md5(item.key.encode("UTF-8")).hexdigest(), 16) % self.num_shards

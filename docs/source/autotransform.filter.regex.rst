@@ -1,4 +1,4 @@
-RegexFilter (autotransform.filter.regex)
+Regex Filters (autotransform.filter.regex)
 ========================================
 
 .. automodule:: autotransform.filter.regex
