@@ -6,8 +6,8 @@ Event Package (autotransform.event)
 .. toctree::
    :maxdepth: 4
 
-   autotransform.event.base
    autotransform.event.handler
+   autotransform.event.base
    autotransform.event.logginglevel
    autotransform.event.type
    autotransform.event.action
