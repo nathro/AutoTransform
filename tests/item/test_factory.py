@@ -9,11 +9,9 @@
 
 """Tests that the Item's factory is correctly setup."""
 
-import json
-from typing import Dict, List
+from typing import Any, Dict, List
 
-from autotransform.item.base import FACTORY, Item, ItemName
-from autotransform.item.file import FileItem
+from autotransform.item.base import FACTORY, ItemName
 
 
 def test_all_enum_values_present():
@@ -50,14 +48,14 @@ def test_fetching_components():
 def test_encoding_and_decoding():
     """Tests the encoding and decoding of components."""
 
-    test_components: Dict[ItemName, List[Item]] = {
+    test_components: Dict[ItemName, List[Dict[str, Any]]] = {
         ItemName.FILE: [
-            FileItem(key="foo"),
-            FileItem(key="foo", extra_data={"body": "bar"}),
+            {"key": "foo"},
+            {"key": "foo", "extra_data": {"body": "bar"}},
         ],
         ItemName.GENERIC: [
-            Item(key="foo"),
-            Item(key="foo", extra_data={"body": "bar"}),
+            {"key": "foo"},
+            {"key": "foo", "extra_data": {"body": "bar"}},
         ],
     }
 
@@ -67,7 +65,9 @@ def test_encoding_and_decoding():
     for name, components in test_components.items():
         assert name in ItemName, f"{name} is not a valid ItemName"
         for component in components:
-            assert component.name == name, f"Testing item of name {component.name} for name {name}"
+            component_dict = {"name": name} | component
+            component_instance = FACTORY.get_instance(component_dict)
             assert (
-                FACTORY.get_instance(json.loads(json.dumps(component.bundle()))) == component
-            ), f"Component {component} does not bundle and unbundle correctly"
+                component_instance.name == name
+            ), f"Testing Item of name {component_instance.name} for name {name}"
+            assert component_dict == component_instance.bundle()

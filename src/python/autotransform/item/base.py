@@ -14,7 +14,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any, ClassVar, Dict, Optional
 
-from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
+from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 
 class ItemName(str, Enum):
@@ -30,9 +30,9 @@ class Item(NamedComponent):
 
     Attributes:
         key (str): A unique key used to represent this item, such as a file path.
-        extra_data (Optional[Mapping[str, Any]], optional): Any extra data that needs to be
+        extra_data (Optional[Dict[str, Any]], optional): Any extra data that needs to be
             associated with this Item. Should be JSON encodable. Defaults to None.
-        name (ClassVar[Itemname]): The name of the component.
+        name (ClassVar[ItemName]): The name of the component.
     """
 
     key: str
