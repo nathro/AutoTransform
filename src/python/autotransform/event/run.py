@@ -27,8 +27,8 @@ class ScriptRunEventData(TypedDict):
 
 
 class ScriptRunEvent(Event[ScriptRunEventData]):
-    """A ScriptRunEvent is triggered whenever an AutoTransform script is run, either the
-    main script or the regexmod script. Logs details of the run.
+    """A ScriptRunEvent is triggered whenever an AutoTransform script is run. Logs details
+    of the run.
     """
 
     @staticmethod
@@ -38,6 +38,7 @@ class ScriptRunEvent(Event[ScriptRunEventData]):
         Returns:
             EventType: The unique type associated with this Event.
         """
+
         return EventType.SCRIPT_RUN
 
     @staticmethod
@@ -47,6 +48,7 @@ class ScriptRunEvent(Event[ScriptRunEventData]):
         Returns:
             LoggingLevel: The logging detail required to log this event.
         """
+
         return LoggingLevel.INFO
 
     def _get_message(self) -> str:
@@ -55,4 +57,5 @@ class ScriptRunEvent(Event[ScriptRunEventData]):
         Returns:
             str: The message for the event.
         """
+
         return f"Running script command {self.data['script']}"

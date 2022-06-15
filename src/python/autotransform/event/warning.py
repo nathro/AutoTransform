@@ -9,7 +9,8 @@
 
 """The WarningEvent is a simple, generic event used for logging warning information to
 the console. This information is not expected to be logged to long term storage and
-is used when warningging usage in production environments.
+is used when encountering warnings in production environments. More specific events should be
+created for long term storage cases.
 """
 
 from typing import TypedDict
@@ -27,7 +28,7 @@ class WarningEventData(TypedDict):
 
 
 class WarningEvent(Event[WarningEventData]):
-    """A simple, generic warningging event used to log warning information to the console."""
+    """A simple, generic warning event used to log warning information to the console."""
 
     @staticmethod
     def get_type() -> EventType:
@@ -36,6 +37,7 @@ class WarningEvent(Event[WarningEventData]):
         Returns:
             EventType: The unique type associated with this Event.
         """
+
         return EventType.WARNING
 
     @staticmethod
@@ -43,8 +45,9 @@ class WarningEvent(Event[WarningEventData]):
         """The logging level for events of this type.
 
         Returns:
-            LoggingLevel: The logging detail required to log this event
+            LoggingLevel: The logging detail required to log this event.
         """
+
         return LoggingLevel.WARNING
 
     def _get_message(self) -> str:
@@ -53,4 +56,5 @@ class WarningEvent(Event[WarningEventData]):
         Returns:
             str: The message for the event
         """
+
         return self.data["message"]

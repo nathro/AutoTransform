@@ -78,6 +78,7 @@ class Event(Generic[TData], ABC):
         Returns:
             Optional[str]: An optional color to use to override defaults when logging.
         """
+
         return None
 
     def get_message(self) -> str:
@@ -87,6 +88,7 @@ class Event(Generic[TData], ABC):
         Returns:
             str: The loggable message.
         """
+
         type_str = "".join([w.capitalize() for w in self.get_type().split("_")])
         message = self._get_message()
         if message.startswith("["):

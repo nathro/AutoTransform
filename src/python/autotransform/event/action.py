@@ -22,7 +22,7 @@ from autotransform.step.base import Step
 
 
 class ManageActionEventData(TypedDict):
-    """The data for a DebugEvent. Contains the information that will be
+    """The data for a ManageActionEventData. Contains the information that will be
     logged when the event is triggered."""
 
     action: Action
@@ -47,15 +47,16 @@ class ManageActionEvent(Event[ManageActionEventData]):
         """The logging level for events of this type.
 
         Returns:
-            LoggingLevel: The logging detail required to log this event
+            LoggingLevel: The logging detail required to log this event.
         """
+
         return LoggingLevel.INFO
 
     def _get_message(self) -> str:
-        """Gets a message representing the details of the event
+        """Gets a message representing the details of the event.
 
         Returns:
-            str: The message for the event
+            str: The message for the event.
         """
 
         return f"{str(self.data['change'])}: {self.data['action']['type']}"

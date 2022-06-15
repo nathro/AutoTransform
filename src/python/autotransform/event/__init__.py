@@ -8,6 +8,9 @@
 # @black_format
 
 """Events are used by AutoTransform for the purposes of logging. The EventHandler can be used
-as an entry point for hooks in to the Event framework for logging to to an organizations specific
-dataset. Custom hooks can be added through importing modules using the IMPORTS components setting.
+as an entry point for hooks in to the Event framework for logging to an organization's specific
+datastore. Custom hooks can be added through the environment variable AUTO_TRANSFORM_EVENT_HANDLER.
+Set that environment variable to a JSON map of:
+{"class_name": <Class that inherits from EventHandler>, "module": <Module the class is in>}
+to insert your own hook in to AutoTransform event handling.
 """

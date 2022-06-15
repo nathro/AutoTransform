@@ -31,15 +31,13 @@ from autotransform.event.logginglevel import LoggingLevel
 
 
 class EventHandler:
-    """The handler that all Events are dispatched to that logs these events. Any hooks being added
-    to AutoTransform Events should be added here.
+    """The handler that all Events are dispatched to that logs these events.
 
     Attributes:
-        _logging_level (LoggingLevel): The level for which logs will be output to CLI. All other
-            events will be dropped.
-        __instance (Optional[EventHandler]): The singleton instance of the EventHandler
+        _logging_level (LoggingLevel): The level for which logs will be output to CLI.
+        __instance (Optional[EventHandler]): The singleton instance of the EventHandler.
         __color_map (Dict[LoggingLevel, str]): A mapping from log level to ANSI color for CLI
-            output
+            output.
     """
 
     _logging_level: LoggingLevel
@@ -61,7 +59,7 @@ class EventHandler:
         """Singleton method for getting the event handler.
 
         Returns:
-            EventHandler: The singleton instance of the EventHandler
+            EventHandler: The singleton instance of the EventHandler.
         """
 
         if EventHandler.__instance is None:
@@ -80,28 +78,30 @@ class EventHandler:
         return EventHandler.__instance
 
     def set_logging_level(self, logging_level: LoggingLevel) -> None:
-        """_summary_
+        """Sets the level of logs to include in console outputs.
 
         Args:
-            logging_level (LoggingLevel): The logging level to output
+            logging_level (LoggingLevel): The logging level to output to console.
         """
+
         self._logging_level = logging_level
 
     def handle(self, event: Event) -> None:
         """Handles the given Event, logging and executing any hooks needed.
 
         Args:
-            event (Event): The Event that was dispatched
+            event (Event): The Event that was triggered.
         """
-        if self._logging_level >= event.get_logging_level():
+
+        if self._logging_level.value >= event.get_logging_level().value:
             self.output_to_cli(event)
 
     @staticmethod
     def output_to_cli(event: Event) -> None:
-        """Outputs the event to CLI with appropriate coloring
+        """Outputs the event to CLI with appropriate coloring.
 
         Args:
-            event (Event): The event being logged
+            event (Event): The event being logged.
         """
         color = event.get_color_override()
         if color is None:

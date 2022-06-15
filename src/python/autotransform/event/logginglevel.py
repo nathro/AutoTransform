@@ -8,7 +8,7 @@
 # @black_format
 
 """The logging level for an Event. Determines how an event is handled, such
-as if it is written to stdout.
+as if it is written to console.
 """
 
 

@@ -26,7 +26,7 @@ class ScheduleRunEventData(TypedDict):
 
 
 class ScheduleRunEvent(Event[ScheduleRunEventData]):
-    """A ScheduleRunEvent is triggered whenever an AutoTransform is scheduled to be
+    """A ScheduleRunEvent is triggered whenever an AutoTransformSchema is scheduled to be
     run by the schedule command and logs the schedule.
     """
 
@@ -37,6 +37,7 @@ class ScheduleRunEvent(Event[ScheduleRunEventData]):
         Returns:
             EventType: The unique type associated with this Event.
         """
+
         return EventType.SCHEDULE_RUN
 
     @staticmethod
@@ -46,6 +47,7 @@ class ScheduleRunEvent(Event[ScheduleRunEventData]):
         Returns:
             LoggingLevel: The logging detail required to log this event.
         """
+
         return LoggingLevel.INFO
 
     def _get_message(self) -> str:
@@ -54,4 +56,5 @@ class ScheduleRunEvent(Event[ScheduleRunEventData]):
         Returns:
             str: The message for the event.
         """
+
         return f"Scheduling run of {self.data['schema_name']}"

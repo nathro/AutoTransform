@@ -7,7 +7,7 @@
 
 # @black_format
 
-"""The Event type enum"""
+"""The EventType enum."""
 
 from enum import Enum
 

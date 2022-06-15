@@ -27,7 +27,7 @@ class RemoteUpdateEventData(TypedDict):
 
 
 class RemoteUpdateEvent(Event[RemoteUpdateEventData]):
-    """A RemoteUpdateEvent is triggered whenever a Change is updated using remote infrastructure"""
+    """A RemoteUpdateEvent is triggered whenever a Change is updated using remote infrastructure."""
 
     @staticmethod
     def get_type() -> EventType:
@@ -36,6 +36,7 @@ class RemoteUpdateEvent(Event[RemoteUpdateEventData]):
         Returns:
             EventType: The unique type associated with this Event.
         """
+
         return EventType.REMOTE_UPDATE
 
     @staticmethod
@@ -45,6 +46,7 @@ class RemoteUpdateEvent(Event[RemoteUpdateEventData]):
         Returns:
             LoggingLevel: The logging detail required to log this event.
         """
+
         return LoggingLevel.INFO
 
     def _get_message(self) -> str:
@@ -53,4 +55,5 @@ class RemoteUpdateEvent(Event[RemoteUpdateEventData]):
         Returns:
             str: The message for the event.
         """
+
         return f"Remote update of {str(self.data['change'])}: {self.data['ref']}"

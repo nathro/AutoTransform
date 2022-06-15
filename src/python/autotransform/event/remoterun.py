@@ -27,7 +27,7 @@ class RemoteRunEventData(TypedDict):
 
 
 class RemoteRunEvent(Event[RemoteRunEventData]):
-    """A RemoteRunEvent is triggered whenever an AutoTransform is triggered for a run
+    """A RemoteRunEvent is triggered whenever an AutoTransformSchema is triggered for a run
     on remote infrastructure.
     """
 
@@ -38,6 +38,7 @@ class RemoteRunEvent(Event[RemoteRunEventData]):
         Returns:
             EventType: The unique type associated with this Event.
         """
+
         return EventType.REMOTE_RUN
 
     @staticmethod
@@ -47,6 +48,7 @@ class RemoteRunEvent(Event[RemoteRunEventData]):
         Returns:
             LoggingLevel: The logging detail required to log this event.
         """
+
         return LoggingLevel.INFO
 
     def _get_message(self) -> str:
@@ -55,4 +57,5 @@ class RemoteRunEvent(Event[RemoteRunEventData]):
         Returns:
             str: The message for the event.
         """
+
         return f"Remote run of {self.data['schema_name']}: {self.data['ref']}"

@@ -9,7 +9,8 @@
 
 """The DebugEvent is a simple, generic event used for logging debug information to
 the console. This information is not expected to be logged to long term storage and
-is used when debugging usage in production environments.
+is used when debugging usage in production environments. More specific events should be created
+for long term storage cases.
 """
 
 from typing import TypedDict
@@ -36,6 +37,7 @@ class DebugEvent(Event[DebugEventData]):
         Returns:
             EventType: The unique type associated with this Event.
         """
+
         return EventType.DEBUG
 
     @staticmethod
@@ -43,14 +45,16 @@ class DebugEvent(Event[DebugEventData]):
         """The logging level for events of this type.
 
         Returns:
-            LoggingLevel: The logging detail required to log this event
+            LoggingLevel: The logging detail required to log this event.
         """
+
         return LoggingLevel.DEBUG
 
     def _get_message(self) -> str:
-        """Gets a message representing the details of the event
+        """Gets a message representing the details of the event.
 
         Returns:
-            str: The message for the event
+            str: The message for the event.
         """
+
         return self.data["message"]
