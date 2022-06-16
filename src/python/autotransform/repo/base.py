@@ -17,7 +17,7 @@ from typing import Any, ClassVar, List, Mapping, Optional, Sequence
 
 from autotransform.batcher.base import Batch
 from autotransform.change.base import Change
-from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
+from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 
 class RepoName(str, Enum):
@@ -67,7 +67,7 @@ class Repo(NamedComponent):
         transform_data: Optional[Mapping[str, Any]],
         change: Optional[Change] = None,
     ) -> None:
-        """Submit the changes to the Repo (i.e. commit, submit pull request, etc...).
+        """Submit the changes to the Repo (i.e. commit, submit Pull Request, etc...).
         Only called when changes are present.
 
         Args:
@@ -88,8 +88,7 @@ class Repo(NamedComponent):
     @abstractmethod
     def rewind(self, batch: Batch) -> None:
         """Rewind the repo to a pre-submit state to prepare for executing another Batch. This
-        should NOT delete any submissions (i.e. commits should stay present). Only called after a
-        submit has been done.
+        should NOT delete any submissions (i.e. commits should stay present).
 
         Args:
             batch (Batch): The Batch for which changes were submitted.

@@ -8,4 +8,4 @@
 # @black_format
 
 """Repos provide functionality for integrating with a version control system,
-including any associated code review workflow (i.e. Github pull requests)"""
+including any associated code review workflow (i.e. Github Pull Requests)"""

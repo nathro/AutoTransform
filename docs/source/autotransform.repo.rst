@@ -3,9 +3,6 @@ Repo Package (autotransform.repo)
 
 .. automodule:: autotransform.repo
 
-Components
-----------
-
 .. toctree::
    :maxdepth: 4
 

@@ -49,7 +49,7 @@ class ComponentModel(BaseModel):
             Dict[str, Any]: The encodable bundle.
         """
 
-        bundle = dict(self._iter(to_dict=False, exclude_defaults=True))
+        bundle = dict(self._iter(to_dict=False, exclude_defaults=True, exclude_unset=True))
         for key, value in bundle.items():
             if isinstance(value, ComponentModel):
                 bundle[key] = value.bundle()

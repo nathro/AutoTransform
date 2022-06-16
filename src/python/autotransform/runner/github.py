@@ -61,7 +61,7 @@ class GithubRunner(Runner):
         # Dispatch a Workflow run
         workflow_url = GithubUtils.get(repo.full_github_name).create_workflow_dispatch(
             self.run_workflow,
-            repo.base_branch_name,
+            repo.base_branch,
             {"schema": json.dumps(schema.bundle())},
         )
         assert workflow_url is not None, "Failed to dispatch workflow request"
@@ -102,7 +102,7 @@ class GithubRunner(Runner):
         # Dispatch a Workflow run
         workflow_url = GithubUtils.get(repo.full_github_name).create_workflow_dispatch(
             self.update_workflow,
-            repo.base_branch_name,
+            repo.base_branch,
             {"change": json.dumps(change.bundle())},
         )
         assert workflow_url is not None, "Failed to dispatch workflow request"

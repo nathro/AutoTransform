@@ -29,15 +29,10 @@
             "pattern": ".*\\.py$"
         }
     ],
-    "validators": [],
-    "commands": [],
     "repo": {
         "name": "github",
-        "base_branch_name": "master",
+        "base_branch": "master",
         "full_github_name": "nathro/AutoTransform",
-        "hide_autotransform_docs": true,
-        "labels": [],
-        "reviewers": [],
-        "team_reviewers": []
+        "hide_autotransform_docs": true
     }
 }

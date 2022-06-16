@@ -29,18 +29,36 @@ class GitRepo(Repo):
     """A Repo that provides support for commiting changes to git.
 
     Attributes:
-        base_branch_name (str): The name of the base branch for the repository.
+        base_branch (str): The name of the base branch for the repository.
         name (ClassVar[str]): The name of the component.
         BRANCH_NAME_PREFIX (ClassVar[str]): The prefix to apply to branches that are created.
         COMMIT_MESSAGE_PREFIX (ClassVar[str]): The prefix to apply to commits that are created.
     """
 
-    base_branch_name: str
+    base_branch: str
 
     name: ClassVar[RepoName] = RepoName.GIT
 
     BRANCH_NAME_PREFIX: ClassVar[str] = "AUTO_TRANSFORM"
     COMMIT_MESSAGE_PREFIX: ClassVar[str] = "[AutoTransform]"
+
+    @staticmethod
+    def get_changed_files_from_status(status: str) -> List[str]:
+        """Parses the git status to get the changed files.
+
+        Args:
+            status (str): The result of git status -s --untracked-files
+
+        Returns:
+            List[str]: The changed files.
+        """
+
+        if status.strip() == "":
+            return []
+        return [
+            re.sub(r"^(?:\?\?|M|A|D)", "", line.strip()).strip()
+            for line in status.strip().split("\n")
+        ]
 
     @staticmethod
     def get_branch_name(title: str) -> str:
@@ -102,27 +120,23 @@ class GitRepo(Repo):
         """
 
         for branch in self._local_repo.heads:
-            if branch.name == self.base_branch_name:
+            if branch.name == self.base_branch:
                 return branch
         raise ValueError("Invalid base branch name, branch not found.")
 
-    def get_changed_files(self, _: Batch) -> List[str]:
+    def get_changed_files(self, _batch: Batch) -> List[str]:
         """Uses git status to get all changed files.
 
         Args:
-            _ (Batch): Unused Batch object used to match signature to base.
+            _batch (Batch): Unused Batch object used to match signature to base.
 
         Returns:
             List[str]: All changed files, including untracked files.
         """
 
-        status = self._local_repo.git.status("-s", untracked_files=True)
-        if status.strip() == "":
-            return []
-        return [
-            re.sub(r"^(?:\?\?|M|A|D)", "", line.strip()).strip()
-            for line in status.strip().split("\n")
-        ]
+        return GitRepo.get_changed_files_from_status(
+            self._local_repo.git.status("-s", untracked_files=True),
+        )
 
     def submit(
         self,
@@ -156,11 +170,11 @@ class GitRepo(Repo):
         self._local_repo.git.add(all=True)
         self._local_repo.index.commit(GitRepo.get_commit_message(title))
 
-    def clean(self, _: Batch) -> None:
+    def clean(self, _batch: Batch) -> None:
         """Performs `git reset --hard` to remove any changes.
 
         Args:
-            _ (Batch): Unused Batch object used to match signature to base
+            _batch (Batch): Unused Batch object used to match signature to base
         """
 
         self._local_repo.git.reset("--hard")

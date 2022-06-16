@@ -1,5 +1,10 @@
 # Change Log
 
+## Release 1.0.0
+
+#### Components
+ - Renamed base_branch_name to base_branch for GitRepo
+
 ## Release 0.3.1
 
 #### Components

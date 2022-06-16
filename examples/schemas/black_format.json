@@ -35,7 +35,7 @@
     },
     "repo": {
         "name": "github",
-        "base_branch_name": "<BASE BRANCH>",
+        "base_branch": "<BASE BRANCH>",
         "full_github_name": "<GITHUB REPO>"
     }
 }

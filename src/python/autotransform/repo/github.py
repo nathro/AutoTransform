@@ -35,7 +35,6 @@ class GithubRepo(GitRepo):
     a Github repo.
 
     Attributes:
-        base_branch_name (str): The name of the base branch for the repository.
         full_github_name (str): The fully qualified name of the Github Repo.
         hide_automation_info (bool, optional): Whether to hide information on how automation was
             done from the pull request body. Defaults to False.
@@ -48,7 +47,6 @@ class GithubRepo(GitRepo):
         name (ClassVar[RepoName]): The name of the component.
     """
 
-    base_branch_name: str
     full_github_name: str
     hide_automation_info: bool = False
     hide_autotransform_docs: bool = False
@@ -199,7 +197,7 @@ class GithubRepo(GitRepo):
             Sequence[GithubChange]: The outstanding Changes against the Repo.
         """
 
-        pulls = GithubUtils.get(self.full_github_name).get_open_pull_requests(self.base_branch_name)
+        pulls = GithubUtils.get(self.full_github_name).get_open_pull_requests(self.base_branch)
         authenticated_user_id = GithubUtils.get(self.full_github_name).get_user_id()
         return [
             GithubChange(

@@ -29,7 +29,7 @@ def test_get_data_from_body(mock_get_pull_request):
     """Tests the get_schema() and get_batch() methods from the Change."""
 
     repo = GithubRepo(
-        base_branch_name="master",
+        base_branch="master",
         full_github_name="nathro/ATTest",
     )
     schema = AutoTransformSchema(

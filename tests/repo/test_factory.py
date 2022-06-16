@@ -9,12 +9,9 @@
 
 """Tests that the Repo's factory is correctly setup."""
 
-import json
-from typing import Dict, List
+from typing import Any, Dict, List
 
-from autotransform.repo.base import FACTORY, Repo, RepoName
-from autotransform.repo.git import GitRepo
-from autotransform.repo.github import GithubRepo
+from autotransform.repo.base import FACTORY, RepoName
 
 
 def test_all_enum_values_present():
@@ -51,82 +48,82 @@ def test_fetching_components():
 def test_encoding_and_decoding():
     """Tests the encoding and decoding of components."""
 
-    test_components: Dict[RepoName, List[Repo]] = {
+    test_components: Dict[RepoName, List[Dict[str, Any]]] = {
         RepoName.GIT: [
-            GitRepo(base_branch_name="master"),
+            {"base_branch": "master"},
         ],
         RepoName.GITHUB: [
-            GithubRepo(base_branch_name="master", full_github_name="nathro/AutoTransform"),
-            GithubRepo(
-                base_branch_name="master",
-                full_github_name="nathro/AutoTransform",
-                required_labels=["foo"],
-            ),
-            GithubRepo(
-                base_branch_name="master",
-                full_github_name="nathro/AutoTransform",
-                hide_automation_info=True,
-            ),
-            GithubRepo(
-                base_branch_name="master",
-                full_github_name="nathro/AutoTransform",
-                hide_autotransform_docs=True,
-            ),
-            GithubRepo(
-                base_branch_name="master",
-                full_github_name="nathro/AutoTransform",
-                labels=["foo"],
-                hide_automation_info=True,
-            ),
-            GithubRepo(
-                base_branch_name="master",
-                full_github_name="nathro/AutoTransform",
-                labels=["foo"],
-                hide_autotransform_docs=True,
-            ),
-            GithubRepo(
-                base_branch_name="master",
-                full_github_name="nathro/AutoTransform",
-                hide_automation_info=True,
-                hide_autotransform_docs=True,
-            ),
-            GithubRepo(
-                base_branch_name="master",
-                full_github_name="nathro/AutoTransform",
-                labels=["foo"],
-                hide_automation_info=True,
-                hide_autotransform_docs=True,
-            ),
-            GithubRepo(
-                base_branch_name="master",
-                full_github_name="nathro/AutoTransform",
-                reviewers=["foo"],
-                hide_automation_info=True,
-                hide_autotransform_docs=True,
-            ),
-            GithubRepo(
-                base_branch_name="master",
-                full_github_name="nathro/AutoTransform",
-                team_reviewers=["foo"],
-                hide_automation_info=True,
-                hide_autotransform_docs=True,
-            ),
-            GithubRepo(
-                base_branch_name="master",
-                full_github_name="nathro/AutoTransform",
-                reviewers=["bar"],
-                labels=["foo"],
-                hide_automation_info=True,
-                hide_autotransform_docs=True,
-            ),
-            GithubRepo(
-                base_branch_name="master",
-                full_github_name="nathro/AutoTransform",
-                team_reviewers=["bar"],
-                labels=["foo"],
-                hide_automation_info=True,
-                hide_autotransform_docs=True,
-            ),
+            {"base_branch": "master", "full_github_name": "nathro/AutoTransform"},
+            {
+                "base_branch": "master",
+                "full_github_name": "nathro/AutoTransform",
+                "labels": ["foo"],
+            },
+            {
+                "base_branch": "master",
+                "full_github_name": "nathro/AutoTransform",
+                "hide_automation_info": True,
+            },
+            {
+                "base_branch": "master",
+                "full_github_name": "nathro/AutoTransform",
+                "hide_autotransform_docs": True,
+            },
+            {
+                "base_branch": "master",
+                "full_github_name": "nathro/AutoTransform",
+                "labels": ["foo"],
+                "hide_automation_info": True,
+            },
+            {
+                "base_branch": "master",
+                "full_github_name": "nathro/AutoTransform",
+                "labels": ["foo"],
+                "hide_autotransform_docs": True,
+            },
+            {
+                "base_branch": "master",
+                "full_github_name": "nathro/AutoTransform",
+                "hide_automation_info": True,
+                "hide_autotransform_docs": True,
+            },
+            {
+                "base_branch": "master",
+                "full_github_name": "nathro/AutoTransform",
+                "labels": ["foo"],
+                "hide_automation_info": True,
+                "hide_autotransform_docs": True,
+            },
+            {
+                "base_branch": "master",
+                "full_github_name": "nathro/AutoTransform",
+                "reviewers": ["foo"],
+                "hide_automation_info": True,
+                "hide_autotransform_docs": True,
+            },
+            {
+                "base_branch": "master",
+                "full_github_name": "nathro/AutoTransform",
+                "team_reviewers": ["foo"],
+                "hide_automation_info": True,
+                "hide_autotransform_docs": True,
+            },
+            {
+                "base_branch": "master",
+                "full_github_name": "nathro/AutoTransform",
+                "reviewers": ["foo"],
+            },
+            {
+                "base_branch": "master",
+                "full_github_name": "nathro/AutoTransform",
+                "team_reviewers": ["foo"],
+            },
+            {
+                "base_branch": "master",
+                "full_github_name": "nathro/AutoTransform",
+                "reviewers": ["foo"],
+                "team_reviewers": ["bar"],
+            },
         ],
     }
 
@@ -136,7 +133,9 @@ def test_encoding_and_decoding():
     for name, components in test_components.items():
         assert name in RepoName, f"{name} is not a valid RepoName"
         for component in components:
-            assert component.name == name, f"Testing repo of name {component.name} for name {name}"
+            component_dict = {"name": name} | component
+            component_instance = FACTORY.get_instance(component_dict)
             assert (
-                FACTORY.get_instance(json.loads(json.dumps(component.bundle()))) == component
-            ), f"Component {component} does not bundle and unbundle correctly"
+                component_instance.name == name
+            ), f"Testing Repo of name {component_instance.name} for name {name}"
+            assert component_dict == component_instance.bundle()

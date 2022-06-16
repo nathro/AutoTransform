@@ -154,16 +154,16 @@ class Manager(ComponentModel):
         """
 
         if repo_name == RepoName.GITHUB:
-            base_branch_name = get_str(
+            base_branch = get_str(
                 "Enter the name of the base branch for the repo(i.e. main, master): "
             )
             github_name = get_str("Enter the fully qualified name of the github repo(owner/repo): ")
-            repo: Repo = GithubRepo(base_branch_name=base_branch_name, full_github_name=github_name)
+            repo: Repo = GithubRepo(base_branch=base_branch, full_github_name=github_name)
         elif repo_name == RepoName.GIT:
-            base_branch_name = get_str(
+            base_branch = get_str(
                 "Enter the name of the base branch for the repo(i.e. main, master): "
             )
-            repo = GitRepo(base_branch_name=base_branch_name)
+            repo = GitRepo(base_branch=base_branch)
         else:
             input_repo = repo_factory.from_console("repo", allow_none=False)
             assert input_repo is not None
