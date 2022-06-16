@@ -7,7 +7,7 @@
 
 # @black_format
 
-"""The implementation for the DirectoryInput."""
+"""The implementation for the EmptyInput."""
 
 from __future__ import annotations
 

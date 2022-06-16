@@ -16,11 +16,11 @@ from enum import Enum
 from typing import ClassVar, Sequence
 
 from autotransform.item.base import Item
-from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
+from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 
 class InputName(str, Enum):
-    """A simple enum for 1:1 Input to type mapping."""
+    """A simple enum for mapping."""
 
     DIRECTORY = "directory"
     EMPTY = "empty"

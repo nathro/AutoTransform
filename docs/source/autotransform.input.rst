@@ -3,9 +3,6 @@ Input Package (autotransform.input)
 
 .. automodule:: autotransform.input
 
-Components
-----------
-
 .. toctree::
    :maxdepth: 4
 

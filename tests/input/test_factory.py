@@ -9,13 +9,9 @@
 
 """Tests that the Input's factory is correctly setup."""
 
-import json
-from typing import Dict, List
+from typing import Any, Dict, List
 
-from autotransform.input.base import FACTORY, Input, InputName
-from autotransform.input.directory import DirectoryInput
-from autotransform.input.empty import EmptyInput
-from autotransform.input.gitgrep import GitGrepInput
+from autotransform.input.base import FACTORY, InputName
 
 
 def test_all_enum_values_present():
@@ -52,15 +48,15 @@ def test_fetching_components():
 def test_encoding_and_decoding():
     """Tests the encoding and decoding of components."""
 
-    test_components: Dict[InputName, List[Input]] = {
+    test_components: Dict[InputName, List[Dict[str, Any]]] = {
         InputName.DIRECTORY: [
-            DirectoryInput(path="foo"),
+            {"path": "foo"},
         ],
         InputName.EMPTY: [
-            EmptyInput(),
+            {},
         ],
         InputName.GIT_GREP: [
-            GitGrepInput(pattern="foo"),
+            {"pattern": "foo"},
         ],
     }
 
@@ -70,7 +66,9 @@ def test_encoding_and_decoding():
     for name, components in test_components.items():
         assert name in InputName, f"{name} is not a valid InputName"
         for component in components:
-            assert component.name == name, f"Testing input of name {component.name} for name {name}"
+            component_dict = {"name": name} | component
+            component_instance = FACTORY.get_instance(component_dict)
             assert (
-                FACTORY.get_instance(json.loads(json.dumps(component.bundle()))) == component
-            ), f"Component {component} does not bundle and unbundle correctly"
+                component_instance.name == name
+            ), f"Testing Input of name {component_instance.name} for name {name}"
+            assert component_dict == component_instance.bundle()

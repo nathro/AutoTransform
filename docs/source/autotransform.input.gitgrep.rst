@@ -1,4 +1,4 @@
-GitgrepInput (autotransform.input.gitgrep)
+GitGrepInput (autotransform.input.gitgrep)
 ==========================================
 
 .. automodule:: autotransform.input.gitgrep

@@ -32,9 +32,6 @@ class DirectoryInput(Input):
 
     name: ClassVar[InputName] = InputName.DIRECTORY
 
-    def __post_init__(self):
-        """Set up the files for the DirectoryInput."""
-
     @cached_property
     def _files(self) -> List[str]:
         """A cached list of files within the directory."""
@@ -52,4 +49,4 @@ class DirectoryInput(Input):
             Sequence[FileItem]: The eligible files for transformation.
         """
 
-        return [FileItem(key=f) for f in self._files]
+        return [FileItem(key=file) for file in self._files]
