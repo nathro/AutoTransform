@@ -31,7 +31,7 @@ def add_args(parser: ArgumentParser) -> None:
     """Adds the args to a subparser that are required to initialize AutoTransform.
 
     Args:
-        parser (ArgumentParser): The parser for the schema run.
+        parser (ArgumentParser): The parser for the initialization.
     """
 
     parser.add_argument(

@@ -58,7 +58,6 @@ def manage_command_main(args: Namespace) -> None:
     if args.verbose:
         event_handler.set_logging_level(LoggingLevel.DEBUG)
 
-    # Get Manager
     manager_file = args.path
     if manager_file is None:
         manager_file = f"{DefaultConfigFetcher.get_repo_config_relative_path()}/manager.json"
