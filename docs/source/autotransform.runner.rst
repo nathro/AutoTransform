@@ -3,9 +3,6 @@ Runner Package (autotransform.runner)
 
 .. automodule:: autotransform.runner
 
-Components
-----------
-
 .. toctree::
    :maxdepth: 4
 
