@@ -7,8 +7,7 @@
 
 # @black_format
 
-"""A GithubberRunner component, which is used to trigger a workflow on Github which
-runs a schema."""
+"""The implementation for the GithubRunner."""
 
 from __future__ import annotations
 
@@ -28,7 +27,7 @@ from autotransform.util.github import GithubUtils
 
 class GithubRunner(Runner):
     """A Runner component that is used to trigger Github workflows. See
-    data/workflows/autotransform_runner.yml.
+    examples/workflows/autotransform.run.yml.
 
     Attributes:
         run_workflow (str): The name of the workflow to use for running a Schema.

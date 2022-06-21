@@ -9,12 +9,9 @@
 
 """Tests that the Runner's factory is correctly setup."""
 
-import json
-from typing import Dict, List
+from typing import Any, Dict, List
 
-from autotransform.runner.base import FACTORY, Runner, RunnerName
-from autotransform.runner.github import GithubRunner
-from autotransform.runner.local import LocalRunner
+from autotransform.runner.base import FACTORY, RunnerName
 
 
 def test_all_enum_values_present():
@@ -51,14 +48,15 @@ def test_fetching_components():
 def test_encoding_and_decoding():
     """Tests the encoding and decoding of components."""
 
-    test_components: Dict[RunnerName, List[Runner]] = {
+    test_components: Dict[RunnerName, List[Dict[str, Any]]] = {
         RunnerName.GITHUB: [
-            GithubRunner(
-                run_workflow="autotransform.run.yml", update_workflow="autotransform.update.yml"
-            ),
+            {
+                "run_workflow": "autotransform.run.yml",
+                "update_workflow": "autotransform.update.yml",
+            },
         ],
         RunnerName.LOCAL: [
-            LocalRunner(),
+            {},
         ],
     }
 
@@ -68,9 +66,9 @@ def test_encoding_and_decoding():
     for name, components in test_components.items():
         assert name in RunnerName, f"{name} is not a valid RunnerName"
         for component in components:
+            component_dict = {"name": name} | component
+            component_instance = FACTORY.get_instance(component_dict)
             assert (
-                component.name == name
-            ), f"Testing runner of name {component.name} for name {name}"
-            assert (
-                FACTORY.get_instance(json.loads(json.dumps(component.bundle()))) == component
-            ), f"Component {component} does not bundle and unbundle correctly"
+                component_instance.name == name
+            ), f"Testing Runner of name {component_instance.name} for name {name}"
+            assert component_dict == component_instance.bundle()

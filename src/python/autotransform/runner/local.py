@@ -7,8 +7,7 @@
 
 # @black_format
 
-"""A GithubberRunner component, which is used to trigger a workflow on Github which
-runs a schema."""
+"""The implementation for the LocalRunner."""
 
 from __future__ import annotations
 
