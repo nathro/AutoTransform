@@ -9,10 +9,9 @@
 
 """Tests that the SchemaBuilder's factory is correctly setup."""
 
-import json
-from typing import Dict, List
+from typing import Any, Dict, List
 
-from autotransform.schema.builder import FACTORY, SchemaBuilder, SchemaBuilderName
+from autotransform.schema.builder import FACTORY, SchemaBuilderName
 
 
 def test_all_enum_values_present():
@@ -53,7 +52,7 @@ def test_fetching_components():
 def test_encoding_and_decoding():
     """Tests the encoding and decoding of components."""
 
-    test_components: Dict[SchemaBuilderName, List[SchemaBuilder]] = {}
+    test_components: Dict[SchemaBuilderName, List[Dict[str, Any]]] = {}
 
     for name in SchemaBuilderName:
         assert name in test_components, f"No test components for SchemaBuilder {name}"
@@ -61,9 +60,9 @@ def test_encoding_and_decoding():
     for name, components in test_components.items():
         assert name in SchemaBuilderName, f"{name} is not a valid SchemaBuilderName"
         for component in components:
+            component_dict = {"name": name} | component
+            component_instance = FACTORY.get_instance(component_dict)
             assert (
-                component.name == name
-            ), f"Testing schema_builder of name {component.name} for name {name}"
-            assert (
-                FACTORY.get_instance(json.loads(json.dumps(component.bundle()))) == component
-            ), f"Component {component} does not bundle and unbundle correctly"
+                component_instance.name == name
+            ), f"Testing SchemaBuilder of name {component_instance.name} for name {name}"
+            assert component_dict == component_instance.bundle()

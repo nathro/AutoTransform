@@ -7,7 +7,7 @@
 
 # @black_format
 
-"""The base class for SchemaBuilders which are used to programatically generate a Schema."""
+"""The base class and associated classes for SchemaBuilders."""
 
 import json
 from abc import abstractmethod
