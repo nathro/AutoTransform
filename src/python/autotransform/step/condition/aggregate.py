@@ -7,7 +7,7 @@
 
 # @black_format
 
-"""The implementation for all conditions handling when a Change was created."""
+"""The implementation for the AggregateCondition."""
 
 from __future__ import annotations
 
@@ -42,7 +42,7 @@ class AggregateCondition(Condition):
     name: ClassVar[ConditionName] = ConditionName.AGGREGATE
 
     def check(self, change: Change) -> bool:
-        """Checks whether how long ago the Change was created passes the comparison.
+        """Checks whether the aggregation of all conditions passes.
 
         Args:
             change (Change): The Change the Condition is checking.
@@ -61,8 +61,7 @@ class AggregateCondition(Condition):
 
     @classmethod
     def from_data(cls: Type[AggregateCondition], data: Dict[str, Any]) -> AggregateCondition:
-        """Produces an instance of the component from decoded data. Override if
-        the component had to be modified to encode.
+        """Produces an instance of the component from decoded data.
 
         Args:
             data (Dict[str, Any]): The JSON decoded data.

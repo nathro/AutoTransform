@@ -7,7 +7,7 @@
 
 # @black_format
 
-"""The base class and associated classes for Change components."""
+"""The base class and associated classes for Condition components."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from enum import Enum
 from typing import ClassVar
 
 from autotransform.change.base import Change
-from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
+from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 
 class ConditionName(str, Enum):

@@ -8,5 +8,4 @@
 # @black_format
 
 """Conditions are used by ConditionalStep to determine whether to take an Action.
-Provides a generic way for creating Steps that take action conditionally on JSON
-supplied logic."""
+Provides a generic way for creating Steps that take action conditionally."""

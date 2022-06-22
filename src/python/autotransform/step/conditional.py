@@ -21,8 +21,8 @@ from autotransform.step.condition.base import Condition
 
 
 class ConditionalStep(Step):
-    """The base for Step components. Used by AutoTransform to manage outstanding
-    Changes, determining what actions to take.
+    """A step which takes action based on whether a particular condition is passed. Allows
+    for creating customized steps based on different Change attributes readily through JSON.
 
     Attributes:
         action (ActionType): The action to perform if the condition passes.
@@ -61,8 +61,7 @@ class ConditionalStep(Step):
 
     @classmethod
     def from_data(cls: Type[ConditionalStep], data: Dict[str, Any]) -> ConditionalStep:
-        """Produces an instance of the component from decoded data. Override if
-        the component had to be modified to encode.
+        """Produces an instance of the component from decoded data.
 
         Args:
             data (Mapping[str, Any]): The JSON decoded data.

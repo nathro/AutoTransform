@@ -9,16 +9,13 @@
 
 """Tests that the Step's factory is correctly setup."""
 
-import json
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from autotransform.step.action import ActionType
-from autotransform.step.base import FACTORY, Step, StepName
-from autotransform.step.condition.aggregate import AggregateCondition, AggregatorType
+from autotransform.step.base import FACTORY, StepName
+from autotransform.step.condition.aggregate import AggregatorType
+from autotransform.step.condition.base import ConditionName
 from autotransform.step.condition.comparison import ComparisonType
-from autotransform.step.condition.created import CreatedAgoCondition
-from autotransform.step.condition.updated import UpdatedAgoCondition
-from autotransform.step.conditional import ConditionalStep
 
 
 def test_all_enum_values_present():
@@ -55,24 +52,35 @@ def test_fetching_components():
 def test_encoding_and_decoding():
     """Tests the encoding and decoding of components."""
 
-    test_components: Dict[StepName, List[Step]] = {
+    test_components: Dict[StepName, List[Dict[str, Any]]] = {
         StepName.CONDITIONAL: [
-            ConditionalStep(
-                action=ActionType.ABANDON,
-                condition=CreatedAgoCondition(comparison=ComparisonType.GREATER_THAN, time=500),
-            ),
-            ConditionalStep(
-                action=ActionType.ABANDON,
-                condition=AggregateCondition(
-                    aggregator=AggregatorType.ALL,
-                    conditions=[
-                        CreatedAgoCondition(comparison=ComparisonType.GREATER_THAN, time=500),
-                        UpdatedAgoCondition(
-                            comparison=ComparisonType.GREATER_THAN_OR_EQUAL, time=100
-                        ),
+            {
+                "action": ActionType.ABANDON,
+                "condition": {
+                    "name": ConditionName.CREATED_AGO,
+                    "comparison": ComparisonType.GREATER_THAN,
+                    "time": 500,
+                },
+            },
+            {
+                "action": ActionType.ABANDON,
+                "condition": {
+                    "name": ConditionName.AGGREGATE,
+                    "aggregator": AggregatorType.ALL,
+                    "conditions": [
+                        {
+                            "name": ConditionName.CREATED_AGO,
+                            "comparison": ComparisonType.GREATER_THAN,
+                            "time": 500,
+                        },
+                        {
+                            "name": ConditionName.UPDATED_AGO,
+                            "comparison": ComparisonType.GREATER_THAN_OR_EQUAL,
+                            "time": 100,
+                        },
                     ],
-                ),
-            ),
+                },
+            },
         ]
     }
 
@@ -82,7 +90,9 @@ def test_encoding_and_decoding():
     for name, components in test_components.items():
         assert name in StepName, f"{name} is not a valid StepName"
         for component in components:
-            assert component.name == name, f"Testing step of name {component.name} for name {name}"
+            component_dict = {"name": name} | component
+            component_instance = FACTORY.get_instance(component_dict)
             assert (
-                FACTORY.get_instance(json.loads(json.dumps(component.bundle()))) == component
-            ), f"Component {component} does not bundle and unbundle correctly"
+                component_instance.name == name
+            ), f"Testing Step of name {component_instance.name} for name {name}"
+            assert component_dict == component_instance.bundle()

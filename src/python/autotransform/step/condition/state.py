@@ -20,7 +20,7 @@ from autotransform.step.condition.comparison import ComparisonType, compare
 
 class ChangeStateCondition(Condition):
     """A condition which checks the ChangeState against the state supplied using the supplied
-    comparison. Note: only equals and not equals are valid, all others willresult in an error.
+    comparison. Note: only equals and not equals are valid, all others will result in an error.
 
     Attributes:
         comparison (ComparisonType): The type of comparison to perform.
@@ -32,16 +32,6 @@ class ChangeStateCondition(Condition):
     state: ChangeState
 
     name: ClassVar[ConditionName] = ConditionName.CHANGE_STATE
-
-    @staticmethod
-    def get_type() -> ConditionName:
-        """Used to map Condition components 1:1 with an enum, allowing construction from JSON.
-
-        Returns:
-            ConditionType: The unique type associated with this Condition.
-        """
-
-        return ConditionName.CHANGE_STATE
 
     def check(self, change: Change) -> bool:
         """Checks whether the Change's state passes the comparison.

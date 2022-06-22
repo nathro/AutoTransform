@@ -8,8 +8,7 @@
 # @black_format
 
 """The heart of AutoTransform, AutoTransformSchemas represent all information
-required to fully execute a change.
-"""
+required to fully execute a change."""
 
 from __future__ import annotations
 

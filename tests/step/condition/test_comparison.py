@@ -7,7 +7,7 @@
 
 # @black_format
 
-"""Tests that the ConditionFactory has all types included."""
+"""Tests that comparisons for Conditions work as expected."""
 
 from autotransform.step.condition.comparison import ComparisonType, compare
 

@@ -7,7 +7,7 @@
 
 # @black_format
 
-"""The implementation for all conditions handling when a Change was created."""
+"""The implementation for the CreatedAgoCondition."""
 
 from __future__ import annotations
 

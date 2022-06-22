@@ -17,7 +17,7 @@ from typing import ClassVar
 
 from autotransform.change.base import Change
 from autotransform.step.action import Action
-from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
+from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 
 class StepName(str, Enum):
@@ -39,7 +39,7 @@ class Step(NamedComponent):
     @abstractmethod
     def get_action(self, change: Change) -> Action:
         """Checks the Change to determine what action should be taken. If no action is needed,
-        an action with ActionType.NONE can be returned.
+        an action with ActionType.NONE should be returned.
 
         Args:
             change (Change): The Change the Step is running against.
