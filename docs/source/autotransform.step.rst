@@ -3,9 +3,6 @@ Step Package (autotransform.step)
 
 .. automodule:: autotransform.step
 
-Components
-----------
-
 .. toctree::
    :maxdepth: 4
 
