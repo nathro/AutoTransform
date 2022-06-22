@@ -3,9 +3,6 @@ Transformer Package (autotransform.transformer)
 
 .. automodule:: autotransform.transformer
 
-Components
-----------
-
 .. toctree::
    :maxdepth: 4
 

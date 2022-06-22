@@ -9,12 +9,9 @@
 
 """Tests that the Transformer's factory is correctly setup."""
 
-import json
-from typing import Dict, List
+from typing import Any, Dict, List
 
-from autotransform.transformer.base import FACTORY, Transformer, TransformerName
-from autotransform.transformer.regex import RegexTransformer
-from autotransform.transformer.script import ScriptTransformer
+from autotransform.transformer.base import FACTORY, TransformerName
 
 
 def test_all_enum_values_present():
@@ -55,11 +52,11 @@ def test_fetching_components():
 def test_encoding_and_decoding():
     """Tests the encoding and decoding of components."""
 
-    test_components: Dict[TransformerName, List[Transformer]] = {
-        TransformerName.REGEX: [RegexTransformer(pattern="foo", replacement="bar")],
+    test_components: Dict[TransformerName, List[Dict[str, Any]]] = {
+        TransformerName.REGEX: [{"pattern": "foo", "replacement": "bar"}],
         TransformerName.SCRIPT: [
-            ScriptTransformer(script="black", args=["-l", "100"], timeout=100),
-            ScriptTransformer(script="black", args=["-l", "100"], timeout=100, per_item=True),
+            {"script": "black", "args": ["-l", "100"], "timeout": 100},
+            {"script": "black", "args": ["-l", "100"], "timeout": 100, "per_item": True},
         ],
     }
 
@@ -69,9 +66,9 @@ def test_encoding_and_decoding():
     for name, components in test_components.items():
         assert name in TransformerName, f"{name} is not a valid TransformerName"
         for component in components:
+            component_dict = {"name": name} | component
+            component_instance = FACTORY.get_instance(component_dict)
             assert (
-                component.name == name
-            ), f"Testing transformer of name {component.name} for name {name}"
-            assert (
-                FACTORY.get_instance(json.loads(json.dumps(component.bundle()))) == component
-            ), f"Component {component} does not bundle and unbundle correctly"
+                component_instance.name == name
+            ), f"Testing Transformer of name {component_instance.name} for name {name}"
+            assert component_dict == component_instance.bundle()

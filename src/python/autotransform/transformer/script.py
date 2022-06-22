@@ -24,11 +24,11 @@ from autotransform.transformer.base import Transformer, TransformerName
 
 
 class ScriptTransformer(Transformer[None]):
-    """A Transformer that makes changes using an invoked script. Sentinel values can be used in the
-    args to supply information from the Batch.
+    """A Transformer that makes changes using an invoked script. Sentinel values can be
+    used in args to provide custom arguments for a run.
     The available sentinel values for args are:
-        <<KEY>>: A json encoded list of the Items for a batch. If the per_item flag is set, this
-            will simply be the key of an Item.
+        <<KEY>>: A json encoded list of the Items for a Batch. If the per_item flag is set
+            this will simply be the key of an Item.
         <<EXTRA_DATA>>: A JSON encoded mapping from Item key to that Item's extra_data. If the
             per_item flag is set, this will simply be a JSON encoding of the Item's extra_data.
             If extra_data is not present for an item, it is treated as an empty Dict.
@@ -66,15 +66,15 @@ class ScriptTransformer(Transformer[None]):
             self._transform_batch(batch)
 
     def _transform_single(self, item: Item, batch_metadata: Optional[Mapping[str, Any]]) -> None:
-        """Executes a simple script to transform a single Item. Sentinel values can be used
-        in args that will be replaced when the script is invoked.
+        """Executes a simple script to transform a single Item. Sentinel values can be
+        used in args to provide custom arguments for a run.
         The available sentinel values for args are:
-            <<KEY>>: The key of the Item being transformed.
-            <<EXTRA_DATA>>: A JSON encoding of the Item's extra_data. If extra_data is not present,
-                it is treated as an empty Dict.
+            <<KEY>>: The key of an item.
+            <<EXTRA_DATA>>: A JSON encoding of the Item's extra_data. If extra_data is not present
+                for an item, it is treated as an empty Dict.
             <<METADATA>>: A JSON encoded version of the Batch's metadata.
         _FILE can be appended to any of these (i.e. <<KEY_FILE>>) and the arg will instead be
-            replaced with a path to a file containing the value.
+        replaced with a path to a file containing the value.
 
         Args:
             item (Item): The Item that will be transformed.
@@ -140,12 +140,12 @@ class ScriptTransformer(Transformer[None]):
         proc.check_returncode()
 
     def _transform_batch(self, batch: Batch) -> None:
-        """Executes a simple script to transform the given Batch. Sentinel values can be used
-        in args that will be replaced when the script is invoked.
+        """Executes a simple script to transform the given Batch. Sentinel values can be
+        used in args to provide custom arguments for a run.
         The available sentinel values for args are:
-            <<KEY>>: A json encoded list of the Items for a batch.
-            <<EXTRA_DATA>>: A JSON encoded mapping from Item key to that Item's extra_data. If
-                extra_data is not present for an item, it is treated as an empty Dict.
+            <<KEY>>: A json encoded list of the Items for a Batch.
+            <<EXTRA_DATA>>: A JSON encoded mapping from Item key to that Item's extra_data.
+                If extra_data is not present for an item, it is treated as an empty Dict.
             <<METADATA>>: A JSON encoded version of the Batch's metadata.
         _FILE can be appended to any of these (i.e. <<KEY_FILE>>) and the arg will instead be
         replaced with a path to a file containing the value.
