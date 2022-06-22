@@ -20,7 +20,6 @@ Core
    autotransform.change
    autotransform.step
    autotransform.event
-   autotransform.thirdparty
    autotransform.util
 
 Schema Components
