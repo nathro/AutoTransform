@@ -100,10 +100,10 @@ class SchemaScheduleSettings(ComponentModel):
         """
 
         repeats = RepeatSetting(data["repeats"])
-        hour_of_day = data["hour_of_day"]
+        hour_of_day = data.get("hour_of_day", 0)
         assert isinstance(hour_of_day, int)
         assert hour_of_day in range(24)
-        day_of_week = data.get("day_of_week", None)
+        day_of_week = data.get("day_of_week", 0)
         if day_of_week is not None:
             assert isinstance(day_of_week, int)
             assert day_of_week in range(7)
