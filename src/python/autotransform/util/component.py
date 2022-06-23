@@ -102,7 +102,8 @@ class ComponentModel(BaseModel):
 
 
 class NamedComponent(ComponentModel):
-    """A base class for AutoTransform components, such as Batchers.
+    """A base class for AutoTransform components that are produced from a factory using
+    a name to differentiate component classes.
 
     Attributes:
         name (ClassVar[Enum]): The name of the Component.

@@ -7,5 +7,4 @@
 
 # @black_format
 
-"""A package containing utility modules used by AutoTransform for handling
-data and files."""
+"""A package containing utility modules used by AutoTransform."""

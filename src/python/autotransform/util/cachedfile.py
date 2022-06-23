@@ -40,7 +40,7 @@ class CachedFile:
 
     @staticmethod
     def _read(path: str) -> str:
-        """A simple private method to read the content of a file. Used as a hook for testing
+        """A simple method to read the content of a file. Used as a hook for testing
         purposes. Simply handles reading and does not interact with the cache.
 
         Args:
@@ -80,8 +80,9 @@ class CachedFile:
 
         # pylint: disable=unspecified-encoding
 
-        with open(path, "w") as output:
-            output.write(content)
+        with open(path, "w") as file:
+            file.write(content)
+            file.flush()
 
     def write_content(self, new_content: str) -> None:
         """Updates the content of a cached file, including writing the file.

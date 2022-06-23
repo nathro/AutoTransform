@@ -1,0 +1,74 @@
+# AutoTransform
+# Large scale, component based code modification library
+#
+# Licensed under the MIT License <http://opensource.org/licenses/MIT>
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
+
+# @black_format
+
+"""Tests that Manager functions as expected."""
+
+import json
+import pathlib
+
+from autotransform.change.base import ChangeState
+from autotransform.repo.github import GithubRepo
+from autotransform.runner.github import GithubRunner
+from autotransform.step.action import ActionType
+from autotransform.step.condition.comparison import ComparisonType
+from autotransform.step.condition.state import ChangeStateCondition
+from autotransform.step.condition.updated import UpdatedAgoCondition
+from autotransform.step.conditional import ConditionalStep
+from autotransform.util.manager import Manager
+
+
+def get_sample_manager() -> Manager:
+    """Gets a sample Manager.
+
+    Returns:
+        Manager: The sample Manager.
+    """
+
+    return Manager(
+        repo=GithubRepo(base_branch="main", full_github_name="nathro/ATTest"),
+        runner=GithubRunner(
+            run_workflow="autotransform.run.yml", update_workflow="autotransform.update.yml"
+        ),
+        steps=[
+            ConditionalStep(
+                action=ActionType.MERGE,
+                condition=ChangeStateCondition(
+                    comparison=ComparisonType.EQUAL, state=ChangeState.APPROVED
+                ),
+            ),
+            ConditionalStep(
+                action=ActionType.ABANDON,
+                condition=ChangeStateCondition(
+                    comparison=ComparisonType.EQUAL, state=ChangeState.CHANGES_REQUESTED
+                ),
+            ),
+            ConditionalStep(
+                action=ActionType.UPDATE,
+                condition=UpdatedAgoCondition(
+                    comparison=ComparisonType.GREATER_THAN_OR_EQUAL, time=259200
+                ),
+            ),
+        ],
+    )
+
+
+def test_decoding():
+    """Tests that the Manager component is decoded properly."""
+
+    parent_dir = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
+    manager = Manager.read(f"{parent_dir}/data/manager.json")
+    assert manager == get_sample_manager()
+
+
+def test_encoding():
+    """Tests that the Manager component is encoded properly."""
+
+    parent_dir = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
+    with open(f"{parent_dir}/data/manager.json", "r", encoding="UTF-8") as file:
+        assert json.dumps(get_sample_manager().bundle(), indent=4) == file.read()

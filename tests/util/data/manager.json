@@ -1,0 +1,41 @@
+{
+    "repo": {
+        "name": "github",
+        "base_branch": "main",
+        "full_github_name": "nathro/ATTest"
+    },
+    "runner": {
+        "name": "github",
+        "run_workflow": "autotransform.run.yml",
+        "update_workflow": "autotransform.update.yml"
+    },
+    "steps": [
+        {
+            "name": "conditional",
+            "action": "merge",
+            "condition": {
+                "name": "change_state",
+                "comparison": "eq",
+                "state": "approved"
+            }
+        },
+        {
+            "name": "conditional",
+            "action": "abandon",
+            "condition": {
+                "name": "change_state",
+                "comparison": "eq",
+                "state": "changes_requested"
+            }
+        },
+        {
+            "name": "conditional",
+            "action": "update",
+            "condition": {
+                "name": "updated_ago",
+                "comparison": "gte",
+                "time": 259200
+            }
+        }
+    ]
+}
