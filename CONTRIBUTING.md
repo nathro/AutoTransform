@@ -1,6 +1,6 @@
 # **Contributing To AutoTransform**
 
-AutoTransform is a tool built by and for developers and welcomes developers pushing their components and improvements upstream. While new components are the easiest things to push upstream new functionality and improvements to existing functionality are welcome as well.
+AutoTransform is a tool built by and for developers and welcomes developers pushing their components and improvements upstream. While new components are the easiest things to push upstream new functionality and improvements to existing functionality are also welcome.
 
 ### **What Should Push Upstream?**
 
@@ -24,4 +24,4 @@ If after seing the above you still want to contribute to AutoTransform, follow s
 
 ### **What About the Docs?**
 
-AutoTransform uses Sphinx for automating documentation updates. To update the docs, make sure you `pip install -U sphinx sphinx-rtd-theme myst_parser`. If you add new modules, you can get a headstart on adding docs to them using `sphinx-apidoc -e -o source "../src/python/autotransform"` from the docs/ directory. When adding or updating documentation, make sure to look at existing docs and maintain the same style. Most modules are documented using autodoc with Google format docstrings. Once your .rft files are good, run `make html` to get the html pages created. Any changes to documentation need to be pushed to readthedocs by @nathro.
+AutoTransform uses Sphinx for automating documentation updates. To update the docs, make sure you `pip install -U sphinx sphinx-rtd-theme myst_parser`. If you add new modules, you can get a headstart on adding docs to them using `sphinx-apidoc -e -o source "../src/python/autotransform"` from the `docs/` directory. When adding or updating documentation, make sure to look at existing docs and maintain the same style. Most modules are documented using autodoc with Google format docstrings. Once your .rft files are good, run `make html` to get the html pages created.

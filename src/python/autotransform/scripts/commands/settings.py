@@ -69,6 +69,13 @@ def add_args(parser: ArgumentParser) -> None:
         help="Update or view manager settings",
     )
     setting_type_group.add_argument(
+        "--scheduler",
+        dest="setting_type",
+        action="store_const",
+        const="scheduler",
+        help="Update or view scheduler settings",
+    )
+    setting_type_group.add_argument(
         "--schema",
         type=str,
         help="The path to an existing or to be created JSON encoded schema.",
@@ -105,6 +112,8 @@ def settings_command_main(args: Namespace) -> None:
         handle_custom_components(args.update_settings)
     elif args.setting_type == "manager":
         handle_manager(args.update_settings)
+    elif args.setting_type == "scheduler":
+        handle_scheduler(args.update_settings)
     else:
         handle_schema(args.update_settings, args.schema)
 

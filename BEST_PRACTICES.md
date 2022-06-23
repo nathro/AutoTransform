@@ -35,7 +35,7 @@ Every component and schema should be thoroughly tested for each different possib
 
 ### **Mind Developer Time**
 
-Just because something can be automated to be made better, doesn’t mean it should be. Developer time is important and wasting it by submitting numerous of changes for review that don’t really do much to improve things is a bad practice that can eliminate the benefits of AutoTransform. Try to minimize review required for changes where possible, and if review is required, ensure that it is worth the time of the reviewer to get the changes in.
+Just because something can be automated to be made better, doesn’t mean it should be. Developer time is important and wasting it by submitting numerous changes for review that don’t really do much to improve things is a bad practice that can eliminate the benefits of AutoTransform. Try to minimize review required for changes where possible, and if review is required, ensure that it is worth the time of the reviewer to get the changes in.
 
 ### **Create A Council**
 

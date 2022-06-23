@@ -61,16 +61,16 @@ class SchemaScheduleSettings(ComponentModel):
 
     Attributes:
         repeats (RepeatSetting): How often the Schema will be run, daily or weekly.
-        hour_of_day (int): The hour of the day to run the Schema, 0-23.
+        hour_of_day (int, optional): The hour of the day to run the Schema, 0-23. Defaults to 0.
         day_of_week (Optional[int], optional): The day of the week to run a weekly Schema.
-            Defaults to None.
+            Defaults to 0.
         shard_filter (Optional[ShardingSettings], optional): A shard filter to use for sharding
             the inputs across multiple runs. Defaults to None.
     """
 
     repeats: RepeatSetting
-    hour_of_day: int
-    day_of_week: Optional[int] = None
+    hour_of_day: int = 0
+    day_of_week: Optional[int] = 0
     shard_filter: Optional[ShardFilter] = None
 
     def should_run(self, hour_of_day: int, day_of_week: int) -> bool:

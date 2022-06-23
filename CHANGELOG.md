@@ -2,6 +2,8 @@
 
 ## Release 1.0.0
 
+AutoTransform is officially available for production use cases. See our documentation at autotransform.readthedocs.io to learn more about how it works and how it can save your organization thousands of developer hours.
+
 #### Components
  - Renamed base_branch_name to base_branch for GitRepo
 

@@ -9,7 +9,6 @@ Full documentation available [here](https://autotransform.readthedocs.io)
  - **Latest Release** `pip install AutoTransform`
  - **Bleeding Edge** `pip install git+git://github.com/nathro/AutoTransform.git`
    - Windows users may need to replace `git://` with `https://`
-   - If you do not have git use: `pip install https://github.com/nathro/AutoTransform/archive/master.zip`
 
 After installing via pip, AutoTransform can be initialized using `autotransform init`. If called within a git repo, this script will also initialize the repo to use AutoTransform. For a simple setup experience, run `autotransform init --simple --github` or `autotransform init --simple --no-github`
 ## **Summary**
@@ -18,26 +17,29 @@ AutoTransform is an opensource framework for large-scale code modification. It e
 
 ## **Goal**
 
-The goal of AutoTransform is to make codebase maintenance simple, easy, and automatic. By providing a clear structure for definition, all types of modifications can be automated. Some examples include:
+The goal of AutoTransform is to make codebase modification simple, easy, and automatic. By providing a clear structure for definition, all types of modifications can be automated. Some examples include:
 
 * Library upgrades
 * API changes
 * Performance improvements
 * Lint or style fixes
-* Dead code
+* Unused code
 * One-off refactors
 * Any other programmatically definable modification
 
 ## **Philosophies**
-### **Component Based**
+
+There are a core set of philosphies that guide AutoTransform's development. These drive decisions around functionality, implementation details, and best practies.
+
+### **Components Are Best**
 
 AutoTransform heavily uses a component based model for functionality. This allows easy customization through the creation of new plug-and-play components. Core logic is about funneling information between components, while the components themselves contain business logic. While AutoTransform provides an ever-growing library of components for ease of adoption, bespoke components will always be needed for some use cases.
 
-### **Language Agnostic**
+### **Support All Languages**
 
 AutoTransform, though written in Python, is a language agnostic framework. Our component model allows AutoTransform to treat each component as a black-box that can leverage whatever tooling or language makes sense for the goal of the component. This is most heavily needed for the components which actually make code changes where leveraging tools for Abstract(or Concrete) Syntax Trees(AST/CST) is often done in the language being modified.
 
-### **Minimal Developer Involvement**
+### **Value Developer Time**
 
 Managing large scale changes can be extremely time consuming, AutoTransform puts automation first with the goal of automating as much of the process as possible. Developer time is incredibly valuable and should be saved for things that actually require it. If a computer can do it, a computer should do it.
 
@@ -47,7 +49,7 @@ As an example of how AutoTransform might be used, let’s go through the case of
 
 ### **Static Inference**
 
-A codemod can be written that statically infers types from the types around whatever needs types. Hooking this up to scheduled runs would mean that as people type your code, other types can later be inferred. Additionally, as the codemod types code, that can reveal further types that can be statically inferred. This would allow typing to slowly build up over time automatically as the codemod runs and developers introduce more types themselves, significantly speeding up the process of typing a legacy codebase.
+A codemod can be written that statically infers types from the types around whatever needs typing. Hooking this up to scheduled runs would mean that as people type your code, other types can later be inferred. Additionally, as the codemod types code, that can reveal further types that can be statically inferred. This would allow typing to slowly build up over time automatically as the codemod runs and developers introduce more types themselves, significantly speeding up the process of typing a legacy codebase.
 
 ### **Run Time Logging**
 
