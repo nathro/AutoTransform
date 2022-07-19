@@ -1,5 +1,10 @@
 # Change Log
 
+## Release 1.0.1
+
+#### Components
+ - Updated repos to check for outstanding changes before running a Batch. If an outstanding change is found (the branch already exists for Git/Github), transformation is skipped.
+
 ## Release 1.0.0
 
 AutoTransform is officially available for production use cases. See our documentation at autotransform.readthedocs.io to learn more about how it works and how it can save your organization thousands of developer hours.

@@ -138,6 +138,21 @@ class GitRepo(Repo):
             self._local_repo.git.status("-s", untracked_files=True),
         )
 
+    def has_outstanding_change(self, batch: Batch) -> bool:
+        """Checks the state of the repo to see whether an outstanding Change
+        for the Batch exists.
+
+        Args:
+            batch (Batch): The Batch to check for.
+
+        Returns:
+            bool: Whether an outstanding Change exists.
+        """
+
+        return GitRepo.get_branch_name(batch["title"]) in [
+            str(ref) for ref in self._local_repo.references
+        ]
+
     def submit(
         self,
         batch: Batch,

@@ -56,6 +56,21 @@ class GithubRepo(GitRepo):
 
     name: ClassVar[RepoName] = RepoName.GITHUB
 
+    def has_outstanding_change(self, batch: Batch) -> bool:
+        """Checks the state of the repo to see whether an outstanding Change
+        for the Batch exists.
+
+        Args:
+            batch (Batch): The Batch to check for.
+
+        Returns:
+            bool: Whether an outstanding Change exists.
+        """
+
+        return f"origin/{GitRepo.get_branch_name(batch['title'])}" in [
+            str(ref) for ref in self._local_repo.remote().refs
+        ]
+
     def submit(
         self,
         batch: Batch,

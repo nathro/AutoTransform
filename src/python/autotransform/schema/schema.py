@@ -150,6 +150,11 @@ class AutoTransformSchema(ComponentModel):
         if self.repo is not None:
             event_handler.handle(DebugEvent({"message": "Clean repo"}))
             self.repo.rewind(batch)
+            if change is None and self.repo.has_outstanding_change(batch):
+                event_handler.handle(
+                    DebugEvent({"message": "Skipping batch with outstanding change"})
+                )
+                return
 
         # Execute transformation
         result = self.transformer.transform(batch)

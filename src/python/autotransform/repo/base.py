@@ -61,6 +61,18 @@ class Repo(NamedComponent):
         return len(self.get_changed_files(batch)) > 0
 
     @abstractmethod
+    def has_outstanding_change(self, batch: Batch) -> bool:
+        """Checks the state of the repo to see whether an outstanding Change
+        for the Batch exists.
+
+        Args:
+            batch (Batch): The Batch to check for.
+
+        Returns:
+            bool: Whether an outstanding Change exists.
+        """
+
+    @abstractmethod
     def submit(
         self,
         batch: Batch,
