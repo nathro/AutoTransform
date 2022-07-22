@@ -11,7 +11,7 @@
 
 from typing import Any, Dict, List
 
-from autotransform.step.action import ActionType
+from autotransform.step.action.base import ActionName
 from autotransform.step.base import FACTORY, StepName
 from autotransform.step.condition.aggregate import AggregatorType
 from autotransform.step.condition.base import ConditionName
@@ -55,7 +55,7 @@ def test_encoding_and_decoding():
     test_components: Dict[StepName, List[Dict[str, Any]]] = {
         StepName.CONDITIONAL: [
             {
-                "action": ActionType.ABANDON,
+                "actions": [{"name": ActionName.ABANDON}],
                 "condition": {
                     "name": ConditionName.CREATED_AGO,
                     "comparison": ComparisonType.GREATER_THAN,
@@ -63,7 +63,7 @@ def test_encoding_and_decoding():
                 },
             },
             {
-                "action": ActionType.ABANDON,
+                "actions": [{"name": ActionName.ABANDON}],
                 "condition": {
                     "name": ConditionName.AGGREGATE,
                     "aggregator": AggregatorType.ALL,
@@ -80,6 +80,7 @@ def test_encoding_and_decoding():
                         },
                     ],
                 },
+                "continue_if_passed": True,
             },
         ]
     }

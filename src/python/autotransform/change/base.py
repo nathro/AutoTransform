@@ -16,8 +16,8 @@ from enum import Enum
 from typing import TYPE_CHECKING, ClassVar
 
 from autotransform.batcher.base import Batch
-from autotransform.step.action import ActionType
-from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
+from autotransform.step.action.base import Action, ActionName
+from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 if TYPE_CHECKING:
     from autotransform.runner.base import Runner
@@ -89,27 +89,27 @@ class Change(NamedComponent):
             int: The timestamp in seconds when the Change was last updated.
         """
 
-    def take_action(self, action_type: ActionType, runner: Runner) -> bool:
-        """Tells the Change to take an action based on the results of a Step run.
+    def take_action(self, action: Action, runner: Runner) -> bool:
+        """Tells the Change to take an Action based on the results of a Step run.
 
         Args:
-            action_type (ActionType): The action to take.
-            runner (Runner): A Runner which can be used to take an action.
+            action (Action): The Action to take.
+            runner (Runner): A Runner which can be used to take an Action.
 
         Returns:
-            bool: Whether the action was taken successfully.
+            bool: Whether the Action was taken successfully.
         """
 
-        if action_type == ActionType.NONE:
+        if action.name == ActionName.NONE:
             return True
 
-        if action_type == ActionType.MERGE:
+        if action.name == ActionName.MERGE:
             return self._merge()
 
-        if action_type == ActionType.UPDATE:
+        if action.name == ActionName.UPDATE:
             return self._update(runner)
 
-        if action_type == ActionType.ABANDON:
+        if action.name == ActionName.ABANDON:
             return self.abandon()
 
         # No known way to handle the Action, so treat it as failed

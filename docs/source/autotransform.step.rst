@@ -6,6 +6,6 @@ Step Package (autotransform.step)
 .. toctree::
    :maxdepth: 4
 
-   autotransform.step.action
    autotransform.step.base
+   autotransform.step.action.base
    autotransform.step.conditional

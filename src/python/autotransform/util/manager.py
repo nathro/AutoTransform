@@ -25,7 +25,7 @@ from autotransform.repo.git import GitRepo
 from autotransform.repo.github import GithubRepo
 from autotransform.runner.base import FACTORY as runner_factory
 from autotransform.runner.base import Runner
-from autotransform.step.action import ActionType
+from autotransform.step.action.base import AbandonAction, MergeAction, UpdateAction
 from autotransform.step.base import FACTORY as step_factory
 from autotransform.step.base import Step
 from autotransform.step.condition.comparison import ComparisonType
@@ -62,13 +62,14 @@ class Manager(ComponentModel):
             EventHandler.get().handle(DebugEvent({"message": f"Checking steps for {str(change)}"}))
             for step in self.steps:
                 EventHandler.get().handle(DebugEvent({"message": f"Checking step {str(step)}"}))
-                action = step.get_action(change)
-                if action["type"] != ActionType.NONE:
+                actions = step.get_actions(change)
+                for action in actions:
                     EventHandler.get().handle(
                         ManageActionEvent({"action": action, "change": change, "step": step})
                     )
-                    change.take_action(action["type"], self.runner)
-                if action["stop_steps"]:
+                    change.take_action(action, self.runner)
+
+                if actions and not step.continue_management(change):
                     EventHandler.get().handle(
                         DebugEvent({"message": f"Steps ended for change {str(change)}"})
                     )
@@ -184,7 +185,7 @@ class Manager(ComponentModel):
                     condition=ChangeStateCondition(
                         comparison=ComparisonType.EQUAL, state=ChangeState.APPROVED
                     ),
-                    action=ActionType.MERGE,
+                    actions=[MergeAction],
                 )
             )
 
@@ -195,7 +196,7 @@ class Manager(ComponentModel):
                     condition=ChangeStateCondition(
                         comparison=ComparisonType.EQUAL, state=ChangeState.CHANGES_REQUESTED
                     ),
-                    action=ActionType.ABANDON,
+                    actions=[AbandonAction],
                 )
             )
 
@@ -211,7 +212,7 @@ class Manager(ComponentModel):
                         comparison=ComparisonType.GREATER_THAN_OR_EQUAL,
                         time=days_stale * 24 * 60 * 60,
                     ),
-                    action=ActionType.ABANDON,
+                    actions=[UpdateAction],
                 )
             )
 

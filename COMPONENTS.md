@@ -26,7 +26,7 @@ The core of AutoTransform is the [schema](https://github.com/nathro/AutoTransfor
 
 * **[Change](https://github.com/nathro/AutoTransform/blob/master/src/python/autotransform/change/base.py)** - A Change represents a submission to a code review and/or source control system. They are used by AutoTransform to manage these submissions to do things like land approved code, abandon stale changes, etc...
 
-* **[Step](https://github.com/nathro/AutoTransform/blob/master/src/python/autotransform/step/base.py)** - A Step is used by AutoTransform to determine what actions to take for a given Change. They evaluate criteria and determine what should be done for handling an outstanding Change. Most Step logic can be handled through the use of the ConditionalStep, requiring only the creation of new Conditions.
+* **[Step](https://github.com/nathro/AutoTransform/blob/master/src/python/autotransform/step/base.py)** - A Step is used by AutoTransform to determine what Actions to take for a given Change. They evaluate criteria and determine what should be done for handling an outstanding Change. Most Step logic can be handled through the use of the ConditionalStep, requiring only the creation of new Conditions.
 
 ### **Other Components**
 

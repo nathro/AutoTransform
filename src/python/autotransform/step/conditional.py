@@ -11,10 +11,11 @@
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, Type
+from typing import Any, ClassVar, Dict, List, Type
 
 from autotransform.change.base import Change
-from autotransform.step.action import Action, ActionType
+from autotransform.step.action.base import FACTORY as action_factory
+from autotransform.step.action.base import Action, ActionName
 from autotransform.step.base import Step, StepName
 from autotransform.step.condition.base import FACTORY as condition_factory
 from autotransform.step.condition.base import Condition
@@ -25,39 +26,45 @@ class ConditionalStep(Step):
     for creating customized steps based on different Change attributes readily through JSON.
 
     Attributes:
-        action (ActionType): The action to perform if the condition passes.
+        actions (List[Action]): The Actions to perform if the Condition passes.
         condition (Condition): The condition to check.
         continue_if_passed (bool, optional): Whether to continue on to the next step after
             performing the action if the condition passes. Defaults to False.
         name (ClassVar[StepName]): The name of the component.
     """
 
-    action: ActionType
+    actions: List[Action]
     condition: Condition
     continue_if_passed: bool = False
 
     name: ClassVar[StepName] = StepName.CONDITIONAL
 
-    def get_action(self, change: Change) -> Action:
-        """Checks the Change against the provided Condition and returns the appropriate action
-        based on whether or not the Condition is passed.
+    def get_actions(self, change: Change) -> List[Action]:
+        """Checks the Change against the provided Condition and returns the appropriate Actions
+        based on whether or not the Condition is passed. If no Actions are returned, the Step
+        is skipped.
 
         Args:
             change (Change): The Change the Step is running against.
 
         Returns:
-            Action: The Action the Step wants to take.
+            List[Action]: The Actions the Step wants to take.
         """
 
         if self.condition.check(change):
-            return {
-                "type": self.action,
-                "stop_steps": not self.continue_if_passed,
-            }
-        return {
-            "type": ActionType.NONE,
-            "stop_steps": False,
-        }
+            return self.actions
+        return []
+
+    def continue_management(self, change: Change) -> bool:
+        """Checks if management should be continued after this Step when Actions were provided.
+
+        Args:
+            change (Change): The Change the Step is running against.
+
+        Returns:
+            bool: Whether to continue management.
+        """
+        return self.continue_if_passed
 
     @classmethod
     def from_data(cls: Type[ConditionalStep], data: Dict[str, Any]) -> ConditionalStep:
@@ -70,8 +77,18 @@ class ConditionalStep(Step):
             ConditionalStep: An instance of the component.
         """
 
-        action = (
-            data["action"] if isinstance(data["action"], ActionType) else ActionType(data["action"])
-        )
+        if "action" in data:
+            action_name = (
+                data["action"]
+                if isinstance(data["action"], ActionName)
+                else ActionName(data["action"])
+            )
+            actions = [action_factory.get_instance({"name": action_name})]
+        else:
+            actions = [action_factory.get_instance(action) for action in data["actions"]]
         condition = condition_factory.get_instance(data["condition"])
-        return cls(action=action, condition=condition)
+        if "continue_if_passed" in data:
+            continue_if_passed = bool(data["continue_if_passed"])
+        else:
+            continue_if_passed = False
+        return cls(actions=actions, condition=condition, continue_if_passed=continue_if_passed)

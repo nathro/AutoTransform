@@ -13,10 +13,10 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from enum import Enum
-from typing import ClassVar
+from typing import ClassVar, List
 
 from autotransform.change.base import Change
-from autotransform.step.action import Action
+from autotransform.step.action.base import Action
 from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 
@@ -37,15 +37,26 @@ class Step(NamedComponent):
     name: ClassVar[StepName]
 
     @abstractmethod
-    def get_action(self, change: Change) -> Action:
-        """Checks the Change to determine what action should be taken. If no action is needed,
-        an action with ActionType.NONE should be returned.
+    def get_actions(self, change: Change) -> List[Action]:
+        """Checks the Change to determine what actions should be taken. If no Actions
+        are returned, the Step is considered skipped.
 
         Args:
             change (Change): The Change the Step is running against.
 
         Returns:
-            Action: The Action the Step wants to take.
+            List[Action]: The Actions the Step wants to take.
+        """
+
+    @abstractmethod
+    def continue_management(self, change: Change) -> bool:
+        """Checks if management should be continued after this Step when Actions were provided.
+
+        Args:
+            change (Change): The Change the Step is running against.
+
+        Returns:
+            bool: Whether to continue management.
         """
 
 

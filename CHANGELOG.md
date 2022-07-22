@@ -2,8 +2,13 @@
 
 ## Release 1.0.1
 
+#### Migrations
+ - Custom Step components now return a List of Actions, which are now fully-fledged NamedComponents. This is simply moving from an enum to a class for most cases.
+ - Custom Step components now have a method to check if management should be continued.
+
 #### Components
  - Updated repos to check for outstanding changes before running a Batch. If an outstanding change is found (the branch already exists for Git/Github), transformation is skipped.
+ - Made Actions fully-fledged components to enable Actions with parameters, such as comment/add_reviewer.
 
 ## Release 1.0.0
 

@@ -12,7 +12,11 @@
     "steps": [
         {
             "name": "conditional",
-            "action": "merge",
+            "actions": [
+                {
+                    "name": "merge"
+                }
+            ],
             "condition": {
                 "name": "change_state",
                 "comparison": "eq",
@@ -22,7 +26,11 @@
         },
         {
             "name": "conditional",
-            "action": "abandon",
+            "actions": [
+                {
+                    "name": "abandon"
+                }
+            ],
             "condition": {
                 "name": "change_state",
                 "comparison": "eq",
@@ -32,7 +40,11 @@
         },
         {
             "name": "conditional",
-            "action": "update",
+            "actions": [
+                {
+                    "name": "update"
+                }
+            ],
             "condition": {
                 "name": "updated_ago",
                 "comparison": "gte",

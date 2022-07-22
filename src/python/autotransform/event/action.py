@@ -17,7 +17,7 @@ from autotransform.change.base import Change
 from autotransform.event.base import Event
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.type import EventType
-from autotransform.step.action import Action
+from autotransform.step.action.base import Action
 from autotransform.step.base import Step
 
 
@@ -59,4 +59,4 @@ class ManageActionEvent(Event[ManageActionEventData]):
             str: The message for the event.
         """
 
-        return f"{str(self.data['change'])}: {self.data['action']['type']}"
+        return f"{str(self.data['change'])}: {self.data['action']}"
