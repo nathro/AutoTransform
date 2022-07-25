@@ -23,7 +23,11 @@ from autotransform.step.action.base import (
     NoneAction,
     UpdateAction,
 )
-from autotransform.step.action.reviewers import AddReviewersAction
+from autotransform.step.action.reviewers import (
+    AddOwnersAsReviewersAction,
+    AddOwnersAsTeamReviewersAction,
+    AddReviewersAction,
+)
 from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 if TYPE_CHECKING:
@@ -96,6 +100,7 @@ class Change(NamedComponent):
             int: The timestamp in seconds when the Change was last updated.
         """
 
+    # pylint: disable=too-many-return-statements
     def take_action(self, action: Action, runner: Runner) -> bool:
         """Tells the Change to take an Action based on the results of a Step run.
 
@@ -109,6 +114,12 @@ class Change(NamedComponent):
 
         if isinstance(action, AbandonAction):
             return self._abandon()
+
+        if isinstance(action, AddOwnersAsReviewersAction):
+            return self._add_reviewers(self.get_schema().config.owners, [])
+
+        if isinstance(action, AddOwnersAsTeamReviewersAction):
+            return self._add_reviewers([], self.get_schema().config.owners)
 
         if isinstance(action, AddReviewersAction):
             return self._add_reviewers(action.reviewers, action.team_reviewers)

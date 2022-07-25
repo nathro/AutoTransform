@@ -50,6 +50,8 @@ def test_encoding_and_decoding():
 
     test_components: Dict[ActionName, List[Dict[str, Any]]] = {
         ActionName.ABANDON: [{}],
+        ActionName.ADD_OWNERS_AS_REVIEWERS: [{}],
+        ActionName.ADD_OWNERS_AS_TEAM_REVIEWERS: [{}],
         ActionName.ADD_REVIEWERS: [
             {},
             {"reviewers": []},

@@ -10,6 +10,8 @@
  - Updated repos to check for outstanding changes before running a Batch. If an outstanding change is found (the branch already exists for Git/Github), transformation is skipped.
  - Made Actions fully-fledged components to enable Actions with parameters.
  - AddReviewersAction added.
+ - AddOwnersAsReviewersAction added.
+ - AddOwnersAsTeamReviewersAction added.
 
 ## Release 1.0.0
 

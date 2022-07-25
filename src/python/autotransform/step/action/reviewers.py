@@ -29,3 +29,23 @@ class AddReviewersAction(Action):
     team_reviewers: List[str] = Field(default_factory=list)
 
     name: ClassVar[ActionName] = ActionName.ADD_REVIEWERS
+
+
+class AddOwnersAsReviewersAction(Action):
+    """Adds the owners of a Schema as reviewers for the Change.
+
+    Attributes:
+        name (ClassVar[ActionName]): The name of the component.
+    """
+
+    name: ClassVar[ActionName] = ActionName.ADD_OWNERS_AS_REVIEWERS
+
+
+class AddOwnersAsTeamReviewersAction(Action):
+    """Adds the owners of a Schema as team reviewers for the Change.
+
+    Attributes:
+        name (ClassVar[ActionName]): The name of the component.
+    """
+
+    name: ClassVar[ActionName] = ActionName.ADD_OWNERS_AS_TEAM_REVIEWERS
