@@ -13,10 +13,17 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from enum import Enum
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING, ClassVar, List
 
 from autotransform.batcher.base import Batch
-from autotransform.step.action.base import Action, ActionName
+from autotransform.step.action.base import (
+    AbandonAction,
+    Action,
+    MergeAction,
+    NoneAction,
+    UpdateAction,
+)
+from autotransform.step.action.reviewers import AddReviewersAction
 from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 if TYPE_CHECKING:
@@ -100,20 +107,44 @@ class Change(NamedComponent):
             bool: Whether the Action was taken successfully.
         """
 
-        if action.name == ActionName.NONE:
-            return True
+        if isinstance(action, AbandonAction):
+            return self._abandon()
 
-        if action.name == ActionName.MERGE:
+        if isinstance(action, AddReviewersAction):
+            return self._add_reviewers(action.reviewers, action.team_reviewers)
+
+        if isinstance(action, MergeAction):
             return self._merge()
 
-        if action.name == ActionName.UPDATE:
-            return self._update(runner)
+        if isinstance(action, NoneAction):
+            return True
 
-        if action.name == ActionName.ABANDON:
-            return self.abandon()
+        if isinstance(action, UpdateAction):
+            return self._update(runner)
 
         # No known way to handle the Action, so treat it as failed
         return False
+
+    @abstractmethod
+    def _abandon(self) -> bool:
+        """Close out and abandon a Change, removing it from the code review
+        and/or version control system.
+
+        Returns:
+            bool: Whether the abandon was completed successfully.
+        """
+
+    @abstractmethod
+    def _add_reviewers(self, reviewers: List[str], team_reviewers: List[str]) -> bool:
+        """Adds reviewers to an outstanding Change.
+
+        Args:
+            reviewers (List[str]): The reviewers to add.
+            team_reviewers (List[str]): Any team reviewers to add.
+
+        Returns:
+            bool: Whether the reviewers were added successfully.
+        """
 
     @abstractmethod
     def _merge(self) -> bool:
@@ -121,15 +152,6 @@ class Change(NamedComponent):
 
         Returns:
             bool: Whether the merge was completed successfully.
-        """
-
-    @abstractmethod
-    def abandon(self) -> bool:
-        """Close out and abandon a Change, removing it from the code review
-        and/or version control system.
-
-        Returns:
-            bool: Whether the abandon was completed successfully.
         """
 
     def _update(self, runner: Runner) -> bool:

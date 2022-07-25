@@ -203,7 +203,9 @@ class AutoTransformSchema(ComponentModel):
                             }
                         )
                     )
-                    change.abandon()
+
+                    # pylint: disable=protected-access
+                    change._abandon()
                 event_handler.handle(DebugEvent({"message": "No changes found"}))
         event_handler.handle(DebugEvent({"message": "Finish batch"}))
         autotransform.schema.current = None

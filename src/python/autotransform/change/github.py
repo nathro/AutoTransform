@@ -103,6 +103,31 @@ class GithubChange(Change):
 
         return self._pull_request.get_updated_at()
 
+    def _abandon(self) -> bool:
+        """Close the Pull Request and delete the associated branch.
+
+        Returns:
+            bool: Whether the abandon was completed successfully.
+        """
+
+        if not self._pull_request.close():
+            return False
+        return self._pull_request.delete_branch()
+
+    def _add_reviewers(self, reviewers: List[str], team_reviewers: List[str]) -> bool:
+        """Adds reviewers to an outstanding Change.
+
+        Args:
+            reviewers (List[str]): The reviewers to add.
+            team_reviewers (List[str]): Any team reviewers to add.
+
+        Returns:
+            bool: Whether the reviewers were added successfully.
+        """
+
+        self._pull_request.add_reviewers(reviewers, team_reviewers)
+        return True
+
     def _merge(self) -> bool:
         """Merges the Pull Request and deletes the branch.
 
@@ -111,17 +136,6 @@ class GithubChange(Change):
         """
 
         if not self._pull_request.merge():
-            return False
-        return self._pull_request.delete_branch()
-
-    def abandon(self) -> bool:
-        """Close the Pull Request and delete the associated branch.
-
-        Returns:
-            bool: Whether the abandon was completed successfully.
-        """
-
-        if not self._pull_request.close():
             return False
         return self._pull_request.delete_branch()
 

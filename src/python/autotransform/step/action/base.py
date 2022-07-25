@@ -19,6 +19,7 @@ class ActionName(str, Enum):
     """A simple enum for mapping."""
 
     ABANDON = "abandon"
+    ADD_REVIEWERS = "add_reviewers"
     MERGE = "merge"
     NONE = "none"
     UPDATE = "update"
@@ -80,6 +81,9 @@ FACTORY = ComponentFactory(
     {
         ActionName.ABANDON: ComponentImport(
             class_name="AbandonAction", module="autotransform.step.action.base"
+        ),
+        ActionName.ADD_REVIEWERS: ComponentImport(
+            class_name="AddReviewersAction", module="autotransform.step.action.reviewers"
         ),
         ActionName.MERGE: ComponentImport(
             class_name="MergeAction", module="autotransform.step.action.base"
