@@ -54,12 +54,8 @@ def test_encoding_and_decoding():
         ActionName.ADD_OWNERS_AS_REVIEWERS: [{}],
         ActionName.ADD_OWNERS_AS_TEAM_REVIEWERS: [{}],
         ActionName.ADD_REVIEWERS: [
-            {},
-            {"reviewers": []},
             {"reviewers": ["nathro"]},
-            {"team_reviewers": []},
             {"team_reviewers": ["slack"]},
-            {"reviewers": [], "team_reviewers": []},
             {"reviewers": ["nathro"], "team_reviewers": []},
             {"reviewers": [], "team_reviewers": ["slack"]},
             {"reviewers": ["nathro"], "team_reviewers": ["slack"]},

@@ -11,6 +11,8 @@
 
 from typing import ClassVar
 
+from pydantic import validator
+
 from autotransform.step.action.base import Action, ActionName
 
 
@@ -25,3 +27,23 @@ class CommentAction(Action):
     body: str
 
     name: ClassVar[ActionName] = ActionName.COMMENT
+
+    # pylint: disable=invalid-name
+    @validator("body")
+    @classmethod
+    def body_must_be_non_empty(cls, v: str) -> str:
+        """Validates the body is not empty.
+
+        Args:
+            v (str): The body of the comment.
+
+        Raises:
+            ValueError: Raises an error when the body is empty.
+
+        Returns:
+            str: The unmodified body of the comment.
+        """
+
+        if v == "":
+            raise ValueError("Comment body must be non-empty")
+        return v
