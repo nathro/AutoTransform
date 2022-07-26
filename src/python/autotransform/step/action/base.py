@@ -41,50 +41,10 @@ class Action(NamedComponent):
     name: ClassVar[ActionName]
 
 
-class AbandonAction(Action):
-    """Abandons an outstanding Change.
-
-    Attributes:
-        name (ClassVar[ActionName]): The name of the component.
-    """
-
-    name: ClassVar[ActionName] = ActionName.ABANDON
-
-
-class MergeAction(Action):
-    """Merges an outstanding Change.
-
-    Attributes:
-        name (ClassVar[ActionName]): The name of the component.
-    """
-
-    name: ClassVar[ActionName] = ActionName.MERGE
-
-
-class NoneAction(Action):
-    """Performs no task.
-
-    Attributes:
-        name (ClassVar[ActionName]): The name of the component.
-    """
-
-    name: ClassVar[ActionName] = ActionName.NONE
-
-
-class UpdateAction(Action):
-    """Updates an outstanding Change.
-
-    Attributes:
-        name (ClassVar[ActionName]): The name of the component.
-    """
-
-    name: ClassVar[ActionName] = ActionName.UPDATE
-
-
 FACTORY = ComponentFactory(
     {
         ActionName.ABANDON: ComponentImport(
-            class_name="AbandonAction", module="autotransform.step.action.base"
+            class_name="AbandonAction", module="autotransform.step.action.source"
         ),
         ActionName.ADD_LABELS: ComponentImport(
             class_name="AddLabelsAction", module="autotransform.step.action.labels"
@@ -100,16 +60,16 @@ FACTORY = ComponentFactory(
             module="autotransform.step.action.reviewers",
         ),
         ActionName.MERGE: ComponentImport(
-            class_name="MergeAction", module="autotransform.step.action.base"
+            class_name="MergeAction", module="autotransform.step.action.source"
         ),
         ActionName.NONE: ComponentImport(
-            class_name="NoneAction", module="autotransform.step.action.base"
+            class_name="NoneAction", module="autotransform.step.action.source"
         ),
         ActionName.REMOVE_LABEL: ComponentImport(
             class_name="RemoveLabelAction", module="autotransform.step.action.labels"
         ),
         ActionName.UPDATE: ComponentImport(
-            class_name="UpdateAction", module="autotransform.step.action.base"
+            class_name="UpdateAction", module="autotransform.step.action.source"
         ),
     },
     Action,  # type: ignore [misc]

@@ -25,7 +25,7 @@ from autotransform.repo.git import GitRepo
 from autotransform.repo.github import GithubRepo
 from autotransform.runner.base import FACTORY as runner_factory
 from autotransform.runner.base import Runner
-from autotransform.step.action.base import AbandonAction, MergeAction, UpdateAction
+from autotransform.step.action.source import AbandonAction, MergeAction, UpdateAction
 from autotransform.step.base import FACTORY as step_factory
 from autotransform.step.base import Step
 from autotransform.step.condition.comparison import ComparisonType

@@ -16,19 +16,14 @@ from enum import Enum
 from typing import TYPE_CHECKING, ClassVar, List
 
 from autotransform.batcher.base import Batch
-from autotransform.step.action.base import (
-    AbandonAction,
-    Action,
-    MergeAction,
-    NoneAction,
-    UpdateAction,
-)
+from autotransform.step.action.base import Action
 from autotransform.step.action.labels import AddLabelsAction, RemoveLabelAction
 from autotransform.step.action.reviewers import (
     AddOwnersAsReviewersAction,
     AddOwnersAsTeamReviewersAction,
     AddReviewersAction,
 )
+from autotransform.step.action.source import AbandonAction, MergeAction, NoneAction, UpdateAction
 from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 if TYPE_CHECKING:
