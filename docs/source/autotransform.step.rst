@@ -7,5 +7,5 @@ Step Package (autotransform.step)
    :maxdepth: 4
 
    autotransform.step.base
-   autotransform.step.action.base
+   autotransform.step.action
    autotransform.step.conditional

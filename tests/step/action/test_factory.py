@@ -50,6 +50,7 @@ def test_encoding_and_decoding():
 
     test_components: Dict[ActionName, List[Dict[str, Any]]] = {
         ActionName.ABANDON: [{}],
+        ActionName.ADD_LABELS: [{"labels": ["autotransform"]}],
         ActionName.ADD_OWNERS_AS_REVIEWERS: [{}],
         ActionName.ADD_OWNERS_AS_TEAM_REVIEWERS: [{}],
         ActionName.ADD_REVIEWERS: [
@@ -65,6 +66,7 @@ def test_encoding_and_decoding():
         ],
         ActionName.MERGE: [{}],
         ActionName.NONE: [{}],
+        ActionName.REMOVE_LABEL: [{"label": "autotransform"}],
         ActionName.UPDATE: [{}],
     }
 

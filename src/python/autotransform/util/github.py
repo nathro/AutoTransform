@@ -302,6 +302,15 @@ class PullRequest:
             )
             return False
 
+    def remove_label(self, label: str) -> None:
+        """Removes a label from the pull request.
+
+        Args:
+            label (str): The label to remove from the pull request.
+        """
+
+        self._api.issues.remove_label(issue_number=self.number, name=label)
+
     def close(self) -> bool:
         """Closes the pull request.
 

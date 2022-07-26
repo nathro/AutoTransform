@@ -1,7 +1,7 @@
-Action (autotransform.step.action.base)
+autotransform.step.action.labels module
 =======================================
 
-.. automodule:: autotransform.step.action.base
+.. automodule:: autotransform.step.action.labels
    :members:
    :undoc-members:
    :show-inheritance:

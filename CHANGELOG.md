@@ -12,6 +12,8 @@
  - AddReviewersAction added.
  - AddOwnersAsReviewersAction added.
  - AddOwnersAsTeamReviewersAction added.
+ - AddLabelsAction added.
+ - RemoveLabelAction added.
 
 ## Release 1.0.0
 

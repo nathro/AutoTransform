@@ -23,6 +23,7 @@ from autotransform.step.action.base import (
     NoneAction,
     UpdateAction,
 )
+from autotransform.step.action.labels import AddLabelsAction, RemoveLabelAction
 from autotransform.step.action.reviewers import (
     AddOwnersAsReviewersAction,
     AddOwnersAsTeamReviewersAction,
@@ -115,6 +116,9 @@ class Change(NamedComponent):
         if isinstance(action, AbandonAction):
             return self._abandon()
 
+        if isinstance(action, AddLabelsAction):
+            return self._add_labels(action.labels)
+
         if isinstance(action, AddOwnersAsReviewersAction):
             return self._add_reviewers(self.get_schema().config.owners, [])
 
@@ -130,6 +134,9 @@ class Change(NamedComponent):
         if isinstance(action, NoneAction):
             return True
 
+        if isinstance(action, RemoveLabelAction):
+            return self._remove_label(action.label)
+
         if isinstance(action, UpdateAction):
             return self._update(runner)
 
@@ -143,6 +150,17 @@ class Change(NamedComponent):
 
         Returns:
             bool: Whether the abandon was completed successfully.
+        """
+
+    @abstractmethod
+    def _add_labels(self, labels: List[str]) -> bool:
+        """Adds labels to an outstanding Change.
+
+        Args:
+            labels (List[str]): The labels to add.
+
+        Returns:
+            bool: Whether the labels were added successfully.
         """
 
     @abstractmethod
@@ -163,6 +181,17 @@ class Change(NamedComponent):
 
         Returns:
             bool: Whether the merge was completed successfully.
+        """
+
+    @abstractmethod
+    def _remove_label(self, label: str) -> bool:
+        """Removes a label from an outstanding Change.
+
+        Args:
+            label (str): The label to remove.
+
+        Returns:
+            bool: Whether the label was removed successfully.
         """
 
     def _update(self, runner: Runner) -> bool:

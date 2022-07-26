@@ -19,11 +19,13 @@ class ActionName(str, Enum):
     """A simple enum for mapping."""
 
     ABANDON = "abandon"
+    ADD_LABELS = "add_labels"
     ADD_OWNERS_AS_REVIEWERS = "add_owners_as_reviewers"
     ADD_OWNERS_AS_TEAM_REVIEWERS = "add_owners_as_team_reviewers"
     ADD_REVIEWERS = "add_reviewers"
     MERGE = "merge"
     NONE = "none"
+    REMOVE_LABEL = "remove_label"
     UPDATE = "update"
 
 
@@ -84,6 +86,9 @@ FACTORY = ComponentFactory(
         ActionName.ABANDON: ComponentImport(
             class_name="AbandonAction", module="autotransform.step.action.base"
         ),
+        ActionName.ADD_LABELS: ComponentImport(
+            class_name="AddLabelsAction", module="autotransform.step.action.labels"
+        ),
         ActionName.ADD_REVIEWERS: ComponentImport(
             class_name="AddReviewersAction", module="autotransform.step.action.reviewers"
         ),
@@ -99,6 +104,9 @@ FACTORY = ComponentFactory(
         ),
         ActionName.NONE: ComponentImport(
             class_name="NoneAction", module="autotransform.step.action.base"
+        ),
+        ActionName.REMOVE_LABEL: ComponentImport(
+            class_name="RemoveLabelAction", module="autotransform.step.action.labels"
         ),
         ActionName.UPDATE: ComponentImport(
             class_name="UpdateAction", module="autotransform.step.action.base"

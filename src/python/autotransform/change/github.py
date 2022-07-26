@@ -114,6 +114,19 @@ class GithubChange(Change):
             return False
         return self._pull_request.delete_branch()
 
+    def _add_labels(self, labels: List[str]) -> bool:
+        """Adds labels to an outstanding Change.
+
+        Args:
+            labels (List[str]): The labels to add.
+
+        Returns:
+            bool: Whether the labels were added successfully.
+        """
+
+        self._pull_request.add_labels(labels)
+        return True
+
     def _add_reviewers(self, reviewers: List[str], team_reviewers: List[str]) -> bool:
         """Adds reviewers to an outstanding Change.
 
@@ -138,6 +151,19 @@ class GithubChange(Change):
         if not self._pull_request.merge():
             return False
         return self._pull_request.delete_branch()
+
+    def _remove_label(self, label: str) -> bool:
+        """Removes a label from an outstanding Change.
+
+        Args:
+            label (str): The label to remove.
+
+        Returns:
+            bool: Whether the label was removed successfully.
+        """
+
+        self._pull_request.remove_label(label)
+        return True
 
     @cached_property
     def _pull_request(self) -> PullRequest:
