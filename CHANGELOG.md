@@ -2,9 +2,12 @@
 
 ## Release 1.0.1
 
+This update focuses on improvements to managing changes, increasing the power of actions and adding many more actions.
+
 #### Migrations
- - Custom Step components now return a List of Actions, which are now fully-fledged NamedComponents. This is simply moving from an enum to a class for most cases.
- - Custom Step components now have a method to check if management should be continued.
+ - Step components now return a List of Actions, which are now fully-fledged NamedComponents. This is simply moving from an enum to a class for most cases.
+ - Step components now have a method to check if management should be continued.
+ - Conditional steps now take a list of actions instead of an action name. Old JSON will maintain compatability until v1.1. Loading and saving manager.json files should fix the JSON to the new format.
 
 #### Components
  - Updated repos to check for outstanding changes before running a Batch. If an outstanding change is found (the branch already exists for Git/Github), transformation is skipped.
