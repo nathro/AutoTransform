@@ -141,6 +141,19 @@ class GithubChange(Change):
         self._pull_request.add_reviewers(reviewers, team_reviewers)
         return True
 
+    def _comment(self, body: str) -> bool:
+        """Comments on an outstanding Change.
+
+        Args:
+            body (str): The body of the comment.
+
+        Returns:
+            bool: Whether the comment was successful.
+        """
+
+        self._pull_request.create_comment(body)
+        return True
+
     def _merge(self) -> bool:
         """Merges the Pull Request and deletes the branch.
 

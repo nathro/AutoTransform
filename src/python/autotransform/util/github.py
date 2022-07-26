@@ -286,6 +286,15 @@ class PullRequest:
             pull_number=self.number, reviewers=reviewers, team_reviewers=team_reviewers
         )
 
+    def create_comment(self, body: str) -> None:
+        """Adds a comment to the pull request.
+
+        Args:
+            body (str): The body of the comment.
+        """
+
+        self._api.issues.create_comment(issue_number=self.number, body=body)
+
     def merge(self) -> bool:
         """Merges the pull request.
 

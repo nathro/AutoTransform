@@ -23,6 +23,7 @@ class ActionName(str, Enum):
     ADD_OWNERS_AS_REVIEWERS = "add_owners_as_reviewers"
     ADD_OWNERS_AS_TEAM_REVIEWERS = "add_owners_as_team_reviewers"
     ADD_REVIEWERS = "add_reviewers"
+    COMMENT = "comment"
     MERGE = "merge"
     NONE = "none"
     REMOVE_LABEL = "remove_label"
@@ -58,6 +59,9 @@ FACTORY = ComponentFactory(
         ActionName.ADD_OWNERS_AS_TEAM_REVIEWERS: ComponentImport(
             class_name="AddOwnersAsTeamReviewersAction",
             module="autotransform.step.action.reviewers",
+        ),
+        ActionName.COMMENT: ComponentImport(
+            class_name="CommentAction", module="autotransform.step.action.comments"
         ),
         ActionName.MERGE: ComponentImport(
             class_name="MergeAction", module="autotransform.step.action.source"

@@ -64,6 +64,7 @@ def test_encoding_and_decoding():
             {"reviewers": [], "team_reviewers": ["slack"]},
             {"reviewers": ["nathro"], "team_reviewers": ["slack"]},
         ],
+        ActionName.COMMENT: [{"body": "This is a cool change!"}],
         ActionName.MERGE: [{}],
         ActionName.NONE: [{}],
         ActionName.REMOVE_LABEL: [{"label": "autotransform"}],

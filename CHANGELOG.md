@@ -9,13 +9,16 @@ This update focuses on improvements to managing changes, increasing the power of
  - Step components now have a method to check if management should be continued.
  - Conditional steps now take a list of actions instead of an action name. Old JSON will maintain compatability until v1.1. Loading and saving manager.json files should fix the JSON to the new format.
 
-#### Components
+ #### Features
  - Updated repos to check for outstanding changes before running a Batch. If an outstanding change is found (the branch already exists for Git/Github), transformation is skipped.
  - Made Actions fully-fledged components to enable Actions with parameters.
+
+#### New Components
  - AddReviewersAction added.
  - AddOwnersAsReviewersAction added.
  - AddOwnersAsTeamReviewersAction added.
  - AddLabelsAction added.
+ - CommentAction added.
  - RemoveLabelAction added.
 
 ## Release 1.0.0

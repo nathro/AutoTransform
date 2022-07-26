@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING, ClassVar, List
 
 from autotransform.batcher.base import Batch
 from autotransform.step.action.base import Action
+from autotransform.step.action.comments import CommentAction
 from autotransform.step.action.labels import AddLabelsAction, RemoveLabelAction
 from autotransform.step.action.reviewers import (
     AddOwnersAsReviewersAction,
@@ -123,6 +124,9 @@ class Change(NamedComponent):
         if isinstance(action, AddReviewersAction):
             return self._add_reviewers(action.reviewers, action.team_reviewers)
 
+        if isinstance(action, CommentAction):
+            return self._comment(action.body)
+
         if isinstance(action, MergeAction):
             return self._merge()
 
@@ -168,6 +172,17 @@ class Change(NamedComponent):
 
         Returns:
             bool: Whether the reviewers were added successfully.
+        """
+
+    @abstractmethod
+    def _comment(self, body: str) -> bool:
+        """Comments on an outstanding Change.
+
+        Args:
+            body (str): The body of the comment.
+
+        Returns:
+            bool: Whether the comment was successful.
         """
 
     @abstractmethod

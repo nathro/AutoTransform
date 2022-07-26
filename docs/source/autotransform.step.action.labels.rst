@@ -1,5 +1,5 @@
-autotransform.step.action.labels module
-=======================================
+Label Actions (autotransform.step.action.labels)
+================================================
 
 .. automodule:: autotransform.step.action.labels
    :members:
