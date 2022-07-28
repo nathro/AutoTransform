@@ -183,7 +183,7 @@ class Manager(ComponentModel):
             steps.append(
                 ConditionalStep(
                     condition=ChangeStateCondition(
-                        comparison=ComparisonType.EQUAL, state=ChangeState.APPROVED
+                        comparison=ComparisonType.EQUAL, value=ChangeState.APPROVED
                     ),
                     actions=[MergeAction],
                 )
@@ -194,7 +194,7 @@ class Manager(ComponentModel):
             steps.append(
                 ConditionalStep(
                     condition=ChangeStateCondition(
-                        comparison=ComparisonType.EQUAL, state=ChangeState.CHANGES_REQUESTED
+                        comparison=ComparisonType.EQUAL, value=ChangeState.CHANGES_REQUESTED
                     ),
                     actions=[AbandonAction],
                 )
@@ -210,7 +210,7 @@ class Manager(ComponentModel):
                 ConditionalStep(
                     condition=UpdatedAgoCondition(
                         comparison=ComparisonType.GREATER_THAN_OR_EQUAL,
-                        time=days_stale * 24 * 60 * 60,
+                        value=days_stale * 24 * 60 * 60,
                     ),
                     actions=[UpdateAction],
                 )

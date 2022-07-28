@@ -20,7 +20,7 @@
             "condition": {
                 "name": "change_state",
                 "comparison": "eq",
-                "state": "approved"
+                "value": "approved"
             }
         },
         {
@@ -33,7 +33,7 @@
             "condition": {
                 "name": "change_state",
                 "comparison": "eq",
-                "state": "changes_requested"
+                "value": "changes_requested"
             }
         },
         {
@@ -46,7 +46,7 @@
             "condition": {
                 "name": "updated_ago",
                 "comparison": "gte",
-                "time": 259200
+                "value": 259200
             }
         }
     ]

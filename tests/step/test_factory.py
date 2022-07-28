@@ -59,7 +59,7 @@ def test_encoding_and_decoding():
                 "condition": {
                     "name": ConditionName.CREATED_AGO,
                     "comparison": ComparisonType.GREATER_THAN,
-                    "time": 500,
+                    "value": 500,
                 },
             },
             {
@@ -71,12 +71,12 @@ def test_encoding_and_decoding():
                         {
                             "name": ConditionName.CREATED_AGO,
                             "comparison": ComparisonType.GREATER_THAN,
-                            "time": 500,
+                            "value": 500,
                         },
                         {
                             "name": ConditionName.UPDATED_AGO,
                             "comparison": ComparisonType.GREATER_THAN_OR_EQUAL,
-                            "time": 100,
+                            "value": 100,
                         },
                     ],
                 },

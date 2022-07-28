@@ -39,19 +39,19 @@ def get_sample_manager() -> Manager:
             ConditionalStep(
                 actions=[MergeAction()],
                 condition=ChangeStateCondition(
-                    comparison=ComparisonType.EQUAL, state=ChangeState.APPROVED
+                    comparison=ComparisonType.EQUAL, value=ChangeState.APPROVED
                 ),
             ),
             ConditionalStep(
                 actions=[AbandonAction()],
                 condition=ChangeStateCondition(
-                    comparison=ComparisonType.EQUAL, state=ChangeState.CHANGES_REQUESTED
+                    comparison=ComparisonType.EQUAL, value=ChangeState.CHANGES_REQUESTED
                 ),
             ),
             ConditionalStep(
                 actions=[UpdateAction()],
                 condition=UpdatedAgoCondition(
-                    comparison=ComparisonType.GREATER_THAN_OR_EQUAL, time=259200
+                    comparison=ComparisonType.GREATER_THAN_OR_EQUAL, value=259200
                 ),
             ),
         ],

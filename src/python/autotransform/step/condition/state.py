@@ -14,37 +14,33 @@ from __future__ import annotations
 from typing import ClassVar
 
 from autotransform.change.base import Change, ChangeState
-from autotransform.step.condition.base import Condition, ConditionName
-from autotransform.step.condition.comparison import ComparisonType, compare
+from autotransform.step.condition.base import ComparisonCondition, ConditionName
+from autotransform.step.condition.comparison import ComparisonType
 
 
-class ChangeStateCondition(Condition):
+class ChangeStateCondition(ComparisonCondition[ChangeState]):
     """A condition which checks the ChangeState against the state supplied using the supplied
     comparison. Note: only equals and not equals are valid, all others will result in an error.
 
     Attributes:
         comparison (ComparisonType): The type of comparison to perform.
-        state (ChangeState): The state to compare against.
+        value (ChangeState): The state to compare against.
         name (ClassVar[ConditionName]): The name of the Component.
     """
 
     comparison: ComparisonType
-    state: ChangeState
+    value: ChangeState
 
     name: ClassVar[ConditionName] = ConditionName.CHANGE_STATE
 
-    def check(self, change: Change) -> bool:
-        """Checks whether the Change's state passes the comparison.
+    def get_val_from_change(self, change: Change) -> ChangeState:
+        """Gets the state from the Change.
 
         Args:
             change (Change): The Change the Condition is checking.
 
         Returns:
-            bool: Whether the Change passes the Condition.
+            ChangeState: The state of the Change.
         """
 
-        assert self.comparison in [
-            ComparisonType.EQUAL,
-            ComparisonType.NOT_EQUAL,
-        ], "ChangeStateCondition may only use equal or not_equal comparison"
-        return compare(change.get_state(), self.state, self.comparison)
+        return change.get_state()

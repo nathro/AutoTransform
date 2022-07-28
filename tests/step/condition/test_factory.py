@@ -67,7 +67,7 @@ def test_encoding_and_decoding():
                     {
                         "name": ConditionName.SCHEMA_NAME,
                         "comparison": ComparisonType.EQUAL,
-                        "schema_name": "foo",
+                        "value": "foo",
                     },
                 ],
             },
@@ -77,17 +77,17 @@ def test_encoding_and_decoding():
                     {
                         "name": ConditionName.SCHEMA_NAME,
                         "comparison": ComparisonType.EQUAL,
-                        "schema_name": "foo",
+                        "value": "foo",
                     },
                     {
                         "name": ConditionName.CREATED_AGO,
                         "comparison": ComparisonType.GREATER_THAN_OR_EQUAL,
-                        "time": 500,
+                        "value": 500,
                     },
                     {
                         "name": ConditionName.UPDATED_AGO,
                         "comparison": ComparisonType.LESS_THAN_OR_EQUAL,
-                        "time": 1000,
+                        "value": 1000,
                     },
                 ],
             },
@@ -95,25 +95,25 @@ def test_encoding_and_decoding():
         ConditionName.CHANGE_STATE: [
             {
                 "comparison": ComparisonType.EQUAL,
-                "state": ChangeState.APPROVED,
+                "value": ChangeState.APPROVED,
             },
         ],
         ConditionName.CREATED_AGO: [
             {
                 "comparison": ComparisonType.GREATER_THAN,
-                "time": -100,
+                "value": -100,
             },
         ],
         ConditionName.SCHEMA_NAME: [
             {
                 "comparison": ComparisonType.NOT_EQUAL,
-                "schema_name": "foo",
+                "value": "foo",
             },
         ],
         ConditionName.UPDATED_AGO: [
             {
                 "comparison": ComparisonType.LESS_THAN,
-                "time": 100,
+                "value": 100,
             },
         ],
     }

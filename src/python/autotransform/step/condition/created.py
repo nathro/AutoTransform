@@ -15,34 +15,33 @@ import time
 from typing import ClassVar
 
 from autotransform.change.base import Change
-from autotransform.step.condition.base import Condition, ConditionName
-from autotransform.step.condition.comparison import ComparisonType, compare
+from autotransform.step.condition.base import ConditionName, SortableComparisonCondition
+from autotransform.step.condition.comparison import ComparisonType
 
 
-class CreatedAgoCondition(Condition):
+class CreatedAgoCondition(SortableComparisonCondition[int]):
     """A condition which checks how long ago a Change was created against the supplied time, all
     in seconds, using the supplied comparison.
 
     Attributes:
         comparison (ComparisonType): The type of comparison to perform.
-        time (int): The number of seconds to compare against.
+        value (int): The number of seconds to compare against.
         name (ClassVar[ConditionName]): The name of the Component.
     """
 
     comparison: ComparisonType
-    time: int
+    value: int
 
     name: ClassVar[ConditionName] = ConditionName.CREATED_AGO
 
-    def check(self, change: Change) -> bool:
-        """Checks whether how long ago the Change was created passes the comparison.
+    def get_val_from_change(self, change: Change) -> int:
+        """Gets how long ago the Change was created.
 
         Args:
             change (Change): The Change the Condition is checking.
 
         Returns:
-            bool: Whether the Change passes the Condition.
+            int: How long ago the Change was created.
         """
 
-        time_since_created = time.time() - change.get_created_timestamp()
-        return compare(time_since_created, self.time, self.comparison)
+        return int(time.time() - change.get_created_timestamp())
