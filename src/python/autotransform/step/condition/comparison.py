@@ -17,12 +17,12 @@ from typing import Any
 class ComparisonType(str, Enum):
     """A list of possible comparisons."""
 
-    EQUAL = "eq"
-    GREATER_THAN = "gt"
-    GREATER_THAN_OR_EQUAL = "gte"
-    LESS_THAN = "lt"
-    LESS_THAN_OR_EQUAL = "lte"
-    NOT_EQUAL = "neq"
+    EQUAL = "equal"
+    GREATER_THAN = "greater_than"
+    GREATER_THAN_OR_EQUAL = "greater_than_or_equal"
+    LESS_THAN = "less_than"
+    LESS_THAN_OR_EQUAL = "less_than_or_equal"
+    NOT_EQUAL = "not_equal"
 
 
 def compare(first_val: Any, second_val: Any, comparison: ComparisonType) -> bool:

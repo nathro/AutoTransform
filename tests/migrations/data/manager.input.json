@@ -1,0 +1,75 @@
+{
+    "repo": {
+        "name": "github",
+        "base_branch": "<BASE BRANCH>",
+        "full_github_name": "<GITHUB REPO>"
+    },
+    "runner": {
+        "name": "github",
+        "run_workflow": "autotransform.run.yml",
+        "update_workflow": "autotransform.update.yml"
+    },
+    "steps": [
+        {
+            "name": "conditional",
+            "action": "abandon",
+            "condition": {
+                "name": "schema_name",
+                "comparison": "eq",
+                "schema_name": "foo"
+            },
+            "continue_if_passed": false
+        },
+        {
+            "name": "conditional",
+            "action": "merge",
+            "condition": {
+                "name": "change_state",
+                "comparison": "neq",
+                "state": "approved"
+            },
+            "continue_if_passed": false
+        },
+        {
+            "name": "conditional",
+            "action": "none",
+            "condition": {
+                "name": "created_ago",
+                "comparison": "gt",
+                "time": 100
+            },
+            "continue_if_passed": false
+        },
+        {
+            "name": "conditional",
+            "action": "update",
+            "condition": {
+                "name": "updated_ago",
+                "comparison": "gte",
+                "time": 100
+            },
+            "continue_if_passed": false
+        },
+        {
+            "name": "conditional",
+            "action": "update",
+            "condition": {
+                "name": "aggregate",
+                "aggregator": "all",
+                "conditions": [
+                    {
+                        "name": "updated_ago",
+                        "comparison": "lt",
+                        "time": 100
+                    },
+                    {
+                        "name": "created_ago",
+                        "comparison": "lte",
+                        "time": 100
+                    }
+                ]
+            },
+            "continue_if_passed": false
+        }
+    ]
+}

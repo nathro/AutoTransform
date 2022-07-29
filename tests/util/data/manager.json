@@ -19,7 +19,7 @@
             ],
             "condition": {
                 "name": "change_state",
-                "comparison": "eq",
+                "comparison": "equal",
                 "value": "approved"
             }
         },
@@ -32,7 +32,7 @@
             ],
             "condition": {
                 "name": "change_state",
-                "comparison": "eq",
+                "comparison": "equal",
                 "value": "changes_requested"
             }
         },
@@ -45,7 +45,7 @@
             ],
             "condition": {
                 "name": "updated_ago",
-                "comparison": "gte",
+                "comparison": "greater_than_or_equal",
                 "value": 259200
             }
         }

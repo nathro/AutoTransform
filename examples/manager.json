@@ -19,7 +19,7 @@
             ],
             "condition": {
                 "name": "change_state",
-                "comparison": "eq",
+                "comparison": "equal",
                 "value": "approved"
             },
             "continue_if_passed": false
@@ -33,7 +33,7 @@
             ],
             "condition": {
                 "name": "change_state",
-                "comparison": "eq",
+                "comparison": "equal",
                 "value": "changes_requested"
             },
             "continue_if_passed": false

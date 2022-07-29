@@ -1,0 +1,95 @@
+{
+    "repo": {
+        "name": "github",
+        "base_branch": "<BASE BRANCH>",
+        "full_github_name": "<GITHUB REPO>"
+    },
+    "runner": {
+        "name": "github",
+        "run_workflow": "autotransform.run.yml",
+        "update_workflow": "autotransform.update.yml"
+    },
+    "steps": [
+        {
+            "name": "conditional",
+            "actions": [
+                {
+                    "name": "abandon"
+                }
+            ],
+            "condition": {
+                "name": "schema_name",
+                "comparison": "equal",
+                "value": "foo"
+            },
+            "continue_if_passed": false
+        },
+        {
+            "name": "conditional",
+            "actions": [
+                {
+                    "name": "merge"
+                }
+            ],
+            "condition": {
+                "name": "change_state",
+                "comparison": "not_equal",
+                "value": "approved"
+            },
+            "continue_if_passed": false
+        },
+        {
+            "name": "conditional",
+            "actions": [
+                {
+                    "name": "none"
+                }
+            ],
+            "condition": {
+                "name": "created_ago",
+                "comparison": "greater_than",
+                "value": 100
+            },
+            "continue_if_passed": false
+        },
+        {
+            "name": "conditional",
+            "actions": [
+                {
+                    "name": "update"
+                }
+            ],
+            "condition": {
+                "name": "updated_ago",
+                "comparison": "greater_than_or_equal",
+                "value": 100
+            },
+            "continue_if_passed": false
+        },
+        {
+            "name": "conditional",
+            "actions": [
+                {
+                    "name": "update"
+                }
+            ],
+            "condition": {
+                "name": "aggregate",
+                "aggregator": "all",
+                "conditions": [
+                    {
+                        "name": "updated_ago",
+                        "comparison": "less_than",
+                        "value": 100
+                    },
+                    {
+                        "name": "created_ago",
+                        "comparison": "less_than_or_equal",
+                        "value": 100
+                    }
+                ]
+            },
+            "continue_if_passed": false
+        }
+    ]
+}
