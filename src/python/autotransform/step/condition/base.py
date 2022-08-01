@@ -13,9 +13,9 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import ClassVar, Generic, Set, Type, TypeVar
+from typing import Any, ClassVar, Dict, Generic, Optional, Set, Type, TypeVar
 
-from pydantic import validator
+from pydantic import root_validator, validator
 
 from autotransform.change.base import Change
 from autotransform.step.condition.comparison import ComparisonType, compare
@@ -125,7 +125,7 @@ class ComparisonCondition(Generic[T], Condition):
         """
 
         if v not in cls.valid_comparisons():
-            raise ValueError(f"{cls.__name__} can not perform comparison {str(v)}")
+            raise ValueError(f"{cls.__name__} can not perform comparison {v}")
         return v
 
 
@@ -154,6 +154,68 @@ class SortableComparisonCondition(ABC, Generic[T], ComparisonCondition[T]):
             ComparisonType.GREATER_THAN_OR_EQUAL,
             ComparisonType.LESS_THAN,
             ComparisonType.LESS_THAN_OR_EQUAL,
+        }
+
+
+class ListComparisonCondition(ABC, Generic[T], ComparisonCondition[Optional[T]]):
+    """The base for sortable comparison Condition components. Uses the ComparisonType enum to
+    perform comparisons that are sortable.
+
+    Attributes:
+        comparison (ComparisonType): The type of comparison to perform.
+        value (optional, Optional[T]): The value to compare against. Defaults to None.
+        name (ClassVar[ConditionName]): The name of the Component.
+    """
+
+    value: Optional[T] = None
+
+    @root_validator
+    @classmethod
+    def check_value_for_comparison(
+        cls: Type[ListComparisonCondition], values: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """Ensures that the value is provided for contains/not contains checks
+        or not provided for empty/not empty checks.
+
+        Args:
+            cls (Type[ListComparisonCondition]): The Condition class.
+            values (Dict[str, Any]): The values for the comparison.
+
+        Raises:
+            ValueError: Raises errors when values are provided for an empty check
+                or not provided for a contains check.
+
+        Returns:
+            Dict[str, Any]: The unmodified values for comparison.
+        """
+
+        comparison = values["comparison"]
+        if (
+            comparison in [ComparisonType.EMPTY, ComparisonType.NOT_EMPTY]
+            and values.get("value") is not None
+        ):
+            raise ValueError(f"Can not perform comparison {comparison} when value is not None.")
+        if (
+            comparison in [ComparisonType.CONTAINS, ComparisonType.NOT_CONTAINS]
+            and values.get("value") is None
+        ):
+            raise ValueError(f"Can not perform comparison {comparison} when value is None.")
+
+        return values
+
+    @staticmethod
+    def valid_comparisons() -> Set[ComparisonType]:
+        """Gets the valid comparisons that can be done for this condition.
+
+        Returns:
+            Set[ComparisonType]: The valid comparisons this condition can perform.
+        """
+
+        return {
+            ComparisonType.CONTAINS,
+            ComparisonType.NOT_CONTAINS,
+            ComparisonType.EMPTY,
+            ComparisonType.NOT_EMPTY,
         }
 
 
