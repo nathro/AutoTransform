@@ -58,3 +58,31 @@ def test_less_than_or_equal_comparison():
     assert compare(5, 0, ComparisonType.LESS_THAN_OR_EQUAL) is False
     assert compare(0, 0, ComparisonType.LESS_THAN_OR_EQUAL) is True
     assert compare(-5, 0, ComparisonType.LESS_THAN_OR_EQUAL) is True
+
+
+def test_contains_comparison():
+    """Tests contains comparison checking."""
+
+    assert compare([1, 2, 3], 0, ComparisonType.CONTAINS) is False
+    assert compare([1, 2, 3], 3, ComparisonType.CONTAINS) is True
+
+
+def test_not_contains_comparison():
+    """Tests not contains comparison checking."""
+
+    assert compare([1, 2, 3], 0, ComparisonType.NOT_CONTAINS) is True
+    assert compare([1, 2, 3], 3, ComparisonType.NOT_CONTAINS) is False
+
+
+def test_empty_comparison():
+    """Tests empty comparison checking."""
+
+    assert compare([], None, ComparisonType.EMPTY) is True
+    assert compare([1, 2, 3], None, ComparisonType.EMPTY) is False
+
+
+def test_not_empty_comparison():
+    """Tests not empty comparison checking."""
+
+    assert compare([], None, ComparisonType.NOT_EMPTY) is False
+    assert compare([1, 2, 3], None, ComparisonType.NOT_EMPTY) is True
