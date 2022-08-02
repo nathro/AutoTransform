@@ -23,8 +23,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: Set up git user
       run: |
-        git config --global user.name "AutoTransform Bot"
-        git config --global user.email "nathro.autotransform@gmail.com"
+        git config user.name "AutoTransform Bot"
+        git config user.email "nathro.autotransform@gmail.com"
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:

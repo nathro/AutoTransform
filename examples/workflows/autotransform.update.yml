@@ -19,8 +19,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: Set up git user
       run: |
-        git config --global user.name "<BOT NAME>"
-        git config --global user.email "<BOT EMAIL>"
+        git config user.name "<BOT NAME>"
+        git config user.email "<BOT EMAIL>"
     - name: Set up Python 3.10
       uses: actions/setup-python@v3
       with:
