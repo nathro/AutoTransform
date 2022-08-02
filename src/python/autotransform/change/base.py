@@ -84,6 +84,14 @@ class Change(NamedComponent):
         """
 
     @abstractmethod
+    def get_labels(self) -> List[str]:
+        """Gets all labels for a Change.
+
+        Returns:
+            List[str]: The list of labels.
+        """
+
+    @abstractmethod
     def get_reviewers(self) -> List[str]:
         """Gets all reviewers for a Change.
 

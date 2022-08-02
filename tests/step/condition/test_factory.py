@@ -104,6 +104,15 @@ def test_encoding_and_decoding():
                 "value": -100,
             },
         ],
+        ConditionName.LABELS: [
+            {
+                "comparison": ComparisonType.CONTAINS,
+                "value": "foo",
+            },
+            {
+                "comparison": ComparisonType.EMPTY,
+            },
+        ],
         ConditionName.REVIEWERS: [
             {
                 "comparison": ComparisonType.CONTAINS,

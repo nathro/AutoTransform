@@ -25,6 +25,7 @@ This update focuses on improvements to managing changes, increasing the power of
  - RemoveLabelAction added.
  - ReviewersCondition added.
  - TeamReviewersCondition added.
+ - LabelsCondition added.
 
 ## Release 1.0.0
 

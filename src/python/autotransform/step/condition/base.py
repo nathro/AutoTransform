@@ -28,6 +28,7 @@ class ConditionName(str, Enum):
     AGGREGATE = "aggregate"
     CHANGE_STATE = "change_state"
     CREATED_AGO = "created_ago"
+    LABELS = "labels"
     REVIEWERS = "reviewers"
     SCHEMA_NAME = "schema_name"
     TEAM_REVIEWERS = "team_reviewers"
@@ -280,6 +281,9 @@ FACTORY = ComponentFactory(
         ),
         ConditionName.CREATED_AGO: ComponentImport(
             class_name="CreatedAgoCondition", module="autotransform.step.condition.created"
+        ),
+        ConditionName.LABELS: ComponentImport(
+            class_name="LabelsCondition", module="autotransform.step.condition.labels"
         ),
         ConditionName.REVIEWERS: ComponentImport(
             class_name="ReviewersCondition", module="autotransform.step.condition.reviewers"

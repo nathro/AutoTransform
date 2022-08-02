@@ -250,6 +250,16 @@ class PullRequest:
                 return review.state
         return None
 
+    def get_labels(self) -> List[str]:
+        """Gets the labels for a Pull Request.
+
+        Returns:
+            List[str]: The labels for a Pull Request.
+        """
+
+        labels = self._api.issues.list_labels_on_issue(issue_number=self.number)
+        return [label["name"] for label in labels]
+
     def get_reviewers(self) -> List[str]:
         """Gets the requested reviewers for a Pull Request.
 

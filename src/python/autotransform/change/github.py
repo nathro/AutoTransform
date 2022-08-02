@@ -85,6 +85,15 @@ class GithubChange(Change):
             return ChangeState.CHANGES_REQUESTED
         return ChangeState.OPEN
 
+    def get_labels(self) -> List[str]:
+        """Gets all labels for a Change.
+
+        Returns:
+            List[str]: The list of labels.
+        """
+
+        return self._pull_request.get_labels()
+
     def get_reviewers(self) -> List[str]:
         """Gets all reviewers for a Change.
 
