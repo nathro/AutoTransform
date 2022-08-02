@@ -30,6 +30,7 @@ class ConditionName(str, Enum):
     CREATED_AGO = "created_ago"
     REVIEWERS = "reviewers"
     SCHEMA_NAME = "schema_name"
+    TEAM_REVIEWERS = "team_reviewers"
     UPDATED_AGO = "updated_ago"
 
 
@@ -280,8 +281,14 @@ FACTORY = ComponentFactory(
         ConditionName.CREATED_AGO: ComponentImport(
             class_name="CreatedAgoCondition", module="autotransform.step.condition.created"
         ),
+        ConditionName.REVIEWERS: ComponentImport(
+            class_name="ReviewersCondition", module="autotransform.step.condition.reviewers"
+        ),
         ConditionName.SCHEMA_NAME: ComponentImport(
             class_name="SchemaNameCondition", module="autotransform.step.condition.schema"
+        ),
+        ConditionName.TEAM_REVIEWERS: ComponentImport(
+            class_name="TeamReviewersCondition", module="autotransform.step.condition.reviewers"
         ),
         ConditionName.UPDATED_AGO: ComponentImport(
             class_name="UpdatedAgoCondition", module="autotransform.step.condition.updated"

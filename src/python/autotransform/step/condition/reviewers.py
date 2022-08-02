@@ -57,7 +57,7 @@ class TeamReviewersCondition(ListComparisonCondition[str]):
     comparison: ComparisonType
     value: Optional[str] = None
 
-    name: ClassVar[ConditionName] = ConditionName.REVIEWERS
+    name: ClassVar[ConditionName] = ConditionName.TEAM_REVIEWERS
 
     def get_val_from_change(self, change: Change) -> List[str]:
         """Gets the team reviewers from the Change.

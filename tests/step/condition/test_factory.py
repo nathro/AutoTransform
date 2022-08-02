@@ -104,10 +104,28 @@ def test_encoding_and_decoding():
                 "value": -100,
             },
         ],
+        ConditionName.REVIEWERS: [
+            {
+                "comparison": ComparisonType.CONTAINS,
+                "value": "foo",
+            },
+            {
+                "comparison": ComparisonType.EMPTY,
+            },
+        ],
         ConditionName.SCHEMA_NAME: [
             {
                 "comparison": ComparisonType.NOT_EQUAL,
                 "value": "foo",
+            },
+        ],
+        ConditionName.TEAM_REVIEWERS: [
+            {
+                "comparison": ComparisonType.CONTAINS,
+                "value": "foo",
+            },
+            {
+                "comparison": ComparisonType.EMPTY,
             },
         ],
         ConditionName.UPDATED_AGO: [
