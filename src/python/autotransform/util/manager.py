@@ -185,7 +185,7 @@ class Manager(ComponentModel):
                     condition=ChangeStateCondition(
                         comparison=ComparisonType.EQUAL, value=ChangeState.APPROVED
                     ),
-                    actions=[MergeAction],
+                    actions=[MergeAction()],
                 )
             )
 
@@ -196,7 +196,7 @@ class Manager(ComponentModel):
                     condition=ChangeStateCondition(
                         comparison=ComparisonType.EQUAL, value=ChangeState.CHANGES_REQUESTED
                     ),
-                    actions=[AbandonAction],
+                    actions=[AbandonAction()],
                 )
             )
 
@@ -212,7 +212,7 @@ class Manager(ComponentModel):
                         comparison=ComparisonType.GREATER_THAN_OR_EQUAL,
                         value=days_stale * 24 * 60 * 60,
                     ),
-                    actions=[UpdateAction],
+                    actions=[UpdateAction()],
                 )
             )
 
