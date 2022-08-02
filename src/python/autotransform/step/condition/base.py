@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Any, ClassVar, Dict, Generic, Optional, Set, Type, TypeVar
+from typing import Any, ClassVar, Dict, Generic, List, Optional, Set, Type, TypeVar
 
 from pydantic import root_validator, validator
 
@@ -28,6 +28,7 @@ class ConditionName(str, Enum):
     AGGREGATE = "aggregate"
     CHANGE_STATE = "change_state"
     CREATED_AGO = "created_ago"
+    REVIEWERS = "reviewers"
     SCHEMA_NAME = "schema_name"
     UPDATED_AGO = "updated_ago"
 
@@ -157,7 +158,7 @@ class SortableComparisonCondition(ABC, Generic[T], ComparisonCondition[T]):
         }
 
 
-class ListComparisonCondition(ABC, Generic[T], ComparisonCondition[Optional[T]]):
+class ListComparisonCondition(Generic[T], Condition):
     """The base for sortable comparison Condition components. Uses the ComparisonType enum to
     perform comparisons that are sortable.
 
@@ -167,7 +168,33 @@ class ListComparisonCondition(ABC, Generic[T], ComparisonCondition[Optional[T]])
         name (ClassVar[ConditionName]): The name of the Component.
     """
 
+    comparison: ComparisonType
     value: Optional[T] = None
+
+    name: ClassVar[ConditionName]
+
+    @abstractmethod
+    def get_val_from_change(self, change: Change) -> List[T]:
+        """Gets the existing value to compare against from the change.
+
+        Args:
+            change (Change): The Change the Condition is checking.
+
+        Returns:
+            List[T]: The value from the Change to compare against.
+        """
+
+    def check(self, change: Change) -> bool:
+        """Checks whether the Change passes the Condition.
+
+        Args:
+            change (Change): The Change the Condition is checking.
+
+        Returns:
+            bool: Whether the Change passes the condition.
+        """
+
+        return compare(self.get_val_from_change(change), self.value, self.comparison)
 
     @root_validator
     @classmethod
@@ -217,6 +244,29 @@ class ListComparisonCondition(ABC, Generic[T], ComparisonCondition[Optional[T]])
             ComparisonType.EMPTY,
             ComparisonType.NOT_EMPTY,
         }
+
+    # pylint: disable=invalid-name
+    @validator("comparison")
+    @classmethod
+    def comparison_type_is_valid(
+        cls: Type[ListComparisonCondition], v: ComparisonType
+    ) -> ComparisonType:
+        """Validates the condition can perform the specified comparison.
+
+        Args:
+            cls (Type[ListComparisonCondition]): The Condition class.
+            v (ComparisonType): The comparison to perform.
+
+        Raises:
+            ValueError: Raised if the Condition can not perform the comparison.
+
+        Returns:
+            ComparisonType: The unmodified comparison to perform.
+        """
+
+        if v not in cls.valid_comparisons():
+            raise ValueError(f"{cls.__name__} can not perform comparison {v}")
+        return v
 
 
 FACTORY = ComponentFactory(

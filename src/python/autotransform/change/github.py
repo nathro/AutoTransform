@@ -85,6 +85,24 @@ class GithubChange(Change):
             return ChangeState.CHANGES_REQUESTED
         return ChangeState.OPEN
 
+    def get_reviewers(self) -> List[str]:
+        """Gets all reviewers for a Change.
+
+        Returns:
+            List[str]: The list of reviewers.
+        """
+
+        return self._pull_request.get_reviewers()
+
+    def get_team_reviewers(self) -> List[str]:
+        """Gets all team reviewers for a Change.
+
+        Returns:
+            List[str]: The list of team reviewers.
+        """
+
+        return self._pull_request.get_team_reviewers()
+
     def get_created_timestamp(self) -> int:
         """Returns the timestamp when the Pull Request was created.
 

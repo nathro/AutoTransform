@@ -83,6 +83,22 @@ class Change(NamedComponent):
             ChangeState: The current state of the Change.
         """
 
+    @abstractmethod
+    def get_reviewers(self) -> List[str]:
+        """Gets all reviewers for a Change.
+
+        Returns:
+            List[str]: The list of reviewers.
+        """
+
+    @abstractmethod
+    def get_team_reviewers(self) -> List[str]:
+        """Gets all team reviewers for a Change.
+
+        Returns:
+            List[str]: The list of team reviewers.
+        """
+
     def get_created_timestamp(self) -> int:
         """Returns the timestamp when the Change was created.
 

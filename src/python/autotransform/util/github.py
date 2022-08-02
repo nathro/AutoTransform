@@ -13,7 +13,8 @@ from __future__ import annotations
 
 import time
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
+from functools import cached_property
+from typing import Any, Dict, List, Optional, Tuple
 from urllib.error import HTTPError
 
 import pytz
@@ -248,6 +249,38 @@ class PullRequest:
             if review.state in review_states:
                 return review.state
         return None
+
+    def get_reviewers(self) -> List[str]:
+        """Gets the requested reviewers for a Pull Request.
+
+        Returns:
+            List[str]: The requested reviewers for a Pull Request.
+        """
+
+        return self._reviewers[0]
+
+    def get_team_reviewers(self) -> List[str]:
+        """Gets the requested team reviewers for a Pull Request.
+
+        Returns:
+            List[str]: The requested team reviewers for a Pull Request.
+        """
+
+        return self._reviewers[1]
+
+    @cached_property
+    def _reviewers(self) -> Tuple[List[str], List[str]]:
+        """A cached value of the reviewers of the change.
+
+        Returns:
+            Tuple[List[str], List[str]]: A tuple containing user reviewers and team reviewers.
+        """
+
+        reviewers = self._api.pulls.list_requested_reviewers(pull_number=self.number)
+        return (
+            [reviewer["login"] for reviewer in reviewers["users"]],
+            [reviewer["name"] for reviewer in reviewers["teams"]],
+        )
 
     def get_created_at(self) -> int:
         """Gets the created at timestamp.
