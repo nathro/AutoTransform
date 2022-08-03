@@ -1,5 +1,10 @@
 # Change Log
 
+## Release 1.0.2
+
+#### Features
+ - Update GithubRepo to use a dataclass for metadata to improve type safety/checking.
+
 ## Release 1.0.1
 
 This update focuses on improvements to managing changes, increasing the power of actions and adding many more actions.

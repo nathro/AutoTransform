@@ -12,8 +12,10 @@
 from __future__ import annotations
 
 import json
+from copy import deepcopy
 from typing import TYPE_CHECKING, Any, ClassVar, Dict, List, Mapping, Optional, Sequence
 
+from pydantic import BaseModel  # pylint: disable=no-name-in-module
 from pydantic import Field
 
 import autotransform.schema
@@ -28,6 +30,25 @@ from autotransform.util.github import GithubUtils
 
 if TYPE_CHECKING:
     from autotransform.schema.schema import AutoTransformSchema
+
+
+# pylint: disable=too-few-public-methods
+class GithubRepoBatchMetadata(BaseModel):
+    """_summary_
+
+    Attributes:
+        body (str): The body of the Pull Request to make.
+        labels(optional, List[str]): The labels to add to the Pull Request. Defaults to [].
+        reviewers(optional, List[str]): The reviewers to request for the Pull Request.
+            Defaults to [].
+        team_reviewers(optional, List[str]): The team reviewers to request for the Pull Request.
+            Defaults to [].
+    """
+
+    body: str
+    labels: List[str] = Field(default_factory=list)
+    reviewers: List[str] = Field(default_factory=list)
+    team_reviewers: List[str] = Field(default_factory=list)
 
 
 class GithubRepo(GitRepo):
@@ -91,7 +112,7 @@ class GithubRepo(GitRepo):
         """
 
         title = GitRepo.get_commit_message(batch["title"])
-        batch_metadata = batch.get("metadata", {})
+        batch_metadata = GithubRepoBatchMetadata.parse_obj(batch.get("metadata", {}))
 
         self.commit(batch["title"], change is not None)
 
@@ -103,9 +124,6 @@ class GithubRepo(GitRepo):
 
         self._local_repo.git.push(remote.name, "-u", commit_branch)
 
-        body = batch_metadata.get("body", None)
-        assert body is not None, "All pull requests must have a body."
-
         if self.hide_automation_info:
             automation_info = ""
         else:
@@ -113,7 +131,7 @@ class GithubRepo(GitRepo):
 
         pull_request = GithubUtils.get(self.full_github_name).create_pull_request(
             title,
-            f"{str(body)}{automation_info}",
+            f"{str(batch_metadata.body)}{automation_info}",
             self._base_branch.name,
             commit_branch,
         )
@@ -123,15 +141,15 @@ class GithubRepo(GitRepo):
         )
 
         # Add labels
-        labels = batch_metadata.get("labels", [])
+        labels = deepcopy(batch_metadata.labels)
         labels.extend(self.labels)
         if labels:
             pull_request.add_labels(labels)
 
         # Request reviewers
-        reviewers = batch_metadata.get("reviewers", [])
+        reviewers = deepcopy(batch_metadata.reviewers)
         reviewers.extend(self.reviewers)
-        team_reviewers = batch_metadata.get("team_reviewers", [])
+        team_reviewers = deepcopy(batch_metadata.team_reviewers)
         team_reviewers.extend(self.team_reviewers)
         if reviewers or team_reviewers:
             pull_request.add_reviewers(reviewers, team_reviewers)
