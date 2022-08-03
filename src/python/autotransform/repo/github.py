@@ -67,9 +67,13 @@ class GithubRepo(GitRepo):
             bool: Whether an outstanding Change exists.
         """
 
-        return f"origin/{GitRepo.get_branch_name(batch['title'])}" in [
-            str(ref) for ref in self._local_repo.remote().refs
-        ]
+        remote_refs = [str(ref) for ref in self._local_repo.remote().refs]
+        test_remote_ref = f"origin/{GitRepo.get_branch_name(batch['title'])}"
+
+        EventHandler.get().handle(DebugEvent({"message": f"Remote refs: {remote_refs}"}))
+        EventHandler.get().handle(DebugEvent({"message": f"Test remote ref: {test_remote_ref}"}))
+
+        return test_remote_ref in remote_refs
 
     def submit(
         self,
