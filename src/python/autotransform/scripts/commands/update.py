@@ -125,7 +125,7 @@ def run_command_main(args: Namespace) -> None:
         change = change_factory.get_instance(json.loads(change))
 
     if args.change_type != "string":
-        event_handler.handle(DebugEvent({"message": f"JSON Change: {json.dumps(change.bundle())}"}))
+        event_handler.handle(DebugEvent({"message": f"Change: {change!r}"}))
 
     if args.run_local:
         event_handler.handle(DebugEvent({"message": "Running locally"}))

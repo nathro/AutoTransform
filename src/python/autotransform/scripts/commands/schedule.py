@@ -78,5 +78,5 @@ def schedule_command_main(args: Namespace) -> None:
     event_args["scheduler"] = scheduler
     event_handler.handle(ScriptRunEvent({"script": "schedule", "args": event_args}))
 
-    event_handler.get().handle(DebugEvent({"message": f"Running scheduler: {scheduler}"}))
+    event_handler.get().handle(DebugEvent({"message": f"Running scheduler: {scheduler!r}"}))
     scheduler.run(start_time)

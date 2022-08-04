@@ -4,6 +4,7 @@
 
 #### Features
  - Update GithubRepo to use a dataclass for metadata to improve type safety/checking.
+ - Updated debug logging to be more readable and include appropriate information
 
 ## Release 1.0.1
 

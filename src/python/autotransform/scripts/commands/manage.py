@@ -66,5 +66,5 @@ def manage_command_main(args: Namespace) -> None:
     event_args["manager"] = manager
     event_handler.handle(ScriptRunEvent({"script": "manage", "args": event_args}))
 
-    event_handler.handle(DebugEvent({"message": f"Running manager: {manager}"}))
+    event_handler.handle(DebugEvent({"message": f"Running manager: {manager!r}"}))
     manager.run()

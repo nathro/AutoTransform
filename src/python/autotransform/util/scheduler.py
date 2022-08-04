@@ -266,11 +266,7 @@ class Scheduler(ComponentModel):
 
         if day_of_week in self.excluded_days:
             EventHandler.get().handle(
-                DebugEvent(
-                    {
-                        "message": f"Day {day_of_week} is excluded, skipping run",
-                    }
-                )
+                DebugEvent({"message": f"Day {day_of_week} is excluded, skipping run"})
             )
             return
 
@@ -300,14 +296,7 @@ class Scheduler(ComponentModel):
                     shard_filter.valid_shard = elapsed_days % shard_filter.num_shards
                 else:
                     shard_filter.valid_shard = (elapsed_days // 7) % shard_filter.num_shards
-                EventHandler.get().handle(
-                    DebugEvent(
-                        {
-                            "message": f"Sharding: valid = {shard_filter.valid_shard}, "
-                            + f"num = {shard_filter.num_shards}",
-                        }
-                    )
-                )
+                EventHandler.get().handle(DebugEvent({"message": f"Sharding: {shard_filter!r}"}))
                 schema.add_filter(shard_filter)
             EventHandler.get().handle(ScheduleRunEvent({"schema_name": schema.config.schema_name}))
             self.runner.run(schema)

@@ -98,7 +98,7 @@ class ComponentModel(BaseModel):
             else:
                 lines.append(f"\t{name}={field_val!r},".replace("\n", "\n\t"))
         lines.append(")")
-        return "\n".join(lines)
+        return "\n".join(lines).replace("\t", "    ")
 
 
 class NamedComponent(ComponentModel):

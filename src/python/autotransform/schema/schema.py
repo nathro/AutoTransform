@@ -86,9 +86,8 @@ class AutoTransformSchema(ComponentModel):
         # Get Items
         event_handler.handle(DebugEvent({"message": "Begin get_items"}))
         all_items = self.input.get_items()
-        event_handler.handle(
-            DebugEvent({"message": f"Items: {json.dumps([item.bundle() for item in all_items])}"})
-        )
+        item_str = "\n".join([f"{item!r}," for item in all_items])
+        event_handler.handle(DebugEvent({"message": f"Items: [\n{item_str}\n]"}))
 
         # Filter Items
         event_handler.handle(DebugEvent({"message": "Begin filters"}))
@@ -98,18 +97,16 @@ class AutoTransformSchema(ComponentModel):
             for cur_filter in self.filters:
                 if not cur_filter.is_valid(item):
                     is_valid = False
-                    event = DebugEvent(
-                        {"message": f"[{cur_filter}] Invalid Item: {json.dumps(item.bundle())}"}
-                    )
+                    event = DebugEvent({"message": f"[{cur_filter}] Invalid Item: {item!r}"})
                     event_handler.handle(event)
                     break
             if is_valid:
                 valid_items.append(item)
-        event_handler.handle(
-            DebugEvent(
-                {"message": f"Valid items: {json.dumps([item.bundle() for item in valid_items])}"}
-            )
-        )
+        if valid_items:
+            valid_item_str = "\n".join([f"{item!r}," for item in valid_items])
+            event_handler.handle(DebugEvent({"message": f"Valid items: [\n{valid_item_str}\n]"}))
+        else:
+            event_handler.handle(DebugEvent({"message": "No valid items."}))
 
         # Batch Items
         event_handler.handle(DebugEvent({"message": "Begin batching"}))
@@ -196,12 +193,7 @@ class AutoTransformSchema(ComponentModel):
             else:
                 if change is not None:
                     event_handler.handle(
-                        DebugEvent(
-                            {
-                                "message": f"Abandoning Change ({str(change)}) "
-                                + "due to no changes in update."
-                            }
-                        )
+                        DebugEvent({"message": "No changes in update, abandoning"})
                     )
 
                     # pylint: disable=protected-access

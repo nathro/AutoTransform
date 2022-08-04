@@ -59,9 +59,9 @@ class Manager(ComponentModel):
 
         changes = self.repo.get_outstanding_changes()
         for change in changes:
-            EventHandler.get().handle(DebugEvent({"message": f"Checking steps for {str(change)}"}))
+            EventHandler.get().handle(DebugEvent({"message": f"Checking steps for {change!r}"}))
             for step in self.steps:
-                EventHandler.get().handle(DebugEvent({"message": f"Checking step {str(step)}"}))
+                EventHandler.get().handle(DebugEvent({"message": f"Checking step {step!r}"}))
                 actions = step.get_actions(change)
                 for action in actions:
                     EventHandler.get().handle(
@@ -70,9 +70,7 @@ class Manager(ComponentModel):
                     change.take_action(action, self.runner)
 
                 if actions and not step.continue_management(change):
-                    EventHandler.get().handle(
-                        DebugEvent({"message": f"Steps ended for change {str(change)}"})
-                    )
+                    EventHandler.get().handle(DebugEvent({"message": "Steps ended"}))
                     break
 
     def write(self, file_path: str) -> None:
