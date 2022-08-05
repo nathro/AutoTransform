@@ -10,3 +10,4 @@ Input Package (autotransform.input)
    autotransform.input.directory
    autotransform.input.empty
    autotransform.input.gitgrep
+   autotransform.input.inline

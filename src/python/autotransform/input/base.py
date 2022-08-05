@@ -25,6 +25,9 @@ class InputName(str, Enum):
     DIRECTORY = "directory"
     EMPTY = "empty"
     GIT_GREP = "git_grep"
+    INLINE = "inline"
+    INLINE_FILE = "inline_file"
+    INLINE_GENERIC = "inline_generic"
 
 
 class Input(NamedComponent):
@@ -58,6 +61,15 @@ FACTORY = ComponentFactory(
         ),
         InputName.GIT_GREP: ComponentImport(
             class_name="GitGrepInput", module="autotransform.input.gitgrep"
+        ),
+        InputName.INLINE: ComponentImport(
+            class_name="InlineInput", module="autotransform.input.inline"
+        ),
+        InputName.INLINE_FILE: ComponentImport(
+            class_name="InlineFileInput", module="autotransform.input.inline"
+        ),
+        InputName.INLINE_GENERIC: ComponentImport(
+            class_name="InlineGenericInput", module="autotransform.input.inline"
         ),
     },
     Input,  # type: ignore [misc]

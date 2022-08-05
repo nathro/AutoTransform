@@ -58,6 +58,18 @@ def test_encoding_and_decoding():
         InputName.GIT_GREP: [
             {"pattern": "foo"},
         ],
+        InputName.INLINE: [
+            {"items": []},
+            {"items": [{"name": "generic", "key": "foo"}]},
+        ],
+        InputName.INLINE_FILE: [
+            {"files": []},
+            {"files": ["foo.py"]},
+        ],
+        InputName.INLINE_GENERIC: [
+            {"keys": []},
+            {"keys": ["foo"]},
+        ],
     }
 
     for name in InputName:
