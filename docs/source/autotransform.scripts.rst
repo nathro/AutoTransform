@@ -13,3 +13,8 @@ Scripts (autotransform.scripts)
    autotransform.scripts.commands.update
    autotransform.scripts.commands.schedule
    autotransform.scripts.commands.manage
+
+.. toctree::
+   :maxdepth: 4
+
+   autotransform.scripts.migrations.manager

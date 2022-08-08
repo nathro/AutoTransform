@@ -53,6 +53,14 @@ def test_encoding_and_decoding():
     """Tests the encoding and decoding of components."""
 
     test_components: Dict[TransformerName, List[Dict[str, Any]]] = {
+        TransformerName.LIBCST: [
+            {"command_module": "libcst.codemod", "command_name": "codemod_command"},
+            {
+                "command_module": "libcst.codemod",
+                "command_name": "codemod_command",
+                "command_args": {"test": "foo"},
+            },
+        ],
         TransformerName.REGEX: [{"pattern": "foo", "replacement": "bar"}],
         TransformerName.SCRIPT: [
             {"script": "black", "args": ["-l", "100"], "timeout": 100},

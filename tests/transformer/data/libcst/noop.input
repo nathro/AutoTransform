@@ -1,0 +1,4 @@
+def foo() -> str:
+    return "foo"
+def bar(baz: str) -> str:
+    return baz.format(bla, baz)

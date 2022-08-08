@@ -6,6 +6,7 @@
  - InlineInput for inlining Items.
  - InlineFileInput for inline FileItems.
  - InlineGenericInput for inlining Items using keys.
+ - LibCSTTransformer for libcst based transformations.
 
 #### Features
  - Update GithubRepo to use a dataclass for metadata to improve type safety/checking.

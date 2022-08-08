@@ -16,7 +16,7 @@ from enum import Enum
 from typing import Any, ClassVar, Generic, Mapping, Optional, TypeVar
 
 from autotransform.batcher.base import Batch
-from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
+from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 TResult = TypeVar("TResult", bound=Optional[Mapping[str, Any]])
 
@@ -24,6 +24,7 @@ TResult = TypeVar("TResult", bound=Optional[Mapping[str, Any]])
 class TransformerName(str, Enum):
     """A simple enum for mapping."""
 
+    LIBCST = "libcst"
     REGEX = "regex"
     SCRIPT = "script"
 
@@ -51,6 +52,9 @@ class Transformer(Generic[TResult], NamedComponent):
 
 FACTORY = ComponentFactory(
     {
+        TransformerName.LIBCST: ComponentImport(
+            class_name="LibCSTTransformer", module="autotransform.transformer.libcst"
+        ),
         TransformerName.REGEX: ComponentImport(
             class_name="RegexTransformer", module="autotransform.transformer.regex"
         ),

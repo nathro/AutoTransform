@@ -1,0 +1,8 @@
+def foo() -> str:
+    return "{0:#0{1}x}".format(1, 4)
+def bar() -> str:
+    return "{:#0{}x} {}".format(1, 4, 5)
+def baz() -> str:
+    return "{x:#0{y}x}".format(x=1, y=4)
+def foobar() -> str:
+    return "{:0>3d}".format(x)

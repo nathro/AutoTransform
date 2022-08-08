@@ -5,6 +5,7 @@ typing-extensions>=4.2.0
 colorama>=0.4.4
 pytz>=2022.1
 pydantic>=1.9.1
+libcst>=0.4.1
 
 
 # Requirements for Schemas

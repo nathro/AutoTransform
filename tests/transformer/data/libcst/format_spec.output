@@ -1,0 +1,8 @@
+def foo() -> str:
+    return f"{1:#0{4}x}"
+def bar() -> str:
+    return f"{1:#0{4}x} {5}"
+def baz() -> str:
+    return f"{1:#0{4}x}"
+def foobar() -> str:
+    return f"{x:0>3d}"

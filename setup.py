@@ -74,6 +74,7 @@ setuptools.setup(
         "colorama>=0.4.4",
         "pytz>=2022.1",
         "pydantic>=1.9.1",
+        "libcst>=0.4.1",
     ],
     python_requires=">=3.10",
     data_files=generate_datafiles(),
