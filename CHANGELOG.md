@@ -18,7 +18,7 @@ This update focuses on improvements to managing changes, increasing the power of
 
 #### Migrations
  - autotransform.scripts.migrations.manager migration script for migrating Manager JSON files.
- - Run `python -m autotransform.scripts.migrations.manager:main` to migrate Manager JSON files.
+ - Run `atmigrate-manager` to migrate Manager JSON files.
  - Step components now return a List of Actions, which are now fully-fledged NamedComponents. This is simply moving from an enum to a class for most cases.
  - Step components now have a method to check if management should be continued.
  - Changed comparison enum values, migrate with the migration script for Manager files.
