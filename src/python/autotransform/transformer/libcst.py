@@ -7,7 +7,7 @@
 
 # @black_format
 
-"""The implementation for the LibCSTTransformer."""
+"""The implementation for the LibCSTTransformer. See https://github.com/Instagram/LibCST"""
 
 from __future__ import annotations
 
@@ -57,8 +57,6 @@ class LibCSTTransformer(SingleTransformer):
         Args:
             item (Item): The file that will be transformed.
         """
-
-        # pylint: disable=unspecified-encoding
 
         assert isinstance(item, FileItem)
         event_handler = EventHandler.get()

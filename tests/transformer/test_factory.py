@@ -53,6 +53,12 @@ def test_encoding_and_decoding():
     """Tests the encoding and decoding of components."""
 
     test_components: Dict[TransformerName, List[Dict[str, Any]]] = {
+        TransformerName.JSCODESHIFT: [
+            {"js_transform": "myTransform.js"},
+            {"js_transform": "myTransform.js", "args": ["--foo", "bar"]},
+            {"js_transform": "myTransform.js", "timeout": 300},
+            {"js_transform": "myTransform.js", "args": ["--foo", "bar"], "timeout": 300},
+        ],
         TransformerName.LIBCST: [
             {"command_module": "libcst.codemod", "command_name": "codemod_command"},
             {

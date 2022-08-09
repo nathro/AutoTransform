@@ -6,7 +6,8 @@
  - InlineInput for inlining Items.
  - InlineFileInput for inline FileItems.
  - InlineGenericInput for inlining Items using keys.
- - LibCSTTransformer for libcst based transformations.
+ - LibCSTTransformer for libcst based transformations. Check out https://github.com/Instagram/LibCST for info on libcst.
+ - JSCodeshiftTransformer for jscodeshift based transformations. Check out https://github.com/facebook/jscodeshift for info on JSCodeshift.
 
 #### Features
  - Update GithubRepo to use a dataclass for metadata to improve type safety/checking.

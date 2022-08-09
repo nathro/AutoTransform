@@ -24,6 +24,7 @@ TResult = TypeVar("TResult", bound=Optional[Mapping[str, Any]])
 class TransformerName(str, Enum):
     """A simple enum for mapping."""
 
+    JSCODESHIFT = "jscodeshift"
     LIBCST = "libcst"
     REGEX = "regex"
     SCRIPT = "script"
@@ -52,6 +53,9 @@ class Transformer(Generic[TResult], NamedComponent):
 
 FACTORY = ComponentFactory(
     {
+        TransformerName.JSCODESHIFT: ComponentImport(
+            class_name="JSCodeshiftTransformer", module="autotransform.transformer.jscodeshift"
+        ),
         TransformerName.LIBCST: ComponentImport(
             class_name="LibCSTTransformer", module="autotransform.transformer.libcst"
         ),
