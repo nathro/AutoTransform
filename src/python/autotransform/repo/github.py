@@ -57,6 +57,8 @@ class GithubRepo(GitRepo):
 
     Attributes:
         full_github_name (str): The fully qualified name of the Github Repo.
+        commit_repo (optional, Optional[str]): The repo from which to generate a Pull Request. Used
+            if creating a Pull Request from a fork. Defaults to None.
         hide_automation_info (bool, optional): Whether to hide information on how automation was
             done from the pull request body. Defaults to False.
         hide_autotransform_docs (bool, optional): Whether to hide links to AutoTransform docs
@@ -69,6 +71,8 @@ class GithubRepo(GitRepo):
     """
 
     full_github_name: str
+
+    commit_repo: Optional[str] = None
     hide_automation_info: bool = False
     hide_autotransform_docs: bool = False
     labels: List[str] = Field(default_factory=list)
@@ -129,11 +133,16 @@ class GithubRepo(GitRepo):
         else:
             automation_info = "\n\n" + self.get_automation_info(autotransform.schema.current, batch)
 
+        if self.commit_repo is not None:
+            head = f"{self.commit_repo}:"
+        else:
+            head = ""
+
         pull_request = GithubUtils.get(self.full_github_name).create_pull_request(
             title,
             f"{str(batch_metadata.body)}{automation_info}",
             self._base_branch.name,
-            commit_branch,
+            f"{head}{commit_branch}",
         )
 
         EventHandler.get().handle(

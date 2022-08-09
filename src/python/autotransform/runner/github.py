@@ -51,8 +51,6 @@ class GithubRunner(Runner):
         event_handler = EventHandler.get()
         repo = schema.repo
 
-        # May add support for cross-repo usage but enforce that the workflow being invoked exists
-        # in the target repo for now
         assert isinstance(
             repo, GithubRepo
         ), "GithubRunner can only run using schemas that have Github repos"
