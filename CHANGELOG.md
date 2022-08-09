@@ -10,6 +10,7 @@
 
 #### Features
  - Update GithubRepo to use a dataclass for metadata to improve type safety/checking.
+ - Update GithubRepo to allow Pull Requests from forks.
  - Updated debug logging to be more readable and include appropriate information.
 
 ## Release 1.0.1
