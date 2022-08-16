@@ -1,5 +1,10 @@
 # Change Log
 
+## Release 1.0.3
+
+#### Documentation
+ - Added documentation for creating and using custom components, including an example PR.
+
 ## Release 1.0.2
 
 #### New Components
