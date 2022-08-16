@@ -14,6 +14,7 @@ The core of AutoTransform is the [schema](https://github.com/nathro/AutoTransfor
     * **Schema Name** - A unique name to identify the Schema
     * **Owners** - A list of owners responsible for the Schema
     * **Allowed Validation Level** - The level of validation errors allowed by the schema (none vs warning vs error)
+    * **Max Submissions** - An optional value to limit the number of submissions a schema makes per run (used to prevent sending excessive Changes to code review).
 * **[Input](https://github.com/nathro/AutoTransform/blob/master/src/python/autotransform/input/base.py)** - The input component returns a list of Items that are potential targets of a change (i.e. file paths)
 * **[Filters](https://github.com/nathro/AutoTransform/blob/master/src/python/autotransform/filter/base.py)** - Filters take a set of Items and apply criteria to the Items that were not applied by the Input, such as checking if the key of the item matches a regex pattern.
 * **[Batcher](https://github.com/nathro/AutoTransform/blob/master/src/python/autotransform/batcher/base.py)** - A batcher takes a set of filtered Items and breaks them into groups that can be executed independently. This component also generates metadata for this grouping used for things like the body of a pull request.

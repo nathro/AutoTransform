@@ -120,7 +120,7 @@ class AutoTransformSchema(ComponentModel):
 
         return batches
 
-    def execute_batch(self, batch: Batch, change: Optional[Change] = None) -> None:
+    def execute_batch(self, batch: Batch, change: Optional[Change] = None) -> bool:
         """Executes changes for a batch, including setting up the Repo, running the Transformer,
         checking all Validators, running Commands, submitting changes if present, and rewinding
         the Repo if changes are submitted. Note: this function is not thread safe.
@@ -131,6 +131,9 @@ class AutoTransformSchema(ComponentModel):
 
         Raises:
             ValidationError: If one of the Schema's Validators fails raises an exception.
+
+        Returns:
+            bool: Whether the batch triggered a submission.
         """
 
         autotransform.schema.current = self
@@ -151,7 +154,7 @@ class AutoTransformSchema(ComponentModel):
                 event_handler.handle(
                     DebugEvent({"message": "Skipping batch with outstanding change"})
                 )
-                return
+                return False
 
         # Execute transformation
         result = self.transformer.transform(batch)
@@ -181,6 +184,7 @@ class AutoTransformSchema(ComponentModel):
             event_handler.handle(DebugEvent({"message": f"Running command {command}"}))
             command.run(batch, result)
 
+        submitted = False
         # Handle repo state, submitting changes if present and reseting the repo
         if self.repo is not None:
             event_handler.handle(DebugEvent({"message": "Checking for changes"}))
@@ -190,6 +194,7 @@ class AutoTransformSchema(ComponentModel):
                 self.repo.submit(batch, result, change=change)
                 event_handler.handle(DebugEvent({"message": "Rewinding repo"}))
                 self.repo.rewind(batch)
+                submitted = True
             else:
                 if change is not None:
                     event_handler.handle(
@@ -201,6 +206,7 @@ class AutoTransformSchema(ComponentModel):
                 event_handler.handle(DebugEvent({"message": "No changes found"}))
         event_handler.handle(DebugEvent({"message": "Finish batch"}))
         autotransform.schema.current = None
+        return submitted
 
     def run(self):
         """Fully run a given Schema including getting and executing all Batches.
@@ -208,8 +214,18 @@ class AutoTransformSchema(ComponentModel):
 
         autotransform.schema.current = self
         batches = self.get_batches()
+        num_submissions = 0
         for batch in batches:
-            self.execute_batch(batch)
+            if (
+                self.config.max_submissions is not None
+                and num_submissions >= self.config.max_submissions
+            ):
+                EventHandler.get().handle(
+                    DebugEvent({"message": f"Max submissions reached: {num_submissions}"})
+                )
+                break
+            if self.execute_batch(batch):
+                num_submissions += 1
         autotransform.schema.current = None
 
     @staticmethod

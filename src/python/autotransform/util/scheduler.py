@@ -15,7 +15,9 @@ import json
 import os
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Type
+
+from pydantic import validator
 
 from autotransform.config.default import DefaultConfigFetcher
 from autotransform.event.debug import DebugEvent
@@ -180,14 +182,39 @@ class ScheduledSchema(ComponentModel):
     """A Schema that is scheduled for automatic runs.
 
     Attributes:
-        type (SchemaType): The type of Schema that is specified, file or builder.
         target (str): The Schema that is being scheduled.
+        type (SchemaType): The type of Schema that is specified, file or builder.
         schedule (SchemaScheduleSettings): The settings used to determine when to run the Schema.
+        max_submissions (Optional[int], optional): The max number of submissions from a given
+            scheduled run. No limit if None. Defaults to None.
     """
 
-    type: SchemaType
     target: str
+    type: SchemaType
     schedule: SchemaScheduleSettings
+
+    max_submissions: Optional[int] = None
+
+    # pylint: disable=invalid-name
+    @validator("max_submissions")
+    @classmethod
+    def max_submissions_is_positive(cls: Type[ScheduledSchema], v: Optional[int]) -> Optional[int]:
+        """Validates that max submissions is positive.
+
+        Args:
+            cls (Type[ScheduledSchema]): The ScheduledSchema class.
+            v (int): The maximum number of submissions.
+
+        Raises:
+            ValueError: Raised if the maximum number of submissions is not positive.
+
+        Returns:
+            Optional[int]: The unmodified maximum number of submissions.
+        """
+
+        if v is not None and v < 1:
+            raise ValueError(f"Maximum number of submissions must be positive, {v} provided")
+        return v
 
     @staticmethod
     def from_data(data: Dict[str, Any]) -> ScheduledSchema:
@@ -204,7 +231,12 @@ class ScheduledSchema(ComponentModel):
         target = data["target"]
         assert isinstance(target, str)
         schedule = SchemaScheduleSettings.from_data(data["schedule"])
-        return ScheduledSchema(type=schema_type, target=target, schedule=schedule)
+        max_submissions = data.get("max_submissions", None)
+        if max_submissions is not None:
+            assert isinstance(max_submissions, int)
+        return ScheduledSchema(
+            type=schema_type, target=target, schedule=schedule, max_submissions=max_submissions
+        )
 
     @staticmethod
     def from_console() -> ScheduledSchema:
@@ -221,10 +253,16 @@ class ScheduledSchema(ComponentModel):
             [(SchemaType.FILE, ["file", "f"]), (SchemaType.BUILDER, ["builder", "b"])],
         )
 
+        if choose_yes_or_no("Would you like to limit the maximum number of submissions?"):
+            max_submissions = input_int("Enter the maximum number of submissions", min_val=1)
+        else:
+            max_submissions = None
+
         return ScheduledSchema(
             target=target,
             type=schema_type,
             schedule=SchemaScheduleSettings.from_console(),
+            max_submissions=max_submissions,
         )
 
 
@@ -298,6 +336,8 @@ class Scheduler(ComponentModel):
                     shard_filter.valid_shard = (elapsed_days // 7) % shard_filter.num_shards
                 EventHandler.get().handle(DebugEvent({"message": f"Sharding: {shard_filter!r}"}))
                 schema.add_filter(shard_filter)
+            if scheduled_schema.max_submissions is not None:
+                schema.config.max_submissions = scheduled_schema.max_submissions
             EventHandler.get().handle(ScheduleRunEvent({"schema_name": schema.config.schema_name}))
             self.runner.run(schema)
 

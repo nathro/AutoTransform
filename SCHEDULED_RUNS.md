@@ -17,6 +17,7 @@ To get scheduled runs going, a JSON file with all scheduling information is requ
         {
             "type": <builder, file>,
             "target": <string>,
+            "max_submissions": <optional int>,
             "schedule": {
                 "repeats": <daily, weekly>,
                 "hour_of_day": <0-23>,
@@ -44,6 +45,7 @@ The following settings are used when scheduling schemas to run automatically.
   * **Schema Settings**
     * **type**: Either the string "builder" or the string "file". This is used to determine whether the value of the schema setting refers to a SchemaBuilderType or a file path.
     * **target**: Either a SchemaBuilderType or a file path.
+    * **max_submissions**: The maximum number of submissions that the scheduled schema can produce. An optional, positive int that overrides the setting in the schema if present.
     * **Schedule**
       * **repeats**: Either the string "daily" or the string "weekly". How often the schema will be run.
       * **hour_of_day**: Which hour of the day, using the logic described for base_time, that the schema will be run. Defaults to 0.

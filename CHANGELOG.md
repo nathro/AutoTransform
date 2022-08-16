@@ -5,6 +5,9 @@
 #### Documentation
  - Added documentation for creating and using custom components, including an example PR.
 
+#### Features
+ - Added a max_submissions option to schema configs and scheduling to allow slower rollouts for changes that can prevent overwhelming code review.
+
 ## Release 1.0.2
 
 #### New Components
