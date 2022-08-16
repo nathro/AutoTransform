@@ -326,7 +326,9 @@ class PullRequest:
         """
 
         self._api.pulls.request_reviewers(
-            pull_number=self.number, reviewers=reviewers, team_reviewers=team_reviewers
+            pull_number=self.number,
+            reviewers=list(set(reviewers)),
+            team_reviewers=list(set(team_reviewers)),
         )
 
     def create_comment(self, body: str) -> None:

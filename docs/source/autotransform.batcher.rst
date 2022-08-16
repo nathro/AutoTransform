@@ -9,4 +9,5 @@ Batcher Package (autotransform.batcher)
    autotransform.batcher.base
    autotransform.batcher.chunk
    autotransform.batcher.directory
+   autotransform.batcher.extradata
    autotransform.batcher.single

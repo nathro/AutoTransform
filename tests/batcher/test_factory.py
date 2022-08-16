@@ -60,6 +60,10 @@ def test_fetching_and_bundling():
             {"prefix": "foo"},
             {"prefix": "foo", "metadata": {"body": "bar"}},
         ],
+        BatcherName.EXTRA_DATA: [
+            {"group_by": "foo"},
+            {"group_by": "foo", "metadata_keys": ["bar"]},
+        ],
         BatcherName.SINGLE: [
             {"title": "foo"},
             {"title": "foo", "metadata": {"body": "bar"}},

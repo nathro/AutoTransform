@@ -18,7 +18,7 @@ from typing import Any, ClassVar, List, Mapping, Sequence, TypedDict
 from typing_extensions import NotRequired
 
 from autotransform.item.base import Item
-from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
+from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 
 class BatcherName(str, Enum):
@@ -26,6 +26,7 @@ class BatcherName(str, Enum):
 
     CHUNK = "chunk"
     DIRECTORY = "directory"
+    EXTRA_DATA = "extra_data"
     SINGLE = "single"
 
 
@@ -68,6 +69,9 @@ FACTORY = ComponentFactory(
         ),
         BatcherName.DIRECTORY: ComponentImport(
             class_name="DirectoryBatcher", module="autotransform.batcher.directory"
+        ),
+        BatcherName.EXTRA_DATA: ComponentImport(
+            class_name="ExtraDataBatcher", module="autotransform.batcher.extradata"
         ),
         BatcherName.SINGLE: ComponentImport(
             class_name="SingleBatcher", module="autotransform.batcher.single"
