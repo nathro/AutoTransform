@@ -11,8 +11,8 @@
     },
     "schemas": [
         {
-            "type": "file",
             "target": "autotransform/schemas/black_format.json",
+            "type": "file",
             "schedule": {
                 "repeats": "daily",
                 "hour_of_day": 7
