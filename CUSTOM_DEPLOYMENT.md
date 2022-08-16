@@ -19,7 +19,7 @@ The `component_directory` setting in the config represents the directory where t
 An example Pull Request which adds a formatting transformer and associated schema can be found [here](https://github.com/nathro/ATTest/pull/32).
 
 The pieces of this Pull Request are the following:
- - A new component is added in `autotransform/components/atexample/format.py` along with an `__init__.py` file to set up a python package.
+ - A new component is added in `autotransform/components/atexample/format.py` along with an `__init__.py` file to set up a python package. The transformer here is a simple example that is redundant with existing components, but demonstrates how one might write a format Transformer.
  - The config is updated to point at `autotransform/components` as the location where the custom component JSON files are located.
  - The new component is added to `transformer.json` under the name `format`.
  - This new component is used in the schema `format.json` using the name `custom/format` (all custom components are prefixed with `custom/`).
