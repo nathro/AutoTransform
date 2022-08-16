@@ -7,6 +7,7 @@
 
 #### New Components
  - Added ExtraDataBatcher that allows batching items using the extra_data field of the items.
+ - Added FileRegexBatcher that allows using regexes against file contents to produces batches with metadata.
 
 #### Features
  - Added a max_submissions option to schema configs and scheduling to allow slower rollouts for changes that can prevent overwhelming code review.

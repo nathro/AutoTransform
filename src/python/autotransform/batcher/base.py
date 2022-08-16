@@ -27,6 +27,7 @@ class BatcherName(str, Enum):
     CHUNK = "chunk"
     DIRECTORY = "directory"
     EXTRA_DATA = "extra_data"
+    FILE_REGEX = "file_regex"
     SINGLE = "single"
 
 
@@ -72,6 +73,9 @@ FACTORY = ComponentFactory(
         ),
         BatcherName.EXTRA_DATA: ComponentImport(
             class_name="ExtraDataBatcher", module="autotransform.batcher.extradata"
+        ),
+        BatcherName.FILE_REGEX: ComponentImport(
+            class_name="FileRegexBatcher", module="autotransform.batcher.regex"
         ),
         BatcherName.SINGLE: ComponentImport(
             class_name="SingleBatcher", module="autotransform.batcher.single"

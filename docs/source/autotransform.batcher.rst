@@ -10,4 +10,5 @@ Batcher Package (autotransform.batcher)
    autotransform.batcher.chunk
    autotransform.batcher.directory
    autotransform.batcher.extradata
+   autotransform.batcher.regex
    autotransform.batcher.single

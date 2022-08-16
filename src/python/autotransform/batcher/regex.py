@@ -11,33 +11,33 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
+import re
 from typing import Any, ClassVar, Dict, List, Sequence
 
 from pydantic import Field
 
 from autotransform.batcher.base import Batch, Batcher, BatcherName
 from autotransform.item.base import Item
+from autotransform.item.file import FileItem
 
 
-class ExtraDataBatcher(Batcher):
-    """A Batcher which uses the extra data on Items to create batches.
+class FileRegexBatcher(Batcher):
+    """A Batcher which uses matches from regex on file content to group Items.
 
     Attributes:
-        group_by (str): The key of the extra_data on items to group Items by for Batches.
-        metadata_keys (optional, List[str]): A list of keys from Items to combine in to the
-            metadata of a batch. Defaults to [].
-
+        group_by (str): The regex which produces the group by value.
+        metadata_keys (optional, Dict[str, str]): A mapping from key to a regex that produces values
+            for that key.
         name (ClassVar[BatcherName]): The name of the Component.
     """
 
     group_by: str
-    metadata_keys: List[str] = Field(default_factory=list)
+    metadata_keys: Dict[str, str] = Field(default_factory=dict)
 
-    name: ClassVar[BatcherName] = BatcherName.EXTRA_DATA
+    name: ClassVar[BatcherName] = BatcherName.FILE_REGEX
 
     def batch(self, items: Sequence[Item]) -> List[Batch]:
-        """Take filtered Items and group them by an extra_data value.
+        """Take filtered Items and group them by regex match values.
 
         Args:
             items (Sequence[Item]): The filtered Items to separate.
@@ -46,11 +46,12 @@ class ExtraDataBatcher(Batcher):
             List[Batch]: A list of Batches grouped by the extra_data of the Items.
         """
 
-        groups: Dict[str, List[Item]] = {}
+        groups: Dict[str, List[FileItem]] = {}
         for item in items:
-            extra_data = item.extra_data or {}
-            group_by_val = extra_data[self.group_by]
-            assert isinstance(group_by_val, str), "Group by values must be strings"
+            assert isinstance(item, FileItem)
+            match = re.match(item.get_content(), self.group_by)
+            assert match is not None, "Must have value to use for grouping"
+            group_by_val = match.group(1)
             if group_by_val in groups:
                 groups[group_by_val].append(item)
             else:
@@ -64,13 +65,11 @@ class ExtraDataBatcher(Batcher):
                 for key in self.metadata_keys:
                     metadata[key] = []
                 for item in group_items:
-                    extra_data = item.extra_data or {}
-                    for key in self.metadata_keys:
-                        val = extra_data.get(key)
-                        if isinstance(val, list):
-                            metadata[key].extend(deepcopy(val))
-                        elif val is not None:
-                            metadata[key].append(deepcopy(val))
+                    file_content = item.get_content()
+                    for key, regex in self.metadata_keys.items():
+                        match = re.match(file_content, regex)
+                        if match:
+                            metadata[key].append(match.group(1))
                 for key in self.metadata_keys:
                     metadata[key] = list(set(metadata[key]))
                 batch["metadata"] = metadata

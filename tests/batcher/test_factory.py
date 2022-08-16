@@ -64,6 +64,10 @@ def test_fetching_and_bundling():
             {"group_by": "foo"},
             {"group_by": "foo", "metadata_keys": ["bar"]},
         ],
+        BatcherName.FILE_REGEX: [
+            {"group_by": "foo{(\\d+)}"},
+            {"group_by": "foo{(\\d+)}", "metadata_keys": {"bar": "bar{(\\d+)}"}},
+        ],
         BatcherName.SINGLE: [
             {"title": "foo"},
             {"title": "foo", "metadata": {"body": "bar"}},
