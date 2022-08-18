@@ -56,6 +56,15 @@ class GithubChange(Change):
 
         return self._body_data[0]
 
+    def get_schema_name(self) -> str:
+        """Gets the name of the Schema that produced the Change.
+
+        Returns:
+            str: The name of the Schema.
+        """
+
+        return self._pull_request.branch.split("/")[1].replace("_", " ")
+
     def get_state(self) -> ChangeState:
         """Gets the current state of the Change. Caches the state in _state to prevent
         excessive use of Github API.

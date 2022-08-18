@@ -44,4 +44,4 @@ class SchemaNameCondition(ComparisonCondition[str]):
             str: The name of the Schema that produced the change.
         """
 
-        return change.get_schema().config.schema_name
+        return change.get_schema_name()

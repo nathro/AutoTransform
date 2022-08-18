@@ -75,6 +75,15 @@ class Change(NamedComponent):
             AutoTransformSchema: The Schema used to produce the Change.
         """
 
+    def get_schema_name(self) -> str:
+        """Gets the name of the Schema that produced the Change.
+
+        Returns:
+            str: The name of the Schema.
+        """
+
+        return self.get_schema().config.schema_name
+
     @abstractmethod
     def get_state(self) -> ChangeState:
         """Gets the current state of the Change.
