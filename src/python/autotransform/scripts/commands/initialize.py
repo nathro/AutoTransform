@@ -21,7 +21,7 @@ from autotransform.repo.base import RepoName
 from autotransform.runner.base import Runner
 from autotransform.runner.github import GithubRunner
 from autotransform.schema.schema import AutoTransformSchema
-from autotransform.util.console import choose_yes_or_no, get_str, info
+from autotransform.util.console import choose_yes_or_no, info
 from autotransform.util.manager import Manager
 from autotransform.util.package import get_config_dir, get_examples_dir
 from autotransform.util.scheduler import Scheduler
