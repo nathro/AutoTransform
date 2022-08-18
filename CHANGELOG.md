@@ -11,6 +11,10 @@
 
 #### Features
  - Added a max_submissions option to schema configs and scheduling to allow slower rollouts for changes that can prevent overwhelming code review.
+ - Update Change to have get_schema_name() that is used for Condition. This allows GithubChange to pull schema name from the branch.
+
+#### Fixes
+ - Fix workflows to checkout the repo as the supplied bot, rather than as github-actions bot. This should prevent issues involving branch protection rules and force-pushes appearing under the wrong name.
 
 ## Release 1.0.2
 

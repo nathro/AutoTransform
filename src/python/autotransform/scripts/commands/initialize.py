@@ -112,8 +112,6 @@ def initialize_workflows(repo_dir: str, examples_dir: str, prev_config: Optional
         prev_config (Optional[Config]): Previously input Config.
     """
 
-    bot_name = get_str("Enter the name of the account used for automation: ")
-    bot_email = get_str("Enter the email of the account used for automation: ")
     component_directory = prev_config.component_directory if prev_config is not None else None
     relative_config_dir = DefaultConfigFetcher.get_repo_config_relative_path()
 
@@ -127,8 +125,6 @@ def initialize_workflows(repo_dir: str, examples_dir: str, prev_config: Optional
         with open(f"{examples_dir}/workflows/{workflow}", "r", encoding="UTF-8") as workflow_file:
             workflow_text = workflow_file.read()
 
-        workflow_text = workflow_text.replace("<BOT EMAIL>", bot_email)
-        workflow_text = workflow_text.replace("<BOT NAME>", bot_name)
         workflow_text = workflow_text.replace("<CONFIG DIR>", relative_config_dir)
 
         if component_directory is not None:
