@@ -43,7 +43,7 @@ def test_run(mock_create_dispatch):
     mock_create_dispatch.assert_called_once()
     assert mock_create_dispatch.call_args_list[0].args[0] == runner.run_workflow
     assert mock_create_dispatch.call_args_list[0].args[1] == schema.repo.base_branch
-    assert mock_create_dispatch.call_args_list[0].args[2] == {"schema": json.dumps(schema.bundle())}
+    assert mock_create_dispatch.call_args_list[0].args[2] == {"schema": schema.config.schema_name}
 
 
 @mock.patch.object(GithubUtils, "create_workflow_dispatch")
