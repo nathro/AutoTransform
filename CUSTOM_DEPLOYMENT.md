@@ -1,5 +1,7 @@
 # **Extending For Your Organization**
 
+### **Custom Components**
+
 AutoTransform is a generic framework for defining automated code transformations, but may not provide all components needed by your specific organization. Fret not, AutoTransform is built to be extended!
 
 If no existing components support the use case needed for your organization, custom components can be used with AutoTransform. Creating a custom component is a fairly straight forward process. First, you need to write a new component class that inherits from the base for the type of component you are building (i.e. [Transformer](https://github.com/nathro/AutoTransform/blob/master/src/python/autotransform/transformer/base.py) for a new Transformer component). Once that component is written and included in your python path, you need to add it to the custom component importing that AutoTransform uses.
@@ -36,3 +38,7 @@ When deploying AutoTransform to production, it is highly recommend to handle con
 ### **Remote Runs**
 
 In larger team settings, local runs are likely not the ideal solution. For these cases, it is strongly advised to create a Runner component that integrates with your systems so that work can be run on remote machines. If your codebase uses Github and supports Github Actions, the initialization script `autotransform init` can get you set up quickly. For extremely large codebases, you may additionally need to set up a Runner that uses a queueing system to distribute work across multiple machines. Ensure that the github_token for your workflow has all needed permission (pushing branches, creating/managing pull requests, and triggering actions).
+
+### **Branch Protection Rules**
+
+If your organization uses Github, using a branch protection rule to ensure only the bot is able to push to the branches used for AutoTransform Pull Requests is strongly recommended. This rule should target branches of the form `AUTO_TRANSFORM/**/*` allowing creation, pushes, force pushes, and deletions for the bot alone. Ensuring the security of these changes is important to maintain the security of the repository.
