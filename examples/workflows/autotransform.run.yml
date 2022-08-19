@@ -37,10 +37,10 @@ jobs:
     - name: Set up options
       run: |
         options="--verbose --name"
-        if [[ -z "${MAX_SUBMISSIONS}" ]]; then
+        if [[ ! -z "${MAX_SUBMISSIONS}" ]]; then
           options="$options --max-submissions $MAX_SUBMISSIONS"
         fi
-        if [[ -z "${FILTER}" ]]; then
+        if [[ ! -z "${FILTER}" ]]; then
           options="$options --filter '$FILTER'"
         fi
         echo "OPTIONS=$options" >> $GITHUB_ENV
