@@ -17,11 +17,9 @@ from typing import TYPE_CHECKING, ClassVar, Dict, List, Tuple
 
 from autotransform.batcher.base import Batch
 from autotransform.change.base import Change, ChangeName, ChangeState
-from autotransform.config.default import DefaultConfigFetcher
 from autotransform.item.base import FACTORY as item_factory
 from autotransform.schema.builder import FACTORY as schema_builder_factory
 from autotransform.util.github import GithubUtils, PullRequest
-from autotransform.util.scheduler import SchemaType
 
 if TYPE_CHECKING:
     from autotransform.schema.schema import AutoTransformSchema
@@ -56,6 +54,10 @@ class GithubChange(Change):
         Returns:
             AutoTransformSchema: The Schema used to produce the Change.
         """
+
+        # pylint: disable=import-outside-toplevel
+        from autotransform.config.default import DefaultConfigFetcher
+        from autotransform.util.scheduler import SchemaType
 
         schema_name = self.get_schema_name()
         map_file_path = f"{DefaultConfigFetcher.get_repo_config_relative_path()}/schema_map.json"
