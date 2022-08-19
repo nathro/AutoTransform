@@ -15,8 +15,13 @@ import subprocess
 from argparse import ArgumentParser, Namespace
 from typing import Optional, Tuple
 
+from autotransform.config import (
+    CONFIG_FILE_NAME,
+    get_cwd_config_dir,
+    get_repo_config_dir,
+    get_repo_config_relative_path,
+)
 from autotransform.config.config import Config
-from autotransform.config.default import DefaultConfigFetcher
 from autotransform.repo.base import RepoName
 from autotransform.runner.base import Runner
 from autotransform.runner.github import GithubRunner
@@ -113,7 +118,7 @@ def initialize_workflows(repo_dir: str, examples_dir: str, prev_config: Optional
     """
 
     component_directory = prev_config.component_directory if prev_config is not None else None
-    relative_config_dir = DefaultConfigFetcher.get_repo_config_relative_path()
+    relative_config_dir = get_repo_config_relative_path()
 
     workflows = [
         "autotransform.manage.yml",
@@ -157,7 +162,7 @@ def initialize_repo(
     """
 
     examples_dir = get_examples_dir()
-    repo_config_dir = DefaultConfigFetcher.get_repo_config_dir()
+    repo_config_dir = get_repo_config_dir()
 
     github = use_github
     if github is None:
@@ -243,7 +248,7 @@ def initialize_command_main(args: Namespace) -> None:
     simple = args.simple
     github = args.github
 
-    user_config_path = f"{get_config_dir()}/{DefaultConfigFetcher.FILE_NAME}"
+    user_config_path = f"{get_config_dir()}/{CONFIG_FILE_NAME}"
     config, github = initialize_config(
         user_config_path, "user", None, simple=simple, use_github=github
     )
@@ -260,18 +265,14 @@ def initialize_command_main(args: Namespace) -> None:
         setup_repo = False
 
     if setup_repo:
-        repo_config_path = (
-            f"{DefaultConfigFetcher.get_repo_config_dir()}/{DefaultConfigFetcher.FILE_NAME}"
-        )
+        repo_config_path = f"{get_repo_config_dir()}/{CONFIG_FILE_NAME}"
         config, github = initialize_config(
             repo_config_path, "repo", config, simple=simple, use_github=github
         )
         initialize_repo(repo_dir, config, simple=simple, use_github=github)
 
     if repo_dir == "" and choose_yes_or_no("Set up configuration for current working directory?"):
-        cwd_config_path = (
-            f"{DefaultConfigFetcher.get_cwd_config_dir()}/{DefaultConfigFetcher.FILE_NAME}"
-        )
+        cwd_config_path = f"{get_cwd_config_dir()}/{CONFIG_FILE_NAME}"
         initialize_config(
             cwd_config_path, "current working directory", config, simple=simple, use_github=github
         )

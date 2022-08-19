@@ -15,8 +15,8 @@ import os
 from argparse import ArgumentParser, Namespace
 from typing import Dict, List
 
+from autotransform.config import CONFIG_FILE_NAME, get_cwd_config_dir, get_repo_config_dir
 from autotransform.config.config import Config
-from autotransform.config.default import DefaultConfigFetcher
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.util.component import ComponentFactory, ComponentImport
 from autotransform.util.console import choose_options_from_list, error, get_str, info
@@ -100,13 +100,13 @@ def settings_command_main(args: Namespace) -> None:
     """
 
     if args.setting_type == "user_config":
-        path = f"{get_config_dir}/{DefaultConfigFetcher.FILE_NAME}"
+        path = f"{get_config_dir}/{CONFIG_FILE_NAME}"
         handle_config(path, "User", args.update_settings)
     elif args.setting_type == "repo_config":
-        path = f"{DefaultConfigFetcher.get_repo_config_dir()}/{DefaultConfigFetcher.FILE_NAME}"
+        path = f"{get_repo_config_dir()}/{CONFIG_FILE_NAME}"
         handle_config(path, "Repo", args.update_settings)
     elif args.setting_type == "cwd_config":
-        path = f"{DefaultConfigFetcher.get_cwd_config_dir()}/{DefaultConfigFetcher.FILE_NAME}"
+        path = f"{get_cwd_config_dir()}/{CONFIG_FILE_NAME}"
         handle_config(path, "CWD", args.update_settings)
     elif args.setting_type == "custom_components":
         handle_custom_components(args.update_settings)
@@ -258,7 +258,7 @@ def handle_manager(update: bool) -> None:
         update (bool): Whether to apply updates to the Manager.
     """
 
-    path = f"{DefaultConfigFetcher.get_repo_config_dir()}/manager.json"
+    path = f"{get_repo_config_dir()}/manager.json"
     manager = None
     try:
         manager = Manager.read(path)
@@ -284,7 +284,7 @@ def handle_scheduler(update: bool) -> None:
         update (bool): Whether to apply updates to the Scheduler.
     """
 
-    path = f"{DefaultConfigFetcher.get_repo_config_dir()}/scheduler.json"
+    path = f"{get_repo_config_dir()}/scheduler.json"
     scheduler = None
     try:
         scheduler = Scheduler.read(path)

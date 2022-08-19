@@ -14,8 +14,7 @@ import json
 import os
 from argparse import ArgumentParser, Namespace
 
-import autotransform.config
-from autotransform.config.default import DefaultConfigFetcher
+from autotransform.config import get_config, get_repo_config_relative_path
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
@@ -25,7 +24,7 @@ from autotransform.runner.base import Runner
 from autotransform.runner.local import LocalRunner
 from autotransform.schema.builder import FACTORY as schema_builder_factory
 from autotransform.schema.schema import AutoTransformSchema
-from autotransform.util.scheduler import SchemaType
+from autotransform.util.enums import SchemaType
 
 
 def add_args(parser: ArgumentParser) -> None:
@@ -166,7 +165,7 @@ def run_command_main(args: Namespace) -> None:
         assert isinstance(schema, str)
         schema = AutoTransformSchema.from_data(json.loads(schema))
     elif args.schema_type == "name":
-        map_file_path = f"{DefaultConfigFetcher.get_repo_config_relative_path()}/schema_map.json"
+        map_file_path = f"{get_repo_config_relative_path()}/schema_map.json"
         with open(map_file_path, "r", encoding="UTF-8") as map_file:
             schema_map = json.loads(map_file.read())
         data = schema_map[schema]
@@ -192,7 +191,7 @@ def run_command_main(args: Namespace) -> None:
     if args.run_local:
         event_handler.handle(DebugEvent({"message": "Running locally"}))
         event_args["remote"] = False
-        config_runner = autotransform.config.CONFIG.local_runner
+        config_runner = get_config().local_runner
         if config_runner is None:
             event_handler.handle(DebugEvent({"message": "No runner defined, using default"}))
             runner: Runner = LocalRunner()
@@ -201,7 +200,7 @@ def run_command_main(args: Namespace) -> None:
     else:
         event_handler.handle(DebugEvent({"message": "Running remote"}))
         event_args["remote"] = True
-        config_runner = autotransform.config.CONFIG.remote_runner
+        config_runner = get_config().remote_runner
         assert config_runner is not None
         runner = config_runner
 

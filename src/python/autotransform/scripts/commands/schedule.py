@@ -12,7 +12,7 @@
 import time
 from argparse import ArgumentParser, Namespace
 
-from autotransform.config.default import DefaultConfigFetcher
+from autotransform.config import get_repo_config_relative_path
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
@@ -72,7 +72,7 @@ def schedule_command_main(args: Namespace) -> None:
     # Get Scheduler
     schedule_file = args.path
     if schedule_file is None:
-        schedule_file = f"{DefaultConfigFetcher.get_repo_config_relative_path()}/scheduler.json"
+        schedule_file = f"{get_repo_config_relative_path()}/scheduler.json"
     event_args = {"scheduler_file": schedule_file}
     scheduler = Scheduler.read(schedule_file)
     event_args["scheduler"] = scheduler

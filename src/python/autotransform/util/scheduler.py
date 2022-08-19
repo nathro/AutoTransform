@@ -19,7 +19,7 @@ from typing import Any, Dict, List, Optional, Type
 
 from pydantic import validator
 
-from autotransform.config.default import DefaultConfigFetcher
+from autotransform.config import get_repo_config_relative_path
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.schedulerun import ScheduleRunEvent
@@ -42,13 +42,7 @@ from autotransform.util.console import (
     input_int,
     input_ints,
 )
-
-
-class SchemaType(str, Enum):
-    """Possible types of Schemas to use."""
-
-    BUILDER = "builder"
-    FILE = "file"
+from autotransform.util.enums import SchemaType
 
 
 class RepeatSetting(str, Enum):
@@ -454,7 +448,7 @@ class Scheduler(ComponentModel):
 
         # Gets Schemas
         if use_sample_schema:
-            relative_path = DefaultConfigFetcher.get_repo_config_relative_path()
+            relative_path = get_repo_config_relative_path()
             schemas = [
                 ScheduledSchema(
                     type=SchemaType.FILE,

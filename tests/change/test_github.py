@@ -48,7 +48,6 @@ def test_get_data_from_body(mock_get_pull_request):
     change = GithubChange(full_github_name="nathro/ATTest", pull_number=1)
 
     assert change.get_batch() == batch
-    assert change.get_schema() == schema
 
 
 @mock.patch.object(GithubUtils, "get_pull_request")

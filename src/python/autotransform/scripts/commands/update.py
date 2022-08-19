@@ -13,8 +13,8 @@ import json
 import os
 from argparse import ArgumentParser, Namespace
 
-import autotransform.config
 from autotransform.change.base import FACTORY as change_factory
+from autotransform.config import get_config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
@@ -130,7 +130,7 @@ def run_command_main(args: Namespace) -> None:
     if args.run_local:
         event_handler.handle(DebugEvent({"message": "Running locally"}))
         event_args["remote"] = False
-        config_runner = autotransform.config.CONFIG.local_runner
+        config_runner = get_config().local_runner
         if config_runner is None:
             event_handler.handle(DebugEvent({"message": "No runner defined, using default"}))
             runner: Runner = LocalRunner()
@@ -139,7 +139,7 @@ def run_command_main(args: Namespace) -> None:
     else:
         event_handler.handle(DebugEvent({"message": "Running remote"}))
         event_args["remote"] = True
-        config_runner = autotransform.config.CONFIG.remote_runner
+        config_runner = get_config().remote_runner
         assert config_runner is not None
         runner = config_runner
 

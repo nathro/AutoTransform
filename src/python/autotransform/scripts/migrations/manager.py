@@ -13,7 +13,7 @@ import json
 from argparse import ArgumentParser
 from typing import Any, Dict
 
-from autotransform.config.default import DefaultConfigFetcher
+from autotransform.config import get_repo_config_relative_path
 from autotransform.step.condition.base import ConditionName
 from autotransform.step.condition.comparison import ComparisonType
 from autotransform.util.manager import Manager
@@ -50,7 +50,7 @@ def main():
     args = parser.parse_args()
     file_path = args.path
     if file_path is None:
-        file_path = f"{DefaultConfigFetcher.get_repo_config_relative_path()}/manager.json"
+        file_path = f"{get_repo_config_relative_path()}/manager.json"
 
     with open(file_path, "r", encoding="UTF-8") as manager_file:
         manager_json = manager_file.read()

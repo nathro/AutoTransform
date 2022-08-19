@@ -20,6 +20,7 @@ from typing import Any, ClassVar, Dict, Generic, List, Optional, Tuple, Type, Ty
 
 from pydantic import BaseModel  # pylint: disable=no-name-in-module
 
+from autotransform.config import get_config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.warning import WarningEvent
@@ -380,9 +381,8 @@ class ComponentFactory(Generic[T], ABC):
             str: The path where the custom component JSON is located.
         """
         # Importing here to avoid a cyclic import
-        import autotransform.config  # pylint: disable=import-outside-toplevel
 
-        return f"{autotransform.config.CONFIG.component_directory}/{component_file_name}"
+        return f"{get_config().component_directory}/{component_file_name}"
 
     def _get_component_class(
         self,

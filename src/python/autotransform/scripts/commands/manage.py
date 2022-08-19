@@ -11,7 +11,7 @@
 
 from argparse import ArgumentParser, Namespace
 
-from autotransform.config.default import DefaultConfigFetcher
+from autotransform.config import get_repo_config_relative_path
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
@@ -60,7 +60,7 @@ def manage_command_main(args: Namespace) -> None:
 
     manager_file = args.path
     if manager_file is None:
-        manager_file = f"{DefaultConfigFetcher.get_repo_config_relative_path()}/manager.json"
+        manager_file = f"{get_repo_config_relative_path()}/manager.json"
     event_args = {"manager_file": manager_file}
     manager = Manager.read(manager_file)
     event_args["manager"] = manager

@@ -13,16 +13,16 @@ from __future__ import annotations
 
 import json
 from functools import cached_property
-from typing import TYPE_CHECKING, ClassVar, Dict, List, Tuple
+from typing import ClassVar, Dict, List, Tuple
 
 from autotransform.batcher.base import Batch
 from autotransform.change.base import Change, ChangeName, ChangeState
+from autotransform.config import get_repo_config_relative_path
 from autotransform.item.base import FACTORY as item_factory
 from autotransform.schema.builder import FACTORY as schema_builder_factory
+from autotransform.schema.schema import AutoTransformSchema
+from autotransform.util.enums import SchemaType
 from autotransform.util.github import GithubUtils, PullRequest
-
-if TYPE_CHECKING:
-    from autotransform.schema.schema import AutoTransformSchema
 
 
 class GithubChange(Change):
@@ -55,12 +55,8 @@ class GithubChange(Change):
             AutoTransformSchema: The Schema used to produce the Change.
         """
 
-        # pylint: disable=import-outside-toplevel
-        from autotransform.config.default import DefaultConfigFetcher
-        from autotransform.util.scheduler import SchemaType
-
         schema_name = self.get_schema_name()
-        map_file_path = f"{DefaultConfigFetcher.get_repo_config_relative_path()}/schema_map.json"
+        map_file_path = f"{get_repo_config_relative_path()}/schema_map.json"
         with open(map_file_path, "r", encoding="UTF-8") as map_file:
             schema_map = json.loads(map_file.read())
         data = schema_map[schema_name]
@@ -250,9 +246,6 @@ class GithubChange(Change):
             Tuple[AutoTransformSchema, Batch]: The Schema and Batch contained
                 in the PullRequest's Body.
         """
-
-        # pylint: disable=import-outside-toplevel
-        from autotransform.schema.schema import AutoTransformSchema
 
         data: Dict[str, List[str]] = {"schema": [], "batch": []}
         cur_line_placement = None
