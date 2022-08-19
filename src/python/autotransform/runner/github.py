@@ -19,6 +19,7 @@ from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.remoterun import RemoteRunEvent
 from autotransform.event.update import RemoteUpdateEvent
+from autotransform.filter.shard import ShardFilter
 from autotransform.repo.github import GithubRepo
 from autotransform.runner.base import Runner, RunnerName
 from autotransform.schema.schema import AutoTransformSchema
@@ -56,10 +57,16 @@ class GithubRunner(Runner):
         ), "GithubRunner can only run using schemas that have Github repos"
 
         # Dispatch a Workflow run
+        workflow_inputs = {"schema": schema.config.schema_name}
+        if schema.config.max_submissions:
+            workflow_inputs["max_submissions"] = str(schema.config.max_submissions)
+        shard_filter = [filt for filt in schema.filters if isinstance(filt, ShardFilter)]
+        if shard_filter:
+            workflow_inputs["filter"] = json.dumps(shard_filter[0].bundle())
         workflow_url = GithubUtils.get(repo.full_github_name).create_workflow_dispatch(
             self.run_workflow,
             repo.base_branch,
-            {"schema": json.dumps(schema.bundle())},
+            workflow_inputs,
         )
         assert workflow_url is not None, "Failed to dispatch workflow request"
         event_handler.handle(DebugEvent({"message": "Successfully dispatched workflow run"}))

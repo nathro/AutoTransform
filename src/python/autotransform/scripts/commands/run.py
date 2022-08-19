@@ -15,14 +15,17 @@ import os
 from argparse import ArgumentParser, Namespace
 
 import autotransform.config
+from autotransform.config.default import DefaultConfigFetcher
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.run import ScriptRunEvent
+from autotransform.filter.base import FACTORY as filter_factory
 from autotransform.runner.base import Runner
 from autotransform.runner.local import LocalRunner
 from autotransform.schema.builder import FACTORY as schema_builder_factory
 from autotransform.schema.schema import AutoTransformSchema
+from autotransform.util.scheduler import SchemaType
 
 
 def add_args(parser: ArgumentParser) -> None:
@@ -38,6 +41,20 @@ def add_args(parser: ArgumentParser) -> None:
         type=str,
         help="The schema that will be run. Could be a file path, string, "
         + "environment variable name, or builder name.",
+    )
+
+    parser.add_argument(
+        "--filter",
+        metavar="filter",
+        type=str,
+        help="A JSON encoded filter to add to the schema.",
+    )
+
+    parser.add_argument(
+        "--max-submissions",
+        metavar="max_submissions",
+        type=int,
+        help="An override to the maximum submissions a schema can produce.",
     )
 
     parser.add_argument(
@@ -87,6 +104,15 @@ def add_args(parser: ArgumentParser) -> None:
         help="Tells the script to interpret the schema as an environment variable storing the JSON "
         + "encoded schema.",
     )
+    type_group.add_argument(
+        "-n",
+        "--name",
+        dest="schema_type",
+        action="store_const",
+        const="name",
+        required=False,
+        help="Tells the script to interpret the schema as a name stored in schema_map.json.",
+    )
 
     # Run Mode
     mode_group = parser.add_mutually_exclusive_group()
@@ -110,6 +136,7 @@ def add_args(parser: ArgumentParser) -> None:
     parser.set_defaults(schema_type="file", run_local=True, func=run_command_main)
 
 
+# pylint: disable=too-many-branches
 def run_command_main(args: Namespace) -> None:
     """The main method for the run command, handles the actual execution of a run.
 
@@ -138,8 +165,26 @@ def run_command_main(args: Namespace) -> None:
         schema = os.getenv(schema)
         assert isinstance(schema, str)
         schema = AutoTransformSchema.from_data(json.loads(schema))
+    elif args.schema_type == "name":
+        map_file_path = f"{DefaultConfigFetcher.get_repo_config_relative_path()}/schema_map.json"
+        with open(map_file_path, "r", encoding="UTF-8") as map_file:
+            schema_map = json.loads(map_file.read())
+        data = schema_map[schema]
+        schema_type = SchemaType(data["type"])
+        if schema_type == SchemaType.BUILDER:
+            schema = schema_builder_factory.get_instance({"name": data["target"]}).build()
+        else:
+            with open(data["target"], "r") as schema_file:
+                schema = AutoTransformSchema.from_data(json.loads(schema_file.read()))
+        assert args.schema == schema.config.schema_name
     else:
         schema = AutoTransformSchema.from_data(json.loads(schema))
+
+    if args.filter:
+        schema.filters.append(filter_factory.get_instance(json.loads(args.filter)))
+
+    if args.max_submissions:
+        schema.config.max_submissions = args.max_submissions
 
     if args.schema_type != "string":
         event_handler.handle(DebugEvent({"message": f"Decoded Schema: {schema!r}"}))

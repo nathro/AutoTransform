@@ -4,12 +4,17 @@ on:
   workflow_dispatch:
     inputs:
       schema:
-        description: "A JSON encoded schema to run"
+        description: "The name of a Schema in the schema_map"
         required: true
         type: string
-
-permissions:
-  contents: write
+      max_submissions:
+        description: "The maximum number of submissions when running the schema"
+        type: string
+        required: false
+      filter:
+        description: "A filter to add to the schema"
+        type: string
+        required: false
 
 jobs:
   run-autotransform:
@@ -29,10 +34,22 @@ jobs:
       run: pip install AutoTransform
     - name: Install requirements
       run: pip install -r <CONFIG DIR>/requirements.txt
+    - name: Set up options
+      run: |
+        options="--verbose --name"
+        if [[ -z "${MAX_SUBMISSIONS}" ]]; then
+          options="$options --max-submissions $MAX_SUBMISSIONS"
+        fi
+        if [[ -z "${FILTER}" ]]; then
+          options="$options --filter '$FILTER'"
+        fi
+        echo "OPTIONS=$options" >> $GITHUB_ENV
+      env:
+        MAX_SUBMISSIONS: ${{ github.event.inputs.max_submissions }}
+        FILTER: ${{ github.event.inputs.filter }}
     - name: Run AutoTransform
-      run: autotransform run --environment --verbose AUTO_TRANSFORM_SCHEMA
+      run: autotransform run ${{ env.OPTIONS }} ${{ github.event.inputs.schema }}
       env:
         AUTO_TRANSFORM_CONFIG: environment
         AUTO_TRANSFORM_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}
-        AUTO_TRANSFORM_SCHEMA: ${{ github.event.inputs.schema }}
         AUTO_TRANSFORM_COMPONENT_DIRECTORY: <CUSTOM COMPONENTS>

@@ -12,6 +12,8 @@
 #### Features
  - Added a max_submissions option to schema configs and scheduling to allow slower rollouts for changes that can prevent overwhelming code review.
  - Update Change to have get_schema_name() that is used for Condition. This allows GithubChange to pull schema name from the branch.
+ - Add a schema_map.json file and some associated functionality to run command so that workflows can be moved to rely on information in the repo when determining schemas and no longer pass JSON encoded schemas around.
+ - Make run github workflow use the schema name.
 
 #### Fixes
  - Fix workflows to checkout the repo as the supplied bot, rather than as github-actions bot. This should prevent issues involving branch protection rules and force-pushes appearing under the wrong name.
