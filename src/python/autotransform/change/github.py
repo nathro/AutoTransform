@@ -17,8 +17,11 @@ from typing import TYPE_CHECKING, ClassVar, Dict, List, Tuple
 
 from autotransform.batcher.base import Batch
 from autotransform.change.base import Change, ChangeName, ChangeState
+from autotransform.config.default import DefaultConfigFetcher
 from autotransform.item.base import FACTORY as item_factory
+from autotransform.schema.builder import FACTORY as schema_builder_factory
 from autotransform.util.github import GithubUtils, PullRequest
+from autotransform.util.scheduler import SchemaType
 
 if TYPE_CHECKING:
     from autotransform.schema.schema import AutoTransformSchema
@@ -54,7 +57,20 @@ class GithubChange(Change):
             AutoTransformSchema: The Schema used to produce the Change.
         """
 
-        return self._body_data[0]
+        schema_name = self.get_schema_name()
+        map_file_path = f"{DefaultConfigFetcher.get_repo_config_relative_path()}/schema_map.json"
+        with open(map_file_path, "r", encoding="UTF-8") as map_file:
+            schema_map = json.loads(map_file.read())
+        data = schema_map[schema_name]
+        schema_type = SchemaType(data["type"])
+        if schema_type == SchemaType.BUILDER:
+            schema = schema_builder_factory.get_instance({"name": data["target"]}).build()
+        else:
+            with open(data["target"], "r", encoding="utf-8") as schema_file:
+                schema = AutoTransformSchema.from_data(json.loads(schema_file.read()))
+        assert schema_name == schema.config.schema_name
+
+        return schema
 
     def get_schema_name(self) -> str:
         """Gets the name of the Schema that produced the Change.
