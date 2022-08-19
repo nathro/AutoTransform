@@ -13,9 +13,10 @@
         {
             "type": "file",
             "target": "autotransform/schemas/black_format.json",
+            "max_submissions": 3,
             "schedule": {
                 "repeats": "daily",
-                "hour_of_day": 7
+                "hour_of_day": 17
             }
         }
     ]
