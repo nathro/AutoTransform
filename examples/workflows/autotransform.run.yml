@@ -48,7 +48,7 @@ jobs:
         MAX_SUBMISSIONS: ${{ github.event.inputs.max_submissions }}
         FILTER: ${{ github.event.inputs.filter }}
     - name: Run AutoTransform
-      run: autotransform run ${{ env.OPTIONS }} ${{ github.event.inputs.schema }}
+      run: autotransform run ${{ env.OPTIONS }} "${{ github.event.inputs.schema }}"
       env:
         AUTO_TRANSFORM_CONFIG: environment
         AUTO_TRANSFORM_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}

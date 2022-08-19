@@ -53,7 +53,7 @@ jobs:
         MAX_SUBMISSIONS: ${{ github.event.inputs.max_submissions }}
         FILTER: ${{ github.event.inputs.filter }}
     - name: Run AutoTransform
-      run: python3 -m autotransform.scripts.main run ${{ env.OPTIONS }} ${{ github.event.inputs.schema }}
+      run: python3 -m autotransform.scripts.main run ${{ env.OPTIONS }} "${{ github.event.inputs.schema }}"
       env:
         PYTHONPATH: /home/runner/work/AutoTransform/AutoTransform/src/python
         AUTO_TRANSFORM_CONFIG: environment
