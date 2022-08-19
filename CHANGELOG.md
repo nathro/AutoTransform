@@ -2,6 +2,9 @@
 
 ## Release 1.0.3
 
+#### Migrations
+ - GithubRunner has been updated to work with the new workflows included in examples. This requires use of the schema_map.json file and having the workflows use the schema names, rather than JSON encoded schemas. This ensures that any schema run by the bot is present in the repo.
+
 #### Documentation
  - Added documentation for creating and using custom components, including an example PR.
 
