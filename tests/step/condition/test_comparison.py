@@ -28,6 +28,20 @@ def test_not_equal_comparison():
     assert compare(-5, 0, ComparisonType.NOT_EQUAL) is True
 
 
+def test_in_comparison():
+    """Tests in comparison checking."""
+
+    assert compare(5, [0, 1], ComparisonType.IN) is False
+    assert compare(5, [0, 1, 5], ComparisonType.IN) is True
+
+
+def test_not_in_comparison():
+    """Tests not in comparison checking."""
+
+    assert compare(5, [0, 1], ComparisonType.NOT_IN) is True
+    assert compare(5, [0, 1, 5], ComparisonType.NOT_IN) is False
+
+
 def test_greater_than_comparison():
     """Tests greater than comparison checking."""
 

@@ -66,12 +66,12 @@ class ComparisonCondition(Generic[T], Condition):
 
     Attributes:
         comparison (ComparisonType): The type of comparison to perform.
-        value (T): The value to compare against.
+        value (T | List[T]): The value to compare against.
         name (ClassVar[ConditionName]): The name of the Component.
     """
 
     comparison: ComparisonType
-    value: T
+    value: T | List[T]
 
     name: ClassVar[ConditionName]
 
@@ -106,7 +106,44 @@ class ComparisonCondition(Generic[T], Condition):
             Set[ComparisonType]: The valid comparisons this condition can perform.
         """
 
-        return {ComparisonType.EQUAL, ComparisonType.NOT_EQUAL}
+        return {
+            ComparisonType.EQUAL,
+            ComparisonType.NOT_EQUAL,
+            ComparisonType.IN,
+            ComparisonType.NOT_IN,
+        }
+
+    @root_validator
+    @classmethod
+    def check_value_for_comparison(
+        cls: Type[ComparisonCondition], values: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """Ensures that the value is provided as either a single value or a list, depending
+        on the comparison type.
+
+        Args:
+            cls (Type[ListComparisonCondition]): The Condition class.
+            values (Dict[str, Any]): The values for the comparison.
+
+        Raises:
+            ValueError: Raises errors when value provided does not work with the
+
+        Returns:
+            Dict[str, Any]: The unmodified values for comparison.
+        """
+
+        comparison = values["comparison"]
+        if comparison in [ComparisonType.IN, ComparisonType.NOT_IN] and not isinstance(
+            values["value"], List
+        ):
+            raise ValueError(f"Can not perform comparison {comparison} when value is not a list.")
+
+        if comparison not in [ComparisonType.IN, ComparisonType.NOT_IN] and isinstance(
+            values["value"], List
+        ):
+            raise ValueError(f"Can not perform comparison {comparison} when value is a list.")
+
+        return values
 
     # pylint: disable=invalid-name
     @validator("comparison")
@@ -153,6 +190,8 @@ class SortableComparisonCondition(ABC, Generic[T], ComparisonCondition[T]):
         return {
             ComparisonType.EQUAL,
             ComparisonType.NOT_EQUAL,
+            ComparisonType.IN,
+            ComparisonType.NOT_IN,
             ComparisonType.GREATER_THAN,
             ComparisonType.GREATER_THAN_OR_EQUAL,
             ComparisonType.LESS_THAN,

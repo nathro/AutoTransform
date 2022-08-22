@@ -20,6 +20,8 @@ class ComparisonType(str, Enum):
     # Base Comparisons
     EQUAL = "equal"
     NOT_EQUAL = "not_equal"
+    IN = "in"
+    NOT_IN = "not_in"
 
     # Sortable Comparisons
     GREATER_THAN = "greater_than"
@@ -54,6 +56,10 @@ def compare(first_val: Any, second_val: Any, comparison: ComparisonType) -> bool
         return first_val == second_val
     if comparison == ComparisonType.NOT_EQUAL:
         return first_val != second_val
+    if comparison == ComparisonType.IN:
+        return first_val in second_val
+    if comparison == ComparisonType.NOT_IN:
+        return first_val not in second_val
 
     if comparison == ComparisonType.GREATER_THAN:
         return first_val > second_val
