@@ -176,15 +176,13 @@ class ScheduledSchema(ComponentModel):
     """A Schema that is scheduled for automatic runs.
 
     Attributes:
-        target (str): The Schema that is being scheduled.
-        type (SchemaType): The type of Schema that is specified, file or builder.
+        schema_name (str): The Schema that is being scheduled.
         schedule (SchemaScheduleSettings): The settings used to determine when to run the Schema.
         max_submissions (Optional[int], optional): The max number of submissions from a given
             scheduled run. No limit if None. Defaults to None.
     """
 
-    target: str
-    type: SchemaType
+    schema_name: str
     schedule: SchemaScheduleSettings
 
     max_submissions: Optional[int] = None
@@ -221,15 +219,14 @@ class ScheduledSchema(ComponentModel):
             ScheduledSchema: An instance of the ScheduledSchema.
         """
 
-        schema_type = SchemaType(data["type"])
-        target = data["target"]
-        assert isinstance(target, str)
+        schema_name = data["schema_name"]
+        assert isinstance(schema_name, str)
         schedule = SchemaScheduleSettings.from_data(data["schedule"])
         max_submissions = data.get("max_submissions", None)
         if max_submissions is not None:
             assert isinstance(max_submissions, int)
         return ScheduledSchema(
-            type=schema_type, target=target, schedule=schedule, max_submissions=max_submissions
+            schema_name=schema_name, schedule=schedule, max_submissions=max_submissions
         )
 
     @staticmethod
@@ -302,26 +299,28 @@ class Scheduler(ComponentModel):
             )
             return
 
-        for scheduled_schema in self.schemas:
-            # Get the Schema
-            if scheduled_schema.type == SchemaType.BUILDER:
-                try:
-                    schema = json.loads(scheduled_schema.target)
-                except json.JSONDecodeError:
-                    schema = {"name": scheduled_schema.target}
-                if isinstance(schema, str):
-                    schema = {"name": schema}
-                schema = schema_builder_factory.get_instance(schema).build()
-            else:
-                with open(scheduled_schema.target, "r", encoding="UTF-8") as schema_file:
-                    schema = AutoTransformSchema.from_data(json.loads(schema_file.read()))
+        map_file_path = f"{get_repo_config_relative_path()}/schema_map.json"
+        with open(map_file_path, "r", encoding="UTF-8") as map_file:
+            schema_map = json.loads(map_file.read())
 
+        for scheduled_schema in self.schemas:
             # Check if should run
             if not scheduled_schema.schedule.should_run(hour_of_day, day_of_week):
                 EventHandler.get().handle(
-                    DebugEvent({"message": f"Skipping run of schema: {schema.config.schema_name}"})
+                    DebugEvent(
+                        {"message": f"Skipping run of schema: {scheduled_schema.schema_name}"}
+                    )
                 )
                 continue
+            schema_data = schema_map[scheduled_schema.schema_name]
+            schema_type = SchemaType(schema_data["type"])
+            if schema_type == SchemaType.BUILDER:
+                schema = schema_builder_factory.get_instance(
+                    {"name": schema_data["target"]}
+                ).build()
+            else:
+                with open(schema_data["target"], "r", encoding="UTF-8") as schema_file:
+                    schema = AutoTransformSchema.from_data(json.loads(schema_file.read()))
             shard_filter = scheduled_schema.schedule.shard_filter
             if shard_filter is not None:
                 if scheduled_schema.schedule.repeats == RepeatSetting.DAILY:
@@ -329,7 +328,7 @@ class Scheduler(ComponentModel):
                 else:
                     shard_filter.valid_shard = (elapsed_days // 7) % shard_filter.num_shards
                 EventHandler.get().handle(DebugEvent({"message": f"Sharding: {shard_filter!r}"}))
-                schema.add_filter(shard_filter)
+                schema.filters.append(shard_filter)
             if scheduled_schema.max_submissions is not None:
                 schema.config.max_submissions = scheduled_schema.max_submissions
             EventHandler.get().handle(ScheduleRunEvent({"schema_name": schema.config.schema_name}))
