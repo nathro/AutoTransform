@@ -12,7 +12,7 @@
 from __future__ import annotations
 
 import time
-from typing import ClassVar
+from typing import ClassVar, List
 
 from autotransform.change.base import Change
 from autotransform.step.condition.base import ConditionName, SortableComparisonCondition
@@ -25,12 +25,12 @@ class UpdatedAgoCondition(SortableComparisonCondition[int]):
 
     Attributes:
         comparison (ComparisonType): The type of comparison to perform.
-        value (int): The number of seconds to compare against.
+        value (int | List[int]): The number of seconds to compare against.
         name (ClassVar[ConditionName]): The name of the Component.
     """
 
     comparison: ComparisonType
-    value: int
+    value: int | List[int]
 
     name: ClassVar[ConditionName] = ConditionName.UPDATED_AGO
 

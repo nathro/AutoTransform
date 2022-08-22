@@ -11,7 +11,7 @@
 
 from __future__ import annotations
 
-from typing import ClassVar
+from typing import ClassVar, List
 
 from autotransform.change.base import Change, ChangeState
 from autotransform.step.condition.base import ComparisonCondition, ConditionName
@@ -24,12 +24,12 @@ class ChangeStateCondition(ComparisonCondition[ChangeState]):
 
     Attributes:
         comparison (ComparisonType): The type of comparison to perform.
-        value (ChangeState): The state to compare against.
+        value (ChangeState | List[ChangeState]): The state(s) to compare against.
         name (ClassVar[ConditionName]): The name of the Component.
     """
 
     comparison: ComparisonType
-    value: ChangeState
+    value: ChangeState | List[ChangeState]
 
     name: ClassVar[ConditionName] = ConditionName.CHANGE_STATE
 
