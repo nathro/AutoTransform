@@ -27,6 +27,7 @@ from autotransform.runner.base import Runner
 from autotransform.runner.github import GithubRunner
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.util.console import choose_yes_or_no, info
+from autotransform.util.enums import SchemaType
 from autotransform.util.manager import Manager
 from autotransform.util.package import get_config_dir, get_examples_dir
 from autotransform.util.scheduler import Scheduler
@@ -193,8 +194,10 @@ def initialize_repo(
 
     # Set up the sample schema
     use_sample_schema = simple or choose_yes_or_no("Would you like to include the sample schema?")
+    schema_map = {}
     if use_sample_schema:
         sample_schema_path = f"{examples_dir}/schemas/black_format.json"
+        schema_map["Black Format"] = {"type": SchemaType.FILE, "target": sample_schema_path}
         with open(sample_schema_path, "r", encoding="UTF-8") as sample_schema_file:
             schema = AutoTransformSchema.from_data(json.loads(sample_schema_file.read()))
         schema.repo = manager.repo  # pylint: disable=protected-access
@@ -217,6 +220,13 @@ def initialize_repo(
     with open(requirements_path, "w+", encoding="UTF-8") as requirements_file:
         requirements_file.write(requirements)
         requirements_file.flush()
+
+    # Set up schema map file
+    schema_map_path = f"{repo_config_dir}/schema_map.json"
+    os.makedirs(os.path.dirname(schema_map_path), exist_ok=True)
+    with open(schema_map_path, "w+", encoding="UTF-8") as schema_map_file:
+        schema_map_file.write(json.dumps(schema_map))
+        schema_map_file.flush()
 
     # Set up manage file
     manager_path = f"{repo_config_dir}/manager.json"
