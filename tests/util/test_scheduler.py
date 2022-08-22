@@ -13,7 +13,6 @@ import json
 import pathlib
 
 from autotransform.runner.github import GithubRunner
-from autotransform.util.enums import SchemaType
 from autotransform.util.scheduler import (
     RepeatSetting,
     ScheduledSchema,
@@ -37,8 +36,7 @@ def get_sample_scheduler() -> Scheduler:
         ),
         schemas=[
             ScheduledSchema(
-                type=SchemaType.FILE,
-                target="autotransform/schemas/black_format.json",
+                schema_name="Black Format",
                 schedule=SchemaScheduleSettings(repeats=RepeatSetting.DAILY, hour_of_day=7),
             ),
         ],

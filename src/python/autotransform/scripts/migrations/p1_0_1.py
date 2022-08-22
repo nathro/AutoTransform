@@ -44,7 +44,7 @@ def get_arg_parser() -> ArgumentParser:
 
 
 def main():
-    """Parse the arguments of a script run and execute the command invoked."""
+    """Migrate the Manager for 1.0.0 -> 1.0.1."""
 
     parser = get_arg_parser()
     args = parser.parse_args()

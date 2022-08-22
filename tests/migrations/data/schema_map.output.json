@@ -1,0 +1,6 @@
+{
+    "Black Format": {
+        "type": "file",
+        "target": "autotransform/schemas/black_format.json"
+    }
+}

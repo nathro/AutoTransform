@@ -81,7 +81,8 @@ setuptools.setup(
     entry_points={
         "console_scripts": [
             "autotransform = autotransform.scripts.main:main",
-            "atmigrate-manager = autotransform.scripts.migrations.manager:main",
+            "atmigrate-1.0.1 = autotransform.scripts.migrations.p1_0_1:main",
+            "atmigrate-1.0.3 = autotransform.scripts.migrations.p1_0_3:main",
         ],
     },
 )

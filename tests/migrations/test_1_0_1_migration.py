@@ -12,7 +12,7 @@
 import json
 import pathlib
 
-from autotransform.scripts.migrations.manager import update_manager_data
+from autotransform.scripts.migrations.p1_0_1 import update_manager_data
 
 
 def test_migration():
