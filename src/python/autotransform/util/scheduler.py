@@ -237,12 +237,7 @@ class ScheduledSchema(ComponentModel):
             ScheduledSchema: The input ScheduledSchema.
         """
 
-        target = get_str("Enter the schema to schedule: ")
-
-        schema_type = choose_option(
-            "What is the type of the schema?",
-            [(SchemaType.FILE, ["file", "f"]), (SchemaType.BUILDER, ["builder", "b"])],
-        )
+        schema_name = get_str("Enter the schema to schedule: ")
 
         if choose_yes_or_no("Would you like to limit the maximum number of submissions?"):
             max_submissions = input_int("Enter the maximum number of submissions", min_val=1)
@@ -250,8 +245,7 @@ class ScheduledSchema(ComponentModel):
             max_submissions = None
 
         return ScheduledSchema(
-            target=target,
-            type=schema_type,
+            schema_name=schema_name,
             schedule=SchemaScheduleSettings.from_console(),
             max_submissions=max_submissions,
         )
