@@ -1,5 +1,10 @@
 # Change Log
 
+## Release 1.0.4
+
+#### Fixes
+ - Fix Scheduler from_console command to account for new Scheduler format, fixing `autotransform settings` to work for updating schedule
+
 ## Release 1.0.3
 
 #### Migrations
