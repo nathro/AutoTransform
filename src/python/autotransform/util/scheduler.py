@@ -441,11 +441,9 @@ class Scheduler(ComponentModel):
 
         # Gets Schemas
         if use_sample_schema:
-            relative_path = get_repo_config_relative_path()
             schemas = [
                 ScheduledSchema(
-                    type=SchemaType.FILE,
-                    target=f"{relative_path}/schemas/black_format.json",
+                    schema_name="Black Format",
                     schedule=SchemaScheduleSettings(repeats=RepeatSetting.DAILY, hour_of_day=7),
                 )
             ]

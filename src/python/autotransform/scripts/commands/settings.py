@@ -13,13 +13,22 @@ manager.json files, configs and imported components."""
 import json
 import os
 from argparse import ArgumentParser, Namespace
+from pathlib import Path
 from typing import Dict, List
 
 from autotransform.config import CONFIG_FILE_NAME, get_cwd_config_dir, get_repo_config_dir
 from autotransform.config.config import Config
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.util.component import ComponentFactory, ComponentImport
-from autotransform.util.console import choose_options_from_list, error, get_str, info
+from autotransform.util.console import (
+    choose_option,
+    choose_options_from_list,
+    choose_yes_or_no,
+    error,
+    get_str,
+    info,
+)
+from autotransform.util.enums import SchemaType
 from autotransform.util.manager import Manager
 from autotransform.util.package import get_config_dir
 from autotransform.util.scheduler import Scheduler
@@ -76,6 +85,13 @@ def add_args(parser: ArgumentParser) -> None:
         help="Update or view scheduler settings",
     )
     setting_type_group.add_argument(
+        "--schema-map",
+        dest="setting_type",
+        action="store_const",
+        const="schema_map",
+        help="Update or view schema map settings",
+    )
+    setting_type_group.add_argument(
         "--schema",
         type=str,
         help="The path to an existing or to be created JSON encoded schema.",
@@ -114,6 +130,8 @@ def settings_command_main(args: Namespace) -> None:
         handle_manager(args.update_settings)
     elif args.setting_type == "scheduler":
         handle_scheduler(args.update_settings)
+    elif args.setting_type == "schema_map":
+        handle_schema_map(args.update_settings)
     else:
         handle_schema(args.update_settings, args.schema)
 
@@ -301,6 +319,79 @@ def handle_scheduler(update: bool) -> None:
     if not update:
         return
     Scheduler.from_console(scheduler).write(path)
+
+
+def handle_schema_map(update: bool) -> None:
+    """Handle updating/viewing the Schema Map.
+
+    Args:
+        update (bool): Whether to apply updates to the Schema Map.
+    """
+
+    path = f"{get_repo_config_dir()}/schema_map.json"
+    if Path(path).is_file():
+        with open(path, "r", encoding="UTF-8") as schema_map_file:
+            schema_map = json.loads(schema_map_file.read())
+    else:
+        schema_map = {}
+
+    if not isinstance(schema_map, Dict):
+        error("Schema Map is malformed, should be a JSON encoded map")
+        return
+    schema_types = [item.value for item in SchemaType]
+    for name, schema_info in schema_map.items():
+        if not isinstance(name, str):
+            error(f"Malformed schema({name}), names must be strings")
+            return
+        if not isinstance(schema_info, Dict):
+            error(f"Malformed schema({name}), value must be map")
+            return
+        if schema_info.get("target") is None:
+            error(f"Malformed schema({name}), no target")
+        if not isinstance(schema_info["target"], str):
+            error(f"Malformed schema({name}), target should be string ({schema_info['target']})")
+            return
+        if schema_info.get("type") is None:
+            error(f"Malformed schema({name}), no type")
+            return
+        if not schema_info["type"] in schema_types:
+            error(f"Malformed schema({name}), type must be a SchemaType ({schema_info['type']})")
+            return
+
+    info("Current Schema Map")
+    for name, schema_info in schema_map.items():
+        info(f"{name}({schema_info['type']}): {schema_info['target']}")
+
+    if not update:
+        return
+
+    schemas = choose_options_from_list(
+        "Choose Schemas to keep",
+        [(name, name) for name in schema_map],
+        min_choices=0,
+        max_choices=len(schema_map),
+    )
+    schema_map = {name: schema_info for name, schema_info in schema_map.items() if name in schemas}
+
+    while choose_yes_or_no("Would you like to add a Schema to the map?"):
+        name = get_str("Schema Name: ")
+        while name in schema_map:
+            error(f"{name} already present in the Schema Map")
+            name = get_str("Schema Name: ")
+        schema_type = choose_option(
+            "Choose schema type",
+            [(SchemaType.BUILDER, ["builder", "b"]), (SchemaType.FILE, ["file", "f"])],
+        )
+        if schema_type == SchemaType.BUILDER:
+            target = get_str("Enter SchemaBuilder class: ")
+        else:
+            target = get_str("Enter Schema filepath: ")
+        schema_map[name] = {"type": schema_type, "target": target}
+
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w+", encoding="UTF-8") as schema_map_file:
+        schema_map_file.write(json.dumps(schema_map))
+        schema_map_file.flush()
 
 
 def handle_schema(update: bool, file_path: str) -> None:

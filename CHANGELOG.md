@@ -2,8 +2,12 @@
 
 ## Release 1.0.4
 
+#### New Features
+ - Added Schema Map to settings so to ease updating/viewing the schema map.
+
 #### Fixes
- - Fix Scheduler from_console command to account for new Scheduler format, fixing `autotransform settings` to work for updating schedule
+ - Fix Scheduler from_console command to account for new Scheduler format, fixing `autotransform settings` to work for updating schedule.
+ - Fix Scheduler usage of sample schema.
 
 ## Release 1.0.3
 
