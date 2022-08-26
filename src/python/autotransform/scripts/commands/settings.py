@@ -321,6 +321,7 @@ def handle_scheduler(update: bool) -> None:
     Scheduler.from_console(scheduler).write(path)
 
 
+# pylint: disable=too-many-return-statements,too-many-branches
 def handle_schema_map(update: bool) -> None:
     """Handle updating/viewing the Schema Map.
 
