@@ -7,7 +7,7 @@
 
 # @black_format
 
-"""The implementation for the ChunkBatcher."""
+"""The implementation for the ExtraDataBatcher."""
 
 from __future__ import annotations
 
