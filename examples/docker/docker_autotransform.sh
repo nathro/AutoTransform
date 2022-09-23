@@ -2,7 +2,7 @@
 
 if [[$1 == "manage" || $1 == "schedule"]]; then
     autotransform $1 -v
-    exit 0
+    RESULT=$?
 fi
 
 if [[$1 == "run"]]; then
@@ -14,13 +14,19 @@ if [[$1 == "run"]]; then
         options="$options --filter '$FILTER'"
     fi
     autotransform $1 ${options} "${SCHEMA_NAME}"
-    exit 0
+    RESULT=$?
 fi
 
 if [[$1 == "update"]]; then
     autotransform $1 -v -e AUTO_TRANSFORM_CHANGE
-    exit 0
+    RESULT=$?
 fi
 
-echo "Unknown command $1"
-exit 1
+if [[-z $RESULT]]; then
+    echo "Unknown command $1"
+    exit 1
+fi
+if [[$RESULT -ne 0]]; then
+    exit 1
+fi
+exit 0

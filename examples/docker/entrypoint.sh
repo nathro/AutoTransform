@@ -10,7 +10,7 @@ if [[$COMMAND == "schedule" || $COMMAND == "manage"]]; then
         -e AUTO_TRANSFORM_GITHUB_TOKEN="$GITHUB_TOKEN" \
         -v "$(pwd)"/"$REPO_DIR":/$REPO_DIR \
         autotransform
-    exit 0
+    RESULT=$?
 fi
 
 if [[$COMMAND == "run"]]; then
@@ -20,7 +20,7 @@ if [[$COMMAND == "run"]]; then
         -e MAX_SUBMISSIONS="$MAX_SUBMISSIONS"
         -v "$(pwd)"/"$REPO_DIR":/$REPO_DIR \
         autotransform
-    exit 0
+    RESULT=$?
 fi
 
 if [[$COMMAND == "update"]]; then
@@ -29,8 +29,16 @@ if [[$COMMAND == "update"]]; then
         -e AUTO_TRANSFORM_CHANGE="$AUTO_TRANSFORM_CHANGE" \
         -v "$(pwd)"/"$REPO_DIR":/$REPO_DIR \
         autotransform
-    exit 0
+    RESULT=$?
 fi
 
-echo "Unknown command $COMMAND"
-exit 1
+docker system prune -a -f >/dev/null 2>&1 &
+
+if [[-z $RESULT]]; then
+    echo "Unknown command $1"
+    exit 1
+fi
+if [[$RESULT -ne 0]]; then
+    exit 1
+fi
+exit 0
