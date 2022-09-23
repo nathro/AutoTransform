@@ -1,5 +1,10 @@
 # Change Log
 
+## Release 1.0.5
+
+#### New Features
+ - Added bash scripts and dockerfile to allow for deploying using Docker
+
 ## Release 1.0.4
 
 #### New Features
