@@ -67,6 +67,13 @@ class JenkinsRunner(Runner):
 
     @staticmethod
     def _run_jenkins_job(job_name: str, params: Dict[str, Any]) -> None:
+        """Runs a Jenkins job to handle a run/update of AutoTransform.
+
+        Args:
+            job_name (str): The name of the Jenkins job to trigger.
+            params (Dict[str, Any]): The params to pass to the Jenkins job.
+        """
+
         config = get_config()
         event_handler = EventHandler.get()
         jenkins_user = config.jenkins_user
@@ -83,6 +90,7 @@ class JenkinsRunner(Runner):
                 f"{config.jenkins_base_url}/crumbIssuer/api/json",
                 auth=auth,
                 headers={"content-type": "application/json"},
+                timeout=120,
             )
             if str(crumb_data.status_code) == "200":
                 data = requests.get(
@@ -93,6 +101,7 @@ class JenkinsRunner(Runner):
                         "content-type": "application/json",
                         "Jenkins-Crumb": crumb_data.json()["crumb"],
                     },
+                    timeout=120,
                 )
 
                 if str(data.status_code) == "201":
