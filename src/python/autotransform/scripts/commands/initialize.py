@@ -25,6 +25,7 @@ from autotransform.config.config import Config
 from autotransform.repo.base import RepoName
 from autotransform.runner.base import Runner
 from autotransform.runner.github import GithubRunner
+from autotransform.runner.jenkins import JenkinsRunner
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.util.console import choose_yes_or_no, info
 from autotransform.util.enums import SchemaType
@@ -54,7 +55,7 @@ def add_args(parser: ArgumentParser) -> None:
         dest="github",
         action="store_true",
         required=False,
-        help="Tells the script that github is being used.",
+        help="Tells the script that Github is being used.",
     )
     github_group.add_argument(
         "--no-github",
@@ -64,16 +65,34 @@ def add_args(parser: ArgumentParser) -> None:
         help="Tells the script that Github is not being used.",
     )
 
-    parser.set_defaults(func=initialize_command_main, simple=False, github=None)
+    jenkins_group = parser.add_mutually_exclusive_group()
+    jenkins_group.add_argument(
+        "--jenkins",
+        dest="jenkins",
+        action="store_true",
+        required=False,
+        help="Tells the script that Jenkins is being used.",
+    )
+    jenkins_group.add_argument(
+        "--no-jenkins",
+        dest="jenkins",
+        action="store_false",
+        required=False,
+        help="Tells the script that Jenkins is not being used.",
+    )
+
+    parser.set_defaults(func=initialize_command_main, simple=False, github=None, jenkins=None)
 
 
+# pylint: disable=too-many-arguments
 def initialize_config(
     config_path: str,
     config_name: str,
     prev_config: Optional[Config] = None,
     simple: bool = False,
     use_github: Optional[bool] = None,
-) -> Tuple[Config, Optional[bool]]:
+    use_jenkins: Optional[bool] = None,
+) -> Tuple[Config, Optional[bool], Optional[bool]]:
     """Gets all of the inputs required to create a config file and write it.
 
     Args:
@@ -82,9 +101,10 @@ def initialize_config(
         prev_config (Optional[Config[, optional]): Previously input Config. Defaults to None.
         simple (bool, optional): Whether to use the simple setup. Defaults to False.
         use_github (bool, optional): Whether to use Github or not. Defaults to None.
+        use_jenkins (bool, optional): Whether to use Jenkins or not. Defaults to None.
 
     Returns:
-        Tuple[Config, Optional[bool]]: The input Config and whether it uses Github.
+        Tuple[Config, Optional[bool]]: The input Config and whether it uses Github and Jenkins.
     """
 
     info(f"Initializing {config_name} config located at: {config_path}")
@@ -93,20 +113,21 @@ def initialize_config(
         reset_config = not simple and choose_yes_or_no("An existing config was found, replace it?")
         existing_config = Config.read(config_path)
         if not reset_config:
-            return (existing_config, use_github)
+            return (existing_config, use_github, use_jenkins)
         if prev_config is not None:
             prev_config = existing_config.merge(prev_config)
         else:
             prev_config = existing_config
 
-    config, github = Config.from_console(
+    config, github, jenkins = Config.from_console(
         prev_config=prev_config,
         simple=simple,
         use_github=use_github,
+        use_jenkins=use_jenkins,
         user_config=config_name == "user",
     )
     config.write(config_path)
-    return (config, github)
+    return (config, github, jenkins)
 
 
 def initialize_workflows(repo_dir: str, examples_dir: str, prev_config: Optional[Config]) -> None:
@@ -147,11 +168,38 @@ def initialize_workflows(repo_dir: str, examples_dir: str, prev_config: Optional
             workflow_file.flush()
 
 
+def initialize_docker(repo_dir: str, examples_dir: str) -> None:
+    """Set up the workflow files for using Github workflows.
+
+    Args:
+        repo_dir (str): The top level directory of the repo.
+        examples_dir (str): Where example files are located.
+    """
+
+    relative_config_dir = get_repo_config_relative_path()
+
+    docker_files = [
+        "docker_autotransform.sh",
+        "Dockerfile",
+        "entrypoint.sh",
+    ]
+    for file in docker_files:
+        with open(f"{examples_dir}/docker/{file}", "r", encoding="UTF-8") as docker_file:
+            docker_file_text = docker_file.read()
+
+        docker_file_path = f"{repo_dir}/{relative_config_dir}/docker/{file}"
+        os.makedirs(os.path.dirname(docker_file_path), exist_ok=True)
+        with open(docker_file_path, "w+", encoding="UTF-8") as workflow_file:
+            workflow_file.write(docker_file_text)
+            workflow_file.flush()
+
+
 def initialize_repo(
     repo_dir: str,
     prev_config: Optional[Config],
     simple: bool = False,
     use_github: Optional[bool] = None,
+    use_jenkins: Optional[bool] = None,
 ) -> None:
     """Set up a repo to work with AutoTransform.
 
@@ -160,6 +208,7 @@ def initialize_repo(
         prev_config (Optional[Config]): Previously input Config.
         simple (bool, optional): Whether to use the simple setup. Defaults to False.
         use_github (bool, optional): Whether to use Github or not. Defaults to None.
+        use_jenkins (bool, optional): Whether to use Jenkins or not. Defaults to None.
     """
 
     examples_dir = get_examples_dir()
@@ -175,12 +224,19 @@ def initialize_repo(
     )
     if use_github_actions:
         initialize_workflows(repo_dir, examples_dir, prev_config)
+    elif use_jenkins:
+        initialize_docker(repo_dir, examples_dir)
 
     # Get the Manager
     if use_github_actions:
         prev_runner: Optional[Runner] = GithubRunner(
             run_workflow="autotransform.run.yml",
             update_workflow="autotransform.update.yml",
+        )
+    elif use_jenkins:
+        prev_runner = JenkinsRunner(
+            run_job_name="autotransform_run",
+            update_job_name="autotransform_update",
         )
     elif prev_config is not None:
         prev_runner = prev_config.remote_runner
@@ -257,10 +313,11 @@ def initialize_command_main(args: Namespace) -> None:
 
     simple = args.simple
     github = args.github
+    jenkins = args.jenkins
 
     user_config_path = f"{get_config_dir()}/{CONFIG_FILE_NAME}"
-    config, github = initialize_config(
-        user_config_path, "user", None, simple=simple, use_github=github
+    config, github, jenkins = initialize_config(
+        user_config_path, "user", None, simple=simple, use_github=github, use_jenkins=jenkins
     )
 
     # Set up repo
@@ -276,13 +333,18 @@ def initialize_command_main(args: Namespace) -> None:
 
     if setup_repo:
         repo_config_path = f"{get_repo_config_dir()}/{CONFIG_FILE_NAME}"
-        config, github = initialize_config(
-            repo_config_path, "repo", config, simple=simple, use_github=github
+        config, github, jenkins = initialize_config(
+            repo_config_path, "repo", config, simple=simple, use_github=github, use_jenkins=jenkins
         )
-        initialize_repo(repo_dir, config, simple=simple, use_github=github)
+        initialize_repo(repo_dir, config, simple=simple, use_github=github, use_jenkins=jenkins)
 
     if repo_dir == "" and choose_yes_or_no("Set up configuration for current working directory?"):
         cwd_config_path = f"{get_cwd_config_dir()}/{CONFIG_FILE_NAME}"
         initialize_config(
-            cwd_config_path, "current working directory", config, simple=simple, use_github=github
+            cwd_config_path,
+            "current working directory",
+            config,
+            simple=simple,
+            use_github=github,
+            use_jenkins=jenkins,
         )

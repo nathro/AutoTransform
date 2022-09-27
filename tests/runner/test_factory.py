@@ -55,6 +55,12 @@ def test_encoding_and_decoding():
                 "update_workflow": "autotransform.update.yml",
             },
         ],
+        RunnerName.JENKINS: [
+            {
+                "run_job_name": "autotransform_run",
+                "update_job_name": "autotransform_update",
+            },
+        ],
         RunnerName.LOCAL: [
             {},
         ],
