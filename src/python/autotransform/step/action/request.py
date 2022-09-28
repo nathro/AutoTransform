@@ -29,6 +29,7 @@ class RequestAction(Action):
 
     Attributes:
         url(str): The URL to send a request to.
+        data(optional, Mapping[str, Any]): Data to include in the request. Defaults to {}.
         headers(optional, Mapping[str, Any]): Headers to include in the request. Defaults to {}.
         log_request(optional, bool): Indicates whether to log the request using DebugEvent.
             Defaults to False.
@@ -41,6 +42,7 @@ class RequestAction(Action):
 
     url: str
 
+    data: Mapping[str, Any] = Field(default_factory=dict)
     headers: Mapping[str, Any] = Field(default_factory=dict)
     log_request: bool = False
     log_response: bool = False
@@ -48,6 +50,16 @@ class RequestAction(Action):
     post: bool = True
 
     name: ClassVar[ActionName] = ActionName.REQUEST
+
+    @cached_property
+    def _headers(self) -> Dict[str, Any]:
+        """Gets the headers with any environment variables filled in.
+
+        Returns:
+            Dict[str, Any]: The headers with environment variables filled in.
+        """
+
+        return self.replace_values(self.headers, "env", os.getenv)
 
     @cached_property
     def _params(self) -> Dict[str, Any]:
@@ -60,14 +72,14 @@ class RequestAction(Action):
         return self.replace_values(self.params, "env", os.getenv)
 
     @cached_property
-    def _headers(self) -> Dict[str, Any]:
-        """Gets the headers with any environment variables filled in.
+    def _data(self) -> Dict[str, Any]:
+        """Gets the data with any environment variables filled in.
 
         Returns:
-            Dict[str, Any]: The headers with environment variables filled in.
+            Dict[str, Any]: The data with environment variables filled in.
         """
 
-        return self.replace_values(self.headers, "env", os.getenv)
+        return self.replace_values(self.data, "env", os.getenv)
 
     @staticmethod
     def replace_values(
@@ -110,8 +122,9 @@ class RequestAction(Action):
 
         event_handler = EventHandler.get()
 
-        params = self.replace_values(self._params, "change", lambda name: getattr(change, name))
         headers = self.replace_values(self._headers, "change", lambda name: getattr(change, name))
+        params = self.replace_values(self._params, "change", lambda name: getattr(change, name))
+        data = self.replace_values(self._data, "change", lambda name: getattr(change, name))
 
         if self.log_request:
             event_handler.handle(
@@ -120,14 +133,19 @@ class RequestAction(Action):
                         "message": f"Requesting URL {self.url}"
                         + f"\nParams:\n{json.dumps(params, indent=4)}"
                         + f"\nHeaders:\n{json.dumps(headers, indent=4)}"
+                        + f"\nData:\n{json.dumps(data, indent=4)}"
                     }
                 )
             )
 
         if self.post:
-            response = requests.post(self.url, params=params, headers=headers, timeout=120)
+            response = requests.post(
+                self.url, headers=headers, params=params, data=json.dumps(data), timeout=120
+            )
         else:
-            response = requests.get(self.url, params=params, headers=headers, timeout=120)
+            response = requests.get(
+                self.url, headers=headers, params=params, data=json.dumps(data), timeout=120
+            )
 
         if self.log_response:
             try:
