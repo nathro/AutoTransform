@@ -23,8 +23,6 @@ from autotransform.repo.base import FACTORY as repo_factory
 from autotransform.repo.base import Repo, RepoName
 from autotransform.repo.git import GitRepo
 from autotransform.repo.github import GithubRepo
-from autotransform.runner.base import FACTORY as runner_factory
-from autotransform.runner.base import Runner
 from autotransform.step.action.source import AbandonAction, MergeAction, UpdateAction
 from autotransform.step.base import FACTORY as step_factory
 from autotransform.step.base import Step
@@ -46,12 +44,10 @@ class Manager(ComponentModel):
 
     Attributes:
         repo (Repo): The repo to get outstanding changes for.
-        runner (Runner): The runner to use when updating outstanding changes.
         steps (List[Step]): The steps to take for outstanding changes.
     """
 
     repo: Repo
-    runner: Runner
     steps: List[Step]
 
     def run(self) -> None:
@@ -129,7 +125,6 @@ class Manager(ComponentModel):
 
         return Manager(
             repo=repo_factory.get_instance(data["repo"]),
-            runner=runner_factory.get_instance(data["runner"]),
             steps=[step_factory.get_instance(step) for step in data.get("steps", [])],
         )
 
@@ -137,14 +132,12 @@ class Manager(ComponentModel):
     @staticmethod
     def init_from_console(
         repo_name: Optional[RepoName] = None,
-        prev_runner: Optional[Runner] = None,
         simple: bool = False,
     ) -> Manager:
         """Gets a Manager using console inputs.
 
         Args:
             repo_name (Optional[RepoName], optional): The name of the repo to use. Defaults to None.
-            prev_runner (Optional[Runner], optional): A previously input runner. Defaults to None.
             simple (bool, optional): Whether to use simple options for setting up the manager.
                 Defaults to False.
 
@@ -167,13 +160,6 @@ class Manager(ComponentModel):
             input_repo = repo_factory.from_console("repo", allow_none=False)
             assert input_repo is not None
             repo = input_repo
-
-        # Get the runner
-        args: Dict[str, Any] = {"simple": simple, "allow_none": False}
-        if prev_runner is not None:
-            args["previous_value"] = prev_runner
-        runner = runner_factory.from_console("manager runner", **args)
-        assert runner is not None
 
         # Merge approved changes
         steps: List[Step] = []
@@ -214,7 +200,7 @@ class Manager(ComponentModel):
                 )
             )
 
-        return Manager(repo=repo, runner=runner, steps=steps)
+        return Manager(repo=repo, steps=steps)
 
     @staticmethod
     def from_console(prev_manager: Optional[Manager] = None) -> Manager:
@@ -234,12 +220,6 @@ class Manager(ComponentModel):
         repo = repo_factory.from_console("repo", **args)
         assert repo is not None
 
-        args = {"allow_none": False}
-        if prev_manager is not None:
-            args["previous_value"] = prev_manager.runner
-        runner = runner_factory.from_console("runner", **args)
-        assert runner is not None
-
         if prev_manager is not None and bool(prev_manager.steps):
             steps = choose_options_from_list(
                 "Choose steps to keep",
@@ -254,4 +234,4 @@ class Manager(ComponentModel):
             assert step is not None
             steps.append(step)
 
-        return Manager(repo=repo, runner=runner, steps=steps)
+        return Manager(repo=repo, steps=steps)

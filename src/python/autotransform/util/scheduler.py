@@ -19,16 +19,13 @@ from typing import Any, Dict, List, Optional, Type
 
 from pydantic import validator
 
-from autotransform.config import get_repo_config_relative_path
+from autotransform.config import get_config, get_repo_config_relative_path
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.schedulerun import ScheduleRunEvent
 from autotransform.filter.base import FACTORY as filter_factory
 from autotransform.filter.key_hash_shard import KeyHashShardFilter
 from autotransform.filter.shard import ShardFilter
-from autotransform.runner.base import FACTORY as runner_factory
-from autotransform.runner.base import Runner
-from autotransform.runner.github import GithubRunner
 from autotransform.schema.builder import FACTORY as schema_builder_factory
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.util.component import ComponentModel
@@ -257,14 +254,12 @@ class Scheduler(ComponentModel):
     Attributes:
         base_time (int): The base time to use when determining hour_of_day, day_of_week,
             and valid shards. Considered day 0, hour 0.
-        runner (Runner): The runner to use when triggering runs of a Schema.
         excluded_days (List[int]): A list of days of the week to skip running Schemas.
         schemas (List[ScheduledSchema]): A list of Schemas to schedule.
     """
 
     base_time: int
     excluded_days: List[int]
-    runner: Runner
     schemas: List[ScheduledSchema]
 
     def run(self, start_time: int) -> None:
@@ -292,6 +287,9 @@ class Scheduler(ComponentModel):
                 DebugEvent({"message": f"Day {day_of_week} is excluded, skipping run"})
             )
             return
+
+        runner = get_config().remote_runner
+        assert runner is not None
 
         map_file_path = f"{get_repo_config_relative_path()}/schema_map.json"
         with open(map_file_path, "r", encoding="UTF-8") as map_file:
@@ -326,7 +324,7 @@ class Scheduler(ComponentModel):
             if scheduled_schema.max_submissions is not None:
                 schema.config.max_submissions = scheduled_schema.max_submissions
             EventHandler.get().handle(ScheduleRunEvent({"schema_name": schema.config.schema_name}))
-            self.runner.run(schema)
+            runner.run(schema)
 
     def write(self, file_path: str) -> None:
         """Writes the Scheduler to a file as JSON.
@@ -390,20 +388,14 @@ class Scheduler(ComponentModel):
         for day in excluded_days:
             assert isinstance(day, int)
             assert day in range(7)
-        runner = runner_factory.get_instance(data["runner"])
         schemas = [ScheduledSchema.from_data(schema) for schema in data.get("schemas", [])]
-        return Scheduler(
-            base_time=base_time, excluded_days=excluded_days, runner=runner, schemas=schemas
-        )
+        return Scheduler(base_time=base_time, excluded_days=excluded_days, schemas=schemas)
 
     @staticmethod
-    def init_from_console(
-        runner: Optional[Runner] = None, use_sample_schema: bool = False, simple: bool = False
-    ) -> Scheduler:
+    def init_from_console(use_sample_schema: bool = False, simple: bool = False) -> Scheduler:
         """Gets a Scheduler using console input.
 
         Args:
-            runner (Optional[Runner], optional): The Runner for the Scheduler. Defaults to None.
             use_sample_schema (bool, optional): Whether to include the sample Schema. Defaults
                 to False.
             simple (bool, optional): Whether to use simple settings. Defaults to False.
@@ -426,19 +418,6 @@ class Scheduler(ComponentModel):
         else:
             excluded_days = [5, 6]
 
-        # Gets the Runner
-        runner = runner_factory.from_console(
-            "scheduler runner",
-            previous_value=runner,
-            default_value=GithubRunner(
-                run_workflow="autotransform.run.yml",
-                update_workflow="autotransform.update.yml",
-            ),
-            simple=simple,
-            allow_none=False,
-        )
-        assert runner is not None
-
         # Gets Schemas
         if use_sample_schema:
             schemas = [
@@ -457,7 +436,6 @@ class Scheduler(ComponentModel):
             base_time=int(datetime.fromisoformat("2022-05-23T00:00:00").timestamp())
             + base_modifier,
             excluded_days=excluded_days,
-            runner=runner,
             schemas=schemas,
         )
 
@@ -486,19 +464,6 @@ class Scheduler(ComponentModel):
             if choose_yes_or_no("Apply a modifier to local time for scheduling?"):
                 base_time += input_int("Enter the modifier in seconds")
 
-        # Get Runner
-        args: Dict[str, Any] = {
-            "default_value": GithubRunner(
-                run_workflow="autotransform.run.yml",
-                update_workflow="autotransform.update.yml",
-            ),
-            "allow_none": False,
-        }
-        if prev_scheduler is not None:
-            args["previous_value"] = prev_scheduler.runner
-        runner = runner_factory.from_console("scheduler runner", **args)
-        assert runner is not None
-
         # Get Excluded Days
         if prev_scheduler is not None and choose_yes_or_no(
             f"Use previous excluded days: {prev_scheduler.excluded_days!r}"
@@ -521,6 +486,4 @@ class Scheduler(ComponentModel):
             schemas = []
         while choose_yes_or_no("Add a schema to the schedule?"):
             schemas.append(ScheduledSchema.from_console())
-        return Scheduler(
-            base_time=base_time, excluded_days=excluded_days, runner=runner, schemas=schemas
-        )
+        return Scheduler(base_time=base_time, excluded_days=excluded_days, schemas=schemas)
