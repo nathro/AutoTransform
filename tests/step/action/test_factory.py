@@ -64,6 +64,15 @@ def test_encoding_and_decoding():
         ActionName.MERGE: [{}],
         ActionName.NONE: [{}],
         ActionName.REMOVE_LABEL: [{"label": "autotransform"}],
+        ActionName.REQUEST: [
+            {"url": "test.com"},
+            {"url": "test.com", "params": {"foo": "bar"}},
+            {"url": "test.com", "headers": {"foo": "bar"}},
+            {"url": "test.com", "post": False},
+            {"url": "test.com", "log_request": True},
+            {"url": "test.com", "log_response": True},
+            {"url": "test.com", "params": {"foo": "bar"}, "headers": {"foo": "bar"}},
+        ],
         ActionName.UPDATE: [{}],
     }
 
