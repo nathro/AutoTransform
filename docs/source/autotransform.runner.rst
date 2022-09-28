@@ -8,4 +8,5 @@ Runner Package (autotransform.runner)
 
    autotransform.runner.base
    autotransform.runner.github
+   autotransform.runner.jenkins
    autotransform.runner.local

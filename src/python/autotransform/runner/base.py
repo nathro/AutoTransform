@@ -17,13 +17,14 @@ from typing import ClassVar
 
 from autotransform.change.base import Change
 from autotransform.schema.schema import AutoTransformSchema
-from autotransform.util.component import NamedComponent, ComponentFactory, ComponentImport
+from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 
 class RunnerName(str, Enum):
     """A simple enum for mapping."""
 
     GITHUB = "github"
+    JENKINS = "jenkins"
     LOCAL = "local"
 
 
@@ -58,6 +59,9 @@ FACTORY = ComponentFactory(
     {
         RunnerName.GITHUB: ComponentImport(
             class_name="GithubRunner", module="autotransform.runner.github"
+        ),
+        RunnerName.JENKINS: ComponentImport(
+            class_name="JenkinsRunner", module="autotransform.runner.jenkins"
         ),
         RunnerName.LOCAL: ComponentImport(
             class_name="LocalRunner", module="autotransform.runner.local"

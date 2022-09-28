@@ -10,6 +10,7 @@ docker build -f autotransform/Dockerfile \
 if [[ $COMMAND == "schedule" || $COMMAND == "manage" ]]; then
     docker run -e AUTO_TRANSFORM_CONFIG=environment \
         -e AUTO_TRANSFORM_GITHUB_TOKEN="$GITHUB_TOKEN" \
+        -e AUTO_TRANSFORM_JENKINS_TOKEN="$JENKINS_TOKEN"
         -v "$(pwd)":/$REPO_DIR \
         autotransform
     RESULT=$?
@@ -18,6 +19,7 @@ fi
 if [[ $COMMAND == "run" ]]; then
     docker run -e AUTO_TRANSFORM_CONFIG=environment \
         -e AUTO_TRANSFORM_GITHUB_TOKEN="$GITHUB_TOKEN" \
+        -e AUTO_TRANSFORM_JENKINS_TOKEN="$JENKINS_TOKEN"
         -e FILTER="$FILTER" \
         -e MAX_SUBMISSIONS="$MAX_SUBMISSIONS" \
         -e SCHEMA_NAME="$SCHEMA_NAME" \
@@ -29,6 +31,7 @@ fi
 if [[ $COMMAND == "update" ]]; then
     docker run -e AUTO_TRANSFORM_CONFIG=environment \
         -e AUTO_TRANSFORM_GITHUB_TOKEN="$GITHUB_TOKEN" \
+        -e AUTO_TRANSFORM_JENKINS_TOKEN="$JENKINS_TOKEN"
         -e AUTO_TRANSFORM_CHANGE="$AUTO_TRANSFORM_CHANGE" \
         -v "$(pwd)":/$REPO_DIR \
         autotransform
