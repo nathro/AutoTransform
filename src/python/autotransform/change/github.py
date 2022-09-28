@@ -153,7 +153,7 @@ class GithubChange(Change):
 
         return self._pull_request.get_updated_at()
 
-    def _abandon(self) -> bool:
+    def abandon(self) -> bool:
         """Close the Pull Request and delete the associated branch.
 
         Returns:
@@ -164,7 +164,7 @@ class GithubChange(Change):
             return False
         return self._pull_request.delete_branch()
 
-    def _add_labels(self, labels: List[str]) -> bool:
+    def add_labels(self, labels: List[str]) -> bool:
         """Adds labels to an outstanding Change.
 
         Args:
@@ -177,7 +177,7 @@ class GithubChange(Change):
         self._pull_request.add_labels(labels)
         return True
 
-    def _add_reviewers(self, reviewers: List[str], team_reviewers: List[str]) -> bool:
+    def add_reviewers(self, reviewers: List[str], team_reviewers: List[str]) -> bool:
         """Adds reviewers to an outstanding Change.
 
         Args:
@@ -191,7 +191,7 @@ class GithubChange(Change):
         self._pull_request.add_reviewers(reviewers, team_reviewers)
         return True
 
-    def _comment(self, body: str) -> bool:
+    def comment(self, body: str) -> bool:
         """Comments on an outstanding Change.
 
         Args:
@@ -204,7 +204,7 @@ class GithubChange(Change):
         self._pull_request.create_comment(body)
         return True
 
-    def _merge(self) -> bool:
+    def merge(self) -> bool:
         """Merges the Pull Request and deletes the branch.
 
         Returns:
@@ -215,7 +215,7 @@ class GithubChange(Change):
             return False
         return self._pull_request.delete_branch()
 
-    def _remove_label(self, label: str) -> bool:
+    def remove_label(self, label: str) -> bool:
         """Removes a label from an outstanding Change.
 
         Args:
