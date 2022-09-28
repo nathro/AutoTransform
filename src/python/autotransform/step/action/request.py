@@ -125,9 +125,9 @@ class RequestAction(Action):
             )
 
         if self.post:
-            response = requests.post(self.url, params=params, headers=headers)
+            response = requests.post(self.url, params=params, headers=headers, timeout=120)
         else:
-            response = requests.get(self.url, params=params, headers=headers)
+            response = requests.get(self.url, params=params, headers=headers, timeout=120)
 
         if self.log_response:
             try:
