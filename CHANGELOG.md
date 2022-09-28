@@ -2,6 +2,10 @@
 
 ## Release 1.0.5
 
+
+#### New Components
+ - JenkinsRunner
+ 
 #### New Features
  - Added bash scripts and dockerfile to allow for deploying using Docker
 
