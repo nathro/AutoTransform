@@ -4,11 +4,6 @@
         "base_branch": "master",
         "full_github_name": "nathro/AutoTransform"
     },
-    "runner": {
-        "name": "github",
-        "run_workflow": "autotransform.run.yml",
-        "update_workflow": "autotransform.update.yml"
-    },
     "steps": [
         {
             "name": "conditional",

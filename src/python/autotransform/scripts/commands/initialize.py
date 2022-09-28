@@ -23,9 +23,6 @@ from autotransform.config import (
 )
 from autotransform.config.config import Config
 from autotransform.repo.base import RepoName
-from autotransform.runner.base import Runner
-from autotransform.runner.github import GithubRunner
-from autotransform.runner.jenkins import JenkinsRunner
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.util.console import choose_yes_or_no, info
 from autotransform.util.enums import SchemaType
@@ -228,23 +225,8 @@ def initialize_repo(
         initialize_docker(repo_dir, examples_dir)
 
     # Get the Manager
-    if use_github_actions:
-        prev_runner: Optional[Runner] = GithubRunner(
-            run_workflow="autotransform.run.yml",
-            update_workflow="autotransform.update.yml",
-        )
-    elif use_jenkins:
-        prev_runner = JenkinsRunner(
-            run_job_name="autotransform_run",
-            update_job_name="autotransform_update",
-        )
-    elif prev_config is not None:
-        prev_runner = prev_config.remote_runner
-    else:
-        prev_runner = None
     manager = Manager.init_from_console(
         repo_name=RepoName.GITHUB if github else RepoName.GIT,
-        prev_runner=prev_runner,
         simple=simple,
     )
 
@@ -289,7 +271,7 @@ def initialize_repo(
     manager.write(manager_path)
 
     # Set up schedule file
-    scheduler = Scheduler.init_from_console(manager.runner, use_sample_schema, simple)
+    scheduler = Scheduler.init_from_console(use_sample_schema, simple)
     scheduler_path = f"{repo_config_dir}/scheduler.json"
     scheduler.write(scheduler_path)
 

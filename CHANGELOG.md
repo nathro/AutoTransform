@@ -10,6 +10,7 @@
 
 #### Misc
  - Remove take_action from Change and put logic in Action method run()
+ - Removed Runner from Scheduler/Manager and allowed them to just use runner from config
 
 ## Release 1.0.4
 

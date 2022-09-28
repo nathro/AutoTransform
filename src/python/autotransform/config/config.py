@@ -18,6 +18,7 @@ from typing import Any, Dict, Optional, Tuple
 from autotransform.runner.base import FACTORY as runner_factory
 from autotransform.runner.base import Runner
 from autotransform.runner.github import GithubRunner
+from autotransform.runner.jenkins import JenkinsRunner
 from autotransform.runner.local import LocalRunner
 from autotransform.util.component import ComponentModel
 from autotransform.util.console import choose_yes_or_no, get_str
@@ -372,13 +373,15 @@ class Config(ComponentModel):
     def get_remote_runner_from_console(
         prev_config: Optional[Config] = None,
         use_github: bool = False,
+        use_jenkins: bool = False,
         simple: bool = False,
     ) -> Optional[Runner]:
         """Gets the remote runner using console inputs.
 
         Args:
             prev_config (Optional[Config], optional): Previously input Config. Defaults to None.
-            use_github (bool, optional): Whether to use Github or not. Defaults to None.
+            use_github (bool, optional): Whether to use Github or not. Defaults to False.
+            use_jenkins (bool, optional): Whether to use Jenkins or not. Defaults to False.
             simple (bool, optional): Whether to use the simple setup. Defaults to False.
 
         Returns:
@@ -388,10 +391,15 @@ class Config(ComponentModel):
         args: Dict[str, Any] = {
             "simple": simple,
         }
-        if use_github:
+        if use_jenkins:
+            args["default_value"] = JenkinsRunner(
+                run_job_name="autotransform_run", update_job_name="autotransform_update"
+            )
+        elif use_github:
             args["default_value"] = GithubRunner(
                 run_workflow="autotransform.run.yml", update_workflow="autotransform.update.yml"
             )
+
         if prev_config is not None:
             args["previous_value"] = prev_config.remote_runner
         return runner_factory.from_console("remote runner", **args)
@@ -473,7 +481,7 @@ class Config(ComponentModel):
                     prev_config=prev_config, simple=simple
                 ),
                 remote_runner=Config.get_remote_runner_from_console(
-                    prev_config=prev_config, use_github=github, simple=simple
+                    prev_config=prev_config, use_github=github, use_jenkins=jenkins, simple=simple
                 ),
             ),
             github,
