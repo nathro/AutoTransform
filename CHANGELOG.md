@@ -4,6 +4,7 @@
 
 #### New Components
  - JenkinsRunner
+ - RequestAction
 
 #### New Features
  - Added bash scripts and dockerfile to allow for deploying using Docker

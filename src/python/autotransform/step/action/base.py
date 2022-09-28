@@ -29,6 +29,7 @@ class ActionName(str, Enum):
     MERGE = "merge"
     NONE = "none"
     REMOVE_LABEL = "remove_label"
+    REQUEST = "request"
     UPDATE = "update"
 
 
@@ -84,6 +85,9 @@ FACTORY = ComponentFactory(
         ),
         ActionName.REMOVE_LABEL: ComponentImport(
             class_name="RemoveLabelAction", module="autotransform.step.action.labels"
+        ),
+        ActionName.REQUEST: ComponentImport(
+            class_name="RequestAction", module="autotransform.step.action.request"
         ),
         ActionName.UPDATE: ComponentImport(
             class_name="UpdateAction", module="autotransform.step.action.source"
