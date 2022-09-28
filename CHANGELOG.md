@@ -8,6 +8,9 @@
 #### New Features
  - Added bash scripts and dockerfile to allow for deploying using Docker
 
+#### Misc
+ - Remove take_action from Change and put logic in Action method run()
+
 ## Release 1.0.4
 
 #### New Features

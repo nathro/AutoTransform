@@ -13,6 +13,7 @@ from typing import Any, ClassVar, Dict, List
 
 from pydantic import Field, root_validator, validator
 
+from autotransform.change.base import Change
 from autotransform.step.action.base import Action, ActionName
 
 
@@ -90,6 +91,18 @@ class AddReviewersAction(Action):
             raise ValueError("Either reviewers or team reviewers must be supplied")
         return values
 
+    def run(self, change: Change) -> bool:
+        """Adds reviewers to the specified Change.
+
+        Args:
+            change (Change): The Change to add reviewers to.
+
+        Returns:
+            bool: Whether the reviewers were added successful.
+        """
+
+        return change.add_reviewers(self.reviewers, self.team_reviewers)
+
 
 class AddOwnersAsReviewersAction(Action):
     """Adds the owners of a Schema as reviewers for the Change.
@@ -100,6 +113,18 @@ class AddOwnersAsReviewersAction(Action):
 
     name: ClassVar[ActionName] = ActionName.ADD_OWNERS_AS_REVIEWERS
 
+    def run(self, change: Change) -> bool:
+        """Adds owners as reviewers to the specified Change.
+
+        Args:
+            change (Change): The Change to add reviewers to.
+
+        Returns:
+            bool: Whether the reviewers were added successful.
+        """
+
+        return change.add_reviewers(change.get_schema().config.owners, [])
+
 
 class AddOwnersAsTeamReviewersAction(Action):
     """Adds the owners of a Schema as team reviewers for the Change.
@@ -109,3 +134,15 @@ class AddOwnersAsTeamReviewersAction(Action):
     """
 
     name: ClassVar[ActionName] = ActionName.ADD_OWNERS_AS_TEAM_REVIEWERS
+
+    def run(self, change: Change) -> bool:
+        """Adds owners as team reviewers to the specified Change.
+
+        Args:
+            change (Change): The Change to add team reviewers to.
+
+        Returns:
+            bool: Whether the team reviewers were added successful.
+        """
+
+        return change.add_reviewers([], change.get_schema().config.owners)

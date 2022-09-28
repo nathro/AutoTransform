@@ -13,6 +13,7 @@ from typing import ClassVar, List
 
 from pydantic import validator
 
+from autotransform.change.base import Change
 from autotransform.step.action.base import Action, ActionName
 
 
@@ -50,6 +51,18 @@ class AddLabelsAction(Action):
             raise ValueError("Labels must be non-empty strings")
         return v
 
+    def run(self, change: Change) -> bool:
+        """Adds labels to the specified Change.
+
+        Args:
+            change (Change): The Change to add labels to.
+
+        Returns:
+            bool: Whether the labels were added successful.
+        """
+
+        return change.add_labels(self.labels)
+
 
 class RemoveLabelAction(Action):
     """Removes a label from an existing Change.
@@ -82,3 +95,15 @@ class RemoveLabelAction(Action):
         if v == "":
             raise ValueError("Label to remove must be non-empty")
         return v
+
+    def run(self, change: Change) -> bool:
+        """Removes labels from the specified Change.
+
+        Args:
+            change (Change): The Change to remove labels from.
+
+        Returns:
+            bool: Whether the labels were removed successful.
+        """
+
+        return change.remove_label(self.label)

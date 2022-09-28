@@ -16,15 +16,6 @@ from enum import Enum
 from typing import TYPE_CHECKING, ClassVar, List
 
 from autotransform.batcher.base import Batch
-from autotransform.step.action.base import Action
-from autotransform.step.action.comments import CommentAction
-from autotransform.step.action.labels import AddLabelsAction, RemoveLabelAction
-from autotransform.step.action.reviewers import (
-    AddOwnersAsReviewersAction,
-    AddOwnersAsTeamReviewersAction,
-    AddReviewersAction,
-)
-from autotransform.step.action.source import AbandonAction, MergeAction, NoneAction, UpdateAction
 from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 if TYPE_CHECKING:
@@ -130,53 +121,8 @@ class Change(NamedComponent):
             int: The timestamp in seconds when the Change was last updated.
         """
 
-    # pylint: disable=too-many-return-statements
-    def take_action(self, action: Action, runner: Runner) -> bool:
-        """Tells the Change to take an Action based on the results of a Step run.
-
-        Args:
-            action (Action): The Action to take.
-            runner (Runner): A Runner which can be used to take an Action.
-
-        Returns:
-            bool: Whether the Action was taken successfully.
-        """
-
-        if isinstance(action, AbandonAction):
-            return self._abandon()
-
-        if isinstance(action, AddLabelsAction):
-            return self._add_labels(action.labels)
-
-        if isinstance(action, AddOwnersAsReviewersAction):
-            return self._add_reviewers(self.get_schema().config.owners, [])
-
-        if isinstance(action, AddOwnersAsTeamReviewersAction):
-            return self._add_reviewers([], self.get_schema().config.owners)
-
-        if isinstance(action, AddReviewersAction):
-            return self._add_reviewers(action.reviewers, action.team_reviewers)
-
-        if isinstance(action, CommentAction):
-            return self._comment(action.body)
-
-        if isinstance(action, MergeAction):
-            return self._merge()
-
-        if isinstance(action, NoneAction):
-            return True
-
-        if isinstance(action, RemoveLabelAction):
-            return self._remove_label(action.label)
-
-        if isinstance(action, UpdateAction):
-            return self._update(runner)
-
-        # No known way to handle the Action, so treat it as failed
-        return False
-
     @abstractmethod
-    def _abandon(self) -> bool:
+    def abandon(self) -> bool:
         """Close out and abandon a Change, removing it from the code review
         and/or version control system.
 
@@ -185,7 +131,7 @@ class Change(NamedComponent):
         """
 
     @abstractmethod
-    def _add_labels(self, labels: List[str]) -> bool:
+    def add_labels(self, labels: List[str]) -> bool:
         """Adds labels to an outstanding Change.
 
         Args:
@@ -196,7 +142,7 @@ class Change(NamedComponent):
         """
 
     @abstractmethod
-    def _add_reviewers(self, reviewers: List[str], team_reviewers: List[str]) -> bool:
+    def add_reviewers(self, reviewers: List[str], team_reviewers: List[str]) -> bool:
         """Adds reviewers to an outstanding Change.
 
         Args:
@@ -208,7 +154,7 @@ class Change(NamedComponent):
         """
 
     @abstractmethod
-    def _comment(self, body: str) -> bool:
+    def comment(self, body: str) -> bool:
         """Comments on an outstanding Change.
 
         Args:
@@ -219,7 +165,7 @@ class Change(NamedComponent):
         """
 
     @abstractmethod
-    def _merge(self) -> bool:
+    def merge(self) -> bool:
         """Merges an approved change in to main.
 
         Returns:
@@ -227,7 +173,7 @@ class Change(NamedComponent):
         """
 
     @abstractmethod
-    def _remove_label(self, label: str) -> bool:
+    def remove_label(self, label: str) -> bool:
         """Removes a label from an outstanding Change.
 
         Args:
@@ -237,7 +183,7 @@ class Change(NamedComponent):
             bool: Whether the label was removed successfully.
         """
 
-    def _update(self, runner: Runner) -> bool:
+    def update(self, runner: Runner) -> bool:
         """Update an outstanding Change against the latest state of the codebase.
 
         Args:

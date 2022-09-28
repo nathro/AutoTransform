@@ -13,6 +13,7 @@ from typing import ClassVar
 
 from pydantic import validator
 
+from autotransform.change.base import Change
 from autotransform.step.action.base import Action, ActionName
 
 
@@ -47,3 +48,15 @@ class CommentAction(Action):
         if v == "":
             raise ValueError("Comment body must be non-empty")
         return v
+
+    def run(self, change: Change) -> bool:
+        """Adds a comment to the specified Change.
+
+        Args:
+            change (Change): The Change to comment on.
+
+        Returns:
+            bool: Whether the comment was successful.
+        """
+
+        return change.comment(self.body)

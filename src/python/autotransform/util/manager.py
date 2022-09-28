@@ -67,7 +67,7 @@ class Manager(ComponentModel):
                     EventHandler.get().handle(
                         ManageActionEvent({"action": action, "change": change, "step": step})
                     )
-                    change.take_action(action, self.runner)
+                    action.run(change)
 
                 if actions and not step.continue_management(change):
                     EventHandler.get().handle(DebugEvent({"message": "Steps ended"}))

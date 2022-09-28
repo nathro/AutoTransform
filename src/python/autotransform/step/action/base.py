@@ -9,9 +9,11 @@
 
 """The base class and associated classes for Action components."""
 
+from abc import abstractmethod
 from enum import Enum
 from typing import ClassVar
 
+from autotransform.change.base import Change
 from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 
@@ -40,6 +42,17 @@ class Action(NamedComponent):
     """
 
     name: ClassVar[ActionName]
+
+    @abstractmethod
+    def run(self, change: Change) -> bool:
+        """Performs the action on the specified Change.
+
+        Args:
+            change (Change): The Change to perform the Action on.
+
+        Returns:
+            bool: Whether the Action was successful.
+        """
 
 
 FACTORY = ComponentFactory(
