@@ -260,7 +260,7 @@ class PullRequest:
             "action_required",
             "canceled",
             "timed_out",
-            "failed",
+            "failure",
             "neutral",
             "success",
         ]
