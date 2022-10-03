@@ -4,7 +4,7 @@
 
 ### Migrations
  - Split out review/test/change states to be separate.
- - atmigrate-1.0.5 to migrate Manager for 1.0.5 changes.
+ - atmigrate-1.0.5 to migrate Manager for 1.0.5 changes. Can not handle in/not_in comparisons for ChangeStateCondition
 
 #### New Components
  - JenkinsRunner

@@ -27,11 +27,27 @@ class ChangeState(str, Enum):
     """A simple enum for the state of a given Change in code review or version
     control systems."""
 
-    APPROVED = "approved"
-    CHANGES_REQUESTED = "changes_requested"
     CLOSED = "closed"
     MERGED = "merged"
     OPEN = "open"
+
+
+class ReviewState(str, Enum):
+    """A simple enum for the review state of a given Change in code review or version
+    control systems."""
+
+    APPROVED = "approved"
+    CHANGES_REQUESTED = "changes_requested"
+    NEEDS_REVIEW = "needs_review"
+
+
+class TestState(str, Enum):
+    """A simple enum for the test state of a given Change in code review or version
+    control systems."""
+
+    FAILURE = "failure"
+    PENDING = "pending"
+    SUCCESS = "success"
 
 
 class ChangeName(str, Enum):
@@ -81,6 +97,22 @@ class Change(NamedComponent):
 
         Returns:
             ChangeState: The current state of the Change.
+        """
+
+    @abstractmethod
+    def get_review_state(self) -> ReviewState:
+        """Gets the current review state of the Change.
+
+        Returns:
+            ReviewState: The current review state of the Change.
+        """
+
+    @abstractmethod
+    def get_test_state(self) -> TestState:
+        """Gets the current test state of the Change.
+
+        Returns:
+            TestState: The current test state of the Change.
         """
 
     @abstractmethod

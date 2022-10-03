@@ -12,7 +12,7 @@
 import mock
 
 from autotransform.batcher.single import SingleBatcher
-from autotransform.change.base import ChangeState
+from autotransform.change.base import ChangeState, ReviewState
 from autotransform.change.github import GithubChange
 from autotransform.filter.regex import RegexFilter
 from autotransform.input.directory import DirectoryInput
@@ -93,7 +93,7 @@ def test_get_state_approved(mock_get_pull_request):
 
     change = GithubChange(full_github_name="nathro/ATTest", pull_number=1)
 
-    assert change.get_state() == ChangeState.APPROVED
+    assert change.get_review_state() == ReviewState.APPROVED
 
 
 @mock.patch.object(GithubUtils, "get_pull_request")
@@ -111,7 +111,7 @@ def test_get_state_changes_requested(mock_get_pull_request):
 
     change = GithubChange(full_github_name="nathro/ATTest", pull_number=1)
 
-    assert change.get_state() == ChangeState.CHANGES_REQUESTED
+    assert change.get_review_state() == ReviewState.CHANGES_REQUESTED
 
 
 @mock.patch.object(GithubUtils, "get_pull_request")

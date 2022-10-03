@@ -13,14 +13,14 @@ from __future__ import annotations
 
 from typing import ClassVar, List
 
-from autotransform.change.base import Change, ChangeState
+from autotransform.change.base import Change, ChangeState, ReviewState, TestState
 from autotransform.step.condition.base import ComparisonCondition, ConditionName
 from autotransform.step.condition.comparison import ComparisonType
 
 
 class ChangeStateCondition(ComparisonCondition[ChangeState]):
     """A condition which checks the ChangeState against the state supplied using the supplied
-    comparison. Note: only equals and not equals are valid, all others will result in an error.
+    comparison.
 
     Attributes:
         comparison (ComparisonType): The type of comparison to perform.
@@ -44,3 +44,59 @@ class ChangeStateCondition(ComparisonCondition[ChangeState]):
         """
 
         return change.get_state()
+
+
+class ReviewStateCondition(ComparisonCondition[ReviewState]):
+    """A condition which checks the ReviewState against the state supplied using the supplied
+    comparison.
+
+    Attributes:
+        comparison (ComparisonType): The type of comparison to perform.
+        value (ReviewState | List[ReviewState]): The state(s) to compare against.
+        name (ClassVar[ConditionName]): The name of the Component.
+    """
+
+    comparison: ComparisonType
+    value: ReviewState | List[ReviewState]
+
+    name: ClassVar[ConditionName] = ConditionName.REVIEW_STATE
+
+    def get_val_from_change(self, change: Change) -> ReviewState:
+        """Gets the review state from the Change.
+
+        Args:
+            change (Change): The Change the Condition is checking.
+
+        Returns:
+            ReviewState: The review state of the Change.
+        """
+
+        return change.get_review_state()
+
+
+class TestStateCondition(ComparisonCondition[TestState]):
+    """A condition which checks the TestState against the state supplied using the supplied
+    comparison.
+
+    Attributes:
+        comparison (ComparisonType): The type of comparison to perform.
+        value (TestState | List[TestState]): The state(s) to compare against.
+        name (ClassVar[ConditionName]): The name of the Component.
+    """
+
+    comparison: ComparisonType
+    value: TestState | List[TestState]
+
+    name: ClassVar[ConditionName] = ConditionName.TEST_STATE
+
+    def get_val_from_change(self, change: Change) -> TestState:
+        """Gets the state from the Change.
+
+        Args:
+            change (Change): The Change the Condition is checking.
+
+        Returns:
+            TestState: The test state of the Change.
+        """
+
+        return change.get_test_state()
