@@ -2,9 +2,15 @@
 
 ## Release 1.0.5
 
+### Migrations
+ - Split out review/test/change states to be separate.
+ - atmigrate-1.0.5 to migrate Manager for 1.0.5 changes.
+
 #### New Components
  - JenkinsRunner
  - RequestAction
+ - ReviewStateCondition
+ - TestStateCondition
 
 #### New Features
  - Added bash scripts and dockerfile to allow for deploying using Docker
