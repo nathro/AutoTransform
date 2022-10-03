@@ -12,12 +12,12 @@
 import json
 import pathlib
 
-from autotransform.change.base import ChangeState
+from autotransform.change.base import ReviewState
 from autotransform.repo.github import GithubRepo
 from autotransform.runner.github import GithubRunner
 from autotransform.step.action.source import AbandonAction, MergeAction, UpdateAction
 from autotransform.step.condition.comparison import ComparisonType
-from autotransform.step.condition.state import ChangeStateCondition
+from autotransform.step.condition.state import ReviewStateCondition
 from autotransform.step.condition.updated import UpdatedAgoCondition
 from autotransform.step.conditional import ConditionalStep
 from autotransform.util.manager import Manager
@@ -38,14 +38,14 @@ def get_sample_manager() -> Manager:
         steps=[
             ConditionalStep(
                 actions=[MergeAction()],
-                condition=ChangeStateCondition(
-                    comparison=ComparisonType.EQUAL, value=ChangeState.APPROVED
+                condition=ReviewStateCondition(
+                    comparison=ComparisonType.EQUAL, value=ReviewState.APPROVED
                 ),
             ),
             ConditionalStep(
                 actions=[AbandonAction()],
-                condition=ChangeStateCondition(
-                    comparison=ComparisonType.EQUAL, value=ChangeState.CHANGES_REQUESTED
+                condition=ReviewStateCondition(
+                    comparison=ComparisonType.EQUAL, value=ReviewState.CHANGES_REQUESTED
                 ),
             ),
             ConditionalStep(

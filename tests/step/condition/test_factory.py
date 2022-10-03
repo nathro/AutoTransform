@@ -11,7 +11,7 @@
 
 from typing import Any, Dict, List
 
-from autotransform.change.base import ChangeState
+from autotransform.change.base import ChangeState, ReviewState, TestState
 from autotransform.step.condition.aggregate import AggregatorType
 from autotransform.step.condition.base import FACTORY, ConditionName
 from autotransform.step.condition.comparison import ComparisonType
@@ -95,7 +95,7 @@ def test_encoding_and_decoding():
         ConditionName.CHANGE_STATE: [
             {
                 "comparison": ComparisonType.EQUAL,
-                "value": ChangeState.APPROVED,
+                "value": ChangeState.OPEN,
             },
         ],
         ConditionName.CREATED_AGO: [
@@ -111,6 +111,12 @@ def test_encoding_and_decoding():
             },
             {
                 "comparison": ComparisonType.EMPTY,
+            },
+        ],
+        ConditionName.REVIEW_STATE: [
+            {
+                "comparison": ComparisonType.EQUAL,
+                "value": ReviewState.NEEDS_REVIEW,
             },
         ],
         ConditionName.REVIEWERS: [
@@ -135,6 +141,12 @@ def test_encoding_and_decoding():
             },
             {
                 "comparison": ComparisonType.EMPTY,
+            },
+        ],
+        ConditionName.TEST_STATE: [
+            {
+                "comparison": ComparisonType.EQUAL,
+                "value": TestState.PENDING,
             },
         ],
         ConditionName.UPDATED_AGO: [

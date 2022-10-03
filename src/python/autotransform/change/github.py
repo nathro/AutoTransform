@@ -16,7 +16,7 @@ from functools import cached_property
 from typing import ClassVar, Dict, List, Tuple
 
 from autotransform.batcher.base import Batch
-from autotransform.change.base import Change, ChangeName, ChangeState
+from autotransform.change.base import Change, ChangeName, ChangeState, ReviewState, TestState
 from autotransform.config import get_repo_config_relative_path
 from autotransform.item.base import FACTORY as item_factory
 from autotransform.schema.builder import FACTORY as schema_builder_factory
@@ -80,18 +80,7 @@ class GithubChange(Change):
         return self._pull_request.branch.split("/")[1].replace("_", " ")
 
     def get_state(self) -> ChangeState:
-        """Gets the current state of the Change. Caches the state in _state to prevent
-        excessive use of Github API.
-
-        Returns:
-            ChangeState: The current state of the Change.
-        """
-
-        return self._state
-
-    @cached_property
-    def _state(self) -> ChangeState:
-        """The current state of the Change as a cached property.
+        """Gets the current state of the Change.
 
         Returns:
             ChangeState: The current state of the Change.
@@ -101,12 +90,55 @@ class GithubChange(Change):
             return ChangeState.MERGED
         if self._pull_request.is_closed():
             return ChangeState.CLOSED
+        return ChangeState.OPEN
+
+    def get_review_state(self) -> ReviewState:
+        """Gets the current review state of the Change.
+
+        Returns:
+            ReviewState: The current review state of the Change.
+        """
+
+        return self._review_state
+
+    @cached_property
+    def _review_state(self) -> ReviewState:
+        """The current review state of the Change as a cached property.
+
+        Returns:
+            ReviewState: The current review state of the Change.
+        """
+
         review_state = self._pull_request.get_review_state()
         if review_state == "APPROVED":
-            return ChangeState.APPROVED
+            return ReviewState.APPROVED
         if review_state == "CHANGES_REQUESTED":
-            return ChangeState.CHANGES_REQUESTED
-        return ChangeState.OPEN
+            return ReviewState.CHANGES_REQUESTED
+        return ReviewState.NEEDS_REVIEW
+
+    def get_test_state(self) -> TestState:
+        """Gets the current test state of the Change.
+
+        Returns:
+            TestState: The current test state of the Change.
+        """
+
+        return self._test_state
+
+    @cached_property
+    def _test_state(self) -> TestState:
+        """The current test state of the Change as a cached property.
+
+        Returns:
+            TestState: The current test state of the Change.
+        """
+
+        state = self._pull_request.get_test_state()
+        if state == "pending":
+            return TestState.PENDING
+        if state in ["success", "neutral"]:
+            return TestState.SUCCESS
+        return TestState.FAILURE
 
     def get_labels(self) -> List[str]:
         """Gets all labels for a Change.

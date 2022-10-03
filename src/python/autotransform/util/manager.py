@@ -15,7 +15,7 @@ import json
 import os
 from typing import Any, Dict, List, Optional
 
-from autotransform.change.base import ChangeState
+from autotransform.change.base import ReviewState
 from autotransform.event.action import ManageActionEvent
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
@@ -27,7 +27,7 @@ from autotransform.step.action.source import AbandonAction, MergeAction, UpdateA
 from autotransform.step.base import FACTORY as step_factory
 from autotransform.step.base import Step
 from autotransform.step.condition.comparison import ComparisonType
-from autotransform.step.condition.state import ChangeStateCondition
+from autotransform.step.condition.state import ReviewStateCondition
 from autotransform.step.condition.updated import UpdatedAgoCondition
 from autotransform.step.conditional import ConditionalStep
 from autotransform.util.component import ComponentModel
@@ -166,8 +166,8 @@ class Manager(ComponentModel):
         if simple or choose_yes_or_no("Automatically merge approved changes?"):
             steps.append(
                 ConditionalStep(
-                    condition=ChangeStateCondition(
-                        comparison=ComparisonType.EQUAL, value=ChangeState.APPROVED
+                    condition=ReviewStateCondition(
+                        comparison=ComparisonType.EQUAL, value=ReviewState.APPROVED
                     ),
                     actions=[MergeAction()],
                 )
@@ -177,8 +177,8 @@ class Manager(ComponentModel):
         if simple or choose_yes_or_no("Automatically abandon rejected changes?"):
             steps.append(
                 ConditionalStep(
-                    condition=ChangeStateCondition(
-                        comparison=ComparisonType.EQUAL, value=ChangeState.CHANGES_REQUESTED
+                    condition=ReviewStateCondition(
+                        comparison=ComparisonType.EQUAL, value=ReviewState.CHANGES_REQUESTED
                     ),
                     actions=[AbandonAction()],
                 )

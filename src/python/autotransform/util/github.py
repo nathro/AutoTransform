@@ -249,6 +249,32 @@ class PullRequest:
                 return review.state
         return None
 
+    def get_test_state(self) -> Optional[str]:
+        """Gets the state of tests on the PR using the checks API.
+
+        Returns:
+            Optional[str]: The combined state of test runs.
+        """
+
+        possible_conclusions = [
+            "action_required",
+            "canceled",
+            "timed_out",
+            "failure",
+            "neutral",
+            "success",
+        ]
+
+        checks = self._api.checks.list_for_ref(ref=self.branch)
+        for check in checks.check_runs:
+            if check.status != "completed":
+                return "pending"
+        results = {run.conclusion for run in checks.check_runs}
+        for conclusion in possible_conclusions:
+            if conclusion in results:
+                return conclusion
+        return "success"
+
     def get_labels(self) -> List[str]:
         """Gets the labels for a Pull Request.
 

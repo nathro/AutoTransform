@@ -13,7 +13,7 @@
                 }
             ],
             "condition": {
-                "name": "change_state",
+                "name": "review_state",
                 "comparison": "equal",
                 "value": "approved"
             }
@@ -26,7 +26,7 @@
                 }
             ],
             "condition": {
-                "name": "change_state",
+                "name": "review_state",
                 "comparison": "equal",
                 "value": "changes_requested"
             }

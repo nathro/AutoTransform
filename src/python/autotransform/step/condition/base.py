@@ -29,9 +29,11 @@ class ConditionName(str, Enum):
     CHANGE_STATE = "change_state"
     CREATED_AGO = "created_ago"
     LABELS = "labels"
+    REVIEW_STATE = "review_state"
     REVIEWERS = "reviewers"
     SCHEMA_NAME = "schema_name"
     TEAM_REVIEWERS = "team_reviewers"
+    TEST_STATE = "test_state"
     UPDATED_AGO = "updated_ago"
 
 
@@ -324,6 +326,9 @@ FACTORY = ComponentFactory(
         ConditionName.LABELS: ComponentImport(
             class_name="LabelsCondition", module="autotransform.step.condition.labels"
         ),
+        ConditionName.REVIEW_STATE: ComponentImport(
+            class_name="ReviewStateCondition", module="autotransform.step.condition.state"
+        ),
         ConditionName.REVIEWERS: ComponentImport(
             class_name="ReviewersCondition", module="autotransform.step.condition.reviewers"
         ),
@@ -332,6 +337,9 @@ FACTORY = ComponentFactory(
         ),
         ConditionName.TEAM_REVIEWERS: ComponentImport(
             class_name="TeamReviewersCondition", module="autotransform.step.condition.reviewers"
+        ),
+        ConditionName.TEST_STATE: ComponentImport(
+            class_name="TestStateCondition", module="autotransform.step.condition.state"
         ),
         ConditionName.UPDATED_AGO: ComponentImport(
             class_name="UpdatedAgoCondition", module="autotransform.step.condition.updated"

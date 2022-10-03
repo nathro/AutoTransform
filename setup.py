@@ -83,6 +83,7 @@ setuptools.setup(
             "autotransform = autotransform.scripts.main:main",
             "atmigrate-1.0.1 = autotransform.scripts.migrations.p1_0_1:main",
             "atmigrate-1.0.3 = autotransform.scripts.migrations.p1_0_3:main",
+            "atmigrate-1.0.5 = autotransform.scripts.migrations.p1_0_5:main",
         ],
     },
 )
