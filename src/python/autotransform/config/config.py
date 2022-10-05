@@ -18,7 +18,7 @@ from typing import Any, Dict, Optional, Tuple
 from autotransform.runner.base import FACTORY as runner_factory
 from autotransform.runner.base import Runner
 from autotransform.runner.github import GithubRunner
-from autotransform.runner.jenkins import JenkinsRunner
+from autotransform.runner.jenkins import JenkinsAPIRunner
 from autotransform.runner.local import LocalRunner
 from autotransform.util.component import ComponentModel
 from autotransform.util.console import choose_yes_or_no, get_str
@@ -392,7 +392,7 @@ class Config(ComponentModel):
             "simple": simple,
         }
         if use_jenkins:
-            args["default_value"] = JenkinsRunner(
+            args["default_value"] = JenkinsAPIRunner(
                 run_job_name="autotransform_run", update_job_name="autotransform_update"
             )
         elif use_github:
