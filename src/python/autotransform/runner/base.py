@@ -24,7 +24,8 @@ class RunnerName(str, Enum):
     """A simple enum for mapping."""
 
     GITHUB = "github"
-    JENKINS = "jenkins"
+    JENKINS_API = "jenkins_api"
+    JENKINS_FILE = "jenkins_file"
     LOCAL = "local"
 
 
@@ -60,8 +61,11 @@ FACTORY = ComponentFactory(
         RunnerName.GITHUB: ComponentImport(
             class_name="GithubRunner", module="autotransform.runner.github"
         ),
-        RunnerName.JENKINS: ComponentImport(
-            class_name="JenkinsRunner", module="autotransform.runner.jenkins"
+        RunnerName.JENKINS_API: ComponentImport(
+            class_name="JenkinsAPIRunner", module="autotransform.runner.jenkins"
+        ),
+        RunnerName.JENKINS_FILE: ComponentImport(
+            class_name="JenkinsFileRunner", module="autotransform.runner.jenkins"
         ),
         RunnerName.LOCAL: ComponentImport(
             class_name="LocalRunner", module="autotransform.runner.local"

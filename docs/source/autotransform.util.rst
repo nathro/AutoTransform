@@ -12,6 +12,7 @@ Utilities
    autotransform.util.cachedfile
    autotransform.util.component
    autotransform.util.console
+   autotransform.util.enums
    autotransform.util.github
    autotransform.util.manager
    autotransform.util.package

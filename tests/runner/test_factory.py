@@ -55,15 +55,9 @@ def test_encoding_and_decoding():
                 "update_workflow": "autotransform.update.yml",
             },
         ],
-        RunnerName.JENKINS: [
-            {
-                "run_job_name": "autotransform_run",
-                "update_job_name": "autotransform_update",
-            },
-        ],
-        RunnerName.LOCAL: [
-            {},
-        ],
+        RunnerName.JENKINS_API: [{"job_name": "autotransform_executor"}],
+        RunnerName.JENKINS_FILE: [{}],
+        RunnerName.LOCAL: [{}],
     }
 
     for name in RunnerName:
