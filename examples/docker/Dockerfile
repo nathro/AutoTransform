@@ -1,13 +1,9 @@
 FROM python:3.10
 
-ARG COMMAND
-ARG REPO_DIR
-ENV env_command $COMMAND
-
-COPY requirements.txt requirements.txt
 RUN pip install AutoTransform
+COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-WORKDIR $REPO_DIR
+WORKDIR repo
 
-CMD ./autotransform/docker_autotransform.sh $env_command
+CMD ./autotransform/docker_autotransform.sh
