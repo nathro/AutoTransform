@@ -346,7 +346,7 @@ class ComponentFactory(Generic[T], ABC):
             with open(component_json_path, "r", encoding="UTF-8") as component_file:
                 json_components = json.load(component_file)
         except FileNotFoundError:
-            EventHandler.get().handle(WarningEvent({"message": "Could not find components file."}))
+            EventHandler.get().handle(DebugEvent({"message": "No components file."}))
             json_components = {}
         if not isinstance(json_components, Dict):
             message = f"Malformed custom component file: {component_json_path}"
@@ -380,9 +380,12 @@ class ComponentFactory(Generic[T], ABC):
         Returns:
             str: The path where the custom component JSON is located.
         """
-        # Importing here to avoid a cyclic import
 
-        return f"{get_config().component_directory}/{component_file_name}"
+        component_directory = get_config().component_directory
+        if component_directory is None:
+            component_directory = "autotransform"
+
+        return f"{component_directory}/{component_file_name}"
 
     def _get_component_class(
         self,
