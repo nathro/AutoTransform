@@ -1,50 +1,34 @@
 #!/usr/bin/env bash
 
+echo "Building Docker image"
+
 docker build -f autotransform/Dockerfile \
-    --build-arg REPO_DIR=$REPO_DIR \
-    --build-arg COMMAND=$COMMAND \
     -t autotransform \
-    --no-cache \
     autotransform
 
-if [[ $COMMAND == "schedule" || $COMMAND == "manage" ]]; then
-    docker run -e AUTO_TRANSFORM_CONFIG=environment \
-        -e AUTO_TRANSFORM_GITHUB_TOKEN="$GITHUB_TOKEN" \
-        -e AUTO_TRANSFORM_JENKINS_TOKEN="$JENKINS_TOKEN"
-        -v "$(pwd)":/$REPO_DIR \
-        autotransform
-    RESULT=$?
-fi
+echo "Running Docker image"
+echo "Command: $COMMAND"
+echo "Schema Name: $SCHEMA_NAME"
+echo "Filter: $FILTER"
+echo "Max Submissions: $MAX_SUBMISSIONS"
+echo "Change: $AUTO_TRANSFORM_CHANGE"
 
-if [[ $COMMAND == "run" ]]; then
-    docker run -e AUTO_TRANSFORM_CONFIG=environment \
-        -e AUTO_TRANSFORM_GITHUB_TOKEN="$GITHUB_TOKEN" \
-        -e AUTO_TRANSFORM_JENKINS_TOKEN="$JENKINS_TOKEN"
-        -e FILTER="$FILTER" \
-        -e MAX_SUBMISSIONS="$MAX_SUBMISSIONS" \
-        -e SCHEMA_NAME="$SCHEMA_NAME" \
-        -v "$(pwd)":/$REPO_DIR \
-        autotransform
-    RESULT=$?
-fi
+docker run -e AUTO_TRANSFORM_CONFIG=environment \
+    -e AUTO_TRANSFORM_GITHUB_TOKEN="$GITHUB_TOKEN" \
+    -e COMMAND="$COMMAND" \
+    -e SCHEMA_NAME="$SCHEMA_NAME" \
+    -e FILTER="$FILTER" \
+    -e MAX_SUBMISSIONS="$MAX_SUBMISSIONS" \
+    -e AUTO_TRANSFORM_CHANGE="$AUTO_TRANSFORM_CHANGE" \
+    -v "$(pwd)":/repo \
+    autotransform
+RESULT=$?
 
-if [[ $COMMAND == "update" ]]; then
-    docker run -e AUTO_TRANSFORM_CONFIG=environment \
-        -e AUTO_TRANSFORM_GITHUB_TOKEN="$GITHUB_TOKEN" \
-        -e AUTO_TRANSFORM_JENKINS_TOKEN="$JENKINS_TOKEN"
-        -e AUTO_TRANSFORM_CHANGE="$AUTO_TRANSFORM_CHANGE" \
-        -v "$(pwd)":/$REPO_DIR \
-        autotransform
-    RESULT=$?
-fi
+docker container prune -f
 
-docker system prune -a -f >/dev/null 2>&1 &
-
-if [[ -z $RESULT ]]; then
-    echo "Unknown command $1"
-    exit 1
-fi
 if [[ $RESULT -ne 0 ]]; then
+    echo "Failed to execute AutoTransform"
     exit 1
 fi
+
 exit 0
