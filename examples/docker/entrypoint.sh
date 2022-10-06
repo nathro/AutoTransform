@@ -7,18 +7,19 @@ docker build -f autotransform/Dockerfile \
     autotransform
 
 echo "Running Docker image"
-echo "Command: $COMMAND"
-echo "Schema Name: $SCHEMA_NAME"
-echo "Filter: $FILTER"
-echo "Max Submissions: $MAX_SUBMISSIONS"
+echo "Command: $AUTO_TRANSFORM_COMMAND"
+echo "Schema Name: $AUTO_TRANSFORM_SCHEMA_NAME"
+echo "Filter: $AUTO_TRANSFORM_FILTER"
+echo "Max Submissions: $AUTO_TRANSFORM_MAX_SUBMISSIONS"
 echo "Change: $AUTO_TRANSFORM_CHANGE"
 
-docker run -e AUTO_TRANSFORM_CONFIG=environment \
-    -e AUTO_TRANSFORM_GITHUB_TOKEN="$GITHUB_TOKEN" \
-    -e COMMAND="$COMMAND" \
-    -e SCHEMA_NAME="$SCHEMA_NAME" \
-    -e FILTER="$FILTER" \
-    -e MAX_SUBMISSIONS="$MAX_SUBMISSIONS" \
+docker run \
+    -e AUTO_TRANSFORM_CONFIG=environment \
+    -e AUTO_TRANSFORM_GITHUB_TOKEN="$AUTO_TRANSFORM_GITHUB_TOKEN" \
+    -e AUTO_TRANSFORM_COMMAND="$AUTO_TRANSFORM_COMMAND" \
+    -e AUTO_TRANSFORM_SCHEMA_NAME="$AUTO_TRANSFORM_SCHEMA_NAME" \
+    -e AUTO_TRANSFORM_FILTER="$AUTO_TRANSFORM_FILTER" \
+    -e AUTO_TRANSFORM_MAX_SUBMISSIONS="$AUTO_TRANSFORM_MAX_SUBMISSIONS" \
     -e AUTO_TRANSFORM_CHANGE="$AUTO_TRANSFORM_CHANGE" \
     -v "$(pwd)":/repo \
     autotransform
