@@ -16,8 +16,7 @@
                 "name": "review_state",
                 "comparison": "equal",
                 "value": "approved"
-            },
-            "continue_if_passed": false
+            }
         },
         {
             "name": "conditional",
@@ -30,8 +29,7 @@
                 "name": "review_state",
                 "comparison": "equal",
                 "value": "changes_requested"
-            },
-            "continue_if_passed": false
+            }
         },
         {
             "name": "conditional",
@@ -44,8 +42,7 @@
                 "name": "updated_ago",
                 "comparison": "greater_than_or_equal",
                 "value": 259200
-            },
-            "continue_if_passed": false
+            }
         }
     ]
 }

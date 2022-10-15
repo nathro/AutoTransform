@@ -1,5 +1,8 @@
 # Change Log
 
+## Post Release 1.0.5
+ - Fixed migration scripts
+
 ## Release 1.0.5
 
 ### Migrations
