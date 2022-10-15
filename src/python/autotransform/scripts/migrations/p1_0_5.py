@@ -38,7 +38,6 @@ def get_arg_parser() -> ArgumentParser:
         help="A file path to the JSON encoded file, only use if file is in a non-usual place.",
     )
 
-    parser.add_argument()
     return parser
 
 
