@@ -1,5 +1,10 @@
 # Change Log
 
+## Release 1.0.6
+
+### Features
+ - Support GithubRunner using repos outside the schema's repo to trigger workflows.
+
 ## Post Release 1.0.5
  - Fixed migration scripts
 
