@@ -40,16 +40,13 @@ jobs:
         if [[ ! -z "${MAX_SUBMISSIONS}" ]]; then
           options="$options --max-submissions $MAX_SUBMISSIONS"
         fi
-        if [[ ! -z "${FILTER}" ]]; then
-          options="$options --filter '$FILTER'"
-        fi
         echo "OPTIONS=$options" >> $GITHUB_ENV
       env:
         MAX_SUBMISSIONS: ${{ github.event.inputs.max_submissions }}
-        FILTER: ${{ github.event.inputs.filter }}
     - name: Run AutoTransform
-      run: autotransform run ${{ env.OPTIONS }} "${{ github.event.inputs.schema }}"
+      run: autotransform run ${{ env.OPTIONS }} --filter "$FILTER" "${{ github.event.inputs.schema }}"
       env:
         AUTO_TRANSFORM_CONFIG: environment
         AUTO_TRANSFORM_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}
         AUTO_TRANSFORM_COMPONENT_DIRECTORY: <CUSTOM COMPONENTS>
+        FILTER: ${{ github.event.inputs.filter }}
