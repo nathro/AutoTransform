@@ -83,7 +83,7 @@ class GitRepo(Repo):
         # Replace bad characters
         substring_replacements = {":": "-", "^": "", "~": "", "..": "", " ": "_", "?": "", "*": ""}
         for substr, repl in substring_replacements.items():
-            branch_name.replace(substr, repl)
+            branch_name = branch_name.replace(substr, repl)
 
         return branch_name
 
