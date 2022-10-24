@@ -6,6 +6,9 @@
  - Support GithubRunner using repos outside the schema's repo to trigger workflows.
  - Make GitRepo strip some bad substrings from branch names
 
+### Fixes
+ - Made the GitGrepInput no longer include repo dir in the name of the file. This is unneeded for accessing the file and causes bad behavior when combined with things that use file names that are run on remote machines
+
 ## Post Release 1.0.5
  - Fixed migration scripts
 
