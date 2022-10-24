@@ -4,6 +4,7 @@
 
 ### Features
  - Support GithubRunner using repos outside the schema's repo to trigger workflows.
+ - Make GitRepo strip some bad substrings from branch names
 
 ## Post Release 1.0.5
  - Fixed migration scripts
