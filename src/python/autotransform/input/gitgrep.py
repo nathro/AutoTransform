@@ -37,8 +37,7 @@ class GitGrepInput(Input):
         Returns:
             Sequence[FileItem]: The eligible files for transformation.
         """
-        dir_cmd = ["git", "rev-parse", "--show-toplevel"]
-        repo_dir = subprocess.check_output(dir_cmd, encoding="UTF-8").replace("\\", "/").strip()
+
         git_grep_cmd = [
             "git",
             "grep",
@@ -47,12 +46,10 @@ class GitGrepInput(Input):
             "--untracked",
             "-e",
             self.pattern,
-            "--",
-            repo_dir,
         ]
 
         try:
             files = subprocess.check_output(git_grep_cmd, encoding="UTF-8").strip().splitlines()
         except subprocess.CalledProcessError:
             return []
-        return [FileItem(key=f"{repo_dir}/" + file.replace("\\", "/")) for file in files]
+        return [FileItem(key=file.replace("\\", "/")) for file in files]
