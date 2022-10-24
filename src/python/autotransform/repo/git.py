@@ -79,7 +79,7 @@ class GitRepo(Repo):
         else:
             schema_name = ""
 
-        branch_name = f"{GitRepo.BRANCH_NAME_PREFIX}/{schema_name}/{fixed_title}"
+        branch_name = f"{GitRepo.BRANCH_NAME_PREFIX}/{schema_name}{fixed_title}"
         # Replace bad characters
         substring_replacements = {":": "-", "^": "", "~": "", "..": "", " ": "_", "?": "", "*": ""}
         for substr, repl in substring_replacements.items():
