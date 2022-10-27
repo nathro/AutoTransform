@@ -70,7 +70,6 @@ def test_encoding_and_decoding():
             {"url": "test.com", "params": {"foo": "bar"}},
             {"url": "test.com", "data": {"foo": "bar"}},
             {"url": "test.com", "post": False},
-            {"url": "test.com", "log_request": True},
             {"url": "test.com", "log_response": True},
             {
                 "url": "test.com",

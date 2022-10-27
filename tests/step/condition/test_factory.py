@@ -113,6 +113,52 @@ def test_encoding_and_decoding():
                 "comparison": ComparisonType.EMPTY,
             },
         ],
+        ConditionName.REQUEST_STR: [
+            {
+                "url": "test.com",
+                "comparison": ComparisonType.EQUAL,
+                "value": "fizz",
+            },
+            {
+                "url": "test.com",
+                "headers": {"foo": "bar"},
+                "comparison": ComparisonType.EQUAL,
+                "value": "fizz",
+            },
+            {
+                "url": "test.com",
+                "params": {"foo": "bar"},
+                "comparison": ComparisonType.EQUAL,
+                "value": "fizz",
+            },
+            {
+                "url": "test.com",
+                "data": {"foo": "bar"},
+                "comparison": ComparisonType.EQUAL,
+                "value": "fizz",
+            },
+            {
+                "url": "test.com",
+                "post": False,
+                "comparison": ComparisonType.EQUAL,
+                "value": "fizz",
+            },
+            {
+                "url": "test.com",
+                "log_response": True,
+                "comparison": ComparisonType.EQUAL,
+                "value": "fizz",
+            },
+            {
+                "url": "test.com",
+                "headers": {"foo": "bar"},
+                "params": {"foo": "bar"},
+                "data": {"foo": "bar"},
+                "response_field": "baz",
+                "comparison": ComparisonType.EQUAL,
+                "value": "fizz",
+            },
+        ],
         ConditionName.REVIEW_STATE: [
             {
                 "comparison": ComparisonType.EQUAL,
