@@ -2,6 +2,9 @@
 
 ## Release 1.0.6
 
+### New Componentes
+ - RequestStrCondition
+
 ### Features
  - Support GithubRunner using repos outside the schema's repo to trigger workflows.
  - Make GitRepo strip some bad substrings from branch names

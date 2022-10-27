@@ -13,6 +13,7 @@ Conditions
    autotransform.step.condition.comparison
    autotransform.step.condition.aggregate
    autotransform.step.condition.created
+   autotransform.step.condition.request
    autotransform.step.condition.reviewers
    autotransform.step.condition.schema
    autotransform.step.condition.state
