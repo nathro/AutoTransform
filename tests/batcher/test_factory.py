@@ -56,6 +56,10 @@ def test_fetching_and_bundling():
             {"chunk_size": 5, "title": "foo", "metadata": {"body": "bar"}},
             {"chunk_size": 5, "title": "foo", "max_chunks": 5, "metadata": {"body": "bar"}},
         ],
+        BatcherName.CODEOWNERS: [
+            {"codeowners_location": "CODEOWNERS", "prefix": "foo"},
+            {"codeowners_location": "CODEOWNERS", "prefix": "foo", "metadata": {"body": "bar"}},
+        ],
         BatcherName.DIRECTORY: [
             {"prefix": "foo"},
             {"prefix": "foo", "metadata": {"body": "bar"}},

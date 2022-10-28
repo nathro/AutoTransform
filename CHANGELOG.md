@@ -2,8 +2,9 @@
 
 ## Release 1.0.6
 
-### New Componentes
+### New Components
  - RequestStrCondition
+ - CodeownersBatcher
 
 ### Features
  - Support GithubRunner using repos outside the schema's repo to trigger workflows.

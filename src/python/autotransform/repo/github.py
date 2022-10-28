@@ -34,7 +34,7 @@ if TYPE_CHECKING:
 
 # pylint: disable=too-few-public-methods
 class GithubRepoBatchMetadata(BaseModel):
-    """_summary_
+    """The metadata used by GithubRepo.
 
     Attributes:
         body (str): The body of the Pull Request to make.

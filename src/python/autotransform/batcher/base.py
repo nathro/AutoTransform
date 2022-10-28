@@ -25,6 +25,7 @@ class BatcherName(str, Enum):
     """A simple enum for mapping."""
 
     CHUNK = "chunk"
+    CODEOWNERS = "codeowners"
     DIRECTORY = "directory"
     EXTRA_DATA = "extra_data"
     FILE_REGEX = "file_regex"
@@ -67,6 +68,9 @@ FACTORY = ComponentFactory(
     {
         BatcherName.CHUNK: ComponentImport(
             class_name="ChunkBatcher", module="autotransform.batcher.chunk"
+        ),
+        BatcherName.CODEOWNERS: ComponentImport(
+            class_name="CodeownersBatcher", module="autotransform.batcher.codeowners"
         ),
         BatcherName.DIRECTORY: ComponentImport(
             class_name="DirectoryBatcher", module="autotransform.batcher.directory"
