@@ -76,6 +76,7 @@ setuptools.setup(
         "pydantic>=1.9.1",
         "libcst>=0.4.1",
         "requests>=2.28.1",
+        "codeowners>=0.6.0",
     ],
     python_requires=">=3.10",
     data_files=generate_datafiles(),
