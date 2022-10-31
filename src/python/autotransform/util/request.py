@@ -102,7 +102,7 @@ class RequestHandler(BaseModel):
             Dict[str, Any]: The replaced data.
         """
 
-        replaced_data = {}
+        replaced_data: Dict[str, Any] = {}
         for name, val in data.items():
             if isinstance(val, str):
                 match = re.match(f"<{identifier}:([^>]+)>", val)
@@ -112,6 +112,9 @@ class RequestHandler(BaseModel):
                         tmp_val = re.sub(f"<{identifier}:{group}>", replacer(group), tmp_val)
                     replaced_data[name] = tmp_val
                     continue
+            elif isinstance(val, Mapping):
+                replaced_data[name] = RequestHandler.replace_values(val, identifier, replacer)
+                continue
             replaced_data[name] = val
 
         return replaced_data
