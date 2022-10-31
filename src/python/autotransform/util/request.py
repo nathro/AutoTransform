@@ -26,6 +26,8 @@ class RequestHandler(BaseModel):
 
     Attributes:
         url(str): The URL to send a request to.
+        constant_ replacers (optional, Mapping[str, Callable[[str], str]]): The replacers
+            to apply to all usages of this handler. Defaults to {}.
         data(optional, Mapping[str, Any]): Data to include in the request. Defaults to {}.
         headers(optional, Mapping[str, Any]): Headers to include in the request. Defaults to {}.
         log_response(optional, bool): Indicates whether to log the response using DebugEvent.
@@ -36,7 +38,7 @@ class RequestHandler(BaseModel):
 
     url: str
 
-    constant_replacers: Mapping[str, Callable[[str], Any]]
+    constant_replacers: Mapping[str, Callable[[str], str]] = Field(default_factory=dict)
     data: Mapping[str, Any] = Field(default_factory=dict)
     headers: Mapping[str, Any] = Field(default_factory=dict)
     log_response: bool = False
@@ -87,7 +89,7 @@ class RequestHandler(BaseModel):
 
     @staticmethod
     def replace_values(
-        data: Mapping[str, Any], identifier: str, replacer: Callable[[str], Any]
+        data: Mapping[str, Any], identifier: str, replacer: Callable[[str], str]
     ) -> Dict[str, Any]:
         """Replaces values in a dictionary with values from a replacing function.
 
@@ -114,11 +116,11 @@ class RequestHandler(BaseModel):
 
         return replaced_data
 
-    def get_response(self, replacers: Dict[str, Callable[[str], Any]]) -> requests.Response:
+    def get_response(self, replacers: Dict[str, Callable[[str], str]]) -> requests.Response:
         """Gets the value from a REST API request.
 
         Args:
-            replacers (Dict[str, Callable[[str], Any]]): The replacers to use for the request.
+            replacers (Dict[str, Callable[[str], str]]): The replacers to use for the request.
 
         Returns:
             requests.Response: The response to the request.

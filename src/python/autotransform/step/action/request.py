@@ -59,7 +59,7 @@ class RequestAction(Action):
             params=self.params,
             log_response=self.log_response,
             post=self.post,
-            constant_replacers={"env": os.getenv},
+            constant_replacers={"env": lambda var: str(os.getenv(var) or "")},
         )
 
     def run(self, change: Change) -> bool:
@@ -72,6 +72,8 @@ class RequestAction(Action):
             bool: Whether the request returned a non-error response.
         """
 
-        response = self._handler.get_response({"change": lambda name: getattr(change, name)})
+        response = self._handler.get_response(
+            {"change": lambda name: str(getattr(change, name) or "")}
+        )
 
         return response.ok
