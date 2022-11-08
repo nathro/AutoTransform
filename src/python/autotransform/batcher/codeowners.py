@@ -113,11 +113,12 @@ class CodeownersBatcher(Batcher):
             batches.append(batch)
 
         # Add unowned batch
-        batch = {"items": batch_items, "title": f"{self.prefix} unowned"}
-        if self.metadata is not None:
-            # Deepcopy metadata to ensure mutations don't apply to all Batches
-            batch["metadata"] = deepcopy(self.metadata)
+        if no_owners:
+            batch = {"items": no_owners, "title": f"{self.prefix} unowned"}
+            if self.metadata is not None:
+                # Deepcopy metadata to ensure mutations don't apply to all Batches
+                batch["metadata"] = deepcopy(self.metadata)
 
-        batches.append(batch)
+            batches.append(batch)
 
         return batches
