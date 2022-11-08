@@ -45,7 +45,7 @@ def test_fetching_components():
         ), f"Component {component_name} has wrong name {component_class.name}"
 
 
-def test_fetching_and_bundling():
+def test_fetching_and_bundling() -> None:
     """Tests the fetching and bundling of components."""
 
     test_components: Dict[BatcherName, List[Dict[str, Any]]] = {

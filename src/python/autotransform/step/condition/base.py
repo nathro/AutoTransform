@@ -349,6 +349,6 @@ FACTORY = ComponentFactory(
             class_name="UpdatedAgoCondition", module="autotransform.step.condition.updated"
         ),
     },
-    Condition,  # type: ignore [misc]
+    Condition,  # type: ignore [type-abstract]
     "condition.json",
 )

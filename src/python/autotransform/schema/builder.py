@@ -141,6 +141,6 @@ class SchemaBuilder(NamedComponent):
 
 FACTORY = ComponentFactory(
     {},
-    SchemaBuilder,  # type: ignore [misc]
+    SchemaBuilder,  # type: ignore [type-abstract]
     "schema_builder.json",
 )

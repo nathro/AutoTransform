@@ -72,6 +72,6 @@ FACTORY = ComponentFactory(
             class_name="InlineGenericInput", module="autotransform.input.inline"
         ),
     },
-    Input,  # type: ignore [misc]
+    Input,  # type: ignore [type-abstract]
     "input.json",
 )

@@ -55,6 +55,6 @@ FACTORY = ComponentFactory(
             class_name="ScriptCommand", module="autotransform.command.script"
         ),
     },
-    Command,  # type: ignore [misc]
+    Command,  # type: ignore [type-abstract]
     "command.json",
 )

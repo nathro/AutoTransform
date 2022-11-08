@@ -78,6 +78,6 @@ FACTORY = ComponentFactory(
             class_name="KeyHashShardFilter", module="autotransform.filter.key_hash_shard"
         ),
     },
-    Filter,  # type: ignore [misc]
+    Filter,  # type: ignore [type-abstract]
     "filter.json",
 )

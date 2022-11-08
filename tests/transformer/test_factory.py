@@ -49,7 +49,7 @@ def test_fetching_components():
         ), f"Component {component_name} has wrong name {component_class.name}"
 
 
-def test_encoding_and_decoding():
+def test_encoding_and_decoding() -> None:
     """Tests the encoding and decoding of components."""
 
     test_components: Dict[TransformerName, List[Dict[str, Any]]] = {

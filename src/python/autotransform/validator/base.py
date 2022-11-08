@@ -127,6 +127,6 @@ FACTORY = ComponentFactory(
             class_name="ScriptValidator", module="autotransform.validator.script"
         ),
     },
-    Validator,  # type: ignore [misc]
+    Validator,  # type: ignore [type-abstract]
     "validator.json",
 )

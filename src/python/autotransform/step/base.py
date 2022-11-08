@@ -66,6 +66,6 @@ FACTORY = ComponentFactory(
             class_name="ConditionalStep", module="autotransform.step.conditional"
         ),
     },
-    Step,  # type: ignore [misc]
+    Step,  # type: ignore [type-abstract]
     "step.json",
 )

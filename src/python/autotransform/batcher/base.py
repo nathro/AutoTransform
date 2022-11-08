@@ -85,6 +85,6 @@ FACTORY = ComponentFactory(
             class_name="SingleBatcher", module="autotransform.batcher.single"
         ),
     },
-    Batcher,  # type: ignore [misc]
+    Batcher,  # type: ignore [type-abstract]
     "batcher.json",
 )
