@@ -38,8 +38,8 @@ def test_get_branch_name(mock_schema):
     schema.config = SchemaConfig(schema_name="Test Schema")
     mock_schema.current = schema
 
-    assert GitRepo.get_branch_name("Test Title") == "AUTO_TRANSFORM/Test_Schema/Test_Title"
-    assert GitRepo.get_branch_name("[1/2] Test") == "AUTO_TRANSFORM/Test_Schema/1_2_Test"
+    assert GitRepo.get_branch_name("Test Title") == "AUTO_TRANSFORM__Test_Schema__Test_Title"
+    assert GitRepo.get_branch_name("[1/2] Test") == "AUTO_TRANSFORM__Test_Schema__1_2_Test"
 
 
 @mock.patch.object(autotransform, "schema")
