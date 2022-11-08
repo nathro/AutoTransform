@@ -15,7 +15,7 @@ codeowners>=0.6.0
 black>=22.3.0
 
 # Type Checking
-mypy>=0.950
+mypy>=0.990
 types-colorama>=0.4.13
 types-mock>=4.0.13
 types-pytz>=2021.3.7
