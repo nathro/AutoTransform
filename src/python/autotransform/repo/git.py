@@ -81,7 +81,16 @@ class GitRepo(Repo):
 
         branch_name = f"{GitRepo.BRANCH_NAME_PREFIX}/{schema_name}{fixed_title}"
         # Replace bad characters
-        substring_replacements = {":": "-", "^": "", "~": "", "..": "", " ": "_", "?": "", "*": ""}
+        substring_replacements = {
+            "/": "__",
+            ":": "-",
+            "^": "",
+            "~": "",
+            "..": "",
+            " ": "_",
+            "?": "",
+            "*": "",
+        }
         for substr, repl in substring_replacements.items():
             branch_name = branch_name.replace(substr, repl)
 
