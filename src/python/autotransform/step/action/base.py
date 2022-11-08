@@ -93,6 +93,6 @@ FACTORY = ComponentFactory(
             class_name="UpdateAction", module="autotransform.step.action.source"
         ),
     },
-    Action,  # type: ignore [misc]
+    Action,  # type: ignore [type-abstract]
     "action.json",
 )

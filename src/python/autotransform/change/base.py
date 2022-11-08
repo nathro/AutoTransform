@@ -139,6 +139,7 @@ class Change(NamedComponent):
             List[str]: The list of team reviewers.
         """
 
+    @abstractmethod
     def get_created_timestamp(self) -> int:
         """Returns the timestamp when the Change was created.
 
@@ -146,6 +147,7 @@ class Change(NamedComponent):
             int: The timestamp in seconds when the Change was created.
         """
 
+    @abstractmethod
     def get_last_updated_timestamp(self) -> int:
         """Returns the timestamp when the Change was last updated.
 
@@ -235,6 +237,6 @@ FACTORY = ComponentFactory(
             class_name="GithubChange", module="autotransform.change.github"
         ),
     },
-    Change,  # type: ignore [misc]
+    Change,  # type: ignore [type-abstract]
     "change.json",
 )

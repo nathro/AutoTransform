@@ -66,6 +66,6 @@ FACTORY = ComponentFactory(
             class_name="ScriptTransformer", module="autotransform.transformer.script"
         ),
     },
-    Transformer,  # type: ignore [misc]
+    Transformer,  # type: ignore [type-abstract]
     "transformer.json",
 )

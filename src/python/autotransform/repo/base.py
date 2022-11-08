@@ -122,6 +122,6 @@ FACTORY = ComponentFactory(
             class_name="GithubRepo", module="autotransform.repo.github"
         ),
     },
-    Repo,  # type: ignore [misc]
+    Repo,  # type: ignore [type-abstract]
     "repo.json",
 )

@@ -71,6 +71,6 @@ FACTORY = ComponentFactory(
             class_name="LocalRunner", module="autotransform.runner.local"
         ),
     },
-    Runner,  # type: ignore [misc]
+    Runner,  # type: ignore [type-abstract]
     "runner.json",
 )
