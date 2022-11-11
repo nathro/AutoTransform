@@ -1,5 +1,9 @@
 # Change Log
 
+## Release 1.0.7
+
+### New Components
+ - MergeableStateCondition
 ## Release 1.0.6
 
 ### New Components

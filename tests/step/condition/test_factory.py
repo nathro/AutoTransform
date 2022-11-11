@@ -113,6 +113,12 @@ def test_encoding_and_decoding() -> None:
                 "comparison": ComparisonType.EMPTY,
             },
         ],
+        ConditionName.MERGEABLE_STATE: [
+            {
+                "comparison": ComparisonType.EQUAL,
+                "value": "has_hooks",
+            },
+        ],
         ConditionName.REQUEST_STR: [
             {
                 "url": "test.com",

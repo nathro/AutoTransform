@@ -46,6 +46,34 @@ class ChangeStateCondition(ComparisonCondition[ChangeState]):
         return change.get_state()
 
 
+class MergeableStateCondition(ComparisonCondition[str]):
+    """A condition which checks the mergeable state against the state supplied using the supplied
+    comparison.
+
+    Attributes:
+        comparison (ComparisonType): The type of comparison to perform.
+        value (str | List[str]): The state(s) to compare against.
+        name (ClassVar[ConditionName]): The name of the Component.
+    """
+
+    comparison: ComparisonType
+    value: str | List[str]
+
+    name: ClassVar[ConditionName] = ConditionName.MERGEABLE_STATE
+
+    def get_val_from_change(self, change: Change) -> str:
+        """Gets the mergeable state from the Change.
+
+        Args:
+            change (Change): The Change the Condition is checking.
+
+        Returns:
+            str: The mergeable state of the Change.
+        """
+
+        return change.get_mergeable_state()
+
+
 class ReviewStateCondition(ComparisonCondition[ReviewState]):
     """A condition which checks the ReviewState against the state supplied using the supplied
     comparison.
