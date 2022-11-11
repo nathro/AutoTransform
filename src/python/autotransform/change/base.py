@@ -100,6 +100,14 @@ class Change(NamedComponent):
         """
 
     @abstractmethod
+    def get_mergeable_state(self) -> str:
+        """Gets the mergeable state of the Change.
+
+        Returns:
+            ChangeState: The mergeable state of the Change.
+        """
+
+    @abstractmethod
     def get_review_state(self) -> ReviewState:
         """Gets the current review state of the Change.
 

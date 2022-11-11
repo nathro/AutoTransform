@@ -29,6 +29,7 @@ class ConditionName(str, Enum):
     CHANGE_STATE = "change_state"
     CREATED_AGO = "created_ago"
     LABELS = "labels"
+    MERGEABLE_STATE = "mergeable_state"
     REQUEST_STR = "request_str"
     REVIEW_STATE = "review_state"
     REVIEWERS = "reviewers"
@@ -326,6 +327,9 @@ FACTORY = ComponentFactory(
         ),
         ConditionName.LABELS: ComponentImport(
             class_name="LabelsCondition", module="autotransform.step.condition.labels"
+        ),
+        ConditionName.MERGEABLE_STATE: ComponentImport(
+            class_name="MergeableStateCondition", module="autotransform.step.condition.state"
         ),
         ConditionName.REQUEST_STR: ComponentImport(
             class_name="RequestStrCondition", module="autotransform.step.condition.request"

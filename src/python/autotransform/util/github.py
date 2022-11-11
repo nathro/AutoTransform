@@ -171,6 +171,7 @@ class PullRequest:
     Attributes:
         body (str): The body of the pull request.
         branch (str): The branch of the pull request.
+        mergeable_state (str): The mergeability state of the PR.
         merged (bool): Whether the pull request has been merged.
         number (int): The number of the pull request.
         _api (GhApi): The API object used to access Github's API.
@@ -181,6 +182,7 @@ class PullRequest:
 
     body: str
     branch: str
+    mergeable_state: str
     merged: bool
     number: int
     owner_id: int
@@ -191,6 +193,7 @@ class PullRequest:
     def __init__(self, api: GhApi, pull: AttrDict):
         self.body = pull.body
         self.branch = pull.head.ref
+        self.mergeable_state = pull.mergeable_state
         self.merged = pull.merged if "merged" in pull else False
         self.number = pull.number
         self.owner_id = pull.user.id

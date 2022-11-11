@@ -92,6 +92,15 @@ class GithubChange(Change):
             return ChangeState.CLOSED
         return ChangeState.OPEN
 
+    def get_mergeable_state(self) -> str:
+        """Gets the mergeable state of the Change.
+
+        Returns:
+            ChangeState: The mergeable state of the Change.
+        """
+
+        return self._pull_request.mergeable_state
+
     def get_review_state(self) -> ReviewState:
         """Gets the current review state of the Change.
 
