@@ -99,7 +99,7 @@ class GithubChange(Change):
             ChangeState: The mergeable state of the Change.
         """
 
-        return self._pull_request.mergeable_state
+        return self._pull_request.get_mergeable_state()
 
     def get_review_state(self) -> ReviewState:
         """Gets the current review state of the Change.

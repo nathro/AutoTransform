@@ -182,7 +182,6 @@ class PullRequest:
 
     body: str
     branch: str
-    mergeable_state: str
     merged: bool
     number: int
     owner_id: int
@@ -193,7 +192,6 @@ class PullRequest:
     def __init__(self, api: GhApi, pull: AttrDict):
         self.body = pull.body
         self.branch = pull.head.ref
-        self.mergeable_state = pull.mergeable_state
         self.merged = pull.merged if "merged" in pull else False
         self.number = pull.number
         self.owner_id = pull.user.id
@@ -307,6 +305,16 @@ class PullRequest:
         return self._reviewers[1]
 
     @cached_property
+    def _detailed_info(self) -> AttrDict:
+        """A cached value of the detailed info from the Github API.
+
+        Returns:
+            AttrDict: The detailed info of the PR
+        """
+
+        return self._api.pulls.get(pull_number=self.number)
+
+    @cached_property
     def _reviewers(self) -> Tuple[List[str], List[str]]:
         """A cached value of the reviewers of the change.
 
@@ -335,6 +343,18 @@ class PullRequest:
             int: The timestamp for when the pull request was updated.
         """
         return int(pytz.utc.localize(gh2date(self._updated_at)).timestamp())
+
+    def get_mergeable_state(self) -> str:
+        """Gets the mergeable state of the PR.
+
+        Returns:
+            str: The mergeable state.
+        """
+        return (
+            str(self._detailed_info.mergeable_state)
+            if "mergeable_state" in self._detailed_info
+            else "unknown"
+        )
 
     def add_labels(self, labels: List[str]) -> None:
         """Adds a list of labels to the pull request.
