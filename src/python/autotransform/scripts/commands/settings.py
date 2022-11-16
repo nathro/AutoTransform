@@ -116,7 +116,7 @@ def settings_command_main(args: Namespace) -> None:
     """
 
     if args.setting_type == "user_config":
-        path = f"{get_config_dir}/{CONFIG_FILE_NAME}"
+        path = f"{get_config_dir()}/{CONFIG_FILE_NAME}"
         handle_config(path, "User", args.update_settings)
     elif args.setting_type == "repo_config":
         path = f"{get_repo_config_dir()}/{CONFIG_FILE_NAME}"
