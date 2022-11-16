@@ -24,6 +24,7 @@ from ghapi.all import GhApi, gh2date  # type: ignore
 from autotransform.config import get_config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
+from autotransform.repo.git import GitRepo
 
 
 class GithubUtils:
@@ -143,7 +144,9 @@ class GithubUtils:
             page = page + 1
             all_pulls = all_pulls.union([pr.number for pr in prs["items"]])
 
-        return [self.get_pull_request(pull_number) for pull_number in all_pulls]
+        pulls = [self.get_pull_request(pull_number) for pull_number in all_pulls]
+
+        return [pull for pull in pulls if pull.branch.startswith(GitRepo.BRANCH_NAME_PREFIX)]
 
     def create_workflow_dispatch(
         self, workflow: str | int, ref: str, inputs: Dict[str, Any]
