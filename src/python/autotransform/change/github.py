@@ -269,12 +269,12 @@ class GithubChange(Change):
         self._pull_request.remove_label(label)
         return True
 
-    @cached_property
+    @property
     def _pull_request(self) -> PullRequest:
-        """Gets the Pull Request as a cached property.
+        """Gets the Pull Request.
 
         Returns:
-            PullRequest: The PullRequest.
+            PullRequest: The Pull Request.
         """
 
         return GithubUtils.get(self.full_github_name).get_pull_request(self.pull_number)
