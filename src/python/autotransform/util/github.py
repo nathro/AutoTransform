@@ -14,7 +14,7 @@ from __future__ import annotations
 import time
 from datetime import datetime, timedelta
 from functools import cached_property
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 from urllib.error import HTTPError
 
 import pytz
@@ -38,6 +38,7 @@ class GithubUtils:
     __instances: Dict[str, GithubUtils] = {}
 
     _api: GhApi
+    _pulls: Dict[int, PullRequest]
 
     BEGIN_SCHEMA: str = "<<<<BEGIN SCHEMA>>>>"
     END_SCHEMA: str = "<<<<END SCHEMA>>>>"
@@ -58,6 +59,7 @@ class GithubUtils:
         url = get_config().github_base_url
         repo_parts = fully_qualified_repo.split("/")
         self._api = GhApi(token=token, gh_host=url, owner=repo_parts[0], repo=repo_parts[1])
+        self._pulls: Dict[int, PullRequest] = {}
 
     @staticmethod
     def get(fully_qualified_repo: str) -> GithubUtils:
@@ -101,7 +103,7 @@ class GithubUtils:
         return PullRequest(self._api, pull)
 
     def get_pull_request(self, pull_number: int) -> PullRequest:
-        """Gets a pull request from the Github API.
+        """Gets a pull request.
 
         Args:
             pull_number (int): The number of the pull request.
@@ -110,7 +112,9 @@ class GithubUtils:
             PullRequest: The pull request.
         """
 
-        return PullRequest(self._api, self._api.pulls.get(pull_number=pull_number))
+        if pull_number not in self._pulls:
+            self._pulls[pull_number] = PullRequest(self._api, pull_number)
+        return self._pulls[pull_number]
 
     def get_open_pull_requests(self, base: Optional[str] = None) -> List[PullRequest]:
         """Gets all outstanding pull requests from the repo.
@@ -123,8 +127,23 @@ class GithubUtils:
             List[PullRequest]: The list of all requests outstanding for the repo.
         """
 
-        pulls = self._api.pulls.list(state="open", base=base, sort="created", direction="desc")
-        return [PullRequest(self._api, pull) for pull in pulls]
+        username = self._api.users.get_authenticated().login
+        query = f"type:pr state:open author:{username}"
+        if base is not None:
+            query = f"{query} base:{base}"
+        page = 1
+        num_per_page = 100
+        fetch_more = True
+        all_pulls: Set[int] = set()
+        while fetch_more:
+            prs = self._api.search.issues_and_pull_requests(
+                q=query, sort="created", order="desc", per_page=num_per_page, page=page
+            )
+            fetch_more = len(prs["items"]) == num_per_page
+            page = page + 1
+            all_pulls = all_pulls.union([pr.number for pr in prs["items"]])
+
+        return [self.get_pull_request(pull_number) for pull_number in all_pulls]
 
     def create_workflow_dispatch(
         self, workflow: str | int, ref: str, inputs: Dict[str, Any]
@@ -165,55 +184,62 @@ class GithubUtils:
             return None
 
 
+# pylint: disable=too-many-public-methods
 class PullRequest:
     """A wrapper around GhApi pull request response for simplified access to pull request info.
 
     Attributes:
-        body (str): The body of the pull request.
-        branch (str): The branch of the pull request.
-        mergeable_state (str): The mergeability state of the PR.
-        merged (bool): Whether the pull request has been merged.
         number (int): The number of the pull request.
         _api (GhApi): The API object used to access Github's API.
-        _state (str): The state of the pull request.
     """
 
-    # pylint: disable=too-many-instance-attributes
-
-    body: str
-    branch: str
-    merged: bool
     number: int
-    owner_id: int
 
     _api: GhApi
-    _state: str
 
-    def __init__(self, api: GhApi, pull: AttrDict):
-        self.body = pull.body
-        self.branch = pull.head.ref
-        self.merged = pull.merged if "merged" in pull else False
-        self.number = pull.number
-        self.owner_id = pull.user.id
-        self._created_at = pull.created_at
-        self._updated_at = pull.updated_at
+    def __init__(self, api: GhApi, pull_number: int):
+        self.number = pull_number
         self._api = api
-        self._state = pull.state
 
-    @staticmethod
-    def get_from_number(api: GhApi, pull_number: int) -> PullRequest:
-        """Gets a pull request with the given number.
-
-        Args:
-            api (GhApi): The API object used to access Github's API.
-            pull_number (int): The number of the pull request.
+    @property
+    def body(self) -> str:
+        """Gets the body of the pull request.
 
         Returns:
-            PullRequest: The pull request associated with the number.
+            str: The body of the pull request.
         """
 
-        pull = api.pulls.get(pull_number=pull_number)
-        return PullRequest(api, pull)
+        return self._detailed_info.body
+
+    @property
+    def branch(self) -> str:
+        """Gets the name of the head branch for the pull request.
+
+        Returns:
+            str: The name of the head branch.
+        """
+
+        return self._detailed_info.head.ref
+
+    @property
+    def merged(self) -> bool:
+        """Whether the pull request has been merged.
+
+        Returns:
+            bool: Whether the pull request was merged.
+        """
+
+        return self._detailed_info.merged
+
+    @property
+    def owner_id(self) -> int:
+        """The ID of the user that created the pull request.
+
+        Returns:
+            int: The ID of the owner of the pull request.
+        """
+
+        return self._detailed_info.user.id
 
     def is_open(self) -> bool:
         """A simple check if the pull request is open.
@@ -222,7 +248,7 @@ class PullRequest:
             bool: Whether the pull request is open.
         """
 
-        return self._state == "open"
+        return self._detailed_info.state == "open"
 
     def is_closed(self) -> bool:
         """A simple check if the pull request is closed.
@@ -334,7 +360,7 @@ class PullRequest:
         Returns:
             int: The timestamp for when the pull request was created.
         """
-        return int(pytz.utc.localize(gh2date(self._created_at)).timestamp())
+        return int(pytz.utc.localize(gh2date(self._detailed_info.created_at)).timestamp())
 
     def get_updated_at(self) -> int:
         """Gets the updated at timestamp.
@@ -342,7 +368,7 @@ class PullRequest:
         Returns:
             int: The timestamp for when the pull request was updated.
         """
-        return int(pytz.utc.localize(gh2date(self._updated_at)).timestamp())
+        return int(pytz.utc.localize(gh2date(self._detailed_info.updated_at)).timestamp())
 
     def get_mergeable_state(self) -> str:
         """Gets the mergeable state of the PR.

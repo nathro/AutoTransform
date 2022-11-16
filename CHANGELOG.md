@@ -4,6 +4,11 @@
 
 ### New Components
  - MergeableStateCondition
+
+### Fixes
+ - Fixed an issue with user config not saving to the right location when using settings command
+ - Fixed an issue where get_open_pull_requests didn't work for GithubRepos with large numbers of open PRs
+
 ## Release 1.0.6
 
 ### New Components
