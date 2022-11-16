@@ -19,13 +19,14 @@ from typing import Any, Dict, List, Optional, Type
 
 from pydantic import validator
 
-from autotransform.config import get_config, get_repo_config_relative_path
+from autotransform.config import get_repo_config_relative_path
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.schedulerun import ScheduleRunEvent
 from autotransform.filter.base import FACTORY as filter_factory
 from autotransform.filter.key_hash_shard import KeyHashShardFilter
 from autotransform.filter.shard import ShardFilter
+from autotransform.runner.base import Runner
 from autotransform.schema.builder import FACTORY as schema_builder_factory
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.util.component import ComponentModel
@@ -262,7 +263,7 @@ class Scheduler(ComponentModel):
     excluded_days: List[int]
     schemas: List[ScheduledSchema]
 
-    def run(self, start_time: int) -> None:
+    def run(self, start_time: int, runner: Runner) -> None:
         """Runs the schedule.
 
         Args:
@@ -287,9 +288,6 @@ class Scheduler(ComponentModel):
                 DebugEvent({"message": f"Day {day_of_week} is excluded, skipping run"})
             )
             return
-
-        runner = get_config().remote_runner
-        assert runner is not None
 
         map_file_path = f"{get_repo_config_relative_path()}/schema_map.json"
         with open(map_file_path, "r", encoding="UTF-8") as map_file:

@@ -42,7 +42,26 @@ def add_args(parser: ArgumentParser) -> None:
         required=False,
         help="Tells the script to output verbose logs.",
     )
-    parser.set_defaults(func=manage_command_main)
+
+    mode_group = parser.add_mutually_exclusive_group()
+    mode_group.add_argument(
+        "-l",
+        "--local",
+        dest="run_local",
+        action="store_true",
+        required=False,
+        help="Tells the script to use the local runner.",
+    )
+    mode_group.add_argument(
+        "-r",
+        "--remote",
+        dest="run_local",
+        action="store_false",
+        required=False,
+        help="Tells the script to use the remote runner. This is the default mode.",
+    )
+
+    parser.set_defaults(run_local=False, func=manage_command_main)
 
 
 def manage_command_main(args: Namespace) -> None:
@@ -67,4 +86,4 @@ def manage_command_main(args: Namespace) -> None:
     event_handler.handle(ScriptRunEvent({"script": "manage", "args": event_args}))
 
     event_handler.handle(DebugEvent({"message": f"Running manager: {manager!r}"}))
-    manager.run()
+    manager.run(args.run_local)

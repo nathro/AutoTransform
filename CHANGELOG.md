@@ -9,6 +9,10 @@
  - Fixed an issue with user config not saving to the right location when using settings command
  - Fixed an issue where get_open_pull_requests didn't work for GithubRepos with large numbers of open PRs
 
+### Misc
+ - Manage command can now be run using a local runner
+ - Schedule command can now be run using a local runner
+
 ## Release 1.0.6
 
 ### New Components
