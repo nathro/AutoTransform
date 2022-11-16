@@ -16,6 +16,7 @@ import os
 from typing import Any, Dict, List, Optional
 
 from autotransform.change.base import ReviewState
+from autotransform.config import get_config
 from autotransform.event.action import ManageActionEvent
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
@@ -23,6 +24,7 @@ from autotransform.repo.base import FACTORY as repo_factory
 from autotransform.repo.base import Repo, RepoName
 from autotransform.repo.git import GitRepo
 from autotransform.repo.github import GithubRepo
+from autotransform.runner.local import LocalRunner
 from autotransform.step.action.source import AbandonAction, MergeAction, UpdateAction
 from autotransform.step.base import FACTORY as step_factory
 from autotransform.step.base import Step
@@ -50,8 +52,19 @@ class Manager(ComponentModel):
     repo: Repo
     steps: List[Step]
 
-    def run(self) -> None:
-        """Runs the management."""
+    def run(self, run_local: bool = False) -> None:
+        """Runs the management steps.
+
+        Args:
+            run_local (bool, optional): Whether to use local runners. Defaults to False.
+        """
+
+        if run_local:
+            runner = get_config().local_runner
+        else:
+            runner = get_config().remote_runner
+
+        UpdateAction.set_runner(runner or LocalRunner())
 
         changes = self.repo.get_outstanding_changes()
         for change in changes:

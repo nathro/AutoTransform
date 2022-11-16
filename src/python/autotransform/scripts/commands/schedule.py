@@ -12,11 +12,12 @@
 import time
 from argparse import ArgumentParser, Namespace
 
-from autotransform.config import get_repo_config_relative_path
+from autotransform.config import get_config, get_repo_config_relative_path
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.run import ScriptRunEvent
+from autotransform.runner.local import LocalRunner
 from autotransform.util.scheduler import Scheduler
 
 
@@ -44,6 +45,7 @@ def add_args(parser: ArgumentParser) -> None:
         help="The timestamp to use in place of the current time, used in cases where delays in "
         + "scheduling are likely.",
     )
+
     parser.add_argument(
         "-v",
         "--verbose",
@@ -52,7 +54,26 @@ def add_args(parser: ArgumentParser) -> None:
         required=False,
         help="Tells the script to output verbose logs.",
     )
-    parser.set_defaults(func=schedule_command_main)
+
+    mode_group = parser.add_mutually_exclusive_group()
+    mode_group.add_argument(
+        "-l",
+        "--local",
+        dest="run_local",
+        action="store_true",
+        required=False,
+        help="Tells the script to use the local runner.",
+    )
+    mode_group.add_argument(
+        "-r",
+        "--remote",
+        dest="run_local",
+        action="store_false",
+        required=False,
+        help="Tells the script to use the remote runner. This is the default mode.",
+    )
+
+    parser.set_defaults(run_local=False, func=schedule_command_main)
 
 
 def schedule_command_main(args: Namespace) -> None:
@@ -79,4 +100,8 @@ def schedule_command_main(args: Namespace) -> None:
     event_handler.handle(ScriptRunEvent({"script": "schedule", "args": event_args}))
 
     event_handler.get().handle(DebugEvent({"message": f"Running scheduler: {scheduler!r}"}))
-    scheduler.run(start_time)
+    if args.run_local:
+        runner = get_config().local_runner
+    else:
+        runner = get_config().remote_runner
+    scheduler.run(start_time, runner or LocalRunner())

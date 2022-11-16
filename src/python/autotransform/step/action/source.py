@@ -9,11 +9,9 @@
 
 """All Actions associated with handling source control options for a Change."""
 
-from functools import cached_property
 from typing import ClassVar
 
 from autotransform.change.base import Change
-from autotransform.config import get_config
 from autotransform.runner.base import Runner
 from autotransform.step.action.base import Action, ActionName
 
@@ -88,26 +86,23 @@ class UpdateAction(Action):
     """Updates an outstanding Change.
 
     Attributes:
-        use_local_runner(optional, bool): Whether to use the local runner. Defaults to False.
+        _runner (ClassVar[Runner]): The runner to use for updating
         name (ClassVar[ActionName]): The name of the component.
     """
 
-    use_local_runner: bool = False
+    _runner: ClassVar[Runner]
 
     name: ClassVar[ActionName] = ActionName.UPDATE
 
-    @cached_property
-    def _runner(self) -> Runner:
-        """A cached Runner from the config.
+    @staticmethod
+    def set_runner(runner: Runner) -> None:
+        """Sets the runner for the Action to use.
 
-        Returns:
-            Runner: The Runner to use to update Changes.
+        Args:
+            runner (Runner): The Runner to use to update Changes.
         """
 
-        conf = get_config()
-        runner = conf.local_runner if self.use_local_runner else conf.remote_runner
-        assert runner is not None
-        return runner
+        UpdateAction._runner = runner
 
     def run(self, change: Change) -> bool:
         """Updates a specified Change.
@@ -119,4 +114,4 @@ class UpdateAction(Action):
             bool: Whether the Change was updated successfully.
         """
 
-        return change.update(self._runner)
+        return change.update(UpdateAction._runner)
