@@ -18,13 +18,12 @@ from typing import Any, Dict, List, Optional, Set, Tuple
 from urllib.error import HTTPError
 
 import pytz
-from fastcore.basics import AttrDict  # type: ignore
-from ghapi.all import GhApi, gh2date  # type: ignore
-
 from autotransform.config import get_config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.repo.git import GitRepo
+from fastcore.basics import AttrDict  # type: ignore
+from ghapi.all import GhApi, gh2date  # type: ignore
 
 
 class GithubUtils:
@@ -101,7 +100,7 @@ class GithubUtils:
         """
 
         pull = self._api.pulls.create(title=title, head=head, base=base, body=body)
-        return PullRequest(self._api, pull)
+        return PullRequest(self._api, pull.number)
 
     def get_pull_request(self, pull_number: int) -> PullRequest:
         """Gets a pull request.
