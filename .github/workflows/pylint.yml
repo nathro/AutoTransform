@@ -24,4 +24,4 @@ jobs:
     - name: Install Dependencies
       run: pip install -r requirements.txt
     - name: Check pylint
-      run: pylint --enable=W0611,R0902,R0903,R0913,R1732 --disable=C0103,R0401,R0801,R0914,R0915 src/python/autotransform tests
+      run: pylint --enable=W0611,R0902,R0903,R0913,R1732 --disable=C0103,C0411,R0401,R0801,R0914,R0915 src/python/autotransform tests
