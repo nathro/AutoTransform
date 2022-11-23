@@ -1,5 +1,5 @@
-autotransform.util.request module
-=================================
+RequestHandler (autotransform.util.request)
+===========================================
 
 .. automodule:: autotransform.util.request
    :members:

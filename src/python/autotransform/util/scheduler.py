@@ -17,7 +17,6 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Type
 
-from autotransform.config import get_schema_map_path
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.schedulerun import ScheduleRunEvent
@@ -25,8 +24,6 @@ from autotransform.filter.base import FACTORY as filter_factory
 from autotransform.filter.key_hash_shard import KeyHashShardFilter
 from autotransform.filter.shard import ShardFilter
 from autotransform.runner.base import Runner
-from autotransform.schema.builder import FACTORY as schema_builder_factory
-from autotransform.schema.schema import AutoTransformSchema
 from autotransform.util.component import ComponentModel
 from autotransform.util.console import (
     choose_option,
@@ -38,7 +35,7 @@ from autotransform.util.console import (
     input_int,
     input_ints,
 )
-from autotransform.util.enums import SchemaType
+from autotransform.util.schema_map import SchemaMap
 from pydantic import validator
 
 
@@ -288,9 +285,6 @@ class Scheduler(ComponentModel):
             )
             return
 
-        with open(get_schema_map_path(), "r", encoding="UTF-8") as map_file:
-            schema_map = json.loads(map_file.read())
-
         for scheduled_schema in self.schemas:
             # Check if should run
             if not scheduled_schema.schedule.should_run(hour_of_day, day_of_week):
@@ -300,15 +294,7 @@ class Scheduler(ComponentModel):
                     )
                 )
                 continue
-            schema_data = schema_map[scheduled_schema.schema_name]
-            schema_type = SchemaType(schema_data["type"])
-            if schema_type == SchemaType.BUILDER:
-                schema = schema_builder_factory.get_instance(
-                    {"name": schema_data["target"]}
-                ).build()
-            else:
-                with open(schema_data["target"], "r", encoding="UTF-8") as schema_file:
-                    schema = AutoTransformSchema.from_data(json.loads(schema_file.read()))
+            schema = SchemaMap.get().get_schema(scheduled_schema.schema_name)
             shard_filter = scheduled_schema.schedule.shard_filter
             if shard_filter is not None:
                 if scheduled_schema.schedule.repeats == RepeatSetting.DAILY:

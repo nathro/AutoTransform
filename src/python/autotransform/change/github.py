@@ -17,12 +17,11 @@ from typing import ClassVar, Dict, List, Tuple
 
 from autotransform.batcher.base import Batch
 from autotransform.change.base import Change, ChangeName, ChangeState, ReviewState, TestState
-from autotransform.config import get_config, get_schema_map_path
+from autotransform.config import get_config
 from autotransform.item.base import FACTORY as item_factory
-from autotransform.schema.builder import FACTORY as schema_builder_factory
 from autotransform.schema.schema import AutoTransformSchema
-from autotransform.util.enums import SchemaType
 from autotransform.util.github import GithubUtils, PullRequest
+from autotransform.util.schema_map import SchemaMap
 
 
 class GithubChange(Change):
@@ -56,15 +55,7 @@ class GithubChange(Change):
         """
 
         schema_name = self.get_schema_name()
-        with open(get_schema_map_path(), "r", encoding="UTF-8") as map_file:
-            schema_map = json.loads(map_file.read())
-        data = schema_map[schema_name]
-        schema_type = SchemaType(data["type"])
-        if schema_type == SchemaType.BUILDER:
-            schema = schema_builder_factory.get_instance({"name": data["target"]}).build()
-        else:
-            with open(data["target"], "r", encoding="utf-8") as schema_file:
-                schema = AutoTransformSchema.from_data(json.loads(schema_file.read()))
+        schema = SchemaMap.get().get_schema(schema_name)
         assert schema_name == schema.config.schema_name
         repo_override = get_config().repo_override
         if repo_override is not None:

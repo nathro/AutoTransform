@@ -1,4 +1,4 @@
-# Requirements for core AutoTransform
+heck# Requirements for core AutoTransform
 GitPython>=3.1.27
 ghapi>=0.1.20
 typing-extensions>=4.2.0
@@ -22,7 +22,7 @@ types-pytz>=2021.3.7
 types-requests>=2.28.11
 
 # Linting
-pylint >= 2.14.0
+pylint >= 2.15.6
 
 # Unit Tests
 pytest >= 7.1.2

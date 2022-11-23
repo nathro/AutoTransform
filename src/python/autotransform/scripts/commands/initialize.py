@@ -20,7 +20,6 @@ from autotransform.config import (
     get_cwd_config_dir,
     get_repo_config_dir,
     get_repo_config_relative_path,
-    get_schema_map_path,
 )
 from autotransform.config.config import Config
 from autotransform.repo.base import RepoName
@@ -30,6 +29,7 @@ from autotransform.util.enums import SchemaType
 from autotransform.util.manager import Manager
 from autotransform.util.package import get_config_dir, get_examples_dir
 from autotransform.util.scheduler import Scheduler
+from autotransform.util.schema_map import SchemaMap
 
 
 def add_args(parser: ArgumentParser) -> None:
@@ -233,15 +233,16 @@ def initialize_repo(
 
     # Set up the sample schema
     use_sample_schema = simple or choose_yes_or_no("Would you like to include the sample schema?")
-    schema_map = {}
+    schema_map = SchemaMap.get()
     if use_sample_schema:
-        sample_schema_path = f"{examples_dir}/schemas/black_format.json"
-        schema_map["Black Format"] = {"type": SchemaType.FILE, "target": sample_schema_path}
+        sample_schema_file_name = "black_format.json"
+        sample_schema_path = f"{examples_dir}/schemas/{sample_schema_file_name}"
+        schema_map.add_schema("Black Format", SchemaType.FILE, sample_schema_file_name)
         with open(sample_schema_path, "r", encoding="UTF-8") as sample_schema_file:
             schema = AutoTransformSchema.from_data(json.loads(sample_schema_file.read()))
         schema.repo = manager.repo  # pylint: disable=protected-access
 
-        schema_path = f"{repo_config_dir}/schemas/black_format.json"
+        schema_path = f"{SchemaMap.get_schema_directory()}/{sample_schema_file_name}"
         os.makedirs(os.path.dirname(schema_path), exist_ok=True)
         with open(schema_path, "w+", encoding="UTF-8") as schema_file:
             schema_file.write(json.dumps(schema.bundle(), indent=4))
@@ -261,11 +262,8 @@ def initialize_repo(
         requirements_file.flush()
 
     # Set up schema map file
-    schema_map_path = get_schema_map_path()
-    os.makedirs(os.path.dirname(schema_map_path), exist_ok=True)
-    with open(schema_map_path, "w+", encoding="UTF-8") as schema_map_file:
-        schema_map_file.write(json.dumps(schema_map))
-        schema_map_file.flush()
+    schema_map = SchemaMap.get()
+    schema_map.write()
 
     # Set up manage file
     manager_path = f"{repo_config_dir}/manager.json"
