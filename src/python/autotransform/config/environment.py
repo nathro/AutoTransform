@@ -15,6 +15,7 @@ import os
 from autotransform.config.config import Config
 from autotransform.config.default import DefaultConfigFetcher
 from autotransform.config.fetcher import ConfigFetcher
+from autotransform.repo.base import FACTORY as repo_factory
 from autotransform.runner.base import FACTORY as runner_factory
 
 
@@ -45,6 +46,12 @@ class EnvironmentConfigFetcher(ConfigFetcher):  # pylint: disable=too-few-public
         else:
             remote_runner = None
 
+        repo_override_json = os.getenv("AUTO_TRANSFORM_REPO_OVERRIDE")
+        if repo_override_json is not None:
+            repo_override = repo_factory.get_instance(json.loads(repo_override_json))
+        else:
+            repo_override = None
+
         config = Config(
             github_token=os.getenv("AUTO_TRANSFORM_GITHUB_TOKEN"),
             github_base_url=os.getenv("AUTO_TRANSFORM_GITHUB_BASE_URL"),
@@ -54,9 +61,10 @@ class EnvironmentConfigFetcher(ConfigFetcher):  # pylint: disable=too-few-public
             component_directory=os.getenv("AUTO_TRANSFORM_COMPONENT_DIRECTORY"),
             local_runner=local_runner,
             remote_runner=remote_runner,
+            repo_override=repo_override,
         )
 
-        if os.getenv("AUTO_TRANSFORM_CONFIG_USE_FALLBACK", "True") != "False":
+        if os.getenv("AUTO_TRANSFORM_CONFIG_USE_FALLBACK", "true").lower() != "false":
             config = DefaultConfigFetcher().get_config().merge(config)
 
         return config
