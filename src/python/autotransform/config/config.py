@@ -545,4 +545,5 @@ class Config(ComponentModel):
             component_directory=other.component_directory or self.component_directory,
             local_runner=other.local_runner or self.local_runner,
             remote_runner=other.remote_runner or self.remote_runner,
+            repo_override=other.repo_override or self.repo_override,
         )
