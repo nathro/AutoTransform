@@ -1,6 +1,7 @@
 # **Overview**
 
 Full documentation available [here](https://autotransform.readthedocs.io)
+Check out our [tutorial videos](https://www.youtube.com/watch?v=JGtzxWqa6s0&list=PLw32rS7srmZYUV3VfE114ZLYqHzQc9wY9)
 
 ## **Installing**
 
