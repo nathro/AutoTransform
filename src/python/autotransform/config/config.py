@@ -15,6 +15,8 @@ import json
 import os
 from typing import Any, Dict, Optional, Tuple
 
+from autotransform.repo.base import FACTORY as repo_factory
+from autotransform.repo.base import Repo
 from autotransform.runner.base import FACTORY as runner_factory
 from autotransform.runner.base import Runner
 from autotransform.runner.github import GithubRunner
@@ -45,6 +47,8 @@ class Config(ComponentModel):
             Defaults to None.
         remote_runner (Optional[Runner], optional): The runner to use for remote runs.
             Defaults to None.
+        repo_override (Optional[Repo], optional): A repo to use in place of any schema repos.
+            Defaults to None.
     """
 
     component_directory: Optional[str] = None
@@ -55,6 +59,7 @@ class Config(ComponentModel):
     jenkins_base_url: Optional[str] = None
     local_runner: Optional[Runner] = None
     remote_runner: Optional[Runner] = None
+    repo_override: Optional[Repo] = None
 
     def write(self, file_path: str) -> None:
         """Writes the Config to a file as JSON.
@@ -142,6 +147,10 @@ class Config(ComponentModel):
         if remote_runner is not None:
             remote_runner = runner_factory.get_instance(remote_runner)
 
+        repo_override = data.get("repo_override", None)
+        if repo_override is not None:
+            repo_override = repo_factory.get_instance(repo_override)
+
         return Config(
             github_token=github_token,
             github_base_url=github_base_url,
@@ -151,6 +160,7 @@ class Config(ComponentModel):
             component_directory=component_directory,
             local_runner=local_runner,
             remote_runner=remote_runner,
+            repo_override=repo_override,
         )
 
     @staticmethod
@@ -405,6 +415,29 @@ class Config(ComponentModel):
         return runner_factory.from_console("remote runner", **args)
 
     @staticmethod
+    def get_repo_override_from_console(
+        prev_config: Optional[Config] = None,
+        simple: bool = False,
+    ) -> Optional[Repo]:
+        """Gets the repo override using console inputs.
+
+        Args:
+            prev_config (Optional[Config], optional): Previously input Config. Defaults to None.
+            simple (bool, optional): Whether to use the simple setup. Defaults to False.
+
+        Returns:
+            Optional[Repo]: The repo override.
+        """
+
+        args: Dict[str, Any] = {
+            "simple": simple,
+        }
+        if prev_config is not None:
+            args["previous_value"] = prev_config.repo_override
+
+        return repo_factory.from_console("remote runner", **args)
+
+    @staticmethod
     def from_console(
         prev_config: Optional[Config] = None,
         simple: bool = False,
@@ -482,6 +515,9 @@ class Config(ComponentModel):
                 ),
                 remote_runner=Config.get_remote_runner_from_console(
                     prev_config=prev_config, use_github=github, use_jenkins=jenkins, simple=simple
+                ),
+                repo_override=Config.get_repo_override_from_console(
+                    prev_config=prev_config, simple=simple
                 ),
             ),
             github,

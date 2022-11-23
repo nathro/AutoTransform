@@ -1,5 +1,11 @@
 # Change Log
 
+## Release 1.0.8
+
+### Features
+ - Added an optional repo_override setting to Config that can be used to override the repo of supplied schemas
+ - Added AUTO_TRANSFORM_SCHEMA_MAP_PATH environment variable support to override default schema_map path
+
 ## Release 1.0.7
 
 ### New Components

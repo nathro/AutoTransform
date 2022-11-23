@@ -3,9 +3,6 @@ Validator Package (autotransform.validator)
 
 .. automodule:: autotransform.validator
 
-Components
-----------
-
 .. toctree::
    :maxdepth: 4
 
