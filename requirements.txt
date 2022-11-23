@@ -1,4 +1,4 @@
-heck# Requirements for core AutoTransform
+# Requirements for core AutoTransform
 GitPython>=3.1.27
 ghapi>=0.1.20
 typing-extensions>=4.2.0
