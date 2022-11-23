@@ -436,7 +436,7 @@ class Config(ComponentModel):
         if prev_config is not None:
             args["previous_value"] = prev_config.repo_override
 
-        return repo_factory.from_console("remote runner", **args)
+        return repo_factory.from_console("repo override", **args)
 
     @staticmethod
     def from_console(
