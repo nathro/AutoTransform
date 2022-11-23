@@ -20,6 +20,7 @@ from autotransform.config import (
     get_cwd_config_dir,
     get_repo_config_dir,
     get_repo_config_relative_path,
+    get_schema_map_path,
 )
 from autotransform.config.config import Config
 from autotransform.repo.base import RepoName
@@ -260,7 +261,7 @@ def initialize_repo(
         requirements_file.flush()
 
     # Set up schema map file
-    schema_map_path = f"{repo_config_dir}/schema_map.json"
+    schema_map_path = get_schema_map_path()
     os.makedirs(os.path.dirname(schema_map_path), exist_ok=True)
     with open(schema_map_path, "w+", encoding="UTF-8") as schema_map_file:
         schema_map_file.write(json.dumps(schema_map))

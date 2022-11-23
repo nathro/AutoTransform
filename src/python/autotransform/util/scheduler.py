@@ -17,9 +17,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional, Type
 
-from pydantic import validator
-
-from autotransform.config import get_repo_config_relative_path
+from autotransform.config import get_schema_map_path
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.schedulerun import ScheduleRunEvent
@@ -41,6 +39,7 @@ from autotransform.util.console import (
     input_ints,
 )
 from autotransform.util.enums import SchemaType
+from pydantic import validator
 
 
 class RepeatSetting(str, Enum):
@@ -289,8 +288,7 @@ class Scheduler(ComponentModel):
             )
             return
 
-        map_file_path = f"{get_repo_config_relative_path()}/schema_map.json"
-        with open(map_file_path, "r", encoding="UTF-8") as map_file:
+        with open(get_schema_map_path(), "r", encoding="UTF-8") as map_file:
             schema_map = json.loads(map_file.read())
 
         for scheduled_schema in self.schemas:

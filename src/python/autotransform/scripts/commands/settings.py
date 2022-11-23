@@ -16,7 +16,12 @@ from argparse import ArgumentParser, Namespace
 from pathlib import Path
 from typing import Dict, List
 
-from autotransform.config import CONFIG_FILE_NAME, get_cwd_config_dir, get_repo_config_dir
+from autotransform.config import (
+    CONFIG_FILE_NAME,
+    get_cwd_config_dir,
+    get_repo_config_dir,
+    get_schema_map_path,
+)
 from autotransform.config.config import Config
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.util.component import ComponentFactory, ComponentImport
@@ -329,7 +334,7 @@ def handle_schema_map(update: bool) -> None:
         update (bool): Whether to apply updates to the Schema Map.
     """
 
-    path = f"{get_repo_config_dir()}/schema_map.json"
+    path = get_schema_map_path()
     if Path(path).is_file():
         with open(path, "r", encoding="UTF-8") as schema_map_file:
             schema_map = json.loads(schema_map_file.read())

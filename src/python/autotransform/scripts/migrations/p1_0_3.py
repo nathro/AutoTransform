@@ -15,7 +15,7 @@ from argparse import ArgumentParser
 from pathlib import Path
 from typing import Any, Dict
 
-from autotransform.config import get_repo_config_relative_path
+from autotransform.config import get_repo_config_relative_path, get_schema_map_path
 from autotransform.schema.builder import FACTORY as schema_builder_factory
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.util.enums import SchemaType
@@ -62,7 +62,7 @@ def main() -> None:
     scheduler_data = json.loads(scheduler_json)
 
     # Get Schema Map if it exists
-    map_file_path = f"{get_repo_config_relative_path()}/schema_map.json"
+    map_file_path = get_schema_map_path()
     if Path(map_file_path).is_file():
         with open(map_file_path, "r", encoding="UTF-8") as map_file:
             schema_map = json.loads(map_file.read())

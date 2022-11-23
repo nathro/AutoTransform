@@ -29,6 +29,19 @@ if TYPE_CHECKING:
 CONFIG_FILE_NAME = "config.json"
 
 
+def get_schema_map_path() -> str:
+    """Gets the path to the schema map.
+
+    Returns:
+        str: The path to the schema map.
+    """
+
+    return os.getenv(
+        "AUTO_TRANSFORM_SCHEMA_MAP_PATH",
+        f"{get_repo_config_relative_path()}/schema_map.json",
+    )
+
+
 def get_repo_config_relative_path() -> str:
     """Gets the relative path used for the repo config directory.
 
