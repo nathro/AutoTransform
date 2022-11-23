@@ -24,6 +24,7 @@ from autotransform.runner.jenkins import JenkinsAPIRunner
 from autotransform.runner.local import LocalRunner
 from autotransform.util.component import ComponentModel
 from autotransform.util.console import choose_yes_or_no, get_str
+from pydantic import Field
 
 
 class Config(ComponentModel):
@@ -52,10 +53,10 @@ class Config(ComponentModel):
     """
 
     component_directory: Optional[str] = None
-    github_token: Optional[str] = None
+    github_token: Optional[str] = Field(default=None, redact=True)
     github_base_url: Optional[str] = None
     jenkins_user: Optional[str] = None
-    jenkins_token: Optional[str] = None
+    jenkins_token: Optional[str] = Field(default=None, redact=True)
     jenkins_base_url: Optional[str] = None
     local_runner: Optional[Runner] = None
     remote_runner: Optional[Runner] = None

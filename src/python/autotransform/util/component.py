@@ -18,8 +18,6 @@ from enum import Enum
 from functools import cached_property
 from typing import Any, ClassVar, Dict, Generic, List, Optional, Tuple, Type, TypeVar
 
-from pydantic import BaseModel  # pylint: disable=no-name-in-module
-
 from autotransform.config import get_config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
@@ -31,6 +29,7 @@ from autotransform.util.console import (
     get_str,
     info,
 )
+from pydantic import BaseModel  # pylint: disable=no-name-in-module
 
 TComponent = TypeVar("TComponent", bound=BaseModel)
 
@@ -80,12 +79,15 @@ class ComponentModel(BaseModel):
         return cls.parse_obj(data)
 
     def __repr__(self) -> str:
+        redacted_fields = ["github_token", "jenkins_token"]
         if len(self.__fields__) < 2:
             return super().__repr__()
         lines = [f"{self.__class__.__name__}("]
-        for name in self.__fields__.keys():
+        for name, model_field in self.__fields__.items():
             field_val = getattr(self, name)
-            if isinstance(field_val, list) and len(field_val) > 1:
+            if name in redacted_fields:
+                lines.append(f"\t{name}=********,".replace("\n", "\n\t"))
+            elif isinstance(field_val, list) and len(field_val) > 1:
                 lines.append(f"\t{name}=[")
                 lines.extend([f"\t\t{val!r},".replace("\n", "\n\t\t") for val in field_val])
                 lines.append("\t],")
