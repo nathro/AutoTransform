@@ -83,7 +83,7 @@ class ComponentModel(BaseModel):
         if len(self.__fields__) < 2:
             return super().__repr__()
         lines = [f"{self.__class__.__name__}("]
-        for name, model_field in self.__fields__.items():
+        for name in self.__fields__.keys():
             field_val = getattr(self, name)
             if name in redacted_fields:
                 lines.append(f"\t{name}=********,".replace("\n", "\n\t"))
