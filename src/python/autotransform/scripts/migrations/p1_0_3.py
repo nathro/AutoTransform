@@ -10,16 +10,15 @@
 """A script to perform a migration of a Manager JSON file from 1.0.0 to 1.0.1."""
 
 import json
-import os
 from argparse import ArgumentParser
-from pathlib import Path
 from typing import Any, Dict
 
-from autotransform.config import get_repo_config_relative_path, get_schema_map_path
+from autotransform.config import get_repo_config_relative_path
 from autotransform.schema.builder import FACTORY as schema_builder_factory
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.util.enums import SchemaType
 from autotransform.util.scheduler import Scheduler
+from autotransform.util.schema_map import SchemaMap
 
 
 def get_arg_parser() -> ArgumentParser:
@@ -61,30 +60,20 @@ def main() -> None:
 
     scheduler_data = json.loads(scheduler_json)
 
-    # Get Schema Map if it exists
-    map_file_path = get_schema_map_path()
-    if Path(map_file_path).is_file():
-        with open(map_file_path, "r", encoding="UTF-8") as map_file:
-            schema_map = json.loads(map_file.read())
-    else:
-        schema_map = {}
-
+    schema_map = SchemaMap.get()
     update_scheduler_data(scheduler_data, schema_map)
 
     scheduler = Scheduler.from_data(scheduler_data)
     scheduler.write(file_path)
-    os.makedirs(os.path.dirname(map_file_path), exist_ok=True)
-    with open(map_file_path, "w+", encoding="UTF-8") as map_file:
-        map_file.write(json.dumps(schema_map, indent=4))
-        map_file.flush()
+    schema_map.write()
 
 
-def update_scheduler_data(scheduler_data: Dict[str, Any], schema_map: Dict[str, Any]) -> None:
+def update_scheduler_data(scheduler_data: Dict[str, Any], schema_map: SchemaMap) -> None:
     """Updates Scheduler data and the Schema map for 1.0.2 -> 1.0.3 conversion.
 
     Args:
         scheduler_data (Dict[str, Any]): The existing Scheduler data.
-        schema_map (Dict[str, Any]): The existing Schema map.
+        schema_map (SchemaMap): The existing Schema map.
     """
 
     for schema_data in scheduler_data["schemas"]:
@@ -104,11 +93,8 @@ def update_scheduler_data(scheduler_data: Dict[str, Any], schema_map: Dict[str, 
         del schema_data["target"]
         del schema_data["type"]
         schema_data["schema_name"] = schema_name
-        if schema_name in schema_map:
-            assert schema_map[schema_name]["target"] == schema_target
-            assert SchemaType(schema_map[schema_name]["type"]) == schema_type
-        else:
-            schema_map[schema_name] = {"type": schema_type, "target": schema_target}
+        if schema_name not in schema_map:
+            schema_map.add_schema(schema_name, schema_type, schema_target)
 
 
 if __name__ == "__main__":

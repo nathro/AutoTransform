@@ -13,6 +13,7 @@ import json
 import pathlib
 
 from autotransform.scripts.migrations.p1_0_3 import update_scheduler_data
+from autotransform.util.schema_map import SchemaMap
 
 
 def test_migration():
@@ -21,10 +22,9 @@ def test_migration():
     parent_dir = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
     with open(f"{parent_dir}/data/scheduler.input.json", "r", encoding="UTF-8") as input_scheduler:
         scheduler_data = json.loads(input_scheduler.read())
-    with open(
-        f"{parent_dir}/data/schema_map.input.json", "r", encoding="UTF-8"
-    ) as input_schema_map:
-        schema_map = json.loads(input_schema_map.read())
+
+    SchemaMap.get_schema_map_path = lambda: f"{parent_dir}/data/schema_map.input.json"
+    schema_map = SchemaMap.get()
 
     update_scheduler_data(scheduler_data, schema_map)
 
@@ -32,10 +32,10 @@ def test_migration():
         f"{parent_dir}/data/scheduler.output.json", "r", encoding="UTF-8"
     ) as output_scheduler:
         expected_scheduler_data = json.loads(output_scheduler.read())
-    with open(
-        f"{parent_dir}/data/schema_map.output.json", "r", encoding="UTF-8"
-    ) as output_schema_map:
-        expected_output_schema_map = json.loads(output_schema_map.read())
+
+    SchemaMap.__instance = None  # pylint: disable=protected-access
+    SchemaMap.get_schema_map_path = lambda: f"{parent_dir}/data/schema_map.output.json"
+    expected_output_schema_map = SchemaMap.get()
 
     assert scheduler_data == expected_scheduler_data
-    assert schema_map == expected_output_schema_map
+    assert schema_map._data == expected_output_schema_map._data  # pylint: disable=protected-access

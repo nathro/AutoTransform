@@ -14,7 +14,7 @@ import json
 import os
 from argparse import ArgumentParser, Namespace
 
-from autotransform.config import get_config, get_schema_map_path
+from autotransform.config import get_config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
@@ -24,7 +24,7 @@ from autotransform.runner.base import Runner
 from autotransform.runner.local import LocalRunner
 from autotransform.schema.builder import FACTORY as schema_builder_factory
 from autotransform.schema.schema import AutoTransformSchema
-from autotransform.util.enums import SchemaType
+from autotransform.util.schema_map import SchemaMap
 
 
 def add_args(parser: ArgumentParser) -> None:
@@ -165,15 +165,7 @@ def run_command_main(args: Namespace) -> None:
         assert isinstance(schema, str)
         schema = AutoTransformSchema.from_data(json.loads(schema))
     elif args.schema_type == "name":
-        with open(get_schema_map_path(), "r", encoding="UTF-8") as map_file:
-            schema_map = json.loads(map_file.read())
-        data = schema_map[schema]
-        schema_type = SchemaType(data["type"])
-        if schema_type == SchemaType.BUILDER:
-            schema = schema_builder_factory.get_instance({"name": data["target"]}).build()
-        else:
-            with open(data["target"], "r") as schema_file:
-                schema = AutoTransformSchema.from_data(json.loads(schema_file.read()))
+        schema = SchemaMap.get().get_schema(args.schema)
         assert args.schema == schema.config.schema_name
     else:
         schema = AutoTransformSchema.from_data(json.loads(schema))

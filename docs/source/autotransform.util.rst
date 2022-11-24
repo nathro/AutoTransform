@@ -16,4 +16,6 @@ Utilities
    autotransform.util.github
    autotransform.util.manager
    autotransform.util.package
+   autotransform.util.request
    autotransform.util.scheduler
+   autotransform.util.schema_map

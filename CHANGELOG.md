@@ -1,6 +1,9 @@
 # Change Log
 
-## Release 1.0.8
+## Release 1.1.0
+
+### Migrations
+ - The schema map has been upgraded to use SchemaMap class, with all file targets now relative to the directory that contains the schema map.
 
 ### Features
  - Added an optional repo_override setting to Config that can be used to override the repo of supplied schemas
