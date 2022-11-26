@@ -23,7 +23,7 @@ copyright = "2022, Nathan Rockenbach"
 author = "Nathan Rockenbach"
 
 # The full version, including alpha/beta/rc tags
-release = "1.0.8a1"
+release = "1.1.0a1"
 
 
 # -- General configuration ---------------------------------------------------
