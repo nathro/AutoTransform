@@ -7,9 +7,16 @@
 
 # @black_format
 
-"""Enums used by utilities of AutoTransform."""
+"""Enums used by utilities of AutoTransform or across a number of components."""
 
 from enum import Enum
+
+
+class AggregatorType(str, Enum):
+    """A list of possible comparisons."""
+
+    ALL = "all"
+    ANY = "any"
 
 
 class SchemaType(str, Enum):

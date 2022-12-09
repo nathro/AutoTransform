@@ -12,6 +12,7 @@
 from typing import Any, Dict, List
 
 from autotransform.filter.base import FACTORY, FilterName
+from autotransform.util.enums import AggregatorType
 
 
 def test_all_enum_values_present():
@@ -49,6 +50,24 @@ def test_encoding_and_decoding() -> None:
     """Tests the encoding and decoding of components."""
 
     test_components: Dict[FilterName, List[Dict[str, Any]]] = {
+        FilterName.AGGREGATE: [
+            {"aggregator": AggregatorType.ALL, "filters": [{"name": "regex", "pattern": "test"}]},
+            {
+                "aggregator": AggregatorType.ALL,
+                "filters": [
+                    {"name": "regex", "pattern": "test"},
+                    {"name": "regex", "pattern": "foo"},
+                ],
+            },
+            {"aggregator": AggregatorType.ANY, "filters": [{"name": "regex", "pattern": "test"}]},
+            {
+                "aggregator": AggregatorType.ANY,
+                "filters": [
+                    {"name": "regex", "pattern": "test"},
+                    {"name": "regex", "pattern": "foo"},
+                ],
+            },
+        ],
         FilterName.REGEX: [
             {"pattern": "foo"},
             {"pattern": "foo", "inverted": True},

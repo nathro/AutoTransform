@@ -22,6 +22,7 @@ from autotransform.util.component import ComponentFactory, ComponentImport, Name
 class FilterName(str, Enum):
     """A simple enum for mapping."""
 
+    AGGREGATE = "aggregate"
     REGEX = "regex"
     REGEX_FILE_CONTENT = "regex_file_content"
 
@@ -68,6 +69,9 @@ class Filter(NamedComponent):
 
 FACTORY = ComponentFactory(
     {
+        FilterName.AGGREGATE: ComponentImport(
+            class_name="AggregateFilter", module="autotransform.filter.aggregate"
+        ),
         FilterName.REGEX: ComponentImport(
             class_name="RegexFilter", module="autotransform.filter.regex"
         ),

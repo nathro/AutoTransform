@@ -11,19 +11,12 @@
 
 from __future__ import annotations
 
-from enum import Enum
 from typing import Any, ClassVar, Dict, List, Type
 
 from autotransform.change.base import Change
 from autotransform.step.condition.base import FACTORY as condition_factory
 from autotransform.step.condition.base import Condition, ConditionName
-
-
-class AggregatorType(str, Enum):
-    """A list of possible comparisons."""
-
-    ALL = "all"
-    ANY = "any"
+from autotransform.util.enums import AggregatorType
 
 
 class AggregateCondition(Condition):

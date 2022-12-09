@@ -12,9 +12,9 @@
 from typing import Any, Dict, List
 
 from autotransform.change.base import ChangeState, ReviewState, TestState
-from autotransform.step.condition.aggregate import AggregatorType
 from autotransform.step.condition.base import FACTORY, ConditionName
 from autotransform.step.condition.comparison import ComparisonType
+from autotransform.util.enums import AggregatorType
 
 
 def test_all_enum_values_present():
