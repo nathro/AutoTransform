@@ -9,6 +9,9 @@
  - Added an optional repo_override setting to Config that can be used to override the repo of supplied schemas
  - Added AUTO_TRANSFORM_SCHEMA_MAP_PATH environment variable support to override default schema_map path
 
+### New Components
+ - AggregateFilter a filter that aggregates other filters
+
 ### Misc
  - Redact github_token and jenkins_token fields from Config
 

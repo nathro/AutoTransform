@@ -13,9 +13,9 @@ from typing import Any, Dict, List
 
 from autotransform.step.action.base import ActionName
 from autotransform.step.base import FACTORY, StepName
-from autotransform.step.condition.aggregate import AggregatorType
 from autotransform.step.condition.base import ConditionName
 from autotransform.step.condition.comparison import ComparisonType
+from autotransform.util.enums import AggregatorType
 
 
 def test_all_enum_values_present():
