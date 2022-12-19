@@ -15,10 +15,9 @@ from functools import cached_property
 from typing import Any, Callable, Dict, Mapping
 
 import requests
-from pydantic import BaseModel, Field  # pylint: disable=no-name-in-module
-
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
+from pydantic import BaseModel, Field  # pylint: disable=no-name-in-module
 
 
 class RequestHandler(BaseModel):

@@ -11,9 +11,6 @@
 
 from __future__ import annotations
 
-import json
-import subprocess
-from tempfile import NamedTemporaryFile as TmpFile
 from typing import Any, ClassVar, List, Mapping, Optional, Sequence
 
 import autotransform.schema
@@ -22,6 +19,7 @@ from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
+from autotransform.util.functions import run_cmd_on_items
 from autotransform.validator.base import (
     ValidationResult,
     ValidationResultLevel,
@@ -108,44 +106,11 @@ class ScriptValidator(Validator):
 
         event_handler = EventHandler.get()
 
+        # Get Command
         cmd = [self.script]
+        cmd.extend(self.args)
 
-        extra_data = item.extra_data
-        if extra_data is None:
-            extra_data = {}
-
-        arg_replacements = {
-            "<<KEY>>": item.key,
-            "<<EXTRA_DATA>>": json.dumps(extra_data),
-            "<<METADATA>>": json.dumps(batch_metadata),
-        }
-
-        with TmpFile(mode="w+") as inp, TmpFile(mode="w+") as meta, TmpFile(mode="w+") as extra:
-            # Make key file
-            inp.write(item.key)
-            inp.flush()
-            arg_replacements["<<KEY_FILE>>"] = inp.name
-
-            # Make extra_data file
-            json.dump(extra_data, extra)
-            extra.flush()
-            arg_replacements["<<EXTRA_DATA_FILE>>"] = extra.name
-
-            # Make metadata file
-            json.dump(batch_metadata, meta)
-            meta.flush()
-            arg_replacements["<<METADATA_FILE>>"] = meta.name
-
-            # Create command
-            for arg in self.args:
-                if arg in arg_replacements:
-                    cmd.append(arg_replacements[arg])
-                else:
-                    cmd.append(arg)
-
-            # Run script
-            event_handler.handle(DebugEvent({"message": f"Running command: {cmd}"}))
-            proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", check=False)
+        proc = run_cmd_on_items(cmd, [item], batch_metadata or {})
 
         # Handle output
         level = self.failure_level if proc.returncode != 0 else ValidationResultLevel.NONE
@@ -184,41 +149,11 @@ class ScriptValidator(Validator):
         else:
             items = batch["items"]
 
-        item_keys = [item.key for item in items]
-        extra_data = {item.key: item.extra_data for item in items if item.extra_data is not None}
-        metadata = batch.get("metadata", {})
-        arg_replacements = {
-            "<<KEY>>": json.dumps(item_keys),
-            "<<EXTRA_DATA>>": json.dumps(extra_data),
-            "<<METADATA>>": json.dumps(metadata),
-        }
+        # Get Command
+        cmd = [self.script]
+        cmd.extend(self.args)
 
-        with TmpFile(mode="w+") as inp, TmpFile(mode="w+") as meta, TmpFile(mode="w+") as extra:
-            # Make key file
-            json.dump(item_keys, inp)
-            inp.flush()
-            arg_replacements["<<KEY_FILE>>"] = inp.name
-
-            # Make extra_data file
-            json.dump(extra_data, extra)
-            extra.flush()
-            arg_replacements["<<EXTRA_DATA_FILE>>"] = extra.name
-
-            # Make metadata file
-            json.dump(metadata, meta)
-            meta.flush()
-            arg_replacements["<<METADATA_FILE>>"] = meta.name
-
-            # Create command
-            for arg in self.args:
-                if arg in arg_replacements:
-                    cmd.append(arg_replacements[arg])
-                else:
-                    cmd.append(arg)
-
-            # Run script
-            event_handler.handle(DebugEvent({"message": f"Running command: {cmd}"}))
-            proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", check=False)
+        proc = run_cmd_on_items(cmd, items, batch.get("metadata", {}))
 
         # Handle output
         level = self.failure_level if proc.returncode != 0 else ValidationResultLevel.NONE

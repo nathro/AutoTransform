@@ -4,10 +4,12 @@
 
 ### Migrations
  - The schema map has been upgraded to use SchemaMap class, with all file targets now relative to the directory that contains the schema map.
+ - Significant updates have been made to how Script components work. They now use keys as a list replacement (i.e. ["foo", "<<KEY>>"] becomes ["foo", "bar.py", "baz,py"]). Additionally, extra data always maps key to the extra data, even for single transformations.
 
 ### Features
  - Added an optional repo_override setting to Config that can be used to override the repo of supplied schemas
  - Added AUTO_TRANSFORM_SCHEMA_MAP_PATH environment variable support to override default schema_map path
+ - Script components now can take a replacement dictionary as the environment variable AUTO_TRANSFORM_SCRIPT_REPLACEMENTS
 
 ### New Components
  - AggregateFilter a filter that aggregates other filters
