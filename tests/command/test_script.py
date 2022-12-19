@@ -12,12 +12,12 @@
 import subprocess
 
 import mock
-
-import autotransform
 from autotransform.command.script import ScriptCommand
 from autotransform.item.base import Item
 from autotransform.repo.base import Repo
 from autotransform.schema.schema import AutoTransformSchema
+
+import autotransform
 
 
 @mock.patch.object(subprocess, "run")
@@ -63,7 +63,7 @@ def test_key_arg(mock_run):
     )
 
     mock_run.assert_called_once()
-    assert mock_run.call_args_list[0].args[0] == ["black", '["bar.py", "foo.py"]']
+    assert mock_run.call_args_list[0].args[0] == ["black", "bar.py", "foo.py"]
 
 
 @mock.patch.object(subprocess, "run")
@@ -188,7 +188,7 @@ def test_extra_data_arg_per_item(mock_run):
 
     assert mock_run.call_count == 2
     assert mock_run.call_args_list[0].args[0] == ["black", "{}"]
-    assert mock_run.call_args_list[1].args[0] == ["black", '{"test": "TEST"}']
+    assert mock_run.call_args_list[1].args[0] == ["black", '{"foo.py": {"test": "TEST"}}']
 
 
 @mock.patch.object(subprocess, "run")
@@ -243,7 +243,7 @@ def test_key_arg_on_changes(mock_schema, mock_run):
     )
 
     mock_run.assert_called_once()
-    assert mock_run.call_args_list[0].args[0] == ["black", '["fizz.py", "buzz.py"]']
+    assert mock_run.call_args_list[0].args[0] == ["black", "fizz.py", "buzz.py"]
 
 
 @mock.patch.object(subprocess, "run")

@@ -10,16 +10,16 @@
 """Tests for ScriptValidator component."""
 
 import subprocess
-from typing import List
+from typing import List, Optional
 
 import mock
-
-import autotransform
 from autotransform.item.base import Item
 from autotransform.repo.base import Repo
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.validator.base import ValidationResultLevel
 from autotransform.validator.script import ScriptValidator
+
+import autotransform
 
 # pylint: disable=unused-argument
 
@@ -69,7 +69,7 @@ def test_key_arg(mock_run):
 
     assert result.level == ValidationResultLevel.NONE
     mock_run.assert_called_once()
-    assert mock_run.call_args_list[0].args[0] == ["black", '["bar.py", "foo.py"]']
+    assert mock_run.call_args_list[0].args[0] == ["black", "bar.py", "foo.py"]
 
 
 @mock.patch.object(subprocess, "run")
@@ -199,7 +199,7 @@ def test_extra_data_arg_per_item(mock_run):
     assert result.level == ValidationResultLevel.NONE
     assert mock_run.call_count == 2
     assert mock_run.call_args_list[0].args[0] == ["black", "{}"]
-    assert mock_run.call_args_list[1].args[0] == ["black", '{"test": "TEST"}']
+    assert mock_run.call_args_list[1].args[0] == ["black", '{"foo.py": {"test": "TEST"}}']
 
 
 @mock.patch.object(subprocess, "run")
@@ -256,7 +256,7 @@ def test_key_arg_on_changes(mock_schema, mock_run):
 
     assert result.level == ValidationResultLevel.NONE
     mock_run.assert_called_once()
-    assert mock_run.call_args_list[0].args[0] == ["black", '["fizz.py", "buzz.py"]']
+    assert mock_run.call_args_list[0].args[0] == ["black", "fizz.py", "buzz.py"]
 
 
 @mock.patch.object(subprocess, "run")
@@ -343,7 +343,11 @@ def test_per_item_first_fails(mock_run):
     """Test that a failure code for the first Item causes the right result."""
 
     def get_proc(
-        args: List[str], capture_output: bool = False, encoding: str = "UTF-8", check: bool = False
+        args: List[str],
+        capture_output: bool = False,
+        encoding: str = "UTF-8",
+        check: bool = False,
+        timeout: Optional[int] = None,
     ) -> subprocess.CompletedProcess:
         proc = mock.create_autospec(subprocess.CompletedProcess)
         proc.stdout = ""
@@ -374,7 +378,11 @@ def test_per_item_second_fails(mock_run):
     """Test that a failure code for the second Item causes the right result."""
 
     def get_proc(
-        args: List[str], capture_output: bool = False, encoding: str = "UTF-8", check: bool = False
+        args: List[str],
+        capture_output: bool = False,
+        encoding: str = "UTF-8",
+        check: bool = False,
+        timeout: Optional[int] = None,
     ) -> subprocess.CompletedProcess:
         proc = mock.create_autospec(subprocess.CompletedProcess)
         proc.stdout = ""
