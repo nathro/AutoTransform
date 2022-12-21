@@ -19,12 +19,12 @@ on:
         description: "The name of the repo to checkout"
         type: string
         required: false
-        default: ""
+        default: ''
       target_repo_name:
         description: "The ref of the repo to checkout"
         type: string
         required: false
-        default: ""
+        default: ''
 
 jobs:
   run-autotransform:
