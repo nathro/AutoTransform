@@ -48,7 +48,9 @@ class CodeownersFilter(Filter):
             return CodeOwners(codeowners_file.read())
 
     @cached_property
-    def _formated_owner(self) -> str:
+    def _formated_owner(self) -> Optional[str]:
+        if self.owner is None:
+            return None
         return self.owner.removeprefix("@")
 
     def _is_valid(self, item: Item) -> bool:
