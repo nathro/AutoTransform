@@ -17,12 +17,10 @@ on:
       target_repo_name:
         description: "The name of the repo to checkout"
         type: string
-        required: false
         default: ''
       target_repo_name:
         description: "The ref of the repo to checkout"
         type: string
-        required: false
         default: ''
 
 jobs:
