@@ -10,6 +10,7 @@
  - Added an optional repo_override setting to Config that can be used to override the repo of supplied schemas
  - Added AUTO_TRANSFORM_SCHEMA_MAP_PATH environment variable support to override default schema_map path
  - Script components now can take a replacement dictionary as the environment variable AUTO_TRANSFORM_SCRIPT_REPLACEMENTS
+ - Added target_repo_name and target_repo_ref to GithubRunner so that workflow can control checkout with inputs, makes having a single repo that acts on all of your repos a bit better
 
 ### New Components
  - AggregateFilter a filter that aggregates other filters
