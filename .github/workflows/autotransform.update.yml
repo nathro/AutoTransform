@@ -18,12 +18,10 @@ on:
         description: "The name of the repo to checkout"
         type: string
         required: false
-        default: ${{ GITHUB_ACTION_REPOSITORY }}
       target_repo_ref:
         description: "The ref of the repo to checkout"
         type: string
         required: false
-        default: ${{ GITHUB_REF }}
 
 jobs:
   update-autotransform:
