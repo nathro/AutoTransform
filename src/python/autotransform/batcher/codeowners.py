@@ -84,35 +84,25 @@ class CodeownersBatcher(Batcher):
         # Add batches based on team owners
         for team_owner, batch_items in team_owners.items():
             batch: Batch = {"items": batch_items, "title": f"{self.prefix} {team_owner}"}
-            if self.metadata is not None:
-                # Deepcopy metadata to ensure mutations don't apply to all Batches
-                batch["metadata"] = deepcopy(self.metadata)
+            # Deepcopy metadata to ensure mutations don't apply to all Batches
+            metadata = deepcopy(self.metadata) if self.metadata is not None else {}
+            if "team_reviewers" in metadata and team_owner not in metadata["team_reviewers"]:
+                metadata["team_reviewers"].append(team_owner)
             else:
-                batch["metadata"] = {}
-            if (
-                "team_reviewers" in batch["metadata"]
-                and team_owner not in batch["metadata"]["team_reviewers"]
-            ):
-                batch["metadata"]["team_reviewers"].append(team_owner)
-            else:
-                batch["metadata"]["team_reviewers"] = [team_owner]
+                metadata["team_reviewers"] = [team_owner]
+            batch["metadata"] = metadata
             batches.append(batch)
 
         # Add batches based on individual owners
         for individual_owner, batch_items in individual_owners.items():
             batch = {"items": batch_items, "title": f"{self.prefix} {individual_owner}"}
-            if self.metadata is not None:
-                # Deepcopy metadata to ensure mutations don't apply to all Batches
-                batch["metadata"] = deepcopy(self.metadata)
+            # Deepcopy metadata to ensure mutations don't apply to all Batches
+            metadata = deepcopy(self.metadata) if self.metadata is not None else {}
+            if "reviewers" in metadata and individual_owner not in metadata["team_reviewers"]:
+                metadata["reviewers"].append(individual_owner)
             else:
-                batch["metadata"] = {}
-            if (
-                "reviewers" in batch["metadata"]
-                and individual_owner not in batch["metadata"]["reviewers"]
-            ):
-                batch["metadata"]["reviewers"].append(individual_owner)
-            else:
-                batch["metadata"]["reviewers"] = [individual_owner]
+                metadata["reviewers"] = [individual_owner]
+            batch["metadata"] = metadata
             batches.append(batch)
 
         # Add unowned batch
