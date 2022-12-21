@@ -68,13 +68,13 @@ class CodeownersBatcher(Batcher):
 
             owner_tuple = owner[0]
             if owner_tuple[0] == "USERNAME":
-                owner_name = owner_tuple[1]
+                owner_name = owner_tuple[1].removeprefix("@")
                 if owner_name not in individual_owners:
                     individual_owners[owner_name] = []
                 individual_owners[owner_name].append(item)
 
             if owner_tuple[0] == "TEAM":
-                owner_name = owner_tuple[1]
+                owner_name = owner_tuple[1].removeprefix("@")
                 if owner_name not in team_owners:
                     team_owners[owner_name] = []
                 team_owners[owner_name].append(item)
