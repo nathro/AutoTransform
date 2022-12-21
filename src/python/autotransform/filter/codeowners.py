@@ -47,6 +47,10 @@ class CodeownersFilter(Filter):
         with open(self.codeowners_location, mode="r", encoding="UTF-8") as codeowners_file:
             return CodeOwners(codeowners_file.read())
 
+    @cached_property
+    def _formated_owner(self) -> str:
+        return self.owner.removeprefix("@")
+
     def _is_valid(self, item: Item) -> bool:
         """Checks whether the Item is a file owned by the supplied owner. If no owner
         is supplied, checks for whether the file is unowned.
@@ -68,10 +72,8 @@ class CodeownersFilter(Filter):
         if self.owner is None:
             return False
 
-        allowed_owner = self.owner.removeprefix("@")
-
         for owner in owners:
-            if allowed_owner == owner[1].removeprefix("@"):
+            if self._formated_owner == owner[1].removeprefix("@"):
                 return True
 
         return False
