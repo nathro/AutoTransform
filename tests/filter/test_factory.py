@@ -68,6 +68,12 @@ def test_encoding_and_decoding() -> None:
                 ],
             },
         ],
+        FilterName.CODEOWNERS: [
+            {"codeowners_location": "CODEOWNERS"},
+            {"codeowners_location": "CODEOWNERS", "inverted": True},
+            {"codeowners_location": "CODEOWNERS", "owner": "nathro"},
+            {"codeowners_location": "CODEOWNERS", "owner": "nathro", "inverted": True},
+        ],
         FilterName.REGEX: [
             {"pattern": "foo"},
             {"pattern": "foo", "inverted": True},

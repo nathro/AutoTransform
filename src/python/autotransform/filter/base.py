@@ -23,6 +23,7 @@ class FilterName(str, Enum):
     """A simple enum for mapping."""
 
     AGGREGATE = "aggregate"
+    CODEOWNERS = "codeowners"
     REGEX = "regex"
     REGEX_FILE_CONTENT = "regex_file_content"
 
@@ -71,6 +72,9 @@ FACTORY = ComponentFactory(
     {
         FilterName.AGGREGATE: ComponentImport(
             class_name="AggregateFilter", module="autotransform.filter.aggregate"
+        ),
+        FilterName.CODEOWNERS: ComponentImport(
+            class_name="CodeownersFilter", module="autotransform.filter.codeowners"
         ),
         FilterName.REGEX: ComponentImport(
             class_name="RegexFilter", module="autotransform.filter.regex"
