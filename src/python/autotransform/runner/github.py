@@ -37,6 +37,12 @@ class GithubRunner(Runner):
             If not provided, the repo of the Schema will be used. Defaults to None.
         repo_ref (optional, Optional[str]): The ref of the Github repo to trigger actions from.
             If not provided, the base branch of the Schema's repo will be used. Defaults to None.
+        target_repo_name (optional, Optional[str]): The name of the Github repo to checkout.
+            If not provided, the workflow is expected to define the repo on it's own.
+            Defaults to None.
+        target_repo_ref (optional, Optional[str]): The ref of the Github repo to checkout.
+            If not provided, the workflow is expected to define the repo on it's own.
+            Defaults to None.
         name (ClassVar[RunnerName]): The name of the component.
     """
 
@@ -45,6 +51,8 @@ class GithubRunner(Runner):
 
     repo_name: Optional[str] = None
     repo_ref: Optional[str] = None
+    target_repo_name: Optional[str] = None
+    target_repo_ref: Optional[str] = None
 
     name: ClassVar[RunnerName] = RunnerName.GITHUB
 
@@ -147,6 +155,12 @@ class GithubRunner(Runner):
                 repo, GithubRepo
             ), "GithubRunner can only run using schemas that have Github repos"
             repo_ref = repo.base_branch
+
+        # Allow controlling the target repo with the Runner
+        if self.target_repo_name is not None:
+            inputs["target_repo_name"] = self.target_repo_name
+        if self.target_repo_ref is not None:
+            inputs["target_repo_ref"] = self.target_repo_ref
 
         # Dispatch a Workflow run
         workflow_url = GithubUtils.get(repo_name).create_workflow_dispatch(
