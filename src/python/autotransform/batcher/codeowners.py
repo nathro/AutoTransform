@@ -85,7 +85,7 @@ class CodeownersBatcher(Batcher):
         for team_owner, batch_items in team_owners.items():
             batch: Batch = {"items": batch_items, "title": f"{self.prefix} {team_owner}"}
             # Deepcopy metadata to ensure mutations don't apply to all Batches
-            metadata = deepcopy(self.metadata) if self.metadata is not None else {}
+            metadata = deepcopy(self.metadata or {})
             if "team_reviewers" in metadata and team_owner not in metadata["team_reviewers"]:
                 metadata["team_reviewers"].append(team_owner)
             else:
@@ -97,7 +97,7 @@ class CodeownersBatcher(Batcher):
         for individual_owner, batch_items in individual_owners.items():
             batch = {"items": batch_items, "title": f"{self.prefix} {individual_owner}"}
             # Deepcopy metadata to ensure mutations don't apply to all Batches
-            metadata = deepcopy(self.metadata) if self.metadata is not None else {}
+            metadata = deepcopy(self.metadata or {})
             if "reviewers" in metadata and individual_owner not in metadata["team_reviewers"]:
                 metadata["reviewers"].append(individual_owner)
             else:
