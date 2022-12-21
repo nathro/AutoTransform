@@ -14,11 +14,10 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any, ClassVar, Dict, List, Optional, Sequence
 
-from codeowners import CodeOwners
-
 from autotransform.batcher.base import Batch, Batcher, BatcherName
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
+from codeowners import CodeOwners
 
 
 class CodeownersBatcher(Batcher):
@@ -69,13 +68,13 @@ class CodeownersBatcher(Batcher):
 
             owner_tuple = owner[0]
             if owner_tuple[0] == "USERNAME":
-                owner_name = owner_tuple[1]
+                owner_name = owner_tuple[1].removeprefix("@")
                 if owner_name not in individual_owners:
                     individual_owners[owner_name] = []
                 individual_owners[owner_name].append(item)
 
             if owner_tuple[0] == "TEAM":
-                owner_name = owner_tuple[1]
+                owner_name = owner_tuple[1].removeprefix("@")
                 if owner_name not in team_owners:
                     team_owners[owner_name] = []
                 team_owners[owner_name].append(item)
@@ -85,31 +84,25 @@ class CodeownersBatcher(Batcher):
         # Add batches based on team owners
         for team_owner, batch_items in team_owners.items():
             batch: Batch = {"items": batch_items, "title": f"{self.prefix} {team_owner}"}
-            if self.metadata is not None:
-                # Deepcopy metadata to ensure mutations don't apply to all Batches
-                batch["metadata"] = deepcopy(self.metadata)
+            # Deepcopy metadata to ensure mutations don't apply to all Batches
+            metadata = deepcopy(self.metadata or {})
+            if "team_reviewers" in metadata and team_owner not in metadata["team_reviewers"]:
+                metadata["team_reviewers"].append(team_owner)
             else:
-                batch["metadata"] = {}
-            if (
-                "team_reviewers" in batch["metadata"]
-                and team_owner not in batch["metadata"]["team_reviewers"]
-            ):
-                batch["metadata"]["team_reviewers"].append(team_owner)
+                metadata["team_reviewers"] = [team_owner]
+            batch["metadata"] = metadata
             batches.append(batch)
 
         # Add batches based on individual owners
         for individual_owner, batch_items in individual_owners.items():
             batch = {"items": batch_items, "title": f"{self.prefix} {individual_owner}"}
-            if self.metadata is not None:
-                # Deepcopy metadata to ensure mutations don't apply to all Batches
-                batch["metadata"] = deepcopy(self.metadata)
+            # Deepcopy metadata to ensure mutations don't apply to all Batches
+            metadata = deepcopy(self.metadata or {})
+            if "reviewers" in metadata and individual_owner not in metadata["reviewers"]:
+                metadata["reviewers"].append(individual_owner)
             else:
-                batch["metadata"] = {}
-            if (
-                "reviewers" in batch["metadata"]
-                and individual_owner not in batch["metadata"]["reviewers"]
-            ):
-                batch["metadata"]["reviewers"].append(individual_owner)
+                metadata["reviewers"] = [individual_owner]
+            batch["metadata"] = metadata
             batches.append(batch)
 
         # Add unowned batch
