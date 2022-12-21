@@ -98,7 +98,7 @@ class CodeownersBatcher(Batcher):
             batch = {"items": batch_items, "title": f"{self.prefix} {individual_owner}"}
             # Deepcopy metadata to ensure mutations don't apply to all Batches
             metadata = deepcopy(self.metadata or {})
-            if "reviewers" in metadata and individual_owner not in metadata["team_reviewers"]:
+            if "reviewers" in metadata and individual_owner not in metadata["reviewers"]:
                 metadata["reviewers"].append(individual_owner)
             else:
                 metadata["reviewers"] = [individual_owner]
