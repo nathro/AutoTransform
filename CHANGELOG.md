@@ -17,6 +17,9 @@
 ### Misc
  - Redact github_token and jenkins_token fields from Config
 
+### Bugs
+ - Fixes reviewers being requested for CodeownersBatcher when the metadata doesn't have the field present
+
 ## Release 1.0.7
 
 ### New Components

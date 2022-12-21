@@ -14,11 +14,10 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any, ClassVar, Dict, List, Optional, Sequence
 
-from codeowners import CodeOwners
-
 from autotransform.batcher.base import Batch, Batcher, BatcherName
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
+from codeowners import CodeOwners
 
 
 class CodeownersBatcher(Batcher):
@@ -95,6 +94,8 @@ class CodeownersBatcher(Batcher):
                 and team_owner not in batch["metadata"]["team_reviewers"]
             ):
                 batch["metadata"]["team_reviewers"].append(team_owner)
+            else:
+                batch["metadata"]["team_reviewers"] = [team_owner]
             batches.append(batch)
 
         # Add batches based on individual owners
@@ -110,6 +111,8 @@ class CodeownersBatcher(Batcher):
                 and individual_owner not in batch["metadata"]["reviewers"]
             ):
                 batch["metadata"]["reviewers"].append(individual_owner)
+            else:
+                batch["metadata"]["reviewers"] = [individual_owner]
             batches.append(batch)
 
         # Add unowned batch
