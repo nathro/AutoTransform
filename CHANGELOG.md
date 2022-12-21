@@ -14,6 +14,7 @@
 
 ### New Components
  - AggregateFilter a filter that aggregates other filters
+ - CodeownersFiler a filter that passes only files with the specified owner
 
 ### Misc
  - Redact github_token and jenkins_token fields from Config
