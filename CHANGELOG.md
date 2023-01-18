@@ -5,6 +5,7 @@
 ### Migrations
  - The schema map has been upgraded to use SchemaMap class, with all file targets now relative to the directory that contains the schema map.
  - Significant updates have been made to how Script components work. They now use keys as a list replacement (i.e. ["foo", "<<KEY>>"] becomes ["foo", "bar.py", "baz,py"]). Additionally, extra data always maps key to the extra data, even for single transformations.
+ - ScriptTransformer no longer has a per_item setting, using chunk_size to allow chunking of items instead. per_item will be treated as chunk_size = 1. This legacy support will be disabled in 1.3.0.
 
 ### Features
  - Added an optional repo_override setting to Config that can be used to override the repo of supplied schemas

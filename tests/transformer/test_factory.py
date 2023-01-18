@@ -70,7 +70,7 @@ def test_encoding_and_decoding() -> None:
         TransformerName.REGEX: [{"pattern": "foo", "replacement": "bar"}],
         TransformerName.SCRIPT: [
             {"script": "black", "args": ["-l", "100"], "timeout": 100},
-            {"script": "black", "args": ["-l", "100"], "timeout": 100, "per_item": True},
+            {"script": "black", "args": ["-l", "100"], "timeout": 100, "chunk_size": 1},
         ],
     }
 
