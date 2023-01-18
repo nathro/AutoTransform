@@ -112,8 +112,8 @@ def test_metadata_arg(mock_run):
 
 
 @mock.patch.object(subprocess, "run")
-def test_no_args_per_item(mock_run):
-    """Test that subprocess is invoked correctly with no args per item."""
+def test_no_args_chunking(mock_run):
+    """Test that subprocess is invoked correctly with no args and chunking."""
 
     proc = mock.create_autospec(subprocess.CompletedProcess)
     proc.stdout = ""
@@ -121,7 +121,7 @@ def test_no_args_per_item(mock_run):
     proc.check_returncode.return_value = None
     mock_run.return_value = proc
 
-    transformer = ScriptTransformer(script="black", args=[], timeout=100, per_item=True)
+    transformer = ScriptTransformer(script="black", args=[], timeout=100, chunk_size=1)
     transformer.transform(
         {
             "title": "foo",
@@ -135,8 +135,8 @@ def test_no_args_per_item(mock_run):
 
 
 @mock.patch.object(subprocess, "run")
-def test_key_arg_per_item(mock_run):
-    """Test that subprocess is invoked correctly with a key argument per item."""
+def test_key_arg_chunking(mock_run):
+    """Test that subprocess is invoked correctly with a key argument and chunking."""
 
     proc = mock.create_autospec(subprocess.CompletedProcess)
     proc.stdout = ""
@@ -144,7 +144,7 @@ def test_key_arg_per_item(mock_run):
     proc.check_returncode.return_value = None
     mock_run.return_value = proc
 
-    transformer = ScriptTransformer(script="black", args=["<<KEY>>"], timeout=100, per_item=True)
+    transformer = ScriptTransformer(script="black", args=["<<KEY>>"], timeout=100, chunk_size=1)
     transformer.transform(
         {
             "title": "foo",
@@ -158,8 +158,8 @@ def test_key_arg_per_item(mock_run):
 
 
 @mock.patch.object(subprocess, "run")
-def test_extra_data_arg_per_item(mock_run):
-    """Test that subprocess is invoked correctly with an extra_data argument per item."""
+def test_extra_data_arg_chunking(mock_run):
+    """Test that subprocess is invoked correctly with an extra_data argument and chunking."""
 
     proc = mock.create_autospec(subprocess.CompletedProcess)
     proc.stdout = ""
@@ -168,7 +168,7 @@ def test_extra_data_arg_per_item(mock_run):
     mock_run.return_value = proc
 
     transformer = ScriptTransformer(
-        script="black", args=["<<EXTRA_DATA>>"], timeout=100, per_item=True
+        script="black", args=["<<EXTRA_DATA>>"], timeout=100, chunk_size=1
     )
     transformer.transform(
         {
@@ -183,8 +183,8 @@ def test_extra_data_arg_per_item(mock_run):
 
 
 @mock.patch.object(subprocess, "run")
-def test_metadata_arg_per_item(mock_run):
-    """Test that subprocess is invoked correctly with a metadata argument per item."""
+def test_metadata_arg_chunking(mock_run):
+    """Test that subprocess is invoked correctly with a metadata argument and chunking."""
 
     proc = mock.create_autospec(subprocess.CompletedProcess)
     proc.stdout = ""
@@ -193,7 +193,7 @@ def test_metadata_arg_per_item(mock_run):
     mock_run.return_value = proc
 
     transformer = ScriptTransformer(
-        script="black", args=["<<METADATA>>"], timeout=100, per_item=True
+        script="black", args=["<<METADATA>>"], timeout=100, chunk_size=1
     )
     transformer.transform(
         {
