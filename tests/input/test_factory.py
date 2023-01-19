@@ -50,7 +50,7 @@ def test_encoding_and_decoding() -> None:
 
     test_components: Dict[InputName, List[Dict[str, Any]]] = {
         InputName.DIRECTORY: [
-            {"path": "foo"},
+            {"paths": ["foo"]},
         ],
         InputName.EMPTY: [
             {},

@@ -15,9 +15,6 @@ import json
 import pathlib
 from typing import Any, List, Mapping, Optional, Sequence
 
-from git import Head
-from mock import patch
-
 from autotransform.batcher.base import Batch
 from autotransform.batcher.single import SingleBatcher
 from autotransform.change.base import Change
@@ -28,6 +25,8 @@ from autotransform.repo.github import GithubRepo
 from autotransform.schema.config import SchemaConfig
 from autotransform.schema.schema import AutoTransformSchema
 from autotransform.transformer.regex import RegexTransformer
+from git import Head
+from mock import patch
 
 ALLOWED_ITEMS = [Item(key="allowed")]
 ALL_ITEMS = [Item(key="allowed"), Item(key="not_allowed")]
@@ -40,7 +39,7 @@ def get_sample_schema() -> AutoTransformSchema:
 
     repo_root = str(pathlib.Path(__file__).parent.parent.parent.resolve()).replace("\\", "/")
     return AutoTransformSchema(
-        input=DirectoryInput(path=repo_root),
+        input=DirectoryInput(paths=[repo_root]),
         batcher=SingleBatcher(title=EXPECTED_TITLE, metadata=EXPECTED_METADATA),
         transformer=RegexTransformer(pattern="input", replacement="inputsource"),
         config=SchemaConfig(schema_name="Sample", owners=["foo", "bar"]),
