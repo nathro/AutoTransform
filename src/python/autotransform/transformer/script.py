@@ -14,8 +14,8 @@ from __future__ import annotations
 from typing import Any, ClassVar, Dict, List, Optional
 
 from autotransform.batcher.base import Batch
-from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
+from autotransform.event.verbose import VerboseEvent
 from autotransform.transformer.base import Transformer, TransformerName
 from autotransform.util.functions import run_cmd_on_items
 from pydantic import root_validator, validator
@@ -122,11 +122,11 @@ class ScriptTransformer(Transformer[None]):
             proc = run_cmd_on_items(cmd, chunk_items, metadata, timeout=self.timeout)
 
             if proc.stdout.strip() != "":
-                event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
+                event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
             else:
-                event_handler.handle(DebugEvent({"message": "No STDOUT"}))
+                event_handler.handle(VerboseEvent({"message": "No STDOUT"}))
             if proc.stderr.strip() != "":
-                event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
+                event_handler.handle(VerboseEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
             else:
-                event_handler.handle(DebugEvent({"message": "No STDERR"}))
+                event_handler.handle(VerboseEvent({"message": "No STDERR"}))
             proc.check_returncode()

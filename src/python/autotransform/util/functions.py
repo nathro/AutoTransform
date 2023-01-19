@@ -15,8 +15,8 @@ import subprocess
 from tempfile import NamedTemporaryFile as TmpFile
 from typing import Any, Dict, List, Mapping, Optional, Sequence
 
-from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
+from autotransform.event.verbose import VerboseEvent
 from autotransform.item.base import Item
 
 
@@ -67,7 +67,7 @@ def run_cmd_on_items(
         replaced_cmd = replace_script_args(cmd, arg_replacements)
 
         # Run script
-        event_handler.handle(DebugEvent({"message": f"Running command: {replaced_cmd}"}))
+        event_handler.handle(VerboseEvent({"message": f"Running command: {replaced_cmd}"}))
         return subprocess.run(
             replaced_cmd, capture_output=True, encoding="utf-8", check=False, timeout=timeout
         )

@@ -14,14 +14,13 @@ from __future__ import annotations
 import subprocess
 from typing import ClassVar, List
 
-from pydantic import Field
-
-from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
+from autotransform.event.verbose import VerboseEvent
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
 from autotransform.transformer.base import TransformerName
 from autotransform.transformer.single import SingleTransformer
+from pydantic import Field
 
 
 class JSCodeshiftTransformer(SingleTransformer):
@@ -55,7 +54,7 @@ class JSCodeshiftTransformer(SingleTransformer):
         cmd.extend(self.args)
 
         # Run JSCodeshift
-        event_handler.handle(DebugEvent({"message": f"Running command: {cmd}"}))
+        event_handler.handle(VerboseEvent({"message": f"Running command: {cmd}"}))
         proc = subprocess.run(
             cmd,
             capture_output=True,
@@ -64,11 +63,11 @@ class JSCodeshiftTransformer(SingleTransformer):
             timeout=self.timeout,
         )
         if proc.stdout.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
+            event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
         else:
-            event_handler.handle(DebugEvent({"message": "No STDOUT"}))
+            event_handler.handle(VerboseEvent({"message": "No STDOUT"}))
         if proc.stderr.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
+            event_handler.handle(VerboseEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
         else:
-            event_handler.handle(DebugEvent({"message": "No STDERR"}))
+            event_handler.handle(VerboseEvent({"message": "No STDERR"}))
         proc.check_returncode()

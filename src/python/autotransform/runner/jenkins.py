@@ -16,11 +16,10 @@ import os
 from typing import Any, ClassVar, Dict
 
 import requests
-
 from autotransform.change.base import Change
 from autotransform.config import get_config
-from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
+from autotransform.event.verbose import VerboseEvent
 from autotransform.event.warning import WarningEvent
 from autotransform.filter.shard import ShardFilter
 from autotransform.runner.base import Runner, RunnerName
@@ -106,7 +105,7 @@ class JenkinsAPIRunner(Runner):
                 )
 
                 if str(data.status_code) == "201":
-                    event_handler.handle(DebugEvent({"message": "Jenkins job is triggered"}))
+                    event_handler.handle(VerboseEvent({"message": "Jenkins job is triggered"}))
                 else:
                     event_handler.handle(
                         WarningEvent({"message": "Failed to trigger the Jenkins job"})

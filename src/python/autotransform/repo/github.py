@@ -15,18 +15,17 @@ import json
 from copy import deepcopy
 from typing import TYPE_CHECKING, Any, ClassVar, Dict, List, Mapping, Optional, Sequence
 
-from pydantic import BaseModel  # pylint: disable=no-name-in-module
-from pydantic import Field
-
 import autotransform.schema
 from autotransform.batcher.base import Batch
 from autotransform.change.base import Change
 from autotransform.change.github import GithubChange
-from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
+from autotransform.event.verbose import VerboseEvent
 from autotransform.repo.base import RepoName
 from autotransform.repo.git import GitRepo
 from autotransform.util.github import GithubUtils
+from pydantic import BaseModel  # pylint: disable=no-name-in-module
+from pydantic import Field
 
 if TYPE_CHECKING:
     from autotransform.schema.schema import AutoTransformSchema
@@ -146,7 +145,7 @@ class GithubRepo(GitRepo):
         )
 
         EventHandler.get().handle(
-            DebugEvent({"message": f"Pull request created: {pull_request.number}"})
+            VerboseEvent({"message": f"Pull request created: {pull_request.number}"})
         )
 
         # Add labels
