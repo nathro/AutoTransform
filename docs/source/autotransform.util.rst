@@ -13,6 +13,7 @@ Utilities
    autotransform.util.component
    autotransform.util.console
    autotransform.util.enums
+   autotransform.util.functions
    autotransform.util.github
    autotransform.util.manager
    autotransform.util.package
