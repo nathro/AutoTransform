@@ -11,6 +11,7 @@
 
 from typing import List
 
+import pytest
 from autotransform.input.directory import DirectoryInput
 
 
@@ -22,7 +23,7 @@ def assert_directory_content(directory: str, expected_files: List[str]):
         expected_files (List[str]): The relative paths of all expected results
     """
 
-    inp: DirectoryInput = DirectoryInput(path=directory)
+    inp: DirectoryInput = DirectoryInput(paths=[directory])
     files = [item.get_path() for item in inp.get_items()]
 
     missing_files = [file for file in expected_files if file not in files]
@@ -68,3 +69,14 @@ def test_recursive_dir(tmpdir):
     root_dir.mkdir("empty_dir")
     expected_files = [str(test_file_1).replace("\\", "/"), str(test_file_2).replace("\\", "/")]
     assert_directory_content(str(root_dir), expected_files)
+
+
+def test_legacy_migration(tmpdir):
+    """Tests that DirectoryInput works successfully with legacy path setting."""
+
+    empty_dir = tmpdir.mkdir("empty_dir")
+    inp = DirectoryInput(path=str(empty_dir))
+    assert len(inp.paths) == 1, "Only one path should be supplied"
+    assert inp.paths[0] == str(empty_dir)
+    with pytest.raises(ValueError, match="Can not supply both path and paths for DirectoryInput"):
+        DirectoryInput(path=str(empty_dir), paths=[str(empty_dir)])

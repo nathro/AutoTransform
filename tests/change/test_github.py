@@ -10,7 +10,6 @@
 """Tests for GithubChange component."""
 
 import mock
-
 from autotransform.batcher.single import SingleBatcher
 from autotransform.change.base import ChangeState, ReviewState
 from autotransform.change.github import GithubChange
@@ -33,7 +32,7 @@ def test_get_data_from_body(mock_get_pull_request):
         full_github_name="nathro/ATTest",
     )
     schema = AutoTransformSchema(
-        input=DirectoryInput(path="."),
+        input=DirectoryInput(paths="."),
         batcher=SingleBatcher(title="foo", metadata={"body": "bar"}),
         transformer=RegexTransformer(pattern="input", replacement="inputsource"),
         config=SchemaConfig(schema_name="Sample", owners=["foo", "bar"]),
