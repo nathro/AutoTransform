@@ -20,6 +20,7 @@
 
 ### Misc
  - Redact github_token and jenkins_token fields from Config
+ - Significantly updated logging to separate pure debugging information from simple verbose logs
 
 ### Bugs
  - Fixes reviewers being requested for CodeownersBatcher when the metadata doesn't have the field present

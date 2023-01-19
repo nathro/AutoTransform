@@ -21,4 +21,5 @@ class LoggingLevel(int, Enum):
     ERROR = 0
     WARNING = 1
     INFO = 2
-    DEBUG = 3
+    VERBOSE = 3
+    DEBUG = 4

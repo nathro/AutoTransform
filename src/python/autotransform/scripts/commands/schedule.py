@@ -13,10 +13,10 @@ import time
 from argparse import ArgumentParser, Namespace
 
 from autotransform.config import get_config, get_repo_config_relative_path
-from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.run import ScriptRunEvent
+from autotransform.event.verbose import VerboseEvent
 from autotransform.runner.local import LocalRunner
 from autotransform.util.scheduler import Scheduler
 
@@ -46,13 +46,22 @@ def add_args(parser: ArgumentParser) -> None:
         + "scheduling are likely.",
     )
 
-    parser.add_argument(
+    logging_level = parser.add_mutually_exclusive_group()
+    logging_level.add_argument(
         "-v",
         "--verbose",
         dest="verbose",
         action="store_true",
         required=False,
         help="Tells the script to output verbose logs.",
+    )
+    logging_level.add_argument(
+        "-d",
+        "--debug",
+        dest="debug",
+        action="store_true",
+        required=False,
+        help="Tells the script to output debug logs.",
     )
 
     mode_group = parser.add_mutually_exclusive_group()
@@ -88,6 +97,8 @@ def schedule_command_main(args: Namespace) -> None:
     start_time = int(args.time) if args.time is not None else int(time.time())
     event_handler = EventHandler.get()
     if args.verbose:
+        event_handler.set_logging_level(LoggingLevel.VERBOSE)
+    if args.debug:
         event_handler.set_logging_level(LoggingLevel.DEBUG)
 
     # Get Scheduler
@@ -99,7 +110,7 @@ def schedule_command_main(args: Namespace) -> None:
     event_args["scheduler"] = scheduler
     event_handler.handle(ScriptRunEvent({"script": "schedule", "args": event_args}))
 
-    event_handler.get().handle(DebugEvent({"message": f"Running scheduler: {scheduler!r}"}))
+    event_handler.get().handle(VerboseEvent({"message": f"Running scheduler: {scheduler!r}"}))
     if args.run_local:
         runner = get_config().local_runner
     else:

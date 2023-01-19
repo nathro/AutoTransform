@@ -16,5 +16,6 @@ Event Package (autotransform.event)
    autotransform.event.run
    autotransform.event.schedulerun
    autotransform.event.update
+   autotransform.event.verbose
    autotransform.event.warning
 

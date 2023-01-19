@@ -16,8 +16,8 @@ from typing import Any, ClassVar, List, Mapping, Optional, Sequence
 import autotransform.schema
 from autotransform.batcher.base import Batch
 from autotransform.command.base import Command, CommandName
-from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
+from autotransform.event.verbose import VerboseEvent
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
 from autotransform.util.functions import run_cmd_on_items
@@ -100,13 +100,13 @@ class ScriptCommand(Command):
 
         # Handle output
         if proc.stdout.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
+            event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
         else:
-            event_handler.handle(DebugEvent({"message": "No STDOUT"}))
+            event_handler.handle(VerboseEvent({"message": "No STDOUT"}))
         if proc.stderr.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
+            event_handler.handle(VerboseEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
         else:
-            event_handler.handle(DebugEvent({"message": "No STDERR"}))
+            event_handler.handle(VerboseEvent({"message": "No STDERR"}))
         proc.check_returncode()
 
     def _run_batch(self, batch: Batch) -> None:
@@ -136,11 +136,11 @@ class ScriptCommand(Command):
 
         # Handle output
         if proc.stdout.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
+            event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
         else:
-            event_handler.handle(DebugEvent({"message": "No STDOUT"}))
+            event_handler.handle(VerboseEvent({"message": "No STDOUT"}))
         if proc.stderr.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
+            event_handler.handle(VerboseEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
         else:
-            event_handler.handle(DebugEvent({"message": "No STDERR"}))
+            event_handler.handle(VerboseEvent({"message": "No STDERR"}))
         proc.check_returncode()

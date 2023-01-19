@@ -19,6 +19,7 @@ from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.remoterun import RemoteRunEvent
 from autotransform.event.update import RemoteUpdateEvent
+from autotransform.event.verbose import VerboseEvent
 from autotransform.filter.shard import ShardFilter
 from autotransform.repo.github import GithubRepo
 from autotransform.runner.base import Runner, RunnerName
@@ -78,7 +79,7 @@ class GithubRunner(Runner):
         workflow_url = self._create_workflow_dispatch(self.run_workflow, schema, workflow_inputs)
         assert workflow_url is not None, "Failed to dispatch workflow request"
 
-        event_handler.handle(DebugEvent({"message": "Successfully dispatched workflow run"}))
+        event_handler.handle(VerboseEvent({"message": "Successfully dispatched workflow run"}))
         if workflow_url == "":
             event_handler.handle(DebugEvent({"message": "No guess for workflow run URL."}))
             return
@@ -110,7 +111,7 @@ class GithubRunner(Runner):
         )
         assert workflow_url is not None, "Failed to dispatch workflow request"
 
-        event_handler.handle(DebugEvent({"message": "Successfully dispatched workflow run"}))
+        event_handler.handle(VerboseEvent({"message": "Successfully dispatched workflow run"}))
         if workflow_url == "":
             event_handler.handle(DebugEvent({"message": "No guess for workflow run URL."}))
             return

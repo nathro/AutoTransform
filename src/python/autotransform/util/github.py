@@ -21,6 +21,7 @@ import pytz
 from autotransform.config import get_config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
+from autotransform.event.warning import WarningEvent
 from autotransform.repo.git import GitRepo
 from fastcore.basics import AttrDict  # type: ignore
 from ghapi.all import GhApi, gh2date  # type: ignore
@@ -181,7 +182,7 @@ class GithubUtils:
             return res.workflow_runs[0].html_url
         except HTTPError as err:
             EventHandler.get().handle(
-                DebugEvent({"message": f"Failed dispatch workflow {workflow}: {err}"})
+                WarningEvent({"message": f"Failed dispatch workflow {workflow}: {err}"})
             )
             return None
 
@@ -428,7 +429,7 @@ class PullRequest:
             return res.merged
         except HTTPError as err:
             EventHandler.get().handle(
-                DebugEvent({"message": f"Failed merge pull request {self.number}: {err}"})
+                WarningEvent({"message": f"Failed merge pull request {self.number}: {err}"})
             )
             return False
 
@@ -453,7 +454,7 @@ class PullRequest:
             return res.state == "closed"
         except HTTPError as err:
             EventHandler.get().handle(
-                DebugEvent({"message": f"Failed to close pull request {self.number}: {err}"})
+                WarningEvent({"message": f"Failed to close pull request {self.number}: {err}"})
             )
             return False
 
@@ -469,6 +470,6 @@ class PullRequest:
             return True
         except HTTPError as err:
             EventHandler.get().handle(
-                DebugEvent({"message": f"Failed to delete branch {self.branch}: {err}"})
+                WarningEvent({"message": f"Failed to delete branch {self.branch}: {err}"})
             )
             return False

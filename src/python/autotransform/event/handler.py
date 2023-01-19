@@ -24,10 +24,9 @@ import os
 from datetime import datetime
 from typing import Dict, Optional
 
-from colorama import Fore
-
 from autotransform.event.base import Event
 from autotransform.event.logginglevel import LoggingLevel
+from colorama import Fore
 
 
 class EventHandler:
@@ -46,6 +45,7 @@ class EventHandler:
         LoggingLevel.ERROR: Fore.RED,
         LoggingLevel.WARNING: Fore.YELLOW,
         LoggingLevel.INFO: Fore.WHITE,
+        LoggingLevel.VERBOSE: Fore.GREEN,
         LoggingLevel.DEBUG: Fore.CYAN,
     }
 

@@ -15,8 +15,6 @@ from __future__ import annotations
 import json
 from typing import Any, Dict, List, Optional
 
-from pydantic import Field
-
 import autotransform.schema
 from autotransform.batcher.base import FACTORY as batcher_factory
 from autotransform.batcher.base import Batch, Batcher
@@ -25,6 +23,7 @@ from autotransform.command.base import FACTORY as command_factory
 from autotransform.command.base import Command
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
+from autotransform.event.verbose import VerboseEvent
 from autotransform.filter.base import FACTORY as filter_factory
 from autotransform.filter.base import Filter
 from autotransform.input.base import FACTORY as input_factory
@@ -39,6 +38,7 @@ from autotransform.util.component import ComponentModel
 from autotransform.util.console import choose_options_from_list, choose_yes_or_no
 from autotransform.validator.base import FACTORY as validator_factory
 from autotransform.validator.base import ValidationError, Validator
+from pydantic import Field
 
 
 class AutoTransformSchema(ComponentModel):
@@ -81,16 +81,17 @@ class AutoTransformSchema(ComponentModel):
 
         autotransform.schema.current = self
         event_handler = EventHandler.get()
-        event_handler.handle(DebugEvent({"message": "Begin get_batches"}))
+        event_handler.handle(VerboseEvent({"message": "Begin get_batches"}))
 
         # Get Items
-        event_handler.handle(DebugEvent({"message": "Begin get_items"}))
+        event_handler.handle(VerboseEvent({"message": "Begin get_items"}))
         all_items = self.input.get_items()
         item_str = "\n".join([f"{item!r}," for item in all_items])
+        event_handler.handle(VerboseEvent({"message": f"Num Items: {len(all_items)}"}))
         event_handler.handle(DebugEvent({"message": f"Items: [\n{item_str}\n]"}))
 
         # Filter Items
-        event_handler.handle(DebugEvent({"message": "Begin filters"}))
+        event_handler.handle(VerboseEvent({"message": "Begin filters"}))
         valid_items: List[Item] = []
         for item in all_items:
             is_valid = True
@@ -104,17 +105,19 @@ class AutoTransformSchema(ComponentModel):
                 valid_items.append(item)
         if valid_items:
             valid_item_str = "\n".join([f"{item!r}," for item in valid_items])
+            event_handler.handle(VerboseEvent({"message": f"Num Valid Items: {len(valid_items)}"}))
             event_handler.handle(DebugEvent({"message": f"Valid items: [\n{valid_item_str}\n]"}))
         else:
-            event_handler.handle(DebugEvent({"message": "No valid items."}))
+            event_handler.handle(VerboseEvent({"message": "No valid items."}))
 
         # Batch Items
-        event_handler.handle(DebugEvent({"message": "Begin batching"}))
+        event_handler.handle(VerboseEvent({"message": "Begin batching"}))
         batches = self.batcher.batch(valid_items)
         encodable_batches = [
             {"items": [item.bundle() for item in batch["items"]], "metadata": batch["metadata"]}
             for batch in batches
         ]
+        event_handler.handle(VerboseEvent({"message": f"Num Batches: {len(batches)}"}))
         event_handler.handle(DebugEvent({"message": f"Batches: {json.dumps(encodable_batches)}"}))
         autotransform.schema.current = None
 
@@ -143,16 +146,19 @@ class AutoTransformSchema(ComponentModel):
             "metadata": batch["metadata"],
         }
         event_handler.handle(
-            DebugEvent({"message": f"Begin execute_batch: {json.dumps(encodable_batch)}"})
+            VerboseEvent(
+                {"message": f"Handling Batch: {batch['title']} with {len(batch['items'])} items"}
+            )
         )
+        event_handler.handle(DebugEvent({"message": f"Full Batch: {json.dumps(encodable_batch)}"}))
 
         # Make sure repo is clean before executing
         if self.repo is not None:
-            event_handler.handle(DebugEvent({"message": "Clean repo"}))
+            event_handler.handle(VerboseEvent({"message": "Clean repo"}))
             self.repo.rewind(batch)
             if change is None and self.repo.has_outstanding_change(batch):
                 event_handler.handle(
-                    DebugEvent({"message": "Skipping batch with outstanding change"})
+                    VerboseEvent({"message": "Skipping batch with outstanding change"})
                 )
                 return False
 
@@ -164,16 +170,18 @@ class AutoTransformSchema(ComponentModel):
             command for command in self.commands if command.run_pre_validation
         ]
         for command in pre_validation_commands:
-            event_handler.handle(DebugEvent({"message": f"Running command {command}"}))
+            event_handler.handle(VerboseEvent({"message": f"Running command {command}"}))
             command.run(batch, result)
 
         # Validate the changes
         for validator in self.validators:
             validation_result = validator.check(batch, result)
-            event_handler.handle(DebugEvent({"message": f"Validation Result: {validation_result}"}))
+            event_handler.handle(
+                VerboseEvent({"message": f"Validation Result: {validation_result}"})
+            )
 
             if validation_result.level > self.config.allowed_validation_level:
-                event_handler.handle(DebugEvent({"message": "Validation Failed"}))
+                event_handler.handle(VerboseEvent({"message": "Validation Failed"}))
                 raise ValidationError(issue=validation_result, message=validation_result.message)
 
         # Run post-validation commands
@@ -181,29 +189,29 @@ class AutoTransformSchema(ComponentModel):
             command for command in self.commands if not command.run_pre_validation
         ]
         for command in post_validation_commands:
-            event_handler.handle(DebugEvent({"message": f"Running command {command}"}))
+            event_handler.handle(VerboseEvent({"message": f"Running command {command}"}))
             command.run(batch, result)
 
         submitted = False
         # Handle repo state, submitting changes if present and reseting the repo
         if self.repo is not None:
-            event_handler.handle(DebugEvent({"message": "Checking for changes"}))
+            event_handler.handle(VerboseEvent({"message": "Checking for changes"}))
             if self.repo.has_changes(batch):
-                event_handler.handle(DebugEvent({"message": "Changes found"}))
-                event_handler.handle(DebugEvent({"message": "Submitting changes"}))
+                event_handler.handle(VerboseEvent({"message": "Changes found"}))
+                event_handler.handle(VerboseEvent({"message": "Submitting changes"}))
                 self.repo.submit(batch, result, change=change)
-                event_handler.handle(DebugEvent({"message": "Rewinding repo"}))
+                event_handler.handle(VerboseEvent({"message": "Rewinding repo"}))
                 self.repo.rewind(batch)
                 submitted = True
             else:
                 if change is not None:
                     event_handler.handle(
-                        DebugEvent({"message": "No changes in update, abandoning"})
+                        VerboseEvent({"message": "No changes in update, abandoning"})
                     )
 
                     change.abandon()
-                event_handler.handle(DebugEvent({"message": "No changes found"}))
-        event_handler.handle(DebugEvent({"message": "Finish batch"}))
+                event_handler.handle(VerboseEvent({"message": "No changes found"}))
+        event_handler.handle(VerboseEvent({"message": "Finish batch"}))
         autotransform.schema.current = None
         return submitted
 
@@ -220,7 +228,7 @@ class AutoTransformSchema(ComponentModel):
                 and num_submissions >= self.config.max_submissions
             ):
                 EventHandler.get().handle(
-                    DebugEvent({"message": f"Max submissions reached: {num_submissions}"})
+                    VerboseEvent({"message": f"Max submissions reached: {num_submissions}"})
                 )
                 break
             if self.execute_batch(batch):

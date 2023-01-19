@@ -15,6 +15,13 @@ import importlib
 from functools import cached_property
 from typing import Any, ClassVar, Dict
 
+from autotransform.event.debug import DebugEvent
+from autotransform.event.handler import EventHandler
+from autotransform.event.warning import WarningEvent
+from autotransform.item.base import Item
+from autotransform.item.file import FileItem
+from autotransform.transformer.base import TransformerName
+from autotransform.transformer.single import SingleTransformer
 from libcst.codemod import (
     CodemodCommand,
     CodemodContext,
@@ -25,13 +32,6 @@ from libcst.codemod import (
     transform_module,
 )
 from pydantic import Field
-
-from autotransform.event.debug import DebugEvent
-from autotransform.event.handler import EventHandler
-from autotransform.item.base import Item
-from autotransform.item.file import FileItem
-from autotransform.transformer.base import TransformerName
-from autotransform.transformer.single import SingleTransformer
 
 
 class LibCSTTransformer(SingleTransformer):
@@ -63,7 +63,7 @@ class LibCSTTransformer(SingleTransformer):
         event_handler.handle(DebugEvent({"message": f"Performing transform on {item.get_path()}"}))
         res = transform_module(self._command, item.get_content())
         for message in res.warning_messages:
-            event_handler.handle(DebugEvent({"message": f"Warning: {message}"}))
+            event_handler.handle(WarningEvent({"message": f"Warning: {message}"}))
         if isinstance(res, TransformSuccess):
             event_handler.handle(DebugEvent({"message": "Transform success"}))
             item.write_content(res.code)
@@ -75,7 +75,7 @@ class LibCSTTransformer(SingleTransformer):
             )
         if isinstance(res, TransformFailure):
             event_handler.handle(
-                DebugEvent({"message": f"Transform failed: {res.error}\n{res.traceback_str}"})
+                WarningEvent({"message": f"Transform failed: {res.error}\n{res.traceback_str}"})
             )
         if isinstance(res, TransformExit):
             event_handler.handle(DebugEvent({"message": "Transform exited from user interupt"}))

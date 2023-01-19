@@ -19,6 +19,7 @@ from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.run import ScriptRunEvent
+from autotransform.event.verbose import VerboseEvent
 from autotransform.runner.base import Runner
 from autotransform.runner.local import LocalRunner
 
@@ -38,13 +39,22 @@ def add_args(parser: ArgumentParser) -> None:
         + "or environment variable name.",
     )
 
-    parser.add_argument(
+    logging_level = parser.add_mutually_exclusive_group()
+    logging_level.add_argument(
         "-v",
         "--verbose",
         dest="verbose",
         action="store_true",
         required=False,
         help="Tells the script to output verbose logs.",
+    )
+    logging_level.add_argument(
+        "-d",
+        "--debug",
+        dest="debug",
+        action="store_true",
+        required=False,
+        help="Tells the script to output debug logs.",
     )
 
     type_group = parser.add_mutually_exclusive_group()
@@ -110,6 +120,8 @@ def run_command_main(args: Namespace) -> None:
 
     event_handler = EventHandler.get()
     if args.verbose:
+        event_handler.set_logging_level(LoggingLevel.VERBOSE)
+    if args.debug:
         event_handler.set_logging_level(LoggingLevel.DEBUG)
     change = args.change
     event_handler.handle(DebugEvent({"message": f"Change: ({args.change_type}) {args.change}"}))
@@ -125,10 +137,10 @@ def run_command_main(args: Namespace) -> None:
         change = change_factory.get_instance(json.loads(change))
 
     if args.change_type != "string":
-        event_handler.handle(DebugEvent({"message": f"Change: {change!r}"}))
+        event_handler.handle(VerboseEvent({"message": f"Change: {change!r}"}))
 
     if args.run_local:
-        event_handler.handle(DebugEvent({"message": "Running locally"}))
+        event_handler.handle(VerboseEvent({"message": "Running locally"}))
         event_args["remote"] = False
         config_runner = get_config().local_runner
         if config_runner is None:
@@ -137,7 +149,7 @@ def run_command_main(args: Namespace) -> None:
         else:
             runner = config_runner
     else:
-        event_handler.handle(DebugEvent({"message": "Running remote"}))
+        event_handler.handle(VerboseEvent({"message": "Running remote"}))
         event_args["remote"] = True
         config_runner = get_config().remote_runner
         assert config_runner is not None

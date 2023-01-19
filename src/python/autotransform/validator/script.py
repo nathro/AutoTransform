@@ -15,8 +15,8 @@ from typing import Any, ClassVar, List, Mapping, Optional, Sequence
 
 import autotransform.schema
 from autotransform.batcher.base import Batch
-from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
+from autotransform.event.verbose import VerboseEvent
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
 from autotransform.util.functions import run_cmd_on_items
@@ -115,13 +115,13 @@ class ScriptValidator(Validator):
         # Handle output
         level = self.failure_level if proc.returncode != 0 else ValidationResultLevel.NONE
         if proc.stdout.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
+            event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
         else:
-            event_handler.handle(DebugEvent({"message": "No STDOUT"}))
+            event_handler.handle(VerboseEvent({"message": "No STDOUT"}))
         if proc.stderr.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
+            event_handler.handle(VerboseEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
         else:
-            event_handler.handle(DebugEvent({"message": "No STDERR"}))
+            event_handler.handle(VerboseEvent({"message": "No STDERR"}))
         return ValidationResult(
             level=level,
             message=f"[{cmd}]\nSTDOUT:\n{proc.stdout.strip()}\nSTDERR:\n{proc.stderr.strip()}",
@@ -158,13 +158,13 @@ class ScriptValidator(Validator):
         # Handle output
         level = self.failure_level if proc.returncode != 0 else ValidationResultLevel.NONE
         if proc.stdout.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
+            event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
         else:
-            event_handler.handle(DebugEvent({"message": "No STDOUT"}))
+            event_handler.handle(VerboseEvent({"message": "No STDOUT"}))
         if proc.stderr.strip() != "":
-            event_handler.handle(DebugEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
+            event_handler.handle(VerboseEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
         else:
-            event_handler.handle(DebugEvent({"message": "No STDERR"}))
+            event_handler.handle(VerboseEvent({"message": "No STDERR"}))
         return ValidationResult(
             level=level,
             message=f"[{cmd}]\nSTDOUT:\n{proc.stdout.strip()}\nSTDERR:\n{proc.stderr.strip()}",
