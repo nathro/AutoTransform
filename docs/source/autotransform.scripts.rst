@@ -17,4 +17,4 @@ Scripts (autotransform.scripts)
 .. toctree::
    :maxdepth: 4
 
-   autotransform.scripts.migrations.manager
+   autotransform.scripts.migrations
