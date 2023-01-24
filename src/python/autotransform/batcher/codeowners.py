@@ -11,6 +11,7 @@
 
 from __future__ import annotations
 
+import math
 from copy import deepcopy
 from typing import Any, ClassVar, Dict, List, Optional, Sequence
 
@@ -27,6 +28,8 @@ class CodeownersBatcher(Batcher):
     Attributes:
         codeowners_location (str): The location of the CODEOWNERS file.
         prefix (str): The prefix to use for titles.
+        max_batch_size (Optional[int]): The maximum size of any batch. If None, then batches will
+            have no max size. Defaults to None.
         metadata (Optional[Dict[str, Any]], optional): The metadata to associate with
             Batches. Defaults to None.
         name (ClassVar[BatcherName]): The name of the Component.
@@ -34,6 +37,7 @@ class CodeownersBatcher(Batcher):
 
     codeowners_location: str
     prefix: str
+    max_batch_size: Optional[int] = None
     metadata: Optional[Dict[str, Any]] = None
 
     name: ClassVar[BatcherName] = BatcherName.CODEOWNERS
@@ -82,35 +86,73 @@ class CodeownersBatcher(Batcher):
         batches: List[Batch] = []
 
         # Add batches based on team owners
-        for team_owner, batch_items in team_owners.items():
-            batch: Batch = {"items": batch_items, "title": f"{self.prefix} {team_owner}"}
-            # Deepcopy metadata to ensure mutations don't apply to all Batches
-            metadata = deepcopy(self.metadata or {})
-            if "team_reviewers" in metadata and team_owner not in metadata["team_reviewers"]:
-                metadata["team_reviewers"].append(team_owner)
+        for team_owner, team_items in team_owners.items():
+            if self.max_batch_size is not None and len(team_items) > self.max_batch_size:
+                num_chunks = math.ceil(len(team_items) / self.max_batch_size)
+                chunk_size = math.ceil(len(team_items) / num_chunks)
+                item_chunks = [
+                    team_items[i : i + chunk_size] for i in range(0, len(team_items), chunk_size)
+                ]
+                title = f"[1/{num_chunks}]{self.prefix} {team_owner}"
             else:
-                metadata["team_reviewers"] = [team_owner]
-            batch["metadata"] = metadata
-            batches.append(batch)
+                item_chunks = [team_items]
+                title = f"{self.prefix} {team_owner}"
+            for i, chunk_items in enumerate(item_chunks):
+                batch: Batch = {"items": chunk_items, "title": title}
+                # Deepcopy metadata to ensure mutations don't apply to all Batches
+                metadata = deepcopy(self.metadata or {})
+                if "team_reviewers" in metadata and team_owner not in metadata["team_reviewers"]:
+                    metadata["team_reviewers"].append(team_owner)
+                else:
+                    metadata["team_reviewers"] = [team_owner]
+                batch["metadata"] = metadata
+                batches.append(batch)
+                title = f"[{i+2}/{num_chunks}]{self.prefix} {team_owner}"
 
         # Add batches based on individual owners
-        for individual_owner, batch_items in individual_owners.items():
-            batch = {"items": batch_items, "title": f"{self.prefix} {individual_owner}"}
-            # Deepcopy metadata to ensure mutations don't apply to all Batches
-            metadata = deepcopy(self.metadata or {})
-            if "reviewers" in metadata and individual_owner not in metadata["reviewers"]:
-                metadata["reviewers"].append(individual_owner)
+        for individual_owner, individual_items in individual_owners.items():
+            if self.max_batch_size is not None and len(individual_items) > self.max_batch_size:
+                num_chunks = math.ceil(len(individual_items) / self.max_batch_size)
+                chunk_size = math.ceil(len(individual_items) / num_chunks)
+                item_chunks = [
+                    individual_items[i : i + chunk_size]
+                    for i in range(0, len(individual_items), chunk_size)
+                ]
+                title = f"[1/{num_chunks}]{self.prefix} {individual_owner}"
             else:
-                metadata["reviewers"] = [individual_owner]
-            batch["metadata"] = metadata
-            batches.append(batch)
+                item_chunks = [individual_items]
+                title = f"{self.prefix} {individual_owner}"
+            for i, chunk_items in enumerate(item_chunks):
+                batch = {"items": chunk_items, "title": title}
+                # Deepcopy metadata to ensure mutations don't apply to all Batches
+                metadata = deepcopy(self.metadata or {})
+                if "reviewers" in metadata and individual_owner not in metadata["reviewers"]:
+                    metadata["reviewers"].append(individual_owner)
+                else:
+                    metadata["reviewers"] = [individual_owner]
+                batch["metadata"] = metadata
+                batches.append(batch)
+                title = f"[{i+2}/{num_chunks}]{self.prefix} {individual_owner}"
 
         # Add unowned batch
         if no_owners:
-            batch = {"items": no_owners, "title": f"{self.prefix} unowned"}
-            if self.metadata is not None:
-                # Deepcopy metadata to ensure mutations don't apply to all Batches
-                batch["metadata"] = deepcopy(self.metadata)
+            if self.max_batch_size is not None and len(no_owners) > self.max_batch_size:
+                num_chunks = math.ceil(len(no_owners) / self.max_batch_size)
+                chunk_size = math.ceil(len(no_owners) / num_chunks)
+                item_chunks = [
+                    no_owners[i : i + chunk_size] for i in range(0, len(no_owners), chunk_size)
+                ]
+                title = f"[1/{num_chunks}]{self.prefix} unowned"
+            else:
+                item_chunks = [no_owners]
+                title = f"{self.prefix} unowned"
+            for i, chunk_items in enumerate(item_chunks):
+                batch = {"items": chunk_items, "title": title}
+                if self.metadata is not None:
+                    # Deepcopy metadata to ensure mutations don't apply to all Batches
+                    batch["metadata"] = deepcopy(self.metadata)
+                batches.append(batch)
+                title = f"[{i+2}/{num_chunks}]{self.prefix} unowned"
 
             batches.append(batch)
 
