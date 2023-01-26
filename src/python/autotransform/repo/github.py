@@ -181,16 +181,10 @@ class GithubRepo(GitRepo):
             )
         automation_info_lines.append("Schema and batch information for the change below")
 
+        files = {}
         # Add schema JSON
         if schema is not None:
-            automation_info_lines.extend(
-                GithubRepo._get_encoded_json_lines(
-                    "Schema",
-                    schema.bundle(),
-                    GithubUtils.BEGIN_SCHEMA,
-                    GithubUtils.END_SCHEMA,
-                )
-            )
+            files["schema"] = {"content": json.dumps(schema.bundle(), indent=4)}
 
         # Add batch JSON
         encodable_batch: Dict[str, Any] = {
@@ -199,40 +193,11 @@ class GithubRepo(GitRepo):
         }
         if "metadata" in batch:
             encodable_batch["metadata"] = batch["metadata"]
-        automation_info_lines.extend(
-            GithubRepo._get_encoded_json_lines(
-                "Batch", encodable_batch, GithubUtils.BEGIN_BATCH, GithubUtils.END_BATCH
-            )
-        )
+        files["batch"] = {"content": json.dumps(encodable_batch, indent=4)}
+        gist = GithubUtils.get(self.full_github_name).create_gist(files, public=True)
+        automation_info_lines.append(f"Automation Info Gist: {gist.gist_id}")
 
         return "\n".join(automation_info_lines)
-
-    @staticmethod
-    def _get_encoded_json_lines(
-        title: str, encodable_object: Any, begin_section: str, end_section: str
-    ) -> List[str]:
-        """Gets the details section for an encoded json object as a list of lines.
-
-        Args:
-            title (str): The title of the section.
-            encodable_object (Any): The object to json encode.
-            begin_section (str): The beginning of the encoded section.
-            end_section (str): The end of the encoded section.
-
-        Returns:
-            List[str]: _description_
-        """
-        return [
-            f"<details><summary>{title} JSON</summary>",
-            "",
-            "```",
-            begin_section,
-            json.dumps(encodable_object, indent=4),
-            end_section,
-            "```",
-            "",
-            "</details>",
-        ]
 
     def get_outstanding_changes(self) -> Sequence[GithubChange]:
         """Gets all outstanding pull requests for the Repo.
