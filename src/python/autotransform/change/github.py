@@ -283,7 +283,7 @@ class GithubChange(Change):
         """
 
         data: Dict[str, str] = {}
-        gist_match = re.search("Automation Info Gist: (.*)\n", self._pull_request.body)
+        gist_match = re.search("Automation Info Gist: (.*)(?!\n|$)", self._pull_request.body)
         if gist_match:
             gist = GithubUtils.get(self.full_github_name).get_gist(gist_match.groups()[0])
             data["schema"] = gist.get_file_content("schema") or ""
