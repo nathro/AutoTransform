@@ -197,7 +197,7 @@ class GithubRepo(GitRepo):
         gist = GithubUtils.get(self.full_github_name).create_gist(
             files, description="Automation info for AutoTransform", public=True
         )
-        automation_info_lines.append(f"Automation Info Gist: {gist.gist_id}")
+        automation_info_lines.append(f"<<<Automation Info Gist: {gist.gist_id}>>>")
 
         return "\n".join(automation_info_lines)
 
