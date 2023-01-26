@@ -39,6 +39,7 @@ class GithubUtils:
     __instances: Dict[str, GithubUtils] = {}
 
     _api: GhApi
+    _gists: Dict[str, Gist]
     _pulls: Dict[int, PullRequest]
 
     BEGIN_SCHEMA: str = "<<<<BEGIN SCHEMA>>>>"
@@ -60,6 +61,7 @@ class GithubUtils:
         url = get_config().github_base_url
         repo_parts = fully_qualified_repo.split("/")
         self._api = GhApi(token=token, gh_host=url, owner=repo_parts[0], repo=repo_parts[1])
+        self._gists: Dict[str, Gist] = {}
         self._pulls: Dict[int, PullRequest] = {}
 
     @staticmethod
@@ -116,6 +118,37 @@ class GithubUtils:
         if pull_number not in self._pulls:
             self._pulls[pull_number] = PullRequest(self._api, pull_number)
         return self._pulls[pull_number]
+
+    def create_gist(
+        self, files: Dict[str, Dict[str, str]], description: str, public: bool = True
+    ) -> Gist:
+        """Creates a Gist containing the supplied information
+
+        Args:
+            files (Dict[str, Dict[str, str]]): The files to include in the gist.
+            description (str): A simple description of the gist.
+            public (bool, optional): Whether the gist should be public. Defaults to True.
+
+        Returns:
+            Gist: The created gist.
+        """
+
+        res = self._api.gists.create(description=description, files=files, public=public)
+        return Gist(self._api, res.id)
+
+    def get_gist(self, gist_id: str) -> Gist:
+        """Gets a wrapper around the requested gist.
+
+        Args:
+            gist_id (str): The id of the gist.
+
+        Returns:
+            Gist: The requested gist.
+        """
+
+        if gist_id not in self._gists:
+            self._gists[gist_id] = Gist(self._api, gist_id)
+        return self._gists[gist_id]
 
     def get_open_pull_requests(self, base: Optional[str] = None) -> List[PullRequest]:
         """Gets all outstanding pull requests from the repo.
@@ -338,7 +371,7 @@ class PullRequest:
         """A cached value of the detailed info from the Github API.
 
         Returns:
-            AttrDict: The detailed info of the PR
+            AttrDict: The detailed info of the PR.
         """
 
         return self._api.pulls.get(pull_number=self.number)
@@ -473,3 +506,54 @@ class PullRequest:
                 WarningEvent({"message": f"Failed to delete branch {self.branch}: {err}"})
             )
             return False
+
+
+class Gist:
+    """A wrapper around GhApi gist response for simplified access to gist info.
+
+    Attributes:
+        id (str): The id of the gist.
+        _api (GhApi): The API object used to access Github's API.
+    """
+
+    gist_id: str
+
+    _api: GhApi
+
+    def __init__(self, api: GhApi, gist_id: str):
+        self.gist_id = gist_id
+        self._api = api
+
+    @cached_property
+    def _detailed_info(self) -> AttrDict:
+        """A cached value of the detailed info from the Github API.
+
+        Returns:
+            AttrDict: The detailed info of the gist.
+        """
+
+        return self._api.gists.get(gist_id=self.gist_id)
+
+    def get_description(self) -> str:
+        """Gets the description of the gist.
+
+        Returns:
+            str: The description of the gist.
+        """
+
+        return self._detailed_info.description
+
+    def get_file_content(self, file_name: str) -> Optional[str]:
+        """Gets the content of the requested file within the gist.
+
+        Args:
+            file_name (str): The name of the file to get the content for.
+
+        Returns:
+            Optional[str]: The contents of the file. None if the gist does not have a file with
+                the supplied name.
+        """
+
+        if file_name not in self._detailed_info.files:
+            return None
+        return self._detailed_info.files[file_name].content

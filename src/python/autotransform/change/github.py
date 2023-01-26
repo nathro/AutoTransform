@@ -12,6 +12,7 @@
 from __future__ import annotations
 
 import json
+import re
 from functools import cached_property
 from typing import ClassVar, Dict, List, Tuple
 
@@ -45,7 +46,7 @@ class GithubChange(Change):
             Batch: The Batch used to produce the Change.
         """
 
-        return self._body_data[1]
+        return self._automation_data[1]
 
     def get_schema(self) -> AutoTransformSchema:
         """Gets the Schema that was used to produce the Change.
@@ -273,7 +274,7 @@ class GithubChange(Change):
         return GithubUtils.get(self.full_github_name).get_pull_request(self.pull_number)
 
     @cached_property
-    def _body_data(self) -> Tuple[AutoTransformSchema, Batch]:
+    def _automation_data(self) -> Tuple[AutoTransformSchema, Batch]:
         """Loads the Schema and Batch data for the GithubChange as a cached property.
 
         Returns:
@@ -281,22 +282,31 @@ class GithubChange(Change):
                 in the PullRequest's Body.
         """
 
-        data: Dict[str, List[str]] = {"schema": [], "batch": []}
-        cur_line_placement = None
-        for line in self._pull_request.body.splitlines():
-            if line == GithubUtils.BEGIN_SCHEMA:
-                cur_line_placement = "schema"
-            elif line == GithubUtils.END_SCHEMA:
-                cur_line_placement = None
-            elif line == GithubUtils.BEGIN_BATCH:
-                cur_line_placement = "batch"
-            elif line == GithubUtils.END_BATCH:
-                cur_line_placement = None
-            elif cur_line_placement is not None:
-                data[cur_line_placement].append(line)
+        data: Dict[str, str] = {}
+        gist_match = re.search("Automation Info Gist: (.*)\n", self._pull_request.body)
+        if gist_match:
+            gist = GithubUtils.get(self.full_github_name).get_gist(gist_match.groups()[0])
+            data["schema"] = gist.get_file_content("schema") or ""
+            data["batch"] = gist.get_file_content("batch") or ""
+        else:
+            cur_line_placement = None
+            data_lines: Dict[str, List[str]] = {"schema": [], "batch": []}
+            for line in self._pull_request.body.splitlines():
+                if line == GithubUtils.BEGIN_SCHEMA:
+                    cur_line_placement = "schema"
+                elif line == GithubUtils.END_SCHEMA:
+                    cur_line_placement = None
+                elif line == GithubUtils.BEGIN_BATCH:
+                    cur_line_placement = "batch"
+                elif line == GithubUtils.END_BATCH:
+                    cur_line_placement = None
+                elif cur_line_placement is not None:
+                    data_lines[cur_line_placement].append(line)
+            data["schema"] = "\n".join(data_lines["schema"])
+            data["batch"] = "\n".join(data_lines["batch"])
 
-        schema = AutoTransformSchema.from_data(json.loads("\n".join(data["schema"])))
-        batch = json.loads("\n".join(data["batch"]))
+        schema = AutoTransformSchema.from_data(json.loads(data["schema"]))
+        batch = json.loads(data["batch"])
         items = [item_factory.get_instance(item) for item in batch["items"]]
         batch = {
             "items": items,
