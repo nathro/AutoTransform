@@ -26,6 +26,7 @@
 
 ### Bugs
  - Fixes reviewers being requested for CodeownersBatcher when the metadata doesn't have the field present
+ - Fixes search for outstanding PRs to properly limit by repo
 
 ## Release 1.0.7
 

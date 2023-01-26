@@ -34,11 +34,15 @@ class GithubUtils:
     Attributes:
         __instances (Dict[str, GithubUtils]): A mapping of repo names to Util objects.
         _api (GhApi): The API object used to handle requests to Github.
+        _fully_qualified_repo (str): The fully qualified name of the Github repo.
+        _gists (Dict[str, Gist]): A mapping from id to Gist.
+        _pulls (Dict[int, PullRequest]): A mapping from pull number to PullRequest.
     """
 
     __instances: Dict[str, GithubUtils] = {}
 
     _api: GhApi
+    _fully_qualified_repo: str
     _gists: Dict[str, Gist]
     _pulls: Dict[int, PullRequest]
 
@@ -61,6 +65,7 @@ class GithubUtils:
         url = get_config().github_base_url
         repo_parts = fully_qualified_repo.split("/")
         self._api = GhApi(token=token, gh_host=url, owner=repo_parts[0], repo=repo_parts[1])
+        self._fully_qualified_repo = fully_qualified_repo
         self._gists: Dict[str, Gist] = {}
         self._pulls: Dict[int, PullRequest] = {}
 
@@ -162,7 +167,7 @@ class GithubUtils:
         """
 
         username = self._api.users.get_authenticated().login
-        query = f"type:pr state:open author:{username}"
+        query = f"type:pr state:open author:{username} repo:{self._fully_qualified_repo}"
         if base is not None:
             query = f"{query} base:{base}"
         page = 1
