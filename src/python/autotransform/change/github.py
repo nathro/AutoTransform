@@ -286,8 +286,8 @@ class GithubChange(Change):
         gist_match = re.search("Automation Info Gist: (.*)\n", self._pull_request.body)
         if gist_match:
             gist = GithubUtils.get(self.full_github_name).get_gist(gist_match.groups()[0])
-            data["schema"] = gist.get_file_content("schema")
-            data["batch"] = gist.get_file_content("batch")
+            data["schema"] = gist.get_file_content("schema") or ""
+            data["batch"] = gist.get_file_content("batch") or ""
         else:
             cur_line_placement = None
             data_lines: Dict[str, List[str]] = {"schema": [], "batch": []}

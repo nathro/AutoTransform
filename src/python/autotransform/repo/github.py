@@ -194,7 +194,9 @@ class GithubRepo(GitRepo):
         if "metadata" in batch:
             encodable_batch["metadata"] = batch["metadata"]
         files["batch"] = {"content": json.dumps(encodable_batch, indent=4)}
-        gist = GithubUtils.get(self.full_github_name).create_gist(files, public=True)
+        gist = GithubUtils.get(self.full_github_name).create_gist(
+            files, description="Automation info for AutoTransform", public=True
+        )
         automation_info_lines.append(f"Automation Info Gist: {gist.gist_id}")
 
         return "\n".join(automation_info_lines)

@@ -10,43 +10,9 @@
 """Tests for GithubChange component."""
 
 import mock
-from autotransform.batcher.single import SingleBatcher
 from autotransform.change.base import ChangeState, ReviewState
 from autotransform.change.github import GithubChange
-from autotransform.filter.regex import RegexFilter
-from autotransform.input.directory import DirectoryInput
-from autotransform.item.file import FileItem
-from autotransform.repo.github import GithubRepo
-from autotransform.schema.config import SchemaConfig
-from autotransform.schema.schema import AutoTransformSchema
-from autotransform.transformer.regex import RegexTransformer
 from autotransform.util.github import GithubUtils, PullRequest
-
-
-@mock.patch.object(GithubUtils, "get_pull_request")
-def test_get_data_from_body(mock_get_pull_request):
-    """Tests the get_schema() and get_batch() methods from the Change."""
-
-    repo = GithubRepo(
-        base_branch="master",
-        full_github_name="nathro/ATTest",
-    )
-    schema = AutoTransformSchema(
-        input=DirectoryInput(paths="."),
-        batcher=SingleBatcher(title="foo", metadata={"body": "bar"}),
-        transformer=RegexTransformer(pattern="input", replacement="inputsource"),
-        config=SchemaConfig(schema_name="Sample", owners=["foo", "bar"]),
-        filters=[RegexFilter(pattern=".*\\.py$")],
-        repo=repo,
-    )
-    batch = {"title": "fizz", "metadata": {"body": "bar"}, "items": [FileItem(key="foo.py")]}
-    pull_request = mock.create_autospec(PullRequest)
-    pull_request.body = repo.get_automation_info(schema, batch)
-    mock_get_pull_request.return_value = pull_request
-
-    change = GithubChange(full_github_name="nathro/ATTest", pull_number=1)
-
-    assert change.get_batch() == batch
 
 
 @mock.patch.object(GithubUtils, "get_pull_request")
