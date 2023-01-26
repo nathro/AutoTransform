@@ -71,7 +71,7 @@ class GithubChange(Change):
             str: The name of the Schema.
         """
 
-        return self._pull_request.branch.split("/")[1].replace("_", " ")
+        return self._automation_data[0].config.schema_name
 
     def get_state(self) -> ChangeState:
         """Gets the current state of the Change.

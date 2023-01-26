@@ -27,6 +27,7 @@
 ### Bugs
  - Fixes reviewers being requested for CodeownersBatcher when the metadata doesn't have the field present
  - Fixes search for outstanding PRs to properly limit by repo
+ - Fix getting the name of the schema off a GithubChange
 
 ## Release 1.0.7
 
