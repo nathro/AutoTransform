@@ -14,6 +14,7 @@
  - Script components now can take a replacement dictionary as the environment variable AUTO_TRANSFORM_SCRIPT_REPLACEMENTS
  - Added target_repo_name and target_repo_ref to GithubRunner so that workflow can control checkout with inputs, makes having a single repo that acts on all of your repos a bit better
  - Added maximum batch size option to CodeownersBatcher
+ - Updates GithubRepo to use gists for storing batch/schema information. GithubChange can still use the old system but that support will be deprecated with 1.3.0
 
 ### New Components
  - AggregateFilter a filter that aggregates other filters
