@@ -59,4 +59,4 @@ class ManageActionEvent(Event[ManageActionEventData]):
             str: The message for the event.
         """
 
-        return f"Performing action: {self.data['action']!r}"
+        return f"Performing action: {self.data['action']!r}\nOn Change: {self.data['change']!r}"
