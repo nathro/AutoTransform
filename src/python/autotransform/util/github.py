@@ -389,11 +389,19 @@ class PullRequest:
             Tuple[List[str], List[str]]: A tuple containing user reviewers and team reviewers.
         """
 
-        reviewers = self._api.pulls.list_requested_reviewers(pull_number=self.number)
-        return (
-            [reviewer["login"] for reviewer in reviewers["users"]],
-            [reviewer["name"] for reviewer in reviewers["teams"]],
-        )
+        requested_reviewers = self._api.pulls.list_requested_reviewers(pull_number=self.number)
+        per_page = 50
+        page = 1
+        user_reviewers = [reviewer["login"] for reviewer in requested_reviewers["users"]]
+        team_reviewers = [reviewer["name"] for reviewer in requested_reviewers["teams"]]
+        more_reviewers = True
+        while more_reviewers:
+            reviews = self._api.pulls.list_reviews(
+                pull_number=self.number, page=page, per_page=per_page
+            )
+            user_reviewers.extend(review["user"]["login"] for review in reviews)
+            more_reviewers = len(reviews) == per_page
+        return (list(set(user_reviewers)), list(set(team_reviewers)))
 
     def get_created_at(self) -> int:
         """Gets the created at timestamp.
