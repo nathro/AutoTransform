@@ -51,6 +51,7 @@ class EventHandler:
 
     def __init__(self):
         if EventHandler.__instance is not None:
+            # pylint: disable=broad-exception-raised
             raise Exception("Trying to instantiate new EventHandler when one already present")
         self._logging_level = LoggingLevel.INFO
 
