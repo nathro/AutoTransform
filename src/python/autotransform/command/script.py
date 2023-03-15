@@ -125,6 +125,8 @@ class ScriptCommand(Command):
             repo = current_schema.repo
             assert repo is not None
             items: Sequence[Item] = [FileItem(key=file) for file in repo.get_changed_files(batch)]
+            if len(items) == 0:
+                return
         else:
             items = batch["items"]
 
