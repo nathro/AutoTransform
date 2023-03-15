@@ -11,7 +11,7 @@
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Sequence, Type
+from typing import Any, ClassVar, Dict, Sequence, Type
 
 from autotransform.filter.base import FACTORY as filter_factory
 from autotransform.filter.base import Filter, FilterName

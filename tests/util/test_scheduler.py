@@ -12,7 +12,6 @@
 import json
 import pathlib
 
-from autotransform.runner.github import GithubRunner
 from autotransform.util.scheduler import (
     RepeatSetting,
     ScheduledSchema,

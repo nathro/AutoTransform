@@ -14,7 +14,6 @@ import pathlib
 
 from autotransform.change.base import ReviewState
 from autotransform.repo.github import GithubRepo
-from autotransform.runner.github import GithubRunner
 from autotransform.step.action.source import AbandonAction, MergeAction, UpdateAction
 from autotransform.step.condition.comparison import ComparisonType
 from autotransform.step.condition.state import ReviewStateCondition
