@@ -12,7 +12,6 @@
 import json
 import pathlib
 
-from autotransform.runner.github import GithubRunner
 from autotransform.util.scheduler import (
     RepeatSetting,
     ScheduledSchema,
@@ -31,9 +30,6 @@ def get_sample_scheduler() -> Scheduler:
     return Scheduler(
         base_time=1650870000,
         excluded_days=[5, 6],
-        runner=GithubRunner(
-            run_workflow="autotransform.run.yml", update_workflow="autotransform.update.yml"
-        ),
         schemas=[
             ScheduledSchema(
                 schema_name="Black Format",

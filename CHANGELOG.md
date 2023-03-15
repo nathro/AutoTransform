@@ -1,5 +1,10 @@
 # Change Log
 
+## Release 1.1.1
+
+### Bugs
+- Fix ScriptCommand to return when run_on_changes is set to true for batch runs and no changes are present.
+
 ## Release 1.1.0
 
 ### Migrations

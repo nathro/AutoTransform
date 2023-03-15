@@ -14,7 +14,6 @@ import pathlib
 
 from autotransform.change.base import ReviewState
 from autotransform.repo.github import GithubRepo
-from autotransform.runner.github import GithubRunner
 from autotransform.step.action.source import AbandonAction, MergeAction, UpdateAction
 from autotransform.step.condition.comparison import ComparisonType
 from autotransform.step.condition.state import ReviewStateCondition
@@ -32,9 +31,6 @@ def get_sample_manager() -> Manager:
 
     return Manager(
         repo=GithubRepo(base_branch="main", full_github_name="nathro/ATTest"),
-        runner=GithubRunner(
-            run_workflow="autotransform.run.yml", update_workflow="autotransform.update.yml"
-        ),
         steps=[
             ConditionalStep(
                 actions=[MergeAction()],
