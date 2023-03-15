@@ -403,9 +403,7 @@ class Config(ComponentModel):
             "simple": simple,
         }
         if use_jenkins:
-            args["default_value"] = JenkinsAPIRunner(
-                run_job_name="autotransform_run", update_job_name="autotransform_update"
-            )
+            args["default_value"] = JenkinsAPIRunner(job_name="autotransform")
         elif use_github:
             args["default_value"] = GithubRunner(
                 run_workflow="autotransform.run.yml", update_workflow="autotransform.update.yml"

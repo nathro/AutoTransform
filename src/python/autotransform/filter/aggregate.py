@@ -11,7 +11,7 @@
 
 from __future__ import annotations
 
-from typing import Any, ClassVar, Dict, List, Type
+from typing import Any, ClassVar, Dict, List, Sequence, Type
 
 from autotransform.filter.base import FACTORY as filter_factory
 from autotransform.filter.base import Filter, FilterName
@@ -25,12 +25,12 @@ class AggregateFilter(Filter):
 
     Attributes:
         aggregator (AggregatorType): How to aggregate the filters, using any or all.
-        filters (List[Filter]): The filters to be aggregated.
+        filters (Sequence[Filter]): The filters to be aggregated.
         name (ClassVar[FilterName]): The name of the Component.
     """
 
     aggregator: AggregatorType
-    filters: List[Filter]
+    filters: Sequence[Filter]
 
     name: ClassVar[FilterName] = FilterName.AGGREGATE
 

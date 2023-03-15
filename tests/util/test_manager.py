@@ -32,9 +32,6 @@ def get_sample_manager() -> Manager:
 
     return Manager(
         repo=GithubRepo(base_branch="main", full_github_name="nathro/ATTest"),
-        runner=GithubRunner(
-            run_workflow="autotransform.run.yml", update_workflow="autotransform.update.yml"
-        ),
         steps=[
             ConditionalStep(
                 actions=[MergeAction()],
