@@ -282,12 +282,18 @@ class GithubChange(Change):
                 in the PullRequest's Body.
         """
 
-        data: Dict[str, str] = {}
         gist_match = re.search("<<<Automation Info Gist: (.*)>>>", self._pull_request.body)
         if gist_match:
-            gist = GithubUtils.get(self.full_github_name).get_gist(gist_match.groups()[0])
-            data["schema"] = gist.get_file_content("schema") or ""
-            data["batch"] = gist.get_file_content("batch") or ""
+            gist_ids = gist_match.groups()[0].split("/")
+            gist = GithubUtils.get(self.full_github_name).get_gist(gist_ids[0])
+            schema_data = gist.get_file_content("schema") or ""
+            batch = json.loads(gist.get_file_content("batch") or "")
+            assert isinstance(batch["items"], List)
+            for i in range(1, len(gist_ids)):
+                gist = GithubUtils.get(self.full_github_name).get_gist(gist_ids[i])
+                items = json.loads(gist.get_file_content("items") or "[]")
+                assert isinstance(items, List)
+                batch["items"].extend(items)
         else:
             cur_line_placement = None
             data_lines: Dict[str, List[str]] = {"schema": [], "batch": []}
@@ -302,11 +308,10 @@ class GithubChange(Change):
                     cur_line_placement = None
                 elif cur_line_placement is not None:
                     data_lines[cur_line_placement].append(line)
-            data["schema"] = "\n".join(data_lines["schema"])
-            data["batch"] = "\n".join(data_lines["batch"])
+            schema_data = "\n".join(data_lines["schema"])
+            batch = json.loads("\n".join(data_lines["batch"]))
 
-        schema = AutoTransformSchema.from_data(json.loads(data["schema"]))
-        batch = json.loads(data["batch"])
+        schema = AutoTransformSchema.from_data(json.loads(schema_data))
         items = [item_factory.get_instance(item) for item in batch["items"]]
         batch = {
             "items": items,

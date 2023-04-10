@@ -187,17 +187,37 @@ class GithubRepo(GitRepo):
             files["schema"] = {"content": json.dumps(schema.bundle(), indent=4)}
 
         # Add batch JSON
+        chunk_size = 5000
+        items = batch["items"]
+        item_chunks = [items[i : i + chunk_size] for i in range(0, len(items), chunk_size)]
+        if not item_chunks:
+            item_chunks = [[]]
         encodable_batch: Dict[str, Any] = {
             "title": batch["title"],
-            "items": [item.bundle() for item in batch["items"]],
+            "items": [item.bundle() for item in item_chunks[0]],
         }
         if "metadata" in batch:
             encodable_batch["metadata"] = batch["metadata"]
         files["batch"] = {"content": json.dumps(encodable_batch, indent=4)}
-        gist = GithubUtils.get(self.full_github_name).create_gist(
-            files, description="Automation info for AutoTransform", public=True
+        gists = [
+            GithubUtils.get(self.full_github_name).create_gist(
+                files, description="Automation info for AutoTransform", public=True
+            )
+        ]
+        for i in range(1, len(item_chunks)):
+            item_file = {
+                "items": {
+                    "content": json.dumps([item.bundle() for item in item_chunks[i]], indent=4)
+                }
+            }
+            gists.append(
+                GithubUtils.get(self.full_github_name).create_gist(
+                    item_file, description="Automation info for AutoTransform", public=True
+                )
+            )
+        automation_info_lines.append(
+            f"<<<Automation Info Gist: {'/'.join([gist.gist_id for gist in gists])}>>>"
         )
-        automation_info_lines.append(f"<<<Automation Info Gist: {gist.gist_id}>>>")
 
         return "\n".join(automation_info_lines)
 
