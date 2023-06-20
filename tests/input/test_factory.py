@@ -70,6 +70,9 @@ def test_encoding_and_decoding() -> None:
             {"keys": []},
             {"keys": ["foo"]},
         ],
+        InputName.SCRIPT: [
+            {"script": "echo", "args": ['[{"name":"file", "key":"foo.json"}]'], "timeout": 360},
+        ],
     }
 
     for name in InputName:

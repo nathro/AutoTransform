@@ -11,3 +11,4 @@ Input Package (autotransform.input)
    autotransform.input.empty
    autotransform.input.gitgrep
    autotransform.input.inline
+   autotransform.input.script
