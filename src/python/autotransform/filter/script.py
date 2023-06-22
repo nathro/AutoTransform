@@ -108,5 +108,5 @@ class ScriptFilter(BulkFilter):
                         key_data = json.loads(results.read())
                 else:
                     key_data = json.loads(proc.stdout.strip())
-                valid_keys.union(set(key_data))
+                valid_keys = valid_keys.union(set(key_data))
         return valid_keys
