@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from enum import Enum
-from typing import ClassVar
+from typing import ClassVar, Optional, Sequence, Set
 
 from autotransform.item.base import Item
 from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
@@ -26,6 +26,7 @@ class FilterName(str, Enum):
     CODEOWNERS = "codeowners"
     REGEX = "regex"
     REGEX_FILE_CONTENT = "regex_file_content"
+    SCRIPT = "script"
 
     # Shard Filters
     KEY_HASH_SHARD = "key_hash_shard"
@@ -68,6 +69,52 @@ class Filter(NamedComponent):
         """
 
 
+class BulkFilter(Filter):
+    """The base for BulkFilter components. Handles validation in bulk to determine valid Items.
+
+    Attributes:
+        _valid_keys (Optional[List[str]], optional): Whether to invert the results of the filter.
+            Defaults to an None.
+        name (ClassVar[FilterName]): The name of the component.
+    """
+
+    _valid_keys: Optional[Set[str]] = None
+
+    @abstractmethod
+    def _get_valid_keys(self, items: Sequence[Item]) -> Set[str]:
+        """Gets the valid keys from the Items.
+
+        Args:
+            items (Sequence[Item]): The Items to check for valid items.
+
+        Returns:
+            Set[str]: The keys of the valid Items.
+        """
+
+    def pre_process(self, items: Sequence[Item]) -> None:
+        """Sets up the _valid_keys set for the Filter.
+
+        Args:
+            items (Sequence[Item]): The Items to validate.
+        """
+
+        if self._valid_keys is None:
+            self._valid_keys = self._get_valid_keys(items)
+
+
+    def _is_valid(self, item: Item) -> bool:
+        """Check whether an Item is valid based on the Filter. Does not handle inversion.
+
+        Args:
+            item (Item): The Item to check.
+
+        Returns:
+            bool: Returns True if the Item is eligible for transformation.
+        """
+
+        return self._valid_keys is not None and item.key in self._valid_keys
+
+
 FACTORY = ComponentFactory(
     {
         FilterName.AGGREGATE: ComponentImport(
@@ -81,6 +128,9 @@ FACTORY = ComponentFactory(
         ),
         FilterName.REGEX_FILE_CONTENT: ComponentImport(
             class_name="RegexFileContentFilter", module="autotransform.filter.regex"
+        ),
+        FilterName.SCRIPT: ComponentImport(
+            class_name="ScriptFilter", module="autotransform.filter.script"
         ),
         FilterName.KEY_HASH_SHARD: ComponentImport(
             class_name="KeyHashShardFilter", module="autotransform.filter.key_hash_shard"

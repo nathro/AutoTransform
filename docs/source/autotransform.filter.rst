@@ -9,6 +9,7 @@ Filter Package (autotransform.filter)
    autotransform.filter.aggregate
    autotransform.filter.base
    autotransform.filter.codeowners
-   autotransform.filter.shard
    autotransform.filter.regex
+   autotransform.filter.script
+   autotransform.filter.shard
    autotransform.filter.key_hash_shard
