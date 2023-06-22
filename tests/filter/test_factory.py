@@ -82,6 +82,10 @@ def test_encoding_and_decoding() -> None:
             {"pattern": "foo"},
             {"pattern": "foo", "inverted": True},
         ],
+        FilterName.SCRIPT: [
+            {"script": "echo", "args": ["foo.json"], "timeout": 360},
+            {"script": "echo", "args": ["foo.json"], "timeout": 360, "chunk_size": 100},
+        ],
         FilterName.KEY_HASH_SHARD: [
             {"num_shards": 5},
             {"num_shards": 5, "valid_shard": 1},

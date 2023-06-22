@@ -25,7 +25,7 @@ from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.verbose import VerboseEvent
 from autotransform.filter.base import FACTORY as filter_factory
-from autotransform.filter.base import Filter
+from autotransform.filter.base import BulkFilter, Filter
 from autotransform.input.base import FACTORY as input_factory
 from autotransform.input.base import Input
 from autotransform.item.base import Item
@@ -93,6 +93,9 @@ class AutoTransformSchema(ComponentModel):
         # Filter Items
         event_handler.handle(VerboseEvent({"message": "Begin filters"}))
         valid_items: List[Item] = []
+        for filt in self.filters:
+            if isinstance(filt, BulkFilter):
+                filt.pre_process(all_items)
         for item in all_items:
             is_valid = True
             for cur_filter in self.filters:

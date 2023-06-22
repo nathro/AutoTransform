@@ -44,7 +44,7 @@ class ScriptInput(Input):
         """Uses a simple script to generate a list of Items. If a <<RESULT_FILE>> arg is used
         it will be replaced with the path of a temporary file that can be used to store a JSON
         encoded list of Items that will be returned. If no such arg is used, the STDOUT of the
-        script will be interpreted as a JSON encoded list of 
+        script will be interpreted as a JSON encoded list of Items.
 
         Returns:
             Sequence[Item]: The supplied Items.
