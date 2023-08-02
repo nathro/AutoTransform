@@ -4,10 +4,10 @@ ghapi>=1.0.3
 typing-extensions>=4.4.0
 colorama>=0.4.6
 pytz>=2022.7.1
-pydantic>=1.10.4
+pydantic==1.10.4
 libcst>=0.4.9
 codeowners>=0.6.0
-requests>=2.27.1
+requests>=2.31.0
 
 
 # Requirements for Schemas
