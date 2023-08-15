@@ -32,7 +32,7 @@ jobs:
     - name: Install Dependencies
       run: pip install -r requirements.txt
     - name: Manage AutoTransform
-      run: python3 -m autotransform.scripts.main manage --verbose
+      run: python3 -m autotransform.scripts.main manage --debug
       env:
         PYTHONPATH: /home/runner/work/AutoTransform/AutoTransform/src/python
         AUTO_TRANSFORM_CONFIG: environment
