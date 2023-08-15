@@ -14,6 +14,7 @@ from __future__ import annotations
 from typing import ClassVar, Optional
 
 import openai  # pylint: disable=import-error
+from autotransform.config import get_config
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
 from autotransform.transformer.base import TransformerName
@@ -48,6 +49,9 @@ class OpenAITransformer(SingleTransformer):
         Args:
             item (Item): The file that will be transformed.
         """
+
+        if openai.api_key is None:
+            openai.api_key = get_config().open_ai_api_key
 
         assert isinstance(item, FileItem)
         messages = []
