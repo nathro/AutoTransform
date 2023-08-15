@@ -43,33 +43,57 @@ class OpenAITransformer(SingleTransformer):
     name: ClassVar[TransformerName] = TransformerName.OPEN_AI
 
     def _transform_item(self, item: Item) -> None:
-        """Replaces all instances of a pattern in the file with the replacement string.
+        """Replaces a file with the completition results from an OpenAI completition.
 
         Args:
             item (Item): The file that will be transformed.
         """
-
-        # pylint: disable=unspecified-encoding
 
         assert isinstance(item, FileItem)
         messages = []
         # Set up messages for prompt
         if self.system_message:
             messages.append({"role": "system", "content": self.system_message})
-        # Replace sentinel values in prompt
-        prompt = self.prompt.replace("<<FILE_PATH>>", item.get_path())
-        prompt = prompt.replace("<<FILE_CONTENT>>", item.get_content())
-        messages.append({"role": "user", "content": prompt})
+        messages.append({
+            "role": "user",
+            "content": self._replace_sentinel_values(self.prompt, item),
+        })
         # Get completition
         chat_completion = openai.ChatCompletion.create(
             model=self.model,
             messages=messages,
             temperature=self.temperature
         )
-        result = chat_completion.choices[0].message.content
+        item.write_content(self._extract_code_from_completion(
+            chat_completion.choices[0].message.content,
+        ))
+
+    def _replace_sentinel_values(self, prompt: str, item: FileItem) -> str:
+        """Replaces sentinel values in a prompt
+
+        Args:
+            prompt (str): The prompt with potential sentinel values to replace.
+            item (FileItem): The Item to use for replacing sentinel values.
+
+        Returns:
+            str: The prompt with sentinel values replaced.
+        """
+        new_prompt = prompt.replace("<<FILE_PATH>>", item.get_path())
+        return new_prompt.replace("<<FILE_CONTENT>>", item.get_content())
+
+    def _extract_code_from_completion(self, result: str) -> str:
+        """Extracts code from the result of an OpenAI completition.
+
+        Args:
+            result (str): The completition result.
+
+        Returns:
+            str: The extracted code from the completition result.
+        """
+
         code_lines = []
         in_code = False
-        # Try to extract from formatted code
+        # Checks for code inside formatting blocks
         for line in result.split("\n"):
             if line.startswith("```"):
                 if in_code:
@@ -78,9 +102,9 @@ class OpenAITransformer(SingleTransformer):
                 continue
             if in_code:
                 code_lines.append(line)
-        # If we hit this, that means the completition didn't use formatting
-        if not in_code:
-            code = result
+        # Hit when no formatting is present or only trailing backticks
+        if not in_code or not code_lines:
+            code = result.removesuffix("```")
         else:
             code = "\n".join(code_lines)
-        item.write_content(code)
+        return code
