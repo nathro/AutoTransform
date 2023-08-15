@@ -16,8 +16,8 @@ from typing import Any, ClassVar, Dict, List, Optional, Type
 import openai  # pylint: disable=import-error
 from autotransform.batcher.base import Batch
 from autotransform.config import get_config
-from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
+from autotransform.event.verbose import VerboseEvent
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
 from autotransform.transformer.base import TransformerName
@@ -83,7 +83,7 @@ class OpenAITransformer(SingleTransformer):
             temperature=self.temperature,
         )
         result = chat_completion.choices[0].message.content
-        EventHandler.get().handle(DebugEvent({"message": f"The completion result\n\n{result}"}))
+        EventHandler.get().handle(VerboseEvent({"message": f"The completion result\n\n{result}"}))
         item.write_content(self._extract_code_from_completion(result))
         run_validators = bool(self.validators)
         try_count = 0
