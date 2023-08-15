@@ -67,6 +67,12 @@ def test_encoding_and_decoding() -> None:
                 "command_args": {"test": "foo"},
             },
         ],
+        TransformerName.OPEN_AI: [
+            {"prompt": "foo"},
+            {"prompt": "foo", "system_message": "bar"},
+            {"prompt": "foo", "temperature": 0.1},
+            {"prompt": "foo", "model": "gpt-4-32k"},
+        ],
         TransformerName.REGEX: [{"pattern": "foo", "replacement": "bar"}],
         TransformerName.SCRIPT: [
             {"script": "black", "args": ["-l", "100"], "timeout": 100},
