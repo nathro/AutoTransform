@@ -10,5 +10,6 @@ Transformer Package (autotransform.transformer)
    autotransform.transformer.single
    autotransform.transformer.jscodeshift
    autotransform.transformer.libcst
+   autotransform.transformer.openai
    autotransform.transformer.regex
    autotransform.transformer.script

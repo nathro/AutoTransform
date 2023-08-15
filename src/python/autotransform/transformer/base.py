@@ -26,6 +26,7 @@ class TransformerName(str, Enum):
 
     JSCODESHIFT = "jscodeshift"
     LIBCST = "libcst"
+    OPEN_AI = "open_ai"
     REGEX = "regex"
     SCRIPT = "script"
 
@@ -58,6 +59,9 @@ FACTORY = ComponentFactory(
         ),
         TransformerName.LIBCST: ComponentImport(
             class_name="LibCSTTransformer", module="autotransform.transformer.libcst"
+        ),
+        TransformerName.OPEN_AI: ComponentImport(
+            class_name="OpenAITransformer", module="autotransform.transformer.openai"
         ),
         TransformerName.REGEX: ComponentImport(
             class_name="RegexTransformer", module="autotransform.transformer.regex"

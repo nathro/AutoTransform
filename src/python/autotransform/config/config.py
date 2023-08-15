@@ -46,6 +46,8 @@ class Config(ComponentModel):
             Defaults to None.
         local_runner (Optional[Runner], optional): The Runner to use for local runs.
             Defaults to None.
+        open_ai_api_key (Optional[str], optional): The API key to use for OpenAI completitions.
+            Defaults to None.
         remote_runner (Optional[Runner], optional): The runner to use for remote runs.
             Defaults to None.
         repo_override (Optional[Repo], optional): A repo to use in place of any schema repos.
@@ -59,6 +61,7 @@ class Config(ComponentModel):
     jenkins_token: Optional[str] = Field(default=None, redact=True)
     jenkins_base_url: Optional[str] = None
     local_runner: Optional[Runner] = None
+    open_ai_api_key: Optional[str] = None
     remote_runner: Optional[Runner] = None
     repo_override: Optional[Repo] = None
 
@@ -136,6 +139,10 @@ class Config(ComponentModel):
         if jenkins_base_url is not None:
             assert isinstance(jenkins_base_url, str)
 
+        open_ai_api_key = data.get("open_ai_api_key", None)
+        if open_ai_api_key is not None:
+            assert isinstance(open_ai_api_key, str)
+
         component_directory = data.get("component_directory", None)
         if component_directory is not None:
             assert isinstance(component_directory, str)
@@ -160,6 +167,7 @@ class Config(ComponentModel):
             jenkins_base_url=jenkins_base_url,
             component_directory=component_directory,
             local_runner=local_runner,
+            open_ai_api_key=open_ai_api_key,
             remote_runner=remote_runner,
             repo_override=repo_override,
         )
@@ -321,6 +329,37 @@ class Config(ComponentModel):
         if jenkins_base_url in ["", "None"]:
             return None
         return jenkins_base_url
+
+    @staticmethod
+    def get_open_ai_api_key_from_console(
+        prev_config: Optional[Config] = None,
+        simple: bool = False,
+        user_config: bool = False,
+    ) -> Optional[str]:
+        """Gets the OpenAI API key using console inputs.
+
+        Args:
+            prev_config (Optional[Config], optional): Previously input Config. Defaults to None.
+            simple (bool, optional): Whether to use the simple setup. Defaults to False.
+            user_config (bool, optional): Whether this configuration is for a user level Config.
+                Defaults to False.
+
+        Returns:
+            Optional[str]: The Jenkins token.
+        """
+
+        if not user_config:
+            return None
+        if prev_config is not None and (simple or choose_yes_or_no("Use previous OpenAI API Key?")):
+            return prev_config.open_ai_api_key
+
+        open_ai_api_key = get_str(
+            "Enter the OpenAI API key(empty to not include one): ", secret=True
+        )
+        if open_ai_api_key in ["", "None"]:
+            return None
+
+        return open_ai_api_key
 
     @staticmethod
     def get_component_directory_from_console(
@@ -512,6 +551,9 @@ class Config(ComponentModel):
                 local_runner=Config.get_local_runner_from_console(
                     prev_config=prev_config, simple=simple
                 ),
+                open_ai_api_key=Config.get_open_ai_api_key_from_console(
+                    prev_config=prev_config, simple=simple,
+                ),
                 remote_runner=Config.get_remote_runner_from_console(
                     prev_config=prev_config, use_github=github, use_jenkins=jenkins, simple=simple
                 ),
@@ -542,6 +584,7 @@ class Config(ComponentModel):
             jenkins_base_url=other.jenkins_base_url or self.jenkins_base_url,
             component_directory=other.component_directory or self.component_directory,
             local_runner=other.local_runner or self.local_runner,
+            open_ai_api_key=other.open_ai_api_key or self.open_ai_api_key,
             remote_runner=other.remote_runner or self.remote_runner,
             repo_override=other.repo_override or self.repo_override,
         )
