@@ -138,7 +138,7 @@ class Config(ComponentModel):
         jenkins_base_url = data.get("jenkins_base_url", None)
         if jenkins_base_url is not None:
             assert isinstance(jenkins_base_url, str)
-        
+
         open_ai_api_key = data.get("open_ai_api_key", None)
         if open_ai_api_key is not None:
             assert isinstance(open_ai_api_key, str)
