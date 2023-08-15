@@ -1,0 +1,62 @@
+{
+    "input": {
+        "name": "directory",
+        "paths": [
+            "src/python/autotransform/batcher"
+        ]
+    },
+    "filters": [
+        {
+            "name": "regex",
+            "pattern": ".*\\.py$"
+        }
+    ],
+    "batcher": {
+        "name": "single",
+        "title": "Crawl files for improvements",
+        "metadata": {
+            "body": "Use OpenAI model to improve code quality"
+        }
+    },
+    "transformer": {
+        "name": "open_ai",
+        "prompt": "The file you are looking to improve is\n```python\n<<FILE_CONTENT>>\n```. The results of improvement are\n",
+        "system": "You are a world class Python developer looking to improve code you find in the repo. You do not need to improve everything, only issues you are confident about. You don't remove license headers or comments.",
+        "model": "gpt-4-32k",
+        "temperature": 0.1
+    },
+    "validators": [
+        {
+            "name": "script",
+            "script": "mypy",
+            "args": [
+                "src/python",
+                "tests"
+            ],
+            "failure_level": "error"
+        },
+        {
+            "name": "script",
+            "script": "pytest",
+            "args": [
+                "-W",
+                "ignore::DeprecationWarning",
+                "tests/"
+            ],
+            "failure_level": "error"
+        }
+    ],
+    "commands": [],
+    "config": {
+        "schema_name": "Crawler",
+        "allowed_validation_level": "warning",
+        "owners": [
+            "@nathro"
+        ]
+    },
+    "repo": {
+        "name": "github",
+        "base_branch": "nathro_test",
+        "full_github_name": "nathro/AutoTransform"
+    }
+}
