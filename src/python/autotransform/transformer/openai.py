@@ -15,6 +15,8 @@ from typing import ClassVar, Optional
 
 import openai  # pylint: disable=import-error
 from autotransform.config import get_config
+from autotransform.event.debug import DebugEvent
+from autotransform.event.handler import EventHandler
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
 from autotransform.transformer.base import TransformerName
@@ -68,8 +70,12 @@ class OpenAITransformer(SingleTransformer):
             messages=messages,
             temperature=self.temperature
         )
+        result = chat_completion.choices[0].message.content
+        EventHandler.get().handle(
+            DebugEvent({"message": f"Completition for {item.get_path()}\n\n{result}\n\n"}),
+        )
         item.write_content(self._extract_code_from_completion(
-            chat_completion.choices[0].message.content,
+            result,
         ))
 
     def _replace_sentinel_values(self, prompt: str, item: FileItem) -> str:
