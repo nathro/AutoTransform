@@ -1,0 +1,95 @@
+{
+    "input": {
+        "name": "directory",
+        "paths": [
+            "src/python"
+        ]
+    },
+    "filters": [
+        {
+            "name": "regex",
+            "pattern": ".*\\.py$"
+        }
+    ],
+    "batcher": {
+        "name": "single",
+        "title": "Crawl python src files",
+        "metadata": {
+            "body": "Use OpenAI model to improve code quality"
+        }
+    },
+    "transformer": {
+        "name": "open_ai",
+        "prompt": "The file you are looking to improve is\n```python\n<<FILE_CONTENT>>\n```. The results of improvement are\n",
+        "commands": [
+            {
+                "name": "script",
+                "script": "black",
+                "args": [
+                    "-l",
+                    "100",
+                    "<<KEY>>"
+                ],
+                "per_item": true
+            }
+        ],
+        "system_message": "You are a world class Python developer looking to improve code you find in the repo. The code is written in Python 3.10. You should avoid changing inheritance. You do not need to improve everything, only issues you are confident about. You don't remove license headers or comments. If no changes are needed, you would return the code as is. You should return the full file in your response, not just the changes.",
+        "model": "gpt-4",
+        "temperature": 0.01,
+        "validators": [
+            {
+                "name": "script",
+                "script": "mypy",
+                "args": [
+                    "<<KEY>>"
+                ],
+                "per_item": true
+            },
+            {
+                "name": "script",
+                "script": "pylint",
+                "args": [
+                    "--enable=W0611,R0902,R0903,R0913,R1732",
+                    "--disable=C0103,C0411,R0401,R0801,R0914,R0915",
+                    "<<KEY>>"
+                ],
+                "per_item": true
+            },
+            {
+                "name": "script",
+                "script": "pytest",
+                "args": [
+                    "-W",
+                    "ignore::DeprecationWarning",
+                    "tests/"
+                ]
+            }
+        ]
+    },
+    "validators": [],
+    "commands": [
+        {
+            "name": "script",
+            "script": "black",
+            "args": [
+                "-l",
+                "100",
+                "<<KEY>>"
+            ],
+            "timeout": 360,
+            "per_item": true
+        }
+    ],
+    "config": {
+        "schema_name": "Crawler",
+        "allowed_validation_level": "warning",
+        "owners": [
+            "@nathro"
+        ]
+    },
+    "repo": {
+        "name": "github",
+        "base_branch": "nathro_test",
+        "full_github_name": "nathro/AutoTransform"
+    }
+}
