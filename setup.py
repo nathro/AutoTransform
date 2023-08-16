@@ -68,7 +68,7 @@ setuptools.setup(
     package_dir={"": "src/python"},
     packages=setuptools.find_packages("src/python"),
     install_requires=[
-        "GitPython==3.1.30",
+        "GitPython==3.1.32",
         "ghapi==1.0.3",
         "typing-extensions==4.4.0",
         "colorama==0.4.6",
