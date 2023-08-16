@@ -21,12 +21,24 @@
     "transformer": {
         "name": "open_ai",
         "prompt": "The file you are looking to improve is\n```python\n<<FILE_CONTENT>>\n```. The results of improvement are\n",
-        "system_message": "You are a world class Python developer looking to improve code you find in the repo. You do not need to improve everything, only issues you are confident about. You don't remove license headers or comments. If no changes are needed, you would return the code as is. You should return the full file in your response, not just the changes.",
+        "system_message": "You are a world class Python developer looking to improve code you find in the repo. You do not need to improve everything, only issues you are confident about. You don't remove license headers or comments. If no changes are needed, you would return the code as is. You should return the full file in your response, not just the changes. Files should end with new lines.",
         "model": "gpt-4-32k",
         "temperature": 0.01
     },
     "validators": [],
-    "commands": [],
+    "commands": [
+        {
+            "name": "script",
+            "script": "black",
+            "args": [
+                "-l",
+                "100",
+                "<<KEY>>"
+            ],
+            "timeout": 360,
+            "per_item": true
+        }
+    ],
     "config": {
         "schema_name": "Crawler",
         "allowed_validation_level": "warning",
