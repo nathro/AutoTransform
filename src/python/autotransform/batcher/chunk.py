@@ -62,12 +62,26 @@ class ChunkBatcher(Batcher):
 
         # Create Batches
         item_chunks = [items[i : i + chunk_size] for i in range(0, len(items), chunk_size)]
-        item_batches: List[Batch] = []
-        for idx, item_chunk in enumerate(item_chunks, start=1):
-            title = f"[{idx}/{len(item_chunks)}] " + self.title
-            batch: Batch = {"items": item_chunk, "title": title}
-            if self.metadata is not None:
-                # Deepcopy metadata to ensure mutations don't apply to all Batches
-                batch["metadata"] = deepcopy(self.metadata)
-            item_batches.append(batch)
+        item_batches: List[Batch] = [
+            self._create_batch(idx, item_chunk, len(item_chunks))
+            for idx, item_chunk in enumerate(item_chunks, start=1)
+        ]
         return item_batches
+
+    def _create_batch(self, idx: int, item_chunk: Sequence[Item], total_chunks: int) -> Batch:
+        """Create a single batch from a chunk of items.
+
+        Args:
+            idx (int): The index of the chunk.
+            item_chunk (Sequence[Item]): The chunk of items.
+            total_chunks (int): The total number of chunks.
+
+        Returns:
+            Batch: A batch representing the chunk of items.
+        """
+        title = f"[{idx}/{total_chunks}] " + self.title
+        batch: Batch = {"items": item_chunk, "title": title}
+        if self.metadata is not None:
+            # Deepcopy metadata to ensure mutations don't apply to all Batches
+            batch["metadata"] = deepcopy(self.metadata)
+        return batch

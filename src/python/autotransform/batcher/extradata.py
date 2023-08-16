@@ -11,6 +11,7 @@
 
 from __future__ import annotations
 
+from collections import defaultdict
 from copy import deepcopy
 from typing import Any, ClassVar, Dict, List, Sequence
 
@@ -46,23 +47,18 @@ class ExtraDataBatcher(Batcher):
             List[Batch]: A list of Batches grouped by the extra_data of the Items.
         """
 
-        groups: Dict[str, List[Item]] = {}
+        groups: Dict[str, List[Item]] = defaultdict(list)
         for item in items:
             extra_data = item.extra_data or {}
             group_by_val = extra_data[self.group_by]
             assert isinstance(group_by_val, str), "Group by values must be strings"
-            if group_by_val in groups:
-                groups[group_by_val].append(item)
-            else:
-                groups[group_by_val] = [item]
+            groups[group_by_val].append(item)
 
         batches: List[Batch] = []
         for group_title, group_items in groups.items():
             batch: Batch = {"items": group_items, "title": group_title}
             if self.metadata_keys:
-                metadata: Dict[str, List[Any]] = {}
-                for key in self.metadata_keys:
-                    metadata[key] = []
+                metadata: Dict[str, List[Any]] = {key: [] for key in self.metadata_keys}
                 for item in group_items:
                     extra_data = item.extra_data or {}
                     for key in self.metadata_keys:
