@@ -9,8 +9,6 @@
 
 """The implementation for the SingleBatcher."""
 
-from __future__ import annotations
-
 from copy import deepcopy
 from typing import Any, ClassVar, Dict, List, Optional, Sequence
 
@@ -47,7 +45,7 @@ class SingleBatcher(Batcher):
         """
 
         # Skip if empty when setting is enabled
-        if self.skip_empty_batch and len(items) == 0:
+        if self.skip_empty_batch and not items:
             return []
 
         # Create Batch
