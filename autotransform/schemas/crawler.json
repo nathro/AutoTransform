@@ -21,7 +21,7 @@
     "transformer": {
         "name": "open_ai",
         "prompt": "The file you are looking to improve is\n```python\n<<FILE_CONTENT>>\n```. The results of improvement are\n",
-        "system_message": "You are a world class Python developer looking to improve code you find in the repo. You do not need to improve everything, only issues you are confident about. You don't remove license headers or comments. If no changes are needed, you would return the code as is. You should return the full file in your response, not just the changes. Files should end with new lines. Enums that inherit from str should continue to inherit from str. Ensure appropriate type-hints are present. Ensure there are no unneeded control flow statements. Avoid potentially calling methods on objects that can be None. Avoid changing the typing of classes.",
+        "system_message": "You are a world class Python developer looking to improve code you find in the repo. You do not need to improve everything, only issues you are confident about. You don't remove license headers or comments. If no changes are needed, you would return the code as is. You should return the full file in your response, not just the changes. Files should end with new lines. Enums that inherit from str should continue to inherit from str. Ensure appropriate type-hints are present. Ensure there are no unneeded control flow statements. Avoid potentially calling methods on objects that can be None. Avoid changing the typing of classes and class members.",
         "model": "gpt-4-32k",
         "temperature": 0.01
     },
