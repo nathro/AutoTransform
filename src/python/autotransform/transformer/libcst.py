@@ -46,9 +46,7 @@ class LibCSTTransformer(SingleTransformer):
 
     command_module: str
     command_name: str
-
     command_args: Dict[str, Any] = Field(default_factory=dict)
-
     name: ClassVar[TransformerName] = TransformerName.LIBCST
 
     def _transform_item(self, item: Item) -> None:
@@ -58,26 +56,30 @@ class LibCSTTransformer(SingleTransformer):
             item (Item): The file that will be transformed.
         """
 
-        assert isinstance(item, FileItem)
+        if not isinstance(item, FileItem):
+            return
+
         event_handler = EventHandler.get()
         event_handler.handle(DebugEvent({"message": f"Performing transform on {item.get_path()}"}))
         res = transform_module(self._command, item.get_content())
+
         for message in res.warning_messages:
             event_handler.handle(WarningEvent({"message": f"Warning: {message}"}))
+
         if isinstance(res, TransformSuccess):
             event_handler.handle(DebugEvent({"message": "Transform success"}))
             item.write_content(res.code)
-        if isinstance(res, TransformSkip):
+        elif isinstance(res, TransformSkip):
             event_handler.handle(
                 DebugEvent(
                     {"message": f"Transform skipped ({res.skip_reason}): {res.skip_description}"}
                 )
             )
-        if isinstance(res, TransformFailure):
+        elif isinstance(res, TransformFailure):
             event_handler.handle(
                 WarningEvent({"message": f"Transform failed: {res.error}\n{res.traceback_str}"})
             )
-        if isinstance(res, TransformExit):
+        elif isinstance(res, TransformExit):
             event_handler.handle(DebugEvent({"message": "Transform exited from user interupt"}))
 
     @cached_property
@@ -89,10 +91,13 @@ class LibCSTTransformer(SingleTransformer):
         """
 
         module = importlib.import_module(self.command_module)
-        assert hasattr(module, self.command_name)
-        command_class = getattr(module, self.command_name)
-        assert isinstance(command_class, type), "Command is not a class"
-        assert issubclass(
-            command_class, CodemodCommand
-        ), "Component must be a subclass of CodemodCommand"
+        command_class = getattr(module, self.command_name, None)
+
+        if (
+            not command_class
+            or not isinstance(command_class, type)
+            or not issubclass(command_class, CodemodCommand)
+        ):
+            return None
+
         return command_class(CodemodContext(), **self.command_args)

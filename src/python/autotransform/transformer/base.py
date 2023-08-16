@@ -9,8 +9,6 @@
 
 """The base class and associated classes for Transformer components."""
 
-from __future__ import annotations
-
 from abc import abstractmethod
 from enum import Enum
 from typing import Any, ClassVar, Generic, Mapping, Optional, TypeVar
@@ -50,6 +48,7 @@ class Transformer(Generic[TResult], NamedComponent):
         Args:
             batch (Batch): The Batch that will be transformed.
         """
+        pass
 
 
 FACTORY = ComponentFactory(

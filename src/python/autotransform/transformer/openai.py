@@ -27,11 +27,11 @@ class OpenAITransformer(SingleTransformer):
     """A transformer which uses OpenAI models to perform a completion to generate code.
 
     Attributes:
-        prompt (str): The prompt to use for completition. Uses sentry values to replace
+        prompt (str): The prompt to use for completion. Uses sentry values to replace
             values in the prompt.
             <<FILE_PATH>> - Replaced with the path of the file being transformed.
             <<FILE_CONTENT>> - Replaced with the content of the file being transformed.
-        model (optional, str): The model to use for completition. Defaults to gpt-3.5-turbo.
+        model (optional, str): The model to use for completion. Defaults to gpt-3.5-turbo.
         system_message (optional, Optional[str]): The system message to use. Defaults to None.
         temperature (optional, float): The temperature to use to control the quality of outputs.
             Defaults to 0.4.
@@ -46,7 +46,7 @@ class OpenAITransformer(SingleTransformer):
     name: ClassVar[TransformerName] = TransformerName.OPEN_AI
 
     def _transform_item(self, item: Item) -> None:
-        """Replaces a file with the completition results from an OpenAI completition.
+        """Replaces a file with the completion results from an OpenAI completion.
 
         Args:
             item (Item): The file that will be transformed.
@@ -60,23 +60,25 @@ class OpenAITransformer(SingleTransformer):
         # Set up messages for prompt
         if self.system_message:
             messages.append({"role": "system", "content": self.system_message})
-        messages.append({
-            "role": "user",
-            "content": self._replace_sentinel_values(self.prompt, item),
-        })
-        # Get completition
+        messages.append(
+            {
+                "role": "user",
+                "content": self._replace_sentinel_values(self.prompt, item),
+            }
+        )
+        # Get completion
         chat_completion = openai.ChatCompletion.create(
-            model=self.model,
-            messages=messages,
-            temperature=self.temperature
+            model=self.model, messages=messages, temperature=self.temperature
         )
         result = chat_completion.choices[0].message.content
         EventHandler.get().handle(
-            VerboseEvent({"message": f"Completition for {item.get_path()}\n\n{result}\n\n"}),
+            VerboseEvent({"message": f"Completion for {item.get_path()}\n\n{result}\n\n"}),
         )
-        item.write_content(self._extract_code_from_completion(
-            result,
-        ))
+        item.write_content(
+            self._extract_code_from_completion(
+                result,
+            )
+        )
 
     def _replace_sentinel_values(self, prompt: str, item: FileItem) -> str:
         """Replaces sentinel values in a prompt
@@ -92,13 +94,13 @@ class OpenAITransformer(SingleTransformer):
         return new_prompt.replace("<<FILE_CONTENT>>", item.get_content())
 
     def _extract_code_from_completion(self, result: str) -> str:
-        """Extracts code from the result of an OpenAI completition.
+        """Extracts code from the result of an OpenAI completion.
 
         Args:
-            result (str): The completition result.
+            result (str): The completion result.
 
         Returns:
-            str: The extracted code from the completition result.
+            str: The extracted code from the completion result.
         """
 
         code_lines = []
