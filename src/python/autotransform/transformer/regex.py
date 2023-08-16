@@ -12,7 +12,7 @@
 from __future__ import annotations
 
 import re
-from typing import ClassVar
+from typing import ClassVar, Optional
 
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
@@ -36,16 +36,18 @@ class RegexTransformer(SingleTransformer):
 
     name: ClassVar[TransformerName] = TransformerName.REGEX
 
-    def _transform_item(self, item: Item) -> None:
+    def _transform_item(self, item: Optional[Item]) -> None:
         """Replaces all instances of a pattern in the file with the replacement string.
 
         Args:
-            item (Item): The file that will be transformed.
+            item (Optional[Item]): The file that will be transformed.
         """
 
         # pylint: disable=unspecified-encoding
 
-        assert isinstance(item, FileItem)
+        if not isinstance(item, FileItem):
+            return
+
         content = item.get_content()
         new_content = re.sub(self.pattern, self.replacement, content)
         item.write_content(new_content)
