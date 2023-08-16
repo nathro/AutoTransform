@@ -9,8 +9,6 @@
 
 """The base class and associated classes for Batcher components."""
 
-from __future__ import annotations
-
 from abc import abstractmethod
 from enum import Enum
 from typing import Any, ClassVar, List, Mapping, Sequence, TypedDict
@@ -32,11 +30,11 @@ class BatcherName(str, Enum):
     SINGLE = "single"
 
 
-class Batch(TypedDict):
+class Batch(TypedDict, total=False):
     """A logical grouping of Items with title and associated metadata."""
 
     items: Sequence[Item]
-    metadata: NotRequired[Mapping[str, Any]]
+    metadata: Mapping[str, Any]
     title: str
 
 
