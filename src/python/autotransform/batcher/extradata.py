@@ -1,24 +1,4 @@
-# AutoTransform
-# Large scale, component based code modification library
-#
-# Licensed under the MIT License <http://opensource.org/licenses/MIT>
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2022-present Nathan Rockenbach <http://github.com/nathro>
-
-# @black_format
-
-"""The implementation for the ExtraDataBatcher."""
-
-from __future__ import annotations
-
-from copy import deepcopy
-from typing import Any, ClassVar, Dict, List, Sequence
-
-from pydantic import Field
-
-from autotransform.batcher.base import Batch, Batcher, BatcherName
-from autotransform.item.base import Item
-
+from collections import defaultdict
 
 class ExtraDataBatcher(Batcher):
     """A Batcher which uses the extra data on Items to create batches.
@@ -46,23 +26,18 @@ class ExtraDataBatcher(Batcher):
             List[Batch]: A list of Batches grouped by the extra_data of the Items.
         """
 
-        groups: Dict[str, List[Item]] = {}
+        groups: Dict[str, List[Item]] = defaultdict(list)
         for item in items:
             extra_data = item.extra_data or {}
             group_by_val = extra_data[self.group_by]
             assert isinstance(group_by_val, str), "Group by values must be strings"
-            if group_by_val in groups:
-                groups[group_by_val].append(item)
-            else:
-                groups[group_by_val] = [item]
+            groups[group_by_val].append(item)
 
         batches: List[Batch] = []
         for group_title, group_items in groups.items():
             batch: Batch = {"items": group_items, "title": group_title}
             if self.metadata_keys:
-                metadata: Dict[str, List[Any]] = {}
-                for key in self.metadata_keys:
-                    metadata[key] = []
+                metadata: Dict[str, List[Any]] = {key: [] for key in self.metadata_keys}
                 for item in group_items:
                     extra_data = item.extra_data or {}
                     for key in self.metadata_keys:

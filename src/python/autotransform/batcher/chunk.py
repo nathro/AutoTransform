@@ -9,9 +9,6 @@
 
 """The implementation for the ChunkBatcher."""
 
-from __future__ import annotations
-
-from copy import deepcopy
 from math import ceil
 from typing import Any, ClassVar, Dict, List, Optional, Sequence
 
@@ -62,12 +59,12 @@ class ChunkBatcher(Batcher):
 
         # Create Batches
         item_chunks = [items[i : i + chunk_size] for i in range(0, len(items), chunk_size)]
-        item_batches: List[Batch] = []
-        for idx, item_chunk in enumerate(item_chunks, start=1):
-            title = f"[{idx}/{len(item_chunks)}] " + self.title
-            batch: Batch = {"items": item_chunk, "title": title}
-            if self.metadata is not None:
-                # Deepcopy metadata to ensure mutations don't apply to all Batches
-                batch["metadata"] = deepcopy(self.metadata)
-            item_batches.append(batch)
+        item_batches: List[Batch] = [
+            {
+                "items": item_chunk,
+                "title": f"[{idx}/{len(item_chunks)}] " + self.title,
+                "metadata": self.metadata.copy() if self.metadata else None,
+            }
+            for idx, item_chunk in enumerate(item_chunks, start=1)
+        ]
         return item_batches

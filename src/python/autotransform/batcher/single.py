@@ -47,7 +47,7 @@ class SingleBatcher(Batcher):
         """
 
         # Skip if empty when setting is enabled
-        if self.skip_empty_batch and len(items) == 0:
+        if self.skip_empty_batch and not items:
             return []
 
         # Create Batch
@@ -57,6 +57,6 @@ class SingleBatcher(Batcher):
         }
 
         # Deepcopy metadata to ensure mutations don't apply to params
-        if self.metadata is not None:
+        if self.metadata:
             batch["metadata"] = deepcopy(self.metadata)
         return [batch]
