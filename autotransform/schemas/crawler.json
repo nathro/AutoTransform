@@ -13,7 +13,7 @@
     ],
     "batcher": {
         "name": "single",
-        "title": "Crawl files for improvements",
+        "title": "Crawl batcher files",
         "metadata": {
             "body": "Use OpenAI model to improve code quality"
         }
