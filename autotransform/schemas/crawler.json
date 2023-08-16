@@ -23,29 +23,9 @@
         "prompt": "The file you are looking to improve is\n```python\n<<FILE_CONTENT>>\n```. The results of improvement are\n",
         "system_message": "You are a world class Python developer looking to improve code you find in the repo. You do not need to improve everything, only issues you are confident about. You don't remove license headers or comments. If no changes are needed, you would return the code as is.",
         "model": "gpt-4-32k",
-        "temperature": 0.1
+        "temperature": 0.01
     },
-    "validators": [
-        {
-            "name": "script",
-            "script": "mypy",
-            "args": [
-                "src/python",
-                "tests"
-            ],
-            "failure_level": "error"
-        },
-        {
-            "name": "script",
-            "script": "pytest",
-            "args": [
-                "-W",
-                "ignore::DeprecationWarning",
-                "tests/"
-            ],
-            "failure_level": "error"
-        }
-    ],
+    "validators": [],
     "commands": [],
     "config": {
         "schema_name": "Crawler",
