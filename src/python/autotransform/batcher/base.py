@@ -9,8 +9,6 @@
 
 """The base class and associated classes for Batcher components."""
 
-from __future__ import annotations
-
 from abc import abstractmethod
 from enum import Enum
 from typing import Any, ClassVar, List, Mapping, Sequence, TypedDict
@@ -42,7 +40,7 @@ class Batch(TypedDict):
 
 class Batcher(NamedComponent):
     """The base for Batcher components. Used by AutoTransform to separate Items in to logical
-    groupings that can be acted on indepently and have associated metadata.
+    groupings that can be acted on independently and have associated metadata.
 
     Attributes:
         name (ClassVar[BatcherName]): The name of the Component.
