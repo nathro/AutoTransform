@@ -132,12 +132,12 @@ class JenkinsAPIRunner(Runner):
 
         try:
             auth = (jenkins_user, jenkins_token)
-            crumb = _fetch_jenkins_crumb(config.jenkins_base_url, auth)
+            crumb = JenkinsAPIRunner._fetch_jenkins_crumb(config.jenkins_base_url, auth)
             if crumb is None:
                 event_handler.handle(WarningEvent({"message": "Couldn't fetch Jenkins-Crumb"}))
                 return
 
-            response = _trigger_jenkins_job(config.jenkins_base_url, job_name, auth, params, crumb)
+            response = JenkinsAPIRunner._trigger_jenkins_job(config.jenkins_base_url, job_name, auth, params, crumb)
             if response.status_code == 201:
                 event_handler.handle(VerboseEvent({"message": "Jenkins job is triggered"}))
             else:
