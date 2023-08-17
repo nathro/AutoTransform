@@ -82,9 +82,11 @@ class OpenAITransformer(SingleTransformer):
             messages=messages,
             temperature=self.temperature,
         )
-        result = chat_completion.choices[0].message.content
-        EventHandler.get().handle(VerboseEvent({"message": f"The completion result\n\n{result}"}))
-        item.write_content(self._extract_code_from_completion(result))
+        completition_result = chat_completion.choices[0].message.content
+        EventHandler.get().handle(
+            VerboseEvent({"message": f"The completion result\n\n{completition_result}"})
+        )
+        item.write_content(self._extract_code_from_completion(completition_result))
         run_validators = bool(self.validators)
         try_count = 0
         batch: Batch = {"title": "test", "items": [item]}
@@ -92,12 +94,12 @@ class OpenAITransformer(SingleTransformer):
             try_count += 1
             failures = []
             for validator in self.validators:
-                result = validator.check(batch, None)
-                if result.level != ValidationResultLevel.NONE:
-                    failures.append(str(result.message))
+                validation_result = validator.check(batch, None)
+                if validation_result.level != ValidationResultLevel.NONE:
+                    failures.append(str(validation_result.message))
             run_validators = bool(failures)
             if failures:
-                messages.append({"role": "assistant", "content": result})
+                messages.append({"role": "assistant", "content": completition_result})
                 failure_message = "\n".join(failures)
                 messages.append(
                     {
@@ -111,8 +113,11 @@ class OpenAITransformer(SingleTransformer):
                     messages=messages,
                     temperature=self.temperature,
                 )
-                result = chat_completion.choices[0].message.content
-                item.write_content(self._extract_code_from_completion(result))
+                completition_result = chat_completion.choices[0].message.content
+                EventHandler.get().handle(
+                    VerboseEvent({"message": f"The completion result\n\n{completition_result}"})
+                )
+                item.write_content(self._extract_code_from_completion(completition_result))
 
     def _replace_sentinel_values(self, prompt: str, item: FileItem) -> str:
         """Replaces sentinel values in a prompt
