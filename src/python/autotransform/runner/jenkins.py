@@ -86,38 +86,69 @@ class JenkinsAPIRunner(Runner):
 
         try:
             auth = (jenkins_user, jenkins_token)
-            crumb_data = requests.get(
-                f"{config.jenkins_base_url}/crumbIssuer/api/json",
-                auth=auth,
-                headers={"content-type": "application/json"},
-                timeout=120,
-            )
-            if str(crumb_data.status_code) == "200":
-                data = requests.get(
-                    f"{config.jenkins_base_url}/job/{job_name}/buildWithParameters",
-                    auth=auth,
-                    params=params,
-                    headers={
-                        "content-type": "application/json",
-                        "Jenkins-Crumb": crumb_data.json()["crumb"],
-                    },
-                    timeout=120,
-                )
-
-                if str(data.status_code) == "201":
-                    event_handler.handle(VerboseEvent({"message": "Jenkins job is triggered"}))
-                else:
-                    event_handler.handle(
-                        WarningEvent({"message": "Failed to trigger the Jenkins job"})
-                    )
-
-            else:
+            crumb = _fetch_jenkins_crumb(config.jenkins_base_url, auth)
+            if crumb is None:
                 event_handler.handle(WarningEvent({"message": "Couldn't fetch Jenkins-Crumb"}))
+                return
+
+            response = _trigger_jenkins_job(config.jenkins_base_url, job_name, auth, params, crumb)
+            if response.status_code == 201:
+                event_handler.handle(VerboseEvent({"message": "Jenkins job is triggered"}))
+            else:
+                event_handler.handle(
+                    WarningEvent({"message": f"Failed to trigger the Jenkins job. Response code: {response.status_code}"})
+                )
 
         # pylint: disable=broad-except
         except Exception as ex:
             event_handler.handle(WarningEvent({"message": "Failed triggering the Jenkins job"}))
             event_handler.handle(WarningEvent({"message": f"Error: {str(ex)}"}))
+
+    @staticmethod
+    def _fetch_jenkins_crumb(base_url: str, auth: Tuple[str, str]) -> Optional[str]:
+        """Fetches the Jenkins crumb which is required for CSRF protection.
+
+        Args:
+            base_url (str): The base URL of the Jenkins server.
+            auth (Tuple[str, str]): The username and token for Jenkins authentication.
+
+        Returns:
+            Optional[str]: The Jenkins crumb if successful, None otherwise.
+        """
+        response = requests.get(
+            f"{base_url}/crumbIssuer/api/json",
+            auth=auth,
+            headers={"content-type": "application/json"},
+            timeout=120,
+        )
+        if response.status_code == 200:
+            return response.json().get("crumb")
+        return None
+
+    @staticmethod
+    def _trigger_jenkins_job(base_url: str, job_name: str, auth: Tuple[str, str], params: Dict[str, Any], crumb: str) -> requests.Response:
+        """Triggers a Jenkins job.
+
+        Args:
+            base_url (str): The base URL of the Jenkins server.
+            job_name (str): The name of the Jenkins job to trigger.
+            auth (Tuple[str, str]): The username and token for Jenkins authentication.
+            params (Dict[str, Any]): The params to pass to the Jenkins job.
+            crumb (str): The Jenkins crumb for CSRF protection.
+
+        Returns:
+            requests.Response: The response from the Jenkins server.
+        """
+        return requests.get(
+            f"{base_url}/job/{job_name}/buildWithParameters",
+            auth=auth,
+            params=params,
+            headers={
+                "content-type": "application/json",
+                "Jenkins-Crumb": crumb,
+            },
+            timeout=120,
+        )
 
 
 class JenkinsFileRunner(Runner):
