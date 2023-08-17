@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any, ClassVar, Dict
+from typing import Any, ClassVar, Dict, Optional, Tuple
 
 import requests
 from autotransform.change.base import Change
@@ -37,6 +37,52 @@ class JenkinsAPIRunner(Runner):
     job_name: str
 
     name: ClassVar[RunnerName] = RunnerName.JENKINS_API
+
+    @staticmethod
+    def _fetch_jenkins_crumb(base_url: str, auth: Tuple[str, str]) -> Optional[str]:
+        """Fetches the Jenkins crumb which is required for CSRF protection.
+
+        Args:
+            base_url (str): The base URL of the Jenkins server.
+            auth (Tuple[str, str]): The username and token for Jenkins authentication.
+
+        Returns:
+            Optional[str]: The Jenkins crumb if successful, None otherwise.
+        """
+        response = requests.get(
+            f"{base_url}/crumbIssuer/api/json",
+            auth=auth,
+            headers={"content-type": "application/json"},
+            timeout=120,
+        )
+        if response.status_code == 200:
+            return response.json().get("crumb")
+        return None
+
+    @staticmethod
+    def _trigger_jenkins_job(base_url: str, job_name: str, auth: Tuple[str, str], params: Dict[str, Any], crumb: str) -> requests.Response:
+        """Triggers a Jenkins job.
+
+        Args:
+            base_url (str): The base URL of the Jenkins server.
+            job_name (str): The name of the Jenkins job to trigger.
+            auth (Tuple[str, str]): The username and token for Jenkins authentication.
+            params (Dict[str, Any]): The params to pass to the Jenkins job.
+            crumb (str): The Jenkins crumb for CSRF protection.
+
+        Returns:
+            requests.Response: The response from the Jenkins server.
+        """
+        return requests.get(
+            f"{base_url}/job/{job_name}/buildWithParameters",
+            auth=auth,
+            params=params,
+            headers={
+                "content-type": "application/json",
+                "Jenkins-Crumb": crumb,
+            },
+            timeout=120,
+        )
 
     def run(self, schema: AutoTransformSchema) -> None:
         """Triggers a full run of a Schema using a Jenkins API request.
@@ -103,52 +149,6 @@ class JenkinsAPIRunner(Runner):
         except Exception as ex:
             event_handler.handle(WarningEvent({"message": "Failed triggering the Jenkins job"}))
             event_handler.handle(WarningEvent({"message": f"Error: {str(ex)}"}))
-
-    @staticmethod
-    def _fetch_jenkins_crumb(base_url: str, auth: Tuple[str, str]) -> Optional[str]:
-        """Fetches the Jenkins crumb which is required for CSRF protection.
-
-        Args:
-            base_url (str): The base URL of the Jenkins server.
-            auth (Tuple[str, str]): The username and token for Jenkins authentication.
-
-        Returns:
-            Optional[str]: The Jenkins crumb if successful, None otherwise.
-        """
-        response = requests.get(
-            f"{base_url}/crumbIssuer/api/json",
-            auth=auth,
-            headers={"content-type": "application/json"},
-            timeout=120,
-        )
-        if response.status_code == 200:
-            return response.json().get("crumb")
-        return None
-
-    @staticmethod
-    def _trigger_jenkins_job(base_url: str, job_name: str, auth: Tuple[str, str], params: Dict[str, Any], crumb: str) -> requests.Response:
-        """Triggers a Jenkins job.
-
-        Args:
-            base_url (str): The base URL of the Jenkins server.
-            job_name (str): The name of the Jenkins job to trigger.
-            auth (Tuple[str, str]): The username and token for Jenkins authentication.
-            params (Dict[str, Any]): The params to pass to the Jenkins job.
-            crumb (str): The Jenkins crumb for CSRF protection.
-
-        Returns:
-            requests.Response: The response from the Jenkins server.
-        """
-        return requests.get(
-            f"{base_url}/job/{job_name}/buildWithParameters",
-            auth=auth,
-            params=params,
-            headers={
-                "content-type": "application/json",
-                "Jenkins-Crumb": crumb,
-            },
-            timeout=120,
-        )
 
 
 class JenkinsFileRunner(Runner):
