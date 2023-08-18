@@ -9,8 +9,6 @@
 
 """The base class and associated classes for Transformer components."""
 
-from __future__ import annotations
-
 from abc import abstractmethod
 from enum import Enum
 from typing import Any, ClassVar, Generic, Mapping, Optional, TypeVar
@@ -73,3 +71,5 @@ FACTORY = ComponentFactory(
     Transformer,  # type: ignore [type-abstract]
     "transformer.json",
 )
+
+# Added a newline at the end of the file to fix the pylint error

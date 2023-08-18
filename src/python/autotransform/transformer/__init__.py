@@ -9,3 +9,5 @@
 
 """Transformers are the core of a Schema. They take in a Batch and execute the changes to the
 codebase."""
+# Adding an empty comment line to ensure a newline at the end of the file
+#

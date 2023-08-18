@@ -31,13 +31,13 @@ class OpenAITransformer(SingleTransformer):
     """A transformer which uses OpenAI models to perform a completion to generate code.
 
     Attributes:
-        prompt (str): The prompt to use for completition. Uses sentry values to replace
+        prompt (str): The prompt to use for completion. Uses sentry values to replace
             values in the prompt.
             <<FILE_PATH>> - Replaced with the path of the file being transformed.
             <<FILE_CONTENT>> - Replaced with the content of the file being transformed.
         max_validator_attempts (optional, float): The maximum number of times to run validators.
             Defaults to 3.
-        model (optional, str): The model to use for completition. Defaults to gpt-3.5-turbo.
+        model (optional, str): The model to use for completion. Defaults to gpt-3.5-turbo.
         system_message (optional, Optional[str]): The system message to use. Defaults to None.
         temperature (optional, float): The temperature to use to control the quality of outputs.
             Defaults to 0.4.
@@ -56,7 +56,7 @@ class OpenAITransformer(SingleTransformer):
     name: ClassVar[TransformerName] = TransformerName.OPEN_AI
 
     def _transform_item(self, item: Item) -> None:
-        """Replaces a file with the completition results from an OpenAI completition.
+        """Replaces a file with the completion results from an OpenAI completion.
 
         Args:
             item (Item): The file that will be transformed.
@@ -76,17 +76,17 @@ class OpenAITransformer(SingleTransformer):
                 "content": self._replace_sentinel_values(self.prompt, item),
             }
         )
-        # Get completition
+        # Get completion
         chat_completion = openai.ChatCompletion.create(
             model=self.model,
             messages=messages,
             temperature=self.temperature,
         )
-        completition_result = chat_completion.choices[0].message.content
+        completion_result = chat_completion.choices[0].message.content
         EventHandler.get().handle(
-            VerboseEvent({"message": f"The completion result\n\n{completition_result}"})
+            VerboseEvent({"message": f"The completion result\n\n{completion_result}"})
         )
-        item.write_content(self._extract_code_from_completion(completition_result))
+        item.write_content(self._extract_code_from_completion(completion_result))
         run_validators = bool(self.validators)
         try_count = 0
         batch: Batch = {"title": "test", "items": [item]}
@@ -99,7 +99,7 @@ class OpenAITransformer(SingleTransformer):
                     failures.append(str(validation_result.message))
             run_validators = bool(failures)
             if failures:
-                messages.append({"role": "assistant", "content": completition_result})
+                messages.append({"role": "assistant", "content": completion_result})
                 failure_message = "\n".join(failures)
                 messages.append(
                     {
@@ -113,11 +113,11 @@ class OpenAITransformer(SingleTransformer):
                     messages=messages,
                     temperature=self.temperature,
                 )
-                completition_result = chat_completion.choices[0].message.content
+                completion_result = chat_completion.choices[0].message.content
                 EventHandler.get().handle(
-                    VerboseEvent({"message": f"The completion result\n\n{completition_result}"})
+                    VerboseEvent({"message": f"The completion result\n\n{completion_result}"})
                 )
-                item.write_content(self._extract_code_from_completion(completition_result))
+                item.write_content(self._extract_code_from_completion(completion_result))
 
     def _replace_sentinel_values(self, prompt: str, item: FileItem) -> str:
         """Replaces sentinel values in a prompt
@@ -133,13 +133,13 @@ class OpenAITransformer(SingleTransformer):
         return new_prompt.replace("<<FILE_CONTENT>>", item.get_content())
 
     def _extract_code_from_completion(self, result: str) -> str:
-        """Extracts code from the result of an OpenAI completition.
+        """Extracts code from the result of an OpenAI completion.
 
         Args:
-            result (str): The completition result.
+            result (str): The completion result.
 
         Returns:
-            str: The extracted code from the completition result.
+            str: The extracted code from the completion result.
         """
 
         code_lines = []
@@ -173,28 +173,12 @@ class OpenAITransformer(SingleTransformer):
 
         prompt = data["prompt"]
         assert isinstance(prompt, str)
-        if "model" in data:
-            model = data["model"]
-            assert isinstance(model, str)
-        else:
-            model = "gpt-3.5-turbo"
-        if "system_message" in data:
-            system_message = data["system_message"]
-            if system_message is not None:
-                assert isinstance(system_message, str)
-        else:
-            system_message = None
-        if "temperature" in data:
-            temperature = data["temperature"]
-            assert isinstance(temperature, float)
-        else:
-            temperature = 0.4
-        if "validators" in data:
-            validators = [
-                validator_factory.get_instance(validator) for validator in data["validators"]
-            ]
-        else:
-            validators = []
+        model = data.get("model", "gpt-3.5-turbo")
+        system_message = data.get("system_message")
+        temperature = data.get("temperature", 0.4)
+        validators = [
+            validator_factory.get_instance(validator) for validator in data.get("validators", [])
+        ]
 
         return cls(
             prompt=prompt,

@@ -9,8 +9,8 @@
 
 """An interface for Transformers that operate on single Items with no metadata needs."""
 
-
 from abc import abstractmethod
+from typing import Sequence
 
 from autotransform.batcher.base import Batch
 from autotransform.item.base import Item
@@ -35,5 +35,6 @@ class SingleTransformer(Transformer[None]):
             batch (Batch): The Batch being transformed.
         """
 
-        for item in batch["items"]:
+        items: Sequence[Item] = batch.get("items", [])
+        for item in items:
             self._transform_item(item)

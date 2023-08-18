@@ -34,10 +34,8 @@ class JSCodeshiftTransformer(SingleTransformer):
     """
 
     js_transform: str
-
     args: List[str] = Field(default_factory=list)
     timeout: int = 600
-
     name: ClassVar[TransformerName] = TransformerName.JSCODESHIFT
 
     def _transform_item(self, item: Item) -> None:
@@ -47,11 +45,12 @@ class JSCodeshiftTransformer(SingleTransformer):
             item (Item): The file that will be transformed.
         """
 
-        assert isinstance(item, FileItem)
+        if not isinstance(item, FileItem):
+            raise TypeError(f"Expected instance of type 'FileItem', got '{type(item).__name__}'")
+
         event_handler = EventHandler.get()
 
-        cmd = ["jscodeshift", "-t", self.js_transform, item.get_path()]
-        cmd.extend(self.args)
+        cmd = ["jscodeshift", "-t", self.js_transform, item.get_path(), *self.args]
 
         # Run JSCodeshift
         event_handler.handle(VerboseEvent({"message": f"Running command: {cmd}"}))
@@ -62,12 +61,14 @@ class JSCodeshiftTransformer(SingleTransformer):
             check=False,
             timeout=self.timeout,
         )
-        if proc.stdout.strip() != "":
-            event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
-        else:
-            event_handler.handle(VerboseEvent({"message": "No STDOUT"}))
-        if proc.stderr.strip() != "":
-            event_handler.handle(VerboseEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
-        else:
-            event_handler.handle(VerboseEvent({"message": "No STDERR"}))
+
+        stdout = proc.stdout.strip()
+        stderr = proc.stderr.strip()
+
+        stdout_message = f"STDOUT:\n{stdout}" if stdout else "No STDOUT"
+        stderr_message = f"STDERR:\n{stderr}" if stderr else "No STDERR"
+
+        event_handler.handle(VerboseEvent({"message": stdout_message}))
+        event_handler.handle(VerboseEvent({"message": stderr_message}))
+
         proc.check_returncode()

@@ -50,11 +50,10 @@ class ScriptTransformer(Transformer[None]):
 
     name: ClassVar[TransformerName] = TransformerName.SCRIPT
 
-    # pylint: disable=invalid-name
     @validator("chunk_size")
     @classmethod
     def chunk_size_must_be_positive(cls, v: Optional[int]) -> Optional[int]:
-        """Validates that chunk
+        """Validates that chunk size is positive.
 
         Args:
             v (Optional[int]): The chunk_size that was set.
@@ -85,11 +84,10 @@ class ScriptTransformer(Transformer[None]):
             Mapping[str, Any]: The fixed values.
         """
 
-        if "per_item" in values and values["per_item"]:
-            if "chunk_size" in values and values["chunk_size"] != 1:
-                raise ValueError("Per item can not be specified with a chunk size that is not 1")
+        if values.get("per_item") and values.get("chunk_size") != 1:
+            raise ValueError("Per item can not be specified with a chunk size that is not 1")
+        if values.get("per_item"):
             values["chunk_size"] = 1
-            return values
         return values
 
     def transform(self, batch: Batch) -> None:
@@ -113,20 +111,20 @@ class ScriptTransformer(Transformer[None]):
         items = batch["items"]
         chunk_size = self.chunk_size or len(items)
 
-        # Get Command
         for i in range(0, len(items), chunk_size):
             chunk_items = items[i : i + chunk_size]
-            cmd = [self.script]
-            cmd.extend(self.args)
+            cmd = [self.script, *self.args]
 
             proc = run_cmd_on_items(cmd, chunk_items, metadata, timeout=self.timeout)
 
-            if proc.stdout.strip() != "":
-                event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
-            else:
-                event_handler.handle(VerboseEvent({"message": "No STDOUT"}))
-            if proc.stderr.strip() != "":
-                event_handler.handle(VerboseEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
-            else:
-                event_handler.handle(VerboseEvent({"message": "No STDERR"}))
+            stdout = proc.stdout.strip()
+            stderr = proc.stderr.strip()
+
+            event_handler.handle(
+                VerboseEvent({"message": f"STDOUT:\n{stdout}" if stdout else "No STDOUT"})
+            )
+            event_handler.handle(
+                VerboseEvent({"message": f"STDERR:\n{stderr}" if stderr else "No STDERR"})
+            )
+
             proc.check_returncode()
