@@ -2,7 +2,7 @@
     "input": {
         "name": "directory",
         "paths": [
-            "src/python/autotransform/batcher"
+            "src/python/autotransform/input"
         ]
     },
     "filters": [
@@ -13,7 +13,7 @@
     ],
     "batcher": {
         "name": "single",
-        "title": "Crawl batcher files",
+        "title": "Crawl input files",
         "metadata": {
             "body": "Use OpenAI model to improve code quality"
         }
