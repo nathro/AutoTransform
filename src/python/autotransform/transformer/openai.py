@@ -90,6 +90,11 @@ class OpenAITransformer(SingleTransformer):
                 messages=messages,
                 temperature=self.temperature,
             )
+            token_usage = (
+                f"Prompt: {chat_completion.usage.prompt_tokens}"
+                + "- Completition: {chat_completion.usage.completion_tokens}"
+            )
+            EventHandler.get().handle(VerboseEvent({"message": token_usage}))
             completition_result = chat_completion.choices[0].message.content
             message = f"The completion result for {item.get_path()}:\n\n{completition_result}"
             EventHandler.get().handle(VerboseEvent({"message": message}))
@@ -166,9 +171,7 @@ class OpenAITransformer(SingleTransformer):
         """
 
         prompt = data["prompt"]
-        commands = [
-            command_factory.get_instance(command) for command in data.get("commands", [])
-        ]
+        commands = [command_factory.get_instance(command) for command in data.get("commands", [])]
         model = data.get("model", "gpt-3.5-turbo")
         system_message = data.get("system_message", None)
         temperature = data.get("temperature", 0.4)
