@@ -92,7 +92,7 @@ class OpenAITransformer(SingleTransformer):
             )
             token_usage = (
                 f"Prompt: {chat_completion.usage.prompt_tokens}"
-                + "- Completition: {chat_completion.usage.completion_tokens}"
+                + f" - Completition: {chat_completion.usage.completion_tokens}"
             )
             EventHandler.get().handle(VerboseEvent({"message": token_usage}))
             completition_result = chat_completion.choices[0].message.content
