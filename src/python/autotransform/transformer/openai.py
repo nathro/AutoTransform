@@ -18,6 +18,8 @@ from autotransform.batcher.base import Batch
 from autotransform.command.base import FACTORY as command_factory
 from autotransform.command.base import Command
 from autotransform.config import get_config
+from autotransform.event.handler import EventHandler
+from autotransform.event.verbose import VerboseEvent
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
 from autotransform.transformer.base import TransformerName
@@ -88,18 +90,20 @@ class OpenAITransformer(SingleTransformer):
                 messages=messages,
                 temperature=self.temperature,
             )
-            result = chat_completion.choices[0].message.content
-            item.write_content(self._extract_code_from_completion(result))
+            completition_result = chat_completion.choices[0].message.content
+            message = f"The completion result for {item.get_path()}:\n\n{completition_result}"
+            EventHandler.get().handle(VerboseEvent({"message": message}))
+            item.write_content(self._extract_code_from_completion(completition_result))
             for command in self.commands:
                 command.run(batch, None)
             failures = []
             for validator in self.validators:
-                result = validator.check(batch, None)
-                if result.level != ValidationResultLevel.NONE:
-                    failures.append(str(result.message))
+                validation_result = validator.check(batch, None)
+                if validation_result.level != ValidationResultLevel.NONE:
+                    failures.append(str(validation_result.message))
             if not failures:
                 break
-            messages.append({"role": "assistant", "content": result})
+            messages.append({"role": "assistant", "content": completition_result})
             failure_message = "\n".join(failures)
             messages.append(
                 {
