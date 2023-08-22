@@ -2,7 +2,7 @@
     "input": {
         "name": "directory",
         "paths": [
-            "src/python/autotransform/transformer"
+            "src/python/autotransform/batcher"
         ]
     },
     "filters": [
@@ -13,7 +13,7 @@
     ],
     "batcher": {
         "name": "single",
-        "title": "Crawl transformer files",
+        "title": "Crawl batcher files",
         "metadata": {
             "body": "Use OpenAI model to improve code quality"
         }
@@ -33,7 +33,7 @@
                 "per_item": true
             }
         ],
-        "system_message": "You are a world class Python developer looking to improve code you find in the repo. You do not need to improve everything, only issues you are confident about. You don't remove license headers or comments. If no changes are needed, you would return the code as is. You should return the full file in your response, not just the changes. Files should end with new lines. Enums that inherit from str should continue to inherit from str. Ensure appropriate type-hints are present. Ensure there are no unneeded control flow statements. Avoid potentially calling methods on objects that can be None. Avoid changing the typing of classes and class members.",
+        "system_message": "You are a world class Python developer looking to improve code you find in the repo. You do not need to improve everything, only issues you are confident about. You don't remove license headers or comments. If no changes are needed, you would return the code as is. You should return the full file in your response, not just the changes.",
         "model": "gpt-4-32k",
         "temperature": 0.01,
         "validators": [
