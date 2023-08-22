@@ -27,9 +27,11 @@ class InlineInput(Input):
         name (ClassVar[InputName]): The name of the component.
     """
 
-    items: List[Item]
-
     name: ClassVar[InputName] = InputName.INLINE
+
+    def __init__(self, items: List[Item]) -> None:
+        super().__init__()
+        self.items = items
 
     def get_items(self) -> Sequence[Item]:
         """Returns the supplied Items as input.
@@ -62,9 +64,11 @@ class InlineFileInput(Input):
         name (ClassVar[InputName]): The name of the component.
     """
 
-    files: List[str]
-
     name: ClassVar[InputName] = InputName.INLINE_FILE
+
+    def __init__(self, files: List[str]) -> None:
+        super().__init__()
+        self.files = files
 
     def get_items(self) -> Sequence[FileItem]:
         """Returns the supplied files as FileItems for input.
@@ -84,9 +88,11 @@ class InlineGenericInput(Input):
         name (ClassVar[InputName]): The name of the component.
     """
 
-    keys: List[str]
-
     name: ClassVar[InputName] = InputName.INLINE_GENERIC
+
+    def __init__(self, keys: List[str]) -> None:
+        super().__init__()
+        self.keys = keys
 
     def get_items(self) -> Sequence[Item]:
         """Returns the supplied keys as Items for input.
