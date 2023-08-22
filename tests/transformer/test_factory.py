@@ -68,10 +68,10 @@ def test_encoding_and_decoding() -> None:
             },
         ],
         TransformerName.OPEN_AI: [
-            {"prompt": "foo", "validators": []},
-            {"prompt": "foo", "system_message": "bar", "validators": []},
-            {"prompt": "foo", "temperature": 0.1, "validators": []},
-            {"prompt": "foo", "model": "gpt-4-32k", "validators": []},
+            {"prompt": "foo", "commands": [], "validators": []},
+            {"prompt": "foo", "commands": [], "system_message": "bar", "validators": []},
+            {"prompt": "foo", "commands": [], "temperature": 0.1, "validators": []},
+            {"prompt": "foo", "commands": [], "model": "gpt-4-32k", "validators": []},
         ],
         TransformerName.REGEX: [{"pattern": "foo", "replacement": "bar"}],
         TransformerName.SCRIPT: [
