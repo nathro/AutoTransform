@@ -7,6 +7,6 @@
 
 # @black_format
 
-"""Batchers take filtered Items and separate them in to logical groupings
+"""Batchers take filtered Items and separate them into logical groupings
 with associated metadata that can be acted on independently. Each Batch
-represents a single Change (i.e. a Pull Request)."""
+represents a single Change (i.e., a Pull Request)."""
