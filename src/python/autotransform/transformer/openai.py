@@ -33,16 +33,16 @@ class OpenAITransformer(SingleTransformer):
     """A transformer which uses OpenAI models to perform a completion to generate code.
 
     Attributes:
-        prompt (str): The prompt to use for completition. Uses sentry values to replace
+        prompt (str): The prompt to use for completion. Uses sentry values to replace
             values in the prompt.
             <<FILE_PATH>> - Replaced with the path of the file being transformed.
             <<FILE_CONTENT>> - Replaced with the content of the file being transformed.
         commands (optional, List[Command]): A set of commands to use on transformed files
             before validation. Useful for correcting things like formatting. Defaults to an
             empty list.
-        max_attempts (optional, float): The maximum number of times to check completitions.
+        max_attempts (optional, float): The maximum number of times to check completions.
             Defaults to 3.
-        model (optional, str): The model to use for completition. Defaults to gpt-3.5-turbo.
+        model (optional, str): The model to use for completion. Defaults to gpt-3.5-turbo.
         system_message (optional, Optional[str]): The system message to use. Defaults to None.
         temperature (optional, float): The temperature to use to control the quality of outputs.
             Defaults to 0.4.
@@ -62,7 +62,7 @@ class OpenAITransformer(SingleTransformer):
     name: ClassVar[TransformerName] = TransformerName.OPEN_AI
 
     def _transform_item(self, item: Item) -> None:
-        """Replaces a file with the completition results from an OpenAI completition.
+        """Replaces a file with the completion results from an OpenAI completion.
 
         Args:
             item (Item): The file that will be transformed.
@@ -84,7 +84,7 @@ class OpenAITransformer(SingleTransformer):
         )
         batch: Batch = {"title": "test", "items": [item]}
         for _ in range(self.max_attempts):
-            # Get completition
+            # Get completion
             chat_completion = openai.ChatCompletion.create(
                 model=self.model,
                 messages=messages,
@@ -92,13 +92,13 @@ class OpenAITransformer(SingleTransformer):
             )
             token_usage = (
                 f"Prompt: {chat_completion.usage.prompt_tokens}"
-                + f" - Completition: {chat_completion.usage.completion_tokens}"
+                + f" - Completion: {chat_completion.usage.completion_tokens}"
             )
             EventHandler.get().handle(VerboseEvent({"message": token_usage}))
-            completition_result = chat_completion.choices[0].message.content
-            message = f"The completion result for {item.get_path()}:\n\n{completition_result}"
+            completion_result = chat_completion.choices[0].message.content
+            message = f"The completion result for {item.get_path()}:\n\n{completion_result}"
             EventHandler.get().handle(VerboseEvent({"message": message}))
-            item.write_content(self._extract_code_from_completion(completition_result))
+            item.write_content(self._extract_code_from_completion(completion_result))
             for command in self.commands:
                 command.run(batch, None)
             failures = []
@@ -108,7 +108,7 @@ class OpenAITransformer(SingleTransformer):
                     failures.append(str(validation_result.message))
             if not failures:
                 break
-            messages.append({"role": "assistant", "content": completition_result})
+            messages.append({"role": "assistant", "content": completion_result})
             failure_message = "\n".join(failures)
             messages.append(
                 {
@@ -132,13 +132,13 @@ class OpenAITransformer(SingleTransformer):
         return new_prompt.replace("<<FILE_CONTENT>>", item.get_content())
 
     def _extract_code_from_completion(self, result: str) -> str:
-        """Extracts code from the result of an OpenAI completition.
+        """Extracts code from the result of an OpenAI completion.
 
         Args:
-            result (str): The completition result.
+            result (str): The completion result.
 
         Returns:
-            str: The extracted code from the completition result.
+            str: The extracted code from the completion result.
         """
 
         code_lines = []
