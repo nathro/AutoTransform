@@ -54,6 +54,14 @@
                     "<<KEY>>"
                 ],
                 "per_item": true
+            },
+            {
+                "name": "script",
+                "script": "pytest",
+                "args": [
+                    "ignore::DeprecationWarning",
+                    "tests"
+                ]
             }
         ]
     },
