@@ -28,7 +28,6 @@ class GitGrepInput(Input):
     """
 
     pattern: str
-
     name: ClassVar[InputName] = InputName.GIT_GREP
 
     def get_items(self) -> Sequence[FileItem]:

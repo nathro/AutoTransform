@@ -53,8 +53,7 @@ class ScriptInput(Input):
         event_handler = EventHandler.get()
 
         # Get Command
-        cmd = [self.script]
-        cmd.extend(self.args)
+        cmd = [self.script] + self.args
 
         with NamedTemporaryFile(mode="r+b") as result_file:
             arg_replacements = {"<<RESULT_FILE>>": [result_file.name]}
