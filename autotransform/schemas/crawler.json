@@ -59,8 +59,9 @@
                 "name": "script",
                 "script": "pytest",
                 "args": [
+                    "-W",
                     "ignore::DeprecationWarning",
-                    "tests"
+                    "tests/"
                 ]
             }
         ]
