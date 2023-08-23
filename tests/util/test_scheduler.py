@@ -42,7 +42,7 @@ def get_sample_scheduler() -> Scheduler:
 def test_decoding():
     """Tests that the Scheduler component is decoded properly."""
 
-    parent_dir = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
+    parent_dir = pathlib.Path(__file__).parent.resolve().as_posix()
     manager = Scheduler.read(f"{parent_dir}/data/scheduler.json")
     assert manager == get_sample_scheduler()
 
@@ -50,6 +50,6 @@ def test_decoding():
 def test_encoding():
     """Tests that the Scheduler component is encoded properly."""
 
-    parent_dir = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
+    parent_dir = pathlib.Path(__file__).parent.resolve().as_posix()
     with open(f"{parent_dir}/data/scheduler.json", "r", encoding="UTF-8") as file:
         assert json.dumps(get_sample_scheduler().bundle(), indent=4) == file.read()

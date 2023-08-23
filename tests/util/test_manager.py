@@ -57,14 +57,14 @@ def get_sample_manager() -> Manager:
 def test_decoding():
     """Tests that the Manager component is decoded properly."""
 
-    parent_dir = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
-    manager = Manager.read(f"{parent_dir}/data/manager.json")
+    parent_dir = pathlib.Path(__file__).parent.resolve()
+    manager = Manager.read(parent_dir / "data" / "manager.json")
     assert manager == get_sample_manager()
 
 
 def test_encoding():
     """Tests that the Manager component is encoded properly."""
 
-    parent_dir = str(pathlib.Path(__file__).parent.resolve()).replace("\\", "/")
-    with open(f"{parent_dir}/data/manager.json", "r", encoding="UTF-8") as file:
+    parent_dir = pathlib.Path(__file__).parent.resolve()
+    with open(parent_dir / "data" / "manager.json", "r", encoding="UTF-8") as file:
         assert json.dumps(get_sample_manager().bundle(), indent=4) == file.read()
