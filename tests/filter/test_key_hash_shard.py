@@ -29,8 +29,8 @@ def test_key_hash_shard():
         "fizz/bar.py": True,
         "bar/fizz.py": False,
     }
-    test_cases = [(FileItem(key=path), result) for path, result in test_cases.items()]
-    for item, result in test_cases:
+    for path, result in test_cases.items():
+        item = FileItem(key=path)
         assert filt.is_valid(item) == result
 
 
@@ -50,6 +50,6 @@ def test_inverted_key_hash_shard():
         "fizz/bar.py": False,
         "bar/fizz.py": True,
     }
-    test_cases = [(FileItem(key=path), result) for path, result in test_cases.items()]
-    for item, result in test_cases:
+    for path, result in test_cases.items():
+        item = FileItem(key=path)
         assert filt.is_valid(item) == result

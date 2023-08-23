@@ -10,10 +10,6 @@
 
 """Tests for AggregateFilter."""
 
-from __future__ import annotations
-
-from typing import List
-
 import pytest
 from autotransform.filter.aggregate import AggregateFilter
 from autotransform.filter.base import Filter
@@ -57,85 +53,23 @@ def invalid_filter() -> InvalidFilter:
     return InvalidFilter()
 
 
-def test_aggregate_filter_with_all_and_empty_filter() -> None:
-    """Test AggregateFilter with ALL and a empty filters."""
+@pytest.mark.parametrize(
+    "aggregator, filters, expected",
+    [
+        (AggregatorType.ALL, [], True),
+        (AggregatorType.ALL, [ValidFilter()], True),
+        (AggregatorType.ALL, [ValidFilter(), ValidFilter()], True),
+        (AggregatorType.ALL, [InvalidFilter(), InvalidFilter()], False),
+        (AggregatorType.ALL, [ValidFilter(), InvalidFilter()], False),
+        (AggregatorType.ANY, [], False),
+        (AggregatorType.ANY, [ValidFilter()], True),
+        (AggregatorType.ANY, [ValidFilter(), ValidFilter()], True),
+        (AggregatorType.ANY, [InvalidFilter(), InvalidFilter()], False),
+        (AggregatorType.ANY, [ValidFilter(), InvalidFilter()], True),
+    ],
+)
+def test_aggregate_filter(aggregator, filters, expected):
+    """Test AggregateFilter with different aggregators and filters."""
 
-    filters: List[Filter] = []
-    aggregate_filter = AggregateFilter(aggregator=AggregatorType.ALL, filters=filters)
-    assert aggregate_filter.is_valid(Item(key="test"))
-
-
-def test_aggregate_filter_with_all_and_single_filter(valid_filter: ValidFilter) -> None:
-    """Test AggregateFilter with ALL and a single filter."""
-
-    filters = [valid_filter]
-    aggregate_filter = AggregateFilter(aggregator=AggregatorType.ALL, filters=filters)
-    assert aggregate_filter.is_valid(Item(key="test"))
-
-
-def test_aggregate_filter_with_all_and_valid_filters(valid_filter: ValidFilter) -> None:
-    """Test AggregateFilter with ALL and valid filters."""
-
-    filters = [valid_filter, valid_filter]
-    aggregate_filter = AggregateFilter(aggregator=AggregatorType.ALL, filters=filters)
-    assert aggregate_filter.is_valid(Item(key="test"))
-
-
-def test_aggregate_filter_with_all_and_invalid_filters(invalid_filter: InvalidFilter) -> None:
-    """Test AggregateFilter with ALL and invalid filters."""
-
-    filters = [invalid_filter, invalid_filter]
-    aggregate_filter = AggregateFilter(aggregator=AggregatorType.ALL, filters=filters)
-    assert not aggregate_filter.is_valid(Item(key="test"))
-
-
-def test_aggregate_filter_with_all_and_mixed_filters(
-    valid_filter: ValidFilter, invalid_filter: InvalidFilter
-) -> None:
-    """Test AggregateFilter with ALL and mixed filters."""
-
-    filters = [valid_filter, invalid_filter]
-    aggregate_filter = AggregateFilter(aggregator=AggregatorType.ALL, filters=filters)
-    assert not aggregate_filter.is_valid(Item(key="test"))
-
-
-def test_aggregate_filter_with_any_and_empty_filter() -> None:
-    """Test AggregateFilter with ANY and a empty filters."""
-
-    filters: List[Filter] = []
-    aggregate_filter = AggregateFilter(aggregator=AggregatorType.ANY, filters=filters)
-    assert not aggregate_filter.is_valid(Item(key="test"))
-
-
-def test_aggregate_filter_with_any_and_single_filter(valid_filter: ValidFilter) -> None:
-    """Test AggregateFilter with ANY and a single filter."""
-
-    filters = [valid_filter]
-    aggregate_filter = AggregateFilter(aggregator=AggregatorType.ANY, filters=filters)
-    assert aggregate_filter.is_valid(Item(key="test"))
-
-
-def test_aggregate_filter_with_any_and_valid_filters(valid_filter: ValidFilter) -> None:
-    """Test AggregateFilter with ANY and valid filters."""
-
-    filters = [valid_filter, valid_filter]
-    aggregate_filter = AggregateFilter(aggregator=AggregatorType.ANY, filters=filters)
-    assert aggregate_filter.is_valid(Item(key="test"))
-
-
-def test_aggregate_filter_with_any_and_invalid_filters(invalid_filter: InvalidFilter) -> None:
-    """Test AggregateFilter with ANY and invalid filters."""
-
-    filters = [invalid_filter, invalid_filter]
-    aggregate_filter = AggregateFilter(aggregator=AggregatorType.ANY, filters=filters)
-    assert not aggregate_filter.is_valid(Item(key="test"))
-
-
-def test_aggregate_filter_with_any_and_mixed_filters(
-    valid_filter: ValidFilter, invalid_filter: InvalidFilter
-) -> None:
-    """Test AggregateFilter with ANY and mixed filters."""
-
-    filters = [valid_filter, invalid_filter]
-    aggregate_filter = AggregateFilter(aggregator=AggregatorType.ANY, filters=filters)
-    assert aggregate_filter.is_valid(Item(key="test"))
+    aggregate_filter = AggregateFilter(aggregator=aggregator, filters=filters)
+    assert aggregate_filter.is_valid(Item(key="test")) == expected

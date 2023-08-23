@@ -9,87 +9,57 @@
 
 """Tests for the RegexFilter and RegexFileContentFilter components."""
 
+import pytest
 from autotransform.filter.regex import RegexFileContentFilter, RegexFilter
 from autotransform.item.file import FileItem
 
 
-def test_regex():
+@pytest.mark.parametrize(
+    "pattern, inverted, path, result",
+    [
+        ("(foo|fizz)", False, "foo.py", True),
+        ("(foo|fizz)", False, "bar/foo.py", True),
+        ("(foo|fizz)", False, "bar/foo", True),
+        ("(foo|fizz)", False, "bar/baz", False),
+        ("(foo|fizz)", False, "baz", False),
+        ("(foo|fizz)", False, "oof", False),
+        ("(foo|fizz)", False, "fizz/foo.py", True),
+        ("(foo|fizz)", False, "fizz/bar.py", True),
+        ("(foo|fizz)", False, "bar/fizz.py", True),
+        ("(foo|fizz)", True, "foo.py", False),
+        ("(foo|fizz)", True, "bar/foo.py", False),
+        ("(foo|fizz)", True, "bar/foo", False),
+        ("(foo|fizz)", True, "bar/baz", True),
+        ("(foo|fizz)", True, "baz", True),
+        ("(foo|fizz)", True, "oof", True),
+        ("(foo|fizz)", True, "fizz/foo.py", False),
+        ("(foo|fizz)", True, "fizz/bar.py", False),
+        ("(foo|fizz)", True, "bar/fizz.py", False),
+    ],
+)
+def test_regex(pattern, inverted, path, result):
     """Runs simple tests on the regex filter."""
-
-    filt = RegexFilter(pattern="(foo|fizz)")
-    test_cases = {
-        "foo.py": True,
-        "bar/foo.py": True,
-        "bar/foo": True,
-        "bar/baz": False,
-        "baz": False,
-        "oof": False,
-        "fizz/foo.py": True,
-        "fizz/bar.py": True,
-        "bar/fizz.py": True,
-    }
-    test_cases = [(FileItem(key=path), result) for path, result in test_cases.items()]
-    for item, result in test_cases:
-        assert filt.is_valid(item) == result
+    filt = RegexFilter(pattern=pattern, inverted=inverted)
+    item = FileItem(key=path)
+    assert filt.is_valid(item) == result
 
 
-def test_inverted_regex():
-    """Runs simple tests on the inverted regex filter."""
-
-    filt = RegexFilter(pattern="(foo|fizz)", inverted=True)
-    test_cases = {
-        "foo.py": False,
-        "bar/foo.py": False,
-        "bar/foo": False,
-        "bar/baz": True,
-        "baz": True,
-        "oof": True,
-        "fizz/foo.py": False,
-        "fizz/bar.py": False,
-        "bar/fizz.py": False,
-    }
-    test_cases = [(FileItem(key=path), result) for path, result in test_cases.items()]
-    for item, result in test_cases:
-        assert filt.is_valid(item) == result
-
-
-def test_file_content_regex(tmpdir):
+@pytest.mark.parametrize(
+    "pattern, inverted, content, result",
+    [
+        ("(foo|fizz)", False, "foo", True),
+        ("(foo|fizz)", False, "bar", False),
+        ("(foo|fizz)", False, "fizz", True),
+        ("(foo|fizz)", True, "foo", False),
+        ("(foo|fizz)", True, "bar", True),
+        ("(foo|fizz)", True, "fizz", False),
+    ],
+)
+def test_file_content_regex(tmpdir, pattern, inverted, content, result):
     """Runs simple tests on the regex file content filter."""
-
-    filt = RegexFileContentFilter(pattern="(foo|fizz)")
+    filt = RegexFileContentFilter(pattern=pattern, inverted=inverted)
     test_file_dir = tmpdir.mkdir("non_empty_dir")
-    test_file_1 = test_file_dir.join("test1.txt")
-    test_file_1.write("foo")
-    test_file_2 = test_file_dir.join("test2.txt")
-    test_file_2.write("bar")
-    test_file_3 = test_file_dir.join("test3.txt")
-    test_file_3.write("fizz")
-    test_cases = {
-        str(test_file_1): True,
-        str(test_file_2): False,
-        str(test_file_3): True,
-    }
-    test_cases = [(FileItem(key=path), result) for path, result in test_cases.items()]
-    for item, result in test_cases:
-        assert filt.is_valid(item) == result
-
-
-def test_inverted_file_content_regex(tmpdir):
-    """Runs simple tests on the inverted regex file content filter."""
-
-    filt = RegexFileContentFilter(pattern="(foo|fizz)", inverted=True)
-    test_file_dir = tmpdir.mkdir("non_empty_dir")
-    test_file_1 = test_file_dir.join("test1.txt")
-    test_file_1.write("foo")
-    test_file_2 = test_file_dir.join("foo.txt")
-    test_file_2.write("bar")
-    test_file_3 = test_file_dir.join("test3.txt")
-    test_file_3.write("fizz")
-    test_cases = {
-        str(test_file_1): False,
-        str(test_file_2): True,
-        str(test_file_3): False,
-    }
-    test_cases = [(FileItem(key=path), result) for path, result in test_cases.items()]
-    for item, result in test_cases:
-        assert filt.is_valid(item) == result
+    test_file = test_file_dir.join("test.txt")
+    test_file.write(content)
+    item = FileItem(key=str(test_file))
+    assert filt.is_valid(item) == result
