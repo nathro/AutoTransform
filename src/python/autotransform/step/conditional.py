@@ -9,8 +9,6 @@
 
 """The implementation for the ConditionalStep."""
 
-from __future__ import annotations
-
 from typing import Any, ClassVar, Dict, List, Type
 
 from autotransform.change.base import Change
@@ -51,9 +49,7 @@ class ConditionalStep(Step):
             List[Action]: The Actions the Step wants to take.
         """
 
-        if self.condition.check(change):
-            return self.actions
-        return []
+        return self.actions if self.condition.check(change) else []
 
     def continue_management(self, change: Change) -> bool:
         """Checks if management should be continued after this Step when Actions were provided.
@@ -67,7 +63,7 @@ class ConditionalStep(Step):
         return self.continue_if_passed
 
     @classmethod
-    def from_data(cls: Type[ConditionalStep], data: Dict[str, Any]) -> ConditionalStep:
+    def from_data(cls: Type["ConditionalStep"], data: Dict[str, Any]) -> "ConditionalStep":
         """Produces an instance of the component from decoded data.
 
         Args:
@@ -77,18 +73,14 @@ class ConditionalStep(Step):
             ConditionalStep: An instance of the component.
         """
 
+        actions = [action_factory.get_instance(action) for action in data.get("actions", [])]
         if "action" in data:
             action_name = (
-                data["action"]
-                if isinstance(data["action"], ActionName)
-                else ActionName(data["action"])
+                ActionName(data["action"]) if isinstance(data["action"], str) else data["action"]
             )
-            actions = [action_factory.get_instance({"name": action_name})]
-        else:
-            actions = [action_factory.get_instance(action) for action in data["actions"]]
+            actions.append(action_factory.get_instance({"name": action_name}))
+
         condition = condition_factory.get_instance(data["condition"])
-        if "continue_if_passed" in data:
-            continue_if_passed = bool(data["continue_if_passed"])
-        else:
-            continue_if_passed = False
+        continue_if_passed = bool(data.get("continue_if_passed", False))
+
         return cls(actions=actions, condition=condition, continue_if_passed=continue_if_passed)
