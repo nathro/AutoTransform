@@ -28,47 +28,18 @@ def get_arg_parser() -> ArgumentParser:
     )
     subparsers = parser.add_subparsers()
 
-    # Add run command
-    run_parser = subparsers.add_parser(
-        "run",
-        help="Execute a full run of AutoTransform",
-    )
-    run.add_args(run_parser)
+    commands = [
+        ("run", run, "Execute a full run of AutoTransform"),
+        ("schedule", schedule, "Schedule runs of AutoTransform schemas"),
+        ("manage", manage, "Manage outstanding Changes"),
+        ("update", update, "Update an outstanding change"),
+        ("settings", settings, "Update/view AutoTransform settings"),
+        ("init", initialize, "Initialize AutoTransform for the user/repo"),
+    ]
 
-    # Add schedule command
-    schedule_parser = subparsers.add_parser(
-        "schedule",
-        help="Schedule runs of AutoTransform schemas",
-    )
-    schedule.add_args(schedule_parser)
-
-    # Add manage command
-    manage_parser = subparsers.add_parser(
-        "manage",
-        help="Manage outstanding Changes",
-    )
-    manage.add_args(manage_parser)
-
-    # Add update command
-    update_parser = subparsers.add_parser(
-        "update",
-        help="Update an outstanding change",
-    )
-    update.add_args(update_parser)
-
-    # Add settings command
-    settings_parser = subparsers.add_parser(
-        "settings",
-        help="Update/view AutoTransform settings",
-    )
-    settings.add_args(settings_parser)
-
-    # Add initialize command
-    init_parser = subparsers.add_parser(
-        "init",
-        help="Initialize AutoTransform for the user/repo",
-    )
-    initialize.add_args(init_parser)
+    for command, module, help_text in commands:
+        command_parser = subparsers.add_parser(command, help=help_text)
+        module.add_args(command_parser)
 
     return parser
 
@@ -78,7 +49,11 @@ def main():
 
     parser = get_arg_parser()
     args = parser.parse_args()
-    args.func(args)
+
+    if hasattr(args, "func"):
+        args.func(args)
+    else:
+        parser.print_help()
 
 
 if __name__ == "__main__":
