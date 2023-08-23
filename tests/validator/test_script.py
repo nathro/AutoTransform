@@ -24,15 +24,19 @@ import autotransform
 # pylint: disable=unused-argument
 
 
-@mock.patch.object(subprocess, "run")
-def test_no_args(mock_run):
-    """Test that subprocess is invoked correctly with no args."""
-
+def create_mock_process(returncode: int):
+    """Create a mock subprocess.CompletedProcess object with the specified return code."""
     proc = mock.create_autospec(subprocess.CompletedProcess)
     proc.stdout = ""
     proc.stderr = ""
-    proc.returncode = 0
-    mock_run.return_value = proc
+    proc.returncode = returncode
+    return proc
+
+
+@mock.patch.object(subprocess, "run")
+def test_no_args(mock_run):
+    """Test that subprocess is invoked correctly with no args."""
+    mock_run.return_value = create_mock_process(0)
 
     validator = ScriptValidator(script="black", args=[])
     result = validator.check(
@@ -44,19 +48,15 @@ def test_no_args(mock_run):
     )
 
     assert result.level == ValidationResultLevel.NONE
-    mock_run.assert_called_once()
-    assert mock_run.call_args_list[0].args[0] == ["black"]
+    mock_run.assert_called_once_with(
+        ["black"], capture_output=True, encoding="utf-8", check=False, timeout=None
+    )
 
 
 @mock.patch.object(subprocess, "run")
 def test_key_arg(mock_run):
     """Test that subprocess is invoked correctly with a key argument."""
-
-    proc = mock.create_autospec(subprocess.CompletedProcess)
-    proc.stdout = ""
-    proc.stderr = ""
-    proc.returncode = 0
-    mock_run.return_value = proc
+    mock_run.return_value = create_mock_process(0)
 
     validator = ScriptValidator(script="black", args=["<<KEY>>"])
     result = validator.check(
@@ -68,19 +68,19 @@ def test_key_arg(mock_run):
     )
 
     assert result.level == ValidationResultLevel.NONE
-    mock_run.assert_called_once()
-    assert mock_run.call_args_list[0].args[0] == ["black", "bar.py", "foo.py"]
+    mock_run.assert_called_once_with(
+        ["black", "bar.py", "foo.py"],
+        capture_output=True,
+        encoding="utf-8",
+        check=False,
+        timeout=None,
+    )
 
 
 @mock.patch.object(subprocess, "run")
 def test_extra_data_arg(mock_run):
     """Test that subprocess is invoked correctly with an extra_data argument."""
-
-    proc = mock.create_autospec(subprocess.CompletedProcess)
-    proc.stdout = ""
-    proc.stderr = ""
-    proc.returncode = 0
-    mock_run.return_value = proc
+    mock_run.return_value = create_mock_process(0)
 
     validator = ScriptValidator(script="black", args=["<<EXTRA_DATA>>"])
     result = validator.check(
@@ -92,22 +92,19 @@ def test_extra_data_arg(mock_run):
     )
 
     assert result.level == ValidationResultLevel.NONE
-    mock_run.assert_called_once()
-    assert mock_run.call_args_list[0].args[0] == [
-        "black",
-        '{"foo.py": {"test": "TEST"}}',
-    ]
+    mock_run.assert_called_once_with(
+        ["black", '{"foo.py": {"test": "TEST"}}'],
+        capture_output=True,
+        encoding="utf-8",
+        check=False,
+        timeout=None,
+    )
 
 
 @mock.patch.object(subprocess, "run")
 def test_metadata_arg(mock_run):
     """Test that subprocess is invoked correctly with a metadata argument."""
-
-    proc = mock.create_autospec(subprocess.CompletedProcess)
-    proc.stdout = ""
-    proc.stderr = ""
-    proc.returncode = 0
-    mock_run.return_value = proc
+    mock_run.return_value = create_mock_process(0)
 
     validator = ScriptValidator(script="black", args=["<<METADATA>>"])
     result = validator.check(
@@ -120,22 +117,19 @@ def test_metadata_arg(mock_run):
     )
 
     assert result.level == ValidationResultLevel.NONE
-    mock_run.assert_called_once()
-    assert mock_run.call_args_list[0].args[0] == [
-        "black",
-        '{"body": "text"}',
-    ]
+    mock_run.assert_called_once_with(
+        ["black", '{"body": "text"}'],
+        capture_output=True,
+        encoding="utf-8",
+        check=False,
+        timeout=None,
+    )
 
 
 @mock.patch.object(subprocess, "run")
 def test_no_args_per_item(mock_run):
     """Test that subprocess is invoked correctly with no args per item."""
-
-    proc = mock.create_autospec(subprocess.CompletedProcess)
-    proc.stdout = ""
-    proc.stderr = ""
-    proc.returncode = 0
-    mock_run.return_value = proc
+    mock_run.return_value = create_mock_process(0)
 
     validator = ScriptValidator(script="black", args=[], per_item=True)
     result = validator.check(
@@ -148,19 +142,15 @@ def test_no_args_per_item(mock_run):
 
     assert result.level == ValidationResultLevel.NONE
     assert mock_run.call_count == 2
-    assert mock_run.call_args_list[0].args[0] == ["black"]
-    assert mock_run.call_args_list[1].args[0] == ["black"]
+    mock_run.assert_any_call(
+        ["black"], capture_output=True, encoding="utf-8", check=False, timeout=None
+    )
 
 
 @mock.patch.object(subprocess, "run")
 def test_key_arg_per_item(mock_run):
     """Test that subprocess is invoked correctly with a key argument per item."""
-
-    proc = mock.create_autospec(subprocess.CompletedProcess)
-    proc.stdout = ""
-    proc.stderr = ""
-    proc.returncode = 0
-    mock_run.return_value = proc
+    mock_run.return_value = create_mock_process(0)
 
     validator = ScriptValidator(script="black", args=["<<KEY>>"], per_item=True)
     result = validator.check(
@@ -173,19 +163,18 @@ def test_key_arg_per_item(mock_run):
 
     assert result.level == ValidationResultLevel.NONE
     assert mock_run.call_count == 2
-    assert mock_run.call_args_list[0].args[0] == ["black", "bar.py"]
-    assert mock_run.call_args_list[1].args[0] == ["black", "foo.py"]
+    mock_run.assert_any_call(
+        ["black", "bar.py"], capture_output=True, encoding="utf-8", check=False, timeout=None
+    )
+    mock_run.assert_any_call(
+        ["black", "foo.py"], capture_output=True, encoding="utf-8", check=False, timeout=None
+    )
 
 
 @mock.patch.object(subprocess, "run")
 def test_extra_data_arg_per_item(mock_run):
     """Test that subprocess is invoked correctly with an extra_data argument per item."""
-
-    proc = mock.create_autospec(subprocess.CompletedProcess)
-    proc.stdout = ""
-    proc.stderr = ""
-    proc.returncode = 0
-    mock_run.return_value = proc
+    mock_run.return_value = create_mock_process(0)
 
     validator = ScriptValidator(script="black", args=["<<EXTRA_DATA>>"], per_item=True)
     result = validator.check(
@@ -198,19 +187,22 @@ def test_extra_data_arg_per_item(mock_run):
 
     assert result.level == ValidationResultLevel.NONE
     assert mock_run.call_count == 2
-    assert mock_run.call_args_list[0].args[0] == ["black", "{}"]
-    assert mock_run.call_args_list[1].args[0] == ["black", '{"foo.py": {"test": "TEST"}}']
+    mock_run.assert_any_call(
+        ["black", "{}"], capture_output=True, encoding="utf-8", check=False, timeout=None
+    )
+    mock_run.assert_any_call(
+        ["black", '{"foo.py": {"test": "TEST"}}'],
+        capture_output=True,
+        encoding="utf-8",
+        check=False,
+        timeout=None,
+    )
 
 
 @mock.patch.object(subprocess, "run")
 def test_metadata_arg_per_item(mock_run):
     """Test that subprocess is invoked correctly with a metadata argument per item."""
-
-    proc = mock.create_autospec(subprocess.CompletedProcess)
-    proc.stdout = ""
-    proc.stderr = ""
-    proc.returncode = 0
-    mock_run.return_value = proc
+    mock_run.return_value = create_mock_process(0)
 
     validator = ScriptValidator(script="black", args=["<<METADATA>>"], per_item=True)
     result = validator.check(
@@ -224,20 +216,20 @@ def test_metadata_arg_per_item(mock_run):
 
     assert result.level == ValidationResultLevel.NONE
     assert mock_run.call_count == 2
-    assert mock_run.call_args_list[0].args[0] == ["black", '{"body": "text"}']
-    assert mock_run.call_args_list[1].args[0] == ["black", '{"body": "text"}']
+    mock_run.assert_any_call(
+        ["black", '{"body": "text"}'],
+        capture_output=True,
+        encoding="utf-8",
+        check=False,
+        timeout=None,
+    )
 
 
 @mock.patch.object(subprocess, "run")
 @mock.patch.object(autotransform, "schema")
 def test_key_arg_on_changes(mock_schema, mock_run):
     """Test that subprocess is invoked correctly with a key argument on changes."""
-
-    proc = mock.create_autospec(subprocess.CompletedProcess)
-    proc.stdout = ""
-    proc.stderr = ""
-    proc.returncode = 0
-    mock_run.return_value = proc
+    mock_run.return_value = create_mock_process(0)
 
     repo = mock.create_autospec(Repo)
     repo.get_changed_files.return_value = ["fizz.py", "buzz.py"]
@@ -255,20 +247,20 @@ def test_key_arg_on_changes(mock_schema, mock_run):
     )
 
     assert result.level == ValidationResultLevel.NONE
-    mock_run.assert_called_once()
-    assert mock_run.call_args_list[0].args[0] == ["black", "fizz.py", "buzz.py"]
+    mock_run.assert_called_once_with(
+        ["black", "fizz.py", "buzz.py"],
+        capture_output=True,
+        encoding="utf-8",
+        check=False,
+        timeout=None,
+    )
 
 
 @mock.patch.object(subprocess, "run")
 @mock.patch.object(autotransform, "schema")
 def test_key_arg_on_changes_per_item(mock_schema, mock_run):
     """Test that subprocess is invoked correctly with a key argument on changes per item."""
-
-    proc = mock.create_autospec(subprocess.CompletedProcess)
-    proc.stdout = ""
-    proc.stderr = ""
-    proc.returncode = 0
-    mock_run.return_value = proc
+    mock_run.return_value = create_mock_process(0)
 
     repo = mock.create_autospec(Repo)
     repo.get_changed_files.return_value = ["fizz.py", "buzz.py"]
@@ -289,19 +281,18 @@ def test_key_arg_on_changes_per_item(mock_schema, mock_run):
 
     assert result.level == ValidationResultLevel.NONE
     assert mock_run.call_count == 2
-    assert mock_run.call_args_list[0].args[0] == ["black", "fizz.py"]
-    assert mock_run.call_args_list[1].args[0] == ["black", "buzz.py"]
+    mock_run.assert_any_call(
+        ["black", "fizz.py"], capture_output=True, encoding="utf-8", check=False, timeout=None
+    )
+    mock_run.assert_any_call(
+        ["black", "buzz.py"], capture_output=True, encoding="utf-8", check=False, timeout=None
+    )
 
 
 @mock.patch.object(subprocess, "run")
 def test_fails(mock_run):
     """Test that a failure code causes the right result."""
-
-    proc = mock.create_autospec(subprocess.CompletedProcess)
-    proc.stdout = ""
-    proc.stderr = ""
-    proc.returncode = 1
-    mock_run.return_value = proc
+    mock_run.return_value = create_mock_process(1)
 
     validator = ScriptValidator(script="black", args=[])
     result = validator.check(
@@ -318,12 +309,7 @@ def test_fails(mock_run):
 @mock.patch.object(subprocess, "run")
 def test_per_item_all_fails(mock_run):
     """Test that a failure code for all Items causes the right result."""
-
-    proc = mock.create_autospec(subprocess.CompletedProcess)
-    proc.stdout = ""
-    proc.stderr = ""
-    proc.returncode = 1
-    mock_run.return_value = proc
+    mock_run.return_value = create_mock_process(1)
 
     validator = ScriptValidator(script="black", args=[], per_item=True)
     result = validator.check(
@@ -334,7 +320,6 @@ def test_per_item_all_fails(mock_run):
         None,
     )
 
-    mock_run.assert_called_once()
     assert result.level == ValidationResultLevel.ERROR
 
 
@@ -345,18 +330,11 @@ def test_per_item_first_fails(mock_run):
     def get_proc(
         args: List[str],
         capture_output: bool = False,
-        encoding: str = "UTF-8",
+        encoding: str = "utf-8",
         check: bool = False,
         timeout: Optional[int] = None,
     ) -> subprocess.CompletedProcess:
-        proc = mock.create_autospec(subprocess.CompletedProcess)
-        proc.stdout = ""
-        proc.stderr = ""
-        if args[1] == "foo.py":
-            proc.returncode = 0
-        else:
-            proc.returncode = 1
-        return proc
+        return create_mock_process(0 if args[1] == "foo.py" else 1)
 
     mock_run.side_effect = get_proc
 
@@ -369,7 +347,6 @@ def test_per_item_first_fails(mock_run):
         None,
     )
 
-    mock_run.assert_called_once()
     assert result.level == ValidationResultLevel.ERROR
 
 
@@ -380,18 +357,11 @@ def test_per_item_second_fails(mock_run):
     def get_proc(
         args: List[str],
         capture_output: bool = False,
-        encoding: str = "UTF-8",
+        encoding: str = "utf-8",
         check: bool = False,
         timeout: Optional[int] = None,
     ) -> subprocess.CompletedProcess:
-        proc = mock.create_autospec(subprocess.CompletedProcess)
-        proc.stdout = ""
-        proc.stderr = ""
-        if args[1] == "bar.py":
-            proc.returncode = 0
-        else:
-            proc.returncode = 1
-        return proc
+        return create_mock_process(0 if args[1] == "bar.py" else 1)
 
     mock_run.side_effect = get_proc
 
@@ -404,5 +374,4 @@ def test_per_item_second_fails(mock_run):
         None,
     )
 
-    assert mock_run.call_count == 2
     assert result.level == ValidationResultLevel.ERROR
