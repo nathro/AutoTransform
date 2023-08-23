@@ -9,11 +9,10 @@
 
 """The implementation for the DirectoryBatcher."""
 
-from __future__ import annotations
-
 import pathlib
 from copy import deepcopy
 from typing import Any, ClassVar, Dict, List, Optional, Sequence
+from collections import defaultdict
 
 from autotransform.batcher.base import Batch, Batcher, BatcherName
 from autotransform.item.base import Item
@@ -47,17 +46,15 @@ class DirectoryBatcher(Batcher):
         """
 
         # Get a mapping from directory to items within that directory
-        item_map: Dict[str, List[FileItem]] = {}
+        item_map: Dict[str, List[FileItem]] = defaultdict(list)
         for item in items:
             assert isinstance(item, FileItem)
             directory = str(pathlib.Path(item.get_path()).parent).replace("\\", "/")
-            if directory not in item_map:
-                item_map[directory] = []
             item_map[directory].append(item)
 
         # Create Batches
         batches: List[Batch] = [
-            {"items": batch_items, "title": self.prefix + ": " + directory}
+            {"items": batch_items, "title": f"{self.prefix}: {directory}"}
             for directory, batch_items in item_map.items()
         ]
 
