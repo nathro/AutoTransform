@@ -40,8 +40,10 @@ class OpenAITransformer(SingleTransformer):
         commands (optional, List[Command]): A set of commands to use on transformed files
             before validation. Useful for correcting things like formatting. Defaults to an
             empty list.
-        max_attempts (optional, float): The maximum number of times to check completitions.
-            Defaults to 3.
+        max_completion_attempts (optional, int): The maximum number of times to try the OpenAI
+            API. Defaults to 3.
+        max_validation_attempts (optional, int): The maximum number of times to validate
+            completitions. Defaults to 3.
         model (optional, str): The model to use for completition. Defaults to gpt-3.5-turbo.
         system_message (optional, Optional[str]): The system message to use. Defaults to None.
         temperature (optional, float): The temperature to use to control the quality of outputs.
@@ -53,7 +55,8 @@ class OpenAITransformer(SingleTransformer):
 
     prompt: str
     commands: List[Command] = Field(default_factory=list)
-    max_attempts: int = 3
+    max_completion_attempts: int = 3
+    max_validation_attempts: int = 3
     model: str = "gpt-3.5-turbo"
     system_message: Optional[str] = None
     temperature: float = 0.4
@@ -62,23 +65,43 @@ class OpenAITransformer(SingleTransformer):
     name: ClassVar[TransformerName] = TransformerName.OPEN_AI
 
     # pylint: disable=invalid-name
-    @validator("max_attempts")
+    @validator("max_completion_attempts")
     @classmethod
-    def max_attempts_must_be_positive(cls, v: int) -> int:
-        """Validates the max_attempts is a positive number.
+    def max_completion_attempts_must_be_positive(cls, v: int) -> int:
+        """Validates the max_completion_attempts is a positive number.
 
         Args:
-            v (int): The maximum number of attempts for completion.
+            v (int): The maximum number of completion attempts for the OpenAI API.
 
         Raises:
-            ValueError: Raises an error when the max_attempts is not positive.
+            ValueError: Raises an error when the max_completion_attempts is not positive.
 
         Returns:
-            int: The unmodified max_attempts.
+            int: The unmodified max_completion_attempts.
         """
 
         if v < 1:
-            raise ValueError("The max attempts must be at least 1")
+            raise ValueError("The max completion attempts must be at least 1")
+        return v
+
+    # pylint: disable=invalid-name
+    @validator("max_validation_attempts")
+    @classmethod
+    def max_validation_attempts_must_be_positive(cls, v: int) -> int:
+        """Validates the max_validation_attempts is a positive number.
+
+        Args:
+            v (int): The maximum number of validation attempts for completion.
+
+        Raises:
+            ValueError: Raises an error when the max_validation_attempts is not positive.
+
+        Returns:
+            int: The unmodified max_validation_attempts.
+        """
+
+        if v < 1:
+            raise ValueError("The max validation attempts must be at least 1")
         return v
 
     # pylint: disable=invalid-name
@@ -129,13 +152,24 @@ class OpenAITransformer(SingleTransformer):
         )
 
         completion_success = False
-        for _ in range(self.max_attempts):
+        for _i in range(self.max_validation_attempts):
             # Get completion
-            chat_completion = openai.ChatCompletion.create(
-                model=self.model,
-                messages=messages,
-                temperature=self.temperature,
-            )
+            chat_completion = None
+            for _j in range(self.max_completion_attempts):
+                try:
+                    chat_completion = openai.ChatCompletion.create(
+                        model=self.model,
+                        messages=messages,
+                        temperature=self.temperature,
+                    )
+                    break
+                except Exception as e:  # pylint: disable=broad-exception-caught
+                    chat_completion = None
+                    event_handler.handle(VerboseEvent({"message": f"API Failure: {e}"}))
+
+            if chat_completion is None:
+                item.write_content(original_content)
+                return
 
             # Log completion information
             token_usage = (
@@ -154,7 +188,7 @@ class OpenAITransformer(SingleTransformer):
             for command in self.commands:
                 try:
                     command.run(batch, None)
-                except Exception: # pylint: disable=broad-exception-caught
+                except Exception:  # pylint: disable=broad-exception-caught
                     event_handler.handle(
                         VerboseEvent({"message": f"Failed to run command {command}"})
                     )
