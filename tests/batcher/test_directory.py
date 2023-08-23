@@ -15,87 +15,77 @@ from autotransform.item.file import FileItem
 from .batcher_test import check_batcher
 
 
+def create_batcher(prefix, metadata=None, items=None):
+    """Helper function to create a DirectoryBatcher."""
+    return DirectoryBatcher(prefix=prefix, metadata=metadata, items=items)
+
+
 def test_with_no_items():
     """Checks that the Batcher works with no Items."""
-
-    prefix = "foo"
-    metadata = {"summary": "bar", "tests": "baz"}
-    items = []
-    batcher = DirectoryBatcher(prefix=prefix, metadata=metadata)
-    check_batcher(batcher, items, [])
+    check_batcher(create_batcher("foo", {"summary": "bar", "tests": "baz"}), [], [])
 
 
 def test_with_one_item():
     """Checks that the Batcher works with one Item."""
-
-    prefix = "test"
-    metadata = {"summary": "bar", "tests": "baz"}
     items = [FileItem(key="foo/bar.py")]
-    batcher = DirectoryBatcher(prefix=prefix, metadata=metadata)
+    expected = [
+        {"metadata": {"summary": "bar", "tests": "baz"}, "items": items, "title": "test: foo"}
+    ]
     check_batcher(
-        batcher,
-        items,
-        [{"metadata": metadata, "items": items, "title": f"{prefix}: foo"}],
+        create_batcher("test", {"summary": "bar", "tests": "baz"}, items), items, expected
     )
 
 
 def test_with_one_item_no_metadata():
     """Checks that the Batcher works with one Item and no metadata."""
-
-    prefix = "test"
     items = [FileItem(key="foo/bar.py")]
-    batcher = DirectoryBatcher(prefix=prefix)
-    check_batcher(batcher, items, [{"items": items, "title": f"{prefix}: foo"}])
+    expected = [{"items": items, "title": "test: foo"}]
+    check_batcher(create_batcher("test", items=items), items, expected)
 
 
 def test_with_multiple_items_single_directory():
     """Checks that the Batcher works with multiple Items in one directory."""
-
-    prefix = "test"
-    metadata = {"summary": "bar", "tests": "baz"}
     items = [FileItem(key="foo/bar.py"), FileItem(key="foo/baz.py")]
-    batcher = DirectoryBatcher(prefix=prefix, metadata=metadata)
+    expected = [
+        {"metadata": {"summary": "bar", "tests": "baz"}, "items": items, "title": "test: foo"}
+    ]
     check_batcher(
-        batcher,
-        items,
-        [{"metadata": metadata, "items": items, "title": f"{prefix}: foo"}],
+        create_batcher("test", {"summary": "bar", "tests": "baz"}, items), items, expected
     )
 
 
 def test_with_multiple_items_multiple_directories():
     """Checks that the Batcher works with Items in multiple directories."""
-
-    prefix = "test"
-    metadata = {"summary": "bar", "tests": "baz"}
     items = [FileItem(key="foo/bar.py"), FileItem(key="fizz/baz.py")]
-    batcher = DirectoryBatcher(prefix=prefix, metadata=metadata)
+    expected = [
+        {"metadata": {"summary": "bar", "tests": "baz"}, "items": items[:1], "title": "test: foo"},
+        {"metadata": {"summary": "bar", "tests": "baz"}, "items": items[1:], "title": "test: fizz"},
+    ]
     check_batcher(
-        batcher,
-        items,
-        [
-            {"metadata": metadata, "items": items[:1], "title": f"{prefix}: foo"},
-            {"metadata": metadata, "items": items[1:], "title": f"{prefix}: fizz"},
-        ],
+        create_batcher("test", {"summary": "bar", "tests": "baz"}, items), items, expected
     )
 
 
 def test_with_multiple_items_nested_directories():
     """Checks that the Batcher works with Items in nested directories."""
-
-    prefix = "test"
-    metadata = {"summary": "bar", "tests": "baz"}
     items = [
         FileItem(key="test/foo/bar.py"),
         FileItem(key="test/fizz/baz.py"),
         FileItem(key="test/buzz.py"),
     ]
-    batcher = DirectoryBatcher(prefix=prefix, metadata=metadata)
+    expected = [
+        {
+            "metadata": {"summary": "bar", "tests": "baz"},
+            "items": items[:1],
+            "title": "test: test/foo",
+        },
+        {
+            "metadata": {"summary": "bar", "tests": "baz"},
+            "items": items[1:2],
+            "title": "test: test/fizz",
+        },
+        {"metadata": {"summary": "bar", "tests": "baz"}, "items": items[2:], "title": "test: test"},
+    ]
     check_batcher(
-        batcher,
-        items,
-        [
-            {"metadata": metadata, "items": items[:1], "title": f"{prefix}: test/foo"},
-            {"metadata": metadata, "items": items[1:2], "title": f"{prefix}: test/fizz"},
-            {"metadata": metadata, "items": items[2:], "title": f"{prefix}: test"},
-        ],
+        create_batcher("test", {"summary": "bar", "tests": "baz"}, items), items, expected
     )

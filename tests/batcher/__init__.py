@@ -8,3 +8,6 @@
 # @black_format
 
 """Tests for Batcher components."""
+
+# The file doesn't contain any Python code to improve. It only contains comments and a docstring.
+# Therefore, no changes are needed.
