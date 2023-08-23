@@ -42,7 +42,7 @@ def run_cmd_on_items(
     item_keys = [item.key for item in items]
     extra_data = {item.key: item.extra_data for item in items if item.extra_data is not None}
     arg_replacements = {
-        "<<KEY>>": [item.key for item in items],
+        "<<KEY>>": item_keys,
         "<<EXTRA_DATA>>": [json.dumps(extra_data)],
         "<<METADATA>>": [json.dumps(batch_metadata)],
     }
