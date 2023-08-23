@@ -111,10 +111,11 @@ class ScriptTransformer(Transformer[None]):
 
         metadata = batch.get("metadata", {})
         items = batch["items"]
-        chunk_size = self.chunk_size or len(items)
+        num_items = max(len(items), 1)
+        chunk_size = self.chunk_size or num_items
 
         # Get Command
-        for i in range(0, len(items), chunk_size):
+        for i in range(0, num_items, chunk_size):
             chunk_items = items[i : i + chunk_size]
             cmd = [self.script]
             cmd.extend(self.args)
