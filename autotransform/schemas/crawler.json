@@ -12,8 +12,8 @@
         }
     ],
     "batcher": {
-        "name": "single",
-        "title": "Crawl python src files",
+        "name": "directory",
+        "prefix": "Crawl python src files",
         "metadata": {
             "body": "Use OpenAI model to improve code quality"
         }
