@@ -9,9 +9,7 @@
 
 """The implementation for inline Inputs."""
 
-from __future__ import annotations
-
-from typing import Any, ClassVar, Dict, List, Sequence, Type
+from typing import Any, ClassVar, Dict, List, Sequence
 
 from autotransform.input.base import Input, InputName
 from autotransform.item.base import FACTORY as item_factory
@@ -28,7 +26,6 @@ class InlineInput(Input):
     """
 
     items: List[Item]
-
     name: ClassVar[InputName] = InputName.INLINE
 
     def get_items(self) -> Sequence[Item]:
@@ -41,7 +38,7 @@ class InlineInput(Input):
         return self.items
 
     @classmethod
-    def from_data(cls: Type[InlineInput], data: Dict[str, Any]) -> InlineInput:
+    def from_data(cls, data: Dict[str, Any]) -> "InlineInput":
         """Produces an instance of the component from decoded data.
 
         Args:
@@ -63,7 +60,6 @@ class InlineFileInput(Input):
     """
 
     files: List[str]
-
     name: ClassVar[InputName] = InputName.INLINE_FILE
 
     def get_items(self) -> Sequence[FileItem]:
@@ -85,7 +81,6 @@ class InlineGenericInput(Input):
     """
 
     keys: List[str]
-
     name: ClassVar[InputName] = InputName.INLINE_GENERIC
 
     def get_items(self) -> Sequence[Item]:

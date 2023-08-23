@@ -9,8 +9,6 @@
 
 """The implementation for the EmptyInput."""
 
-from __future__ import annotations
-
 from typing import ClassVar, Sequence
 
 from autotransform.input.base import Input, InputName

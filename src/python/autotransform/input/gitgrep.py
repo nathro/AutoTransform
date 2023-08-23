@@ -9,10 +9,8 @@
 
 """The implementation for the GitGrepInput."""
 
-from __future__ import annotations
-
-import subprocess
 from typing import ClassVar, Sequence
+import subprocess
 
 from autotransform.input.base import Input, InputName
 from autotransform.item.file import FileItem
@@ -28,7 +26,6 @@ class GitGrepInput(Input):
     """
 
     pattern: str
-
     name: ClassVar[InputName] = InputName.GIT_GREP
 
     def get_items(self) -> Sequence[FileItem]:
@@ -51,5 +48,6 @@ class GitGrepInput(Input):
         try:
             files = subprocess.check_output(git_grep_cmd, encoding="UTF-8").strip().splitlines()
         except subprocess.CalledProcessError:
-            return []
+            files = []
+
         return [FileItem(key=file.replace("\\", "/")) for file in files]
