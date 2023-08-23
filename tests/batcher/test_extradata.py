@@ -15,6 +15,11 @@ from autotransform.item.base import Item
 from .batcher_test import check_batcher
 
 
+def create_items(keys, extra_data):
+    """Helper function to create a list of Items."""
+    return [Item(key=key, extra_data=data) for key, data in zip(keys, extra_data)]
+
+
 def test_with_no_items():
     """Checks that the Batcher works with no Items."""
 
@@ -26,7 +31,7 @@ def test_with_no_items():
 def test_with_one_item():
     """Checks that the Batcher works with one Item."""
 
-    items = [Item(key="i1.py", extra_data={"foo": "g1"})]
+    items = create_items(["i1.py"], [{"foo": "g1"}])
     batcher = ExtraDataBatcher(group_by="foo")
     check_batcher(batcher, items, [{"items": items, "title": "g1"}])
 
@@ -34,7 +39,7 @@ def test_with_one_item():
 def test_with_one_item_and_metadata():
     """Checks that the Batcher works with one Item including metadata."""
 
-    items = [Item(key="i1.py", extra_data={"foo": "g1", "bar": 1})]
+    items = create_items(["i1.py"], [{"foo": "g1", "bar": 1}])
     batcher = ExtraDataBatcher(group_by="foo", metadata_keys=["bar"])
     check_batcher(batcher, items, [{"items": items, "title": "g1", "metadata": {"bar": [1]}}])
 
@@ -42,7 +47,7 @@ def test_with_one_item_and_metadata():
 def test_with_one_item_and_metadata_with_list():
     """Checks that the Batcher works with one Item including metadata with list in extra data."""
 
-    items = [Item(key="i1.py", extra_data={"foo": "g1", "bar": [1, 2]})]
+    items = create_items(["i1.py"], [{"foo": "g1", "bar": [1, 2]}])
     batcher = ExtraDataBatcher(group_by="foo", metadata_keys=["bar"])
     check_batcher(batcher, items, [{"items": items, "title": "g1", "metadata": {"bar": [1, 2]}}])
 
@@ -50,10 +55,7 @@ def test_with_one_item_and_metadata_with_list():
 def test_with_multiple_items():
     """Checks that the Batcher works with multiple Items."""
 
-    items = [
-        Item(key="i1.py", extra_data={"foo": "g1"}),
-        Item(key="i2.py", extra_data={"foo": "g1"}),
-    ]
+    items = create_items(["i1.py", "i2.py"], [{"foo": "g1"}, {"foo": "g1"}])
     batcher = ExtraDataBatcher(group_by="foo")
     check_batcher(batcher, items, [{"items": items, "title": "g1"}])
 
@@ -61,10 +63,9 @@ def test_with_multiple_items():
 def test_with_multiple_items_with_metadata():
     """Checks that the Batcher works with multiple Items with metadata."""
 
-    items = [
-        Item(key="i1.py", extra_data={"foo": "g1", "bar": 1}),
-        Item(key="i2.py", extra_data={"foo": "g1", "bar": [2, 3]}),
-    ]
+    items = create_items(
+        ["i1.py", "i2.py"], [{"foo": "g1", "bar": 1}, {"foo": "g1", "bar": [2, 3]}]
+    )
     batcher = ExtraDataBatcher(group_by="foo", metadata_keys=["bar"])
     check_batcher(batcher, items, [{"items": items, "title": "g1", "metadata": {"bar": [1, 2, 3]}}])
 
@@ -72,11 +73,10 @@ def test_with_multiple_items_with_metadata():
 def test_with_multiple_groups_with_metadata():
     """Checks that the Batcher works with multiple Items and groups with metadata."""
 
-    items = [
-        Item(key="i1.py", extra_data={"foo": "g1", "bar": 1}),
-        Item(key="i2.py", extra_data={"foo": "g1", "bar": [2, 3]}),
-        Item(key="i3.py", extra_data={"foo": "g2", "bar": [4, 5]}),
-    ]
+    items = create_items(
+        ["i1.py", "i2.py", "i3.py"],
+        [{"foo": "g1", "bar": 1}, {"foo": "g1", "bar": [2, 3]}, {"foo": "g2", "bar": [4, 5]}],
+    )
     batcher = ExtraDataBatcher(group_by="foo", metadata_keys=["bar"])
     check_batcher(
         batcher,

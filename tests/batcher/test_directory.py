@@ -14,88 +14,75 @@ from autotransform.item.file import FileItem
 
 from .batcher_test import check_batcher
 
+# Define common variables to avoid repetition
+PREFIX = "test"
+METADATA = {"summary": "bar", "tests": "baz"}
+
 
 def test_with_no_items():
     """Checks that the Batcher works with no Items."""
-
-    prefix = "foo"
-    metadata = {"summary": "bar", "tests": "baz"}
     items = []
-    batcher = DirectoryBatcher(prefix=prefix, metadata=metadata)
+    batcher = DirectoryBatcher(prefix=PREFIX, metadata=METADATA)
     check_batcher(batcher, items, [])
 
 
 def test_with_one_item():
     """Checks that the Batcher works with one Item."""
-
-    prefix = "test"
-    metadata = {"summary": "bar", "tests": "baz"}
     items = [FileItem(key="foo/bar.py")]
-    batcher = DirectoryBatcher(prefix=prefix, metadata=metadata)
+    batcher = DirectoryBatcher(prefix=PREFIX, metadata=METADATA)
     check_batcher(
         batcher,
         items,
-        [{"metadata": metadata, "items": items, "title": f"{prefix}: foo"}],
+        [{"metadata": METADATA, "items": items, "title": f"{PREFIX}: foo"}],
     )
 
 
 def test_with_one_item_no_metadata():
     """Checks that the Batcher works with one Item and no metadata."""
-
-    prefix = "test"
     items = [FileItem(key="foo/bar.py")]
-    batcher = DirectoryBatcher(prefix=prefix)
-    check_batcher(batcher, items, [{"items": items, "title": f"{prefix}: foo"}])
+    batcher = DirectoryBatcher(prefix=PREFIX)
+    check_batcher(batcher, items, [{"items": items, "title": f"{PREFIX}: foo"}])
 
 
 def test_with_multiple_items_single_directory():
     """Checks that the Batcher works with multiple Items in one directory."""
-
-    prefix = "test"
-    metadata = {"summary": "bar", "tests": "baz"}
     items = [FileItem(key="foo/bar.py"), FileItem(key="foo/baz.py")]
-    batcher = DirectoryBatcher(prefix=prefix, metadata=metadata)
+    batcher = DirectoryBatcher(prefix=PREFIX, metadata=METADATA)
     check_batcher(
         batcher,
         items,
-        [{"metadata": metadata, "items": items, "title": f"{prefix}: foo"}],
+        [{"metadata": METADATA, "items": items, "title": f"{PREFIX}: foo"}],
     )
 
 
 def test_with_multiple_items_multiple_directories():
     """Checks that the Batcher works with Items in multiple directories."""
-
-    prefix = "test"
-    metadata = {"summary": "bar", "tests": "baz"}
     items = [FileItem(key="foo/bar.py"), FileItem(key="fizz/baz.py")]
-    batcher = DirectoryBatcher(prefix=prefix, metadata=metadata)
+    batcher = DirectoryBatcher(prefix=PREFIX, metadata=METADATA)
     check_batcher(
         batcher,
         items,
         [
-            {"metadata": metadata, "items": items[:1], "title": f"{prefix}: foo"},
-            {"metadata": metadata, "items": items[1:], "title": f"{prefix}: fizz"},
+            {"metadata": METADATA, "items": items[:1], "title": f"{PREFIX}: foo"},
+            {"metadata": METADATA, "items": items[1:], "title": f"{PREFIX}: fizz"},
         ],
     )
 
 
 def test_with_multiple_items_nested_directories():
     """Checks that the Batcher works with Items in nested directories."""
-
-    prefix = "test"
-    metadata = {"summary": "bar", "tests": "baz"}
     items = [
         FileItem(key="test/foo/bar.py"),
         FileItem(key="test/fizz/baz.py"),
         FileItem(key="test/buzz.py"),
     ]
-    batcher = DirectoryBatcher(prefix=prefix, metadata=metadata)
+    batcher = DirectoryBatcher(prefix=PREFIX, metadata=METADATA)
     check_batcher(
         batcher,
         items,
         [
-            {"metadata": metadata, "items": items[:1], "title": f"{prefix}: test/foo"},
-            {"metadata": metadata, "items": items[1:2], "title": f"{prefix}: test/fizz"},
-            {"metadata": metadata, "items": items[2:], "title": f"{prefix}: test"},
+            {"metadata": METADATA, "items": items[:1], "title": f"{PREFIX}: test/foo"},
+            {"metadata": METADATA, "items": items[1:2], "title": f"{PREFIX}: test/fizz"},
+            {"metadata": METADATA, "items": items[2:], "title": f"{PREFIX}: test"},
         ],
     )

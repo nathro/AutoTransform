@@ -14,57 +14,47 @@ from autotransform.item.base import Item
 
 from .batcher_test import check_batcher
 
+# Define common variables to avoid repetition
+title = "foo"
+metadata = {"summary": "bar", "tests": "baz"}
+items = [Item(key="foo.py"), Item(key="bar.py"), Item(key="baz.py")]
+
 
 def test_with_no_items():
     """Checks that the Batcher works with no Items."""
-
-    title = "foo"
-    metadata = {"summary": "bar", "tests": "baz"}
-    items = []
     batcher = ChunkBatcher(title=title, metadata=metadata, chunk_size=10)
-    check_batcher(batcher, items, [])
+    check_batcher(batcher, [], [])
 
 
 def test_with_one_item():
     """Checks that the Batcher works with one Item."""
-
-    title = "foo"
-    metadata = {"summary": "bar", "tests": "baz"}
     expected_title = "[1/1] foo"
-    items = [Item(key="foo.py")]
     batcher = ChunkBatcher(title=title, metadata=metadata, chunk_size=10)
-    check_batcher(batcher, items, [{"metadata": metadata, "items": items, "title": expected_title}])
+    check_batcher(
+        batcher, [items[0]], [{"metadata": metadata, "items": [items[0]], "title": expected_title}]
+    )
 
 
 def test_with_one_item_no_metadata():
     """Checks that the Batcher works with one Item and no metadata."""
-
-    title = "foo"
     expected_title = "[1/1] foo"
-    items = [Item(key="foo.py")]
     batcher = ChunkBatcher(title=title, chunk_size=10)
-    check_batcher(batcher, items, [{"items": items, "title": expected_title}])
+    check_batcher(batcher, [items[0]], [{"items": [items[0]], "title": expected_title}])
 
 
 def test_with_multiple_items():
     """Checks that the Batcher works with multiple Items."""
-
-    title = "foo"
-    metadata = {"summary": "bar", "tests": "baz"}
     expected_title = "[1/1] foo"
-    items = [Item(key="foo.py"), Item(key="bar.py")]
     batcher = ChunkBatcher(title=title, metadata=metadata, chunk_size=10)
-    check_batcher(batcher, items, [{"metadata": metadata, "items": items, "title": expected_title}])
+    check_batcher(
+        batcher, items[:2], [{"metadata": metadata, "items": items[:2], "title": expected_title}]
+    )
 
 
 def test_with_multiple_items_and_multiple_batches():
     """Checks that the batcher works with multiple Items separated in to multiple batches."""
-
-    title = "foo"
-    metadata = {"summary": "bar", "tests": "baz"}
     expected_title_1 = "[1/2] foo"
     expected_title_2 = "[2/2] foo"
-    items = [Item(key="foo.py"), Item(key="bar.py"), Item(key="baz.py")]
     batcher = ChunkBatcher(title=title, metadata=metadata, chunk_size=2)
     check_batcher(
         batcher,
@@ -80,12 +70,8 @@ def test_with_multiple_items_and_max_batches():
     """Checks that the Batcher works with multiple Items separated in to multiple Batches, with max
     chunks used.
     """
-
-    title = "foo"
-    metadata = {"summary": "bar", "tests": "baz"}
     expected_title_1 = "[1/2] foo"
     expected_title_2 = "[2/2] foo"
-    items = [Item(key="foo.py"), Item(key="bar.py"), Item(key="baz.py")]
     batcher = ChunkBatcher(title=title, metadata=metadata, chunk_size=1, max_chunks=2)
     check_batcher(
         batcher,

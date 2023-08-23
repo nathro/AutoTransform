@@ -18,15 +18,16 @@ def test_all_enum_values_present():
     """Ensures that all values from the enum are present in the factory map,
     and only enum values are present."""
 
+    factory_components = FACTORY.get_components()
     missing_values = [
-        batcher_name for batcher_name in BatcherName if batcher_name not in FACTORY.get_components()
+        batcher_name for batcher_name in BatcherName if batcher_name not in factory_components
     ]
-    assert not missing_values, "Names missing from factory: " + ", ".join(missing_values)
+    assert not missing_values, f"Names missing from factory: {', '.join(missing_values)}"
 
     extra_values = [
-        batcher_name for batcher_name in FACTORY.get_components() if batcher_name not in BatcherName
+        batcher_name for batcher_name in factory_components if batcher_name not in BatcherName
     ]
-    assert not extra_values, "Extra names in factory: " + ", ".join(extra_values)
+    assert not extra_values, f"Extra names in factory: {', '.join(extra_values)}"
 
 
 def test_fetching_components():
@@ -86,7 +87,7 @@ def test_fetching_and_bundling() -> None:
     for name, components in test_components.items():
         assert name in BatcherName, f"{name} is not a valid BatcherName"
         for component in components:
-            component_dict = {"name": name} | component
+            component_dict = {"name": name, **component}
             component_instance = FACTORY.get_instance(component_dict)
             assert (
                 component_instance.name == name

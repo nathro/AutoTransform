@@ -25,23 +25,19 @@ def check_batcher(batcher: Batcher, items: Sequence[Item], expected: List[Batch]
     """
     actual = batcher.batch(items)
 
-    # pylint: disable=consider-using-enumerate
-
-    assert len(actual) == len(expected)
-    for idx, batches in enumerate(zip(actual, expected)):
-        actual_batch, expected_batch = batches
-
+    assert len(actual) == len(expected), "The number of actual and expected batches do not match"
+    for idx, (actual_batch, expected_batch) in enumerate(zip(actual, expected)):
         # Check metadata
         assert actual_batch.get("metadata", None) == expected_batch.get(
             "metadata", None
-        ), f"Metadata for Batch {str(idx)} does not match"
+        ), f"Metadata for Batch {idx} does not match"
 
         # Check title
         assert (
             actual_batch["title"] == expected_batch["title"]
-        ), f"Title for Batch {str(idx)} does not match"
+        ), f"Title for Batch {idx} does not match"
 
         # Check items
         actual_items = [item.key for item in actual_batch["items"]]
         expected_items = [item.key for item in expected_batch["items"]]
-        assert actual_items == expected_items, f"Items for Batch {str(idx)} do not match"
+        assert actual_items == expected_items, f"Items for Batch {idx} do not match"
