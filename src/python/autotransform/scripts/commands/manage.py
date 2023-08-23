@@ -29,7 +29,7 @@ def add_args(parser: ArgumentParser) -> None:
     parser.add_argument(
         "--path",
         metavar="path",
-        required=False,
+        default=f"{get_repo_config_relative_path()}/manager.json",
         type=str,
         help="A file path to the JSON encoded file, only use if file is in a non-usual place.",
     )
@@ -40,7 +40,6 @@ def add_args(parser: ArgumentParser) -> None:
         "--verbose",
         dest="verbose",
         action="store_true",
-        required=False,
         help="Tells the script to output verbose logs.",
     )
     logging_level.add_argument(
@@ -48,7 +47,6 @@ def add_args(parser: ArgumentParser) -> None:
         "--debug",
         dest="debug",
         action="store_true",
-        required=False,
         help="Tells the script to output debug logs.",
     )
 
@@ -58,7 +56,7 @@ def add_args(parser: ArgumentParser) -> None:
         "--local",
         dest="run_local",
         action="store_true",
-        required=False,
+        default=False,
         help="Tells the script to use the local runner.",
     )
     mode_group.add_argument(
@@ -66,11 +64,10 @@ def add_args(parser: ArgumentParser) -> None:
         "--remote",
         dest="run_local",
         action="store_false",
-        required=False,
         help="Tells the script to use the remote runner. This is the default mode.",
     )
 
-    parser.set_defaults(run_local=False, func=manage_command_main)
+    parser.set_defaults(func=manage_command_main)
 
 
 def manage_command_main(args: Namespace) -> None:
@@ -80,19 +77,14 @@ def manage_command_main(args: Namespace) -> None:
         args (Namespace): The arguments supplied to the manage command, such as the JSON file.
     """
 
-    # pylint: disable=unspecified-encoding
-
     event_handler = EventHandler.get()
     if args.verbose:
         event_handler.set_logging_level(LoggingLevel.VERBOSE)
-    if args.debug:
+    elif args.debug:
         event_handler.set_logging_level(LoggingLevel.DEBUG)
 
-    manager_file = args.path
-    if manager_file is None:
-        manager_file = f"{get_repo_config_relative_path()}/manager.json"
-    event_args = {"manager_file": manager_file}
-    manager = Manager.read(manager_file)
+    event_args = {"manager_file": args.path}
+    manager = Manager.read(args.path)
     event_args["manager"] = manager
     event_handler.handle(ScriptRunEvent({"script": "manage", "args": event_args}))
 

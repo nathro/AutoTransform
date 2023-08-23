@@ -45,7 +45,6 @@ def add_args(parser: ArgumentParser) -> None:
         "--verbose",
         dest="verbose",
         action="store_true",
-        required=False,
         help="Tells the script to output verbose logs.",
     )
     logging_level.add_argument(
@@ -53,7 +52,6 @@ def add_args(parser: ArgumentParser) -> None:
         "--debug",
         dest="debug",
         action="store_true",
-        required=False,
         help="Tells the script to output debug logs.",
     )
 
@@ -64,7 +62,6 @@ def add_args(parser: ArgumentParser) -> None:
         dest="change_type",
         action="store_const",
         const="file",
-        required=False,
         help="Tells the script to interpret the change as a file path.",
     )
     type_group.add_argument(
@@ -73,7 +70,6 @@ def add_args(parser: ArgumentParser) -> None:
         dest="change_type",
         action="store_const",
         const="string",
-        required=False,
         help="Tells the script to interpret the change as a JSON encoded string",
     )
     type_group.add_argument(
@@ -82,7 +78,6 @@ def add_args(parser: ArgumentParser) -> None:
         dest="change_type",
         action="store_const",
         const="environment",
-        required=False,
         help="Tells the script to interpret the change as an environment variable storing the JSON "
         + "encoded change.",
     )
@@ -94,7 +89,6 @@ def add_args(parser: ArgumentParser) -> None:
         "--local",
         dest="run_local",
         action="store_true",
-        required=False,
         help="Tells the script to run locally, local is the default mode.",
     )
     mode_group.add_argument(
@@ -102,7 +96,6 @@ def add_args(parser: ArgumentParser) -> None:
         "--remote",
         dest="run_local",
         action="store_false",
-        required=False,
         help="Tells the script to run remote using the remote component from the config.",
     )
 
@@ -116,8 +109,6 @@ def run_command_main(args: Namespace) -> None:
         args (Namespace): The arguments supplied to the update command, such as the change.
     """
 
-    # pylint: disable=unspecified-encoding
-
     event_handler = EventHandler.get()
     if args.verbose:
         event_handler.set_logging_level(LoggingLevel.VERBOSE)
@@ -127,11 +118,12 @@ def run_command_main(args: Namespace) -> None:
     event_handler.handle(DebugEvent({"message": f"Change: ({args.change_type}) {args.change}"}))
     event_args = {"change": args.change, "change_type": args.change_type}
     if args.change_type == "file":
-        with open(change, "r") as change_file:
+        with open(change, "r", encoding="utf-8") as change_file:
             change = change_factory.get_instance(json.loads(change_file.read()))
     elif args.change_type == "environment":
         change = os.getenv(change)
-        assert isinstance(change, str)
+        if change is None:
+            raise ValueError("Environment variable not found")
         change = change_factory.get_instance(json.loads(change))
     else:
         change = change_factory.get_instance(json.loads(change))
@@ -152,7 +144,8 @@ def run_command_main(args: Namespace) -> None:
         event_handler.handle(VerboseEvent({"message": "Running remote"}))
         event_args["remote"] = True
         config_runner = get_config().remote_runner
-        assert config_runner is not None
+        if config_runner is None:
+            raise ValueError("No remote runner defined in config")
         runner = config_runner
 
     event_args["runner"] = json.dumps(runner.bundle())
