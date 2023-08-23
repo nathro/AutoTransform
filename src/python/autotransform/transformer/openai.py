@@ -11,6 +11,7 @@
 
 from __future__ import annotations
 
+from time import sleep
 from typing import Any, ClassVar, Dict, List, Optional, Type
 
 import openai  # pylint: disable=import-error
@@ -152,10 +153,10 @@ class OpenAITransformer(SingleTransformer):
         )
 
         completion_success = False
-        for _i in range(self.max_validation_attempts):
+        for _ in range(self.max_validation_attempts):
             # Get completion
             chat_completion = None
-            for _j in range(self.max_completion_attempts):
+            for i in range(self.max_completion_attempts):
                 try:
                     chat_completion = openai.ChatCompletion.create(
                         model=self.model,
@@ -165,7 +166,10 @@ class OpenAITransformer(SingleTransformer):
                     break
                 except Exception as e:  # pylint: disable=broad-exception-caught
                     chat_completion = None
-                    event_handler.handle(VerboseEvent({"message": f"API Failure: {e}"}))
+                    sleep(min(4 ** (i+1), 60))
+                    event_handler.handle(
+                        VerboseEvent({"message": f"API Failure on {item.get_path()}: {e}"}),
+                    )
 
             if chat_completion is None:
                 item.write_content(original_content)
