@@ -9,8 +9,6 @@
 
 """The base class and associated classes for Item components. Can be used as a generic Item."""
 
-from __future__ import annotations
-
 from enum import Enum
 from typing import Any, ClassVar, Dict, Optional
 
