@@ -152,7 +152,12 @@ class OpenAITransformer(SingleTransformer):
 
             # Run commands to fix file
             for command in self.commands:
-                command.run(batch, None)
+                try:
+                    command.run(batch, None)
+                except Exception: # pylint: disable=broad-exception-caught
+                    event_handler.handle(
+                        VerboseEvent({"message": f"Failed to run command {command}"})
+                    )
 
             # Run validators to identify issues with completion
             failures = []
