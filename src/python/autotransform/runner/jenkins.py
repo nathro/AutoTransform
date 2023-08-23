@@ -48,9 +48,11 @@ class JenkinsAPIRunner(Runner):
         job_params = {"COMMAND": "run", "SCHEMA_NAME": schema.config.schema_name}
         if schema.config.max_submissions:
             job_params["MAX_SUBMISSIONS"] = str(schema.config.max_submissions)
-        shard_filter = [filt for filt in schema.filters if isinstance(filt, ShardFilter)]
+        shard_filter = next(
+            (filt for filt in schema.filters if isinstance(filt, ShardFilter)), None
+        )
         if shard_filter:
-            job_params["FILTER"] = json.dumps(shard_filter[0].bundle())
+            job_params["FILTER"] = json.dumps(shard_filter.bundle())
 
         self._run_jenkins_job(self.job_name, job_params)
 
@@ -92,7 +94,7 @@ class JenkinsAPIRunner(Runner):
                 headers={"content-type": "application/json"},
                 timeout=120,
             )
-            if str(crumb_data.status_code) == "200":
+            if crumb_data.status_code == 200:
                 data = requests.get(
                     f"{config.jenkins_base_url}/job/{job_name}/buildWithParameters",
                     auth=auth,
@@ -104,7 +106,7 @@ class JenkinsAPIRunner(Runner):
                     timeout=120,
                 )
 
-                if str(data.status_code) == "201":
+                if data.status_code == 201:
                     event_handler.handle(VerboseEvent({"message": "Jenkins job is triggered"}))
                 else:
                     event_handler.handle(
@@ -142,9 +144,11 @@ class JenkinsFileRunner(Runner):
         job_params = {"COMMAND": "run", "SCHEMA_NAME": schema.config.schema_name}
         if schema.config.max_submissions:
             job_params["MAX_SUBMISSIONS"] = str(schema.config.max_submissions)
-        shard_filter = [filt for filt in schema.filters if isinstance(filt, ShardFilter)]
+        shard_filter = next(
+            (filt for filt in schema.filters if isinstance(filt, ShardFilter)), None
+        )
         if shard_filter:
-            job_params["FILTER"] = json.dumps(shard_filter[0].bundle())
+            job_params["FILTER"] = json.dumps(shard_filter.bundle())
 
         self._create_file(job_params)
 
