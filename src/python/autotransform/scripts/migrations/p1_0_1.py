@@ -47,14 +47,11 @@ def main():
 
     parser = get_arg_parser()
     args = parser.parse_args()
-    file_path = args.path
-    if file_path is None:
-        file_path = f"{get_repo_config_relative_path()}/manager.json"
+    file_path = args.path or f"{get_repo_config_relative_path()}/manager.json"
 
     with open(file_path, "r", encoding="UTF-8") as manager_file:
-        manager_json = manager_file.read()
+        manager_data = json.load(manager_file)
 
-    manager_data = json.loads(manager_json)
     update_manager_data(manager_data)
     manager = Manager.from_data(manager_data)
     manager.write(file_path)
@@ -78,10 +75,8 @@ def update_step_data(step_data: Dict[str, Any]) -> None:
         step_data (Dict[str, Any]): The Step data to update.
     """
 
-    if step_data["name"] == "conditional":
-        if "actions" not in step_data:
-            step_data["actions"] = [{"name": step_data["action"]}]
-            del step_data["action"]
+    if step_data["name"] == "conditional" and "actions" not in step_data:
+        step_data["actions"] = [{"name": step_data.pop("action")}]
         update_condition_data(step_data["condition"])
 
 
@@ -96,21 +91,15 @@ def update_condition_data(condition_data: Dict[str, Any]) -> None:
         for sub_condition in condition_data["conditions"]:
             update_condition_data(sub_condition)
 
-    if condition_data["name"] == ConditionName.CHANGE_STATE and "value" not in condition_data:
-        condition_data["value"] = condition_data["state"]
-        del condition_data["state"]
+    condition_name_to_key = {
+        ConditionName.CHANGE_STATE: "state",
+        ConditionName.CREATED_AGO: "time",
+        ConditionName.SCHEMA_NAME: "schema_name",
+        ConditionName.UPDATED_AGO: "time",
+    }
 
-    if condition_data["name"] == ConditionName.CREATED_AGO and "value" not in condition_data:
-        condition_data["value"] = condition_data["time"]
-        del condition_data["time"]
-
-    if condition_data["name"] == ConditionName.SCHEMA_NAME and "value" not in condition_data:
-        condition_data["value"] = condition_data["schema_name"]
-        del condition_data["schema_name"]
-
-    if condition_data["name"] == ConditionName.UPDATED_AGO and "value" not in condition_data:
-        condition_data["value"] = condition_data["time"]
-        del condition_data["time"]
+    if condition_data["name"] in condition_name_to_key and "value" not in condition_data:
+        condition_data["value"] = condition_data.pop(condition_name_to_key[condition_data["name"]])
 
     update_comparison(condition_data)
 
@@ -121,19 +110,19 @@ def update_comparison(condition_data: Dict[str, Any]) -> None:
     Args:
         condition_data (Dict[str, Any]): The Condition data to update
     """
+    comparison_mapping = {
+        "eq": ComparisonType.EQUAL,
+        "neq": ComparisonType.NOT_EQUAL,
+        "gt": ComparisonType.GREATER_THAN,
+        "gte": ComparisonType.GREATER_THAN_OR_EQUAL,
+        "lt": ComparisonType.LESS_THAN,
+        "lte": ComparisonType.LESS_THAN_OR_EQUAL,
+    }
+
     if "comparison" in condition_data:
-        if condition_data["comparison"] == "eq":
-            condition_data["comparison"] = ComparisonType.EQUAL
-        if condition_data["comparison"] == "neq":
-            condition_data["comparison"] = ComparisonType.NOT_EQUAL
-        if condition_data["comparison"] == "gt":
-            condition_data["comparison"] = ComparisonType.GREATER_THAN
-        if condition_data["comparison"] == "gte":
-            condition_data["comparison"] = ComparisonType.GREATER_THAN_OR_EQUAL
-        if condition_data["comparison"] == "lt":
-            condition_data["comparison"] = ComparisonType.LESS_THAN
-        if condition_data["comparison"] == "lte":
-            condition_data["comparison"] = ComparisonType.LESS_THAN_OR_EQUAL
+        condition_data["comparison"] = comparison_mapping.get(
+            condition_data["comparison"], condition_data["comparison"]
+        )
 
 
 if __name__ == "__main__":

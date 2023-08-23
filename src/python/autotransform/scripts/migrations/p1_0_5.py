@@ -11,7 +11,7 @@
 
 import json
 from argparse import ArgumentParser
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from autotransform.config import get_repo_config_relative_path
 from autotransform.step.condition.base import ConditionName
@@ -46,14 +46,11 @@ def main():
 
     parser = get_arg_parser()
     args = parser.parse_args()
-    file_path = args.path
-    if file_path is None:
-        file_path = f"{get_repo_config_relative_path()}/manager.json"
+    file_path = args.path or f"{get_repo_config_relative_path()}/manager.json"
 
     with open(file_path, "r", encoding="UTF-8") as manager_file:
-        manager_json = manager_file.read()
+        manager_data = json.load(manager_file)
 
-    manager_data = json.loads(manager_json)
     update_manager_data(manager_data)
     manager = Manager.from_data(manager_data)
     manager.write(file_path)
@@ -98,8 +95,8 @@ def update_condition_data(condition_data: Dict[str, Any]) -> None:
         condition_data["name"] = ConditionName.REVIEW_STATE
         return
 
-    if isinstance(condition_data["value"], List):
-        print("Can not migrate in/not_in comparisons for conditions")
+    if isinstance(condition_data["value"], list):
+        print("Cannot migrate in/not_in comparisons for conditions")
 
 
 if __name__ == "__main__":
