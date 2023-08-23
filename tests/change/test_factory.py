@@ -21,12 +21,12 @@ def test_all_enum_values_present():
     missing_values = [
         change_name for change_name in ChangeName if change_name not in FACTORY.get_components()
     ]
-    assert not missing_values, "Names missing from factory: " + ", ".join(missing_values)
+    assert not missing_values, f"Names missing from factory: {', '.join(missing_values)}"
 
     extra_values = [
         change_name for change_name in FACTORY.get_components() if change_name not in ChangeName
     ]
-    assert not extra_values, "Extra names in factory: " + ", ".join(extra_values)
+    assert not extra_values, f"Extra names in factory: {', '.join(extra_values)}"
 
 
 def test_fetching_components():
@@ -60,7 +60,7 @@ def test_fetching_and_bundling() -> None:
     for name, components in test_components.items():
         assert name in ChangeName, f"{name} is not a valid ChangeName"
         for component in components:
-            component_dict = {"name": name} | component
+            component_dict = {"name": name, **component}
             component_instance = FACTORY.get_instance(component_dict)
             assert (
                 component_instance.name == name
