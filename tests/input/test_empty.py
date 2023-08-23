@@ -15,4 +15,8 @@ from autotransform.input.empty import EmptyInput
 def test_input():
     """Tests running EmptyInput component."""
 
-    assert len(EmptyInput().get_items()) == 0, "Empty Input should always return no Items."
+    empty_input = EmptyInput()
+    items = empty_input.get_items()
+
+    assert isinstance(items, list), "get_items should return a list."
+    assert len(items) == 0, "Empty Input should always return no Items."

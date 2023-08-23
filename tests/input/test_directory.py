@@ -24,25 +24,24 @@ def assert_directory_content(directory: str, expected_files: List[str]):
     """
 
     inp: DirectoryInput = DirectoryInput(paths=[directory])
-    files = [item.get_path() for item in inp.get_items()]
+    files = {item.get_path() for item in inp.get_items()}
 
     missing_files = [file for file in expected_files if file not in files]
-    assert not missing_files, "The following files were expected but not found: " + ", ".join(
-        missing_files
-    )
+    assert (
+        not missing_files
+    ), f"The following files were expected but not found: {', '.join(missing_files)}"
 
     extra_files = [file for file in files if file not in expected_files]
-    assert not extra_files, "The following files were found but not expected: " + ", ".join(
-        extra_files
-    )
+    assert (
+        not extra_files
+    ), f"The following files were found but not expected: {', '.join(extra_files)}"
 
 
 def test_empty_dir(tmpdir):
     """Tests running DirectoryInput against a directory with no files in it."""
 
     empty_dir = tmpdir.mkdir("empty_dir")
-    expected_files = []
-    assert_directory_content(str(empty_dir), expected_files)
+    assert_directory_content(str(empty_dir), [])
 
 
 def test_non_empty_dir(tmpdir):
