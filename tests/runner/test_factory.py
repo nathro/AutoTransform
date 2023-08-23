@@ -18,15 +18,14 @@ def test_all_enum_values_present():
     """Ensures that all values from the enum are present in the factory map,
     and only enum values are present."""
 
-    missing_values = [
-        runner_name for runner_name in RunnerName if runner_name not in FACTORY.get_components()
-    ]
-    assert not missing_values, "Names missing from factory: " + ", ".join(missing_values)
+    runner_names = set(RunnerName)
+    factory_components = set(FACTORY.get_components())
 
-    extra_values = [
-        runner_name for runner_name in FACTORY.get_components() if runner_name not in RunnerName
-    ]
-    assert not extra_values, "Extra names in factory: " + ", ".join(extra_values)
+    missing_values = runner_names - factory_components
+    assert not missing_values, f"Names missing from factory: {', '.join(missing_values)}"
+
+    extra_values = factory_components - runner_names
+    assert not extra_values, f"Extra names in factory: {', '.join(extra_values)}"
 
 
 def test_fetching_components():
@@ -60,15 +59,16 @@ def test_encoding_and_decoding() -> None:
         RunnerName.LOCAL: [{}],
     }
 
-    for name in RunnerName:
-        assert name in test_components, f"No test components for Runner {name}"
+    runner_names = set(RunnerName)
+    assert runner_names.issubset(test_components.keys()), "Not all RunnerNames have test components"
 
     for name, components in test_components.items():
-        assert name in RunnerName, f"{name} is not a valid RunnerName"
         for component in components:
             component_dict = {"name": name} | component
             component_instance = FACTORY.get_instance(component_dict)
             assert (
                 component_instance.name == name
             ), f"Testing Runner of name {component_instance.name} for name {name}"
-            assert component_dict == component_instance.bundle()
+            assert (
+                component_dict == component_instance.bundle()
+            ), "Component dictionary and instance bundle do not match"
