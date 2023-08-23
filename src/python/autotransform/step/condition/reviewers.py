@@ -9,8 +9,6 @@
 
 """The implementation for Conditions based on reviewers."""
 
-from __future__ import annotations
-
 from typing import ClassVar, List, Optional
 
 from autotransform.change.base import Change
@@ -29,7 +27,6 @@ class ReviewersCondition(ListComparisonCondition[str]):
 
     comparison: ComparisonType
     value: Optional[str] = None
-
     name: ClassVar[ConditionName] = ConditionName.REVIEWERS
 
     def get_val_from_change(self, change: Change) -> List[str]:
@@ -41,7 +38,6 @@ class ReviewersCondition(ListComparisonCondition[str]):
         Returns:
             List[str]: The reviewers of the Change.
         """
-
         return change.get_reviewers()
 
 
@@ -56,7 +52,6 @@ class TeamReviewersCondition(ListComparisonCondition[str]):
 
     comparison: ComparisonType
     value: Optional[str] = None
-
     name: ClassVar[ConditionName] = ConditionName.TEAM_REVIEWERS
 
     def get_val_from_change(self, change: Change) -> List[str]:
@@ -68,5 +63,4 @@ class TeamReviewersCondition(ListComparisonCondition[str]):
         Returns:
             List[str]: The team reviewers of the Change.
         """
-
         return change.get_team_reviewers()

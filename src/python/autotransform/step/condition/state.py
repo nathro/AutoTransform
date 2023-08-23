@@ -9,9 +9,7 @@
 
 """The implementation for the ChangeStateCondition."""
 
-from __future__ import annotations
-
-from typing import ClassVar, List
+from typing import ClassVar, List, Union
 
 from autotransform.change.base import Change, ChangeState, ReviewState, TestState
 from autotransform.step.condition.base import ComparisonCondition, ConditionName
@@ -24,12 +22,12 @@ class ChangeStateCondition(ComparisonCondition[ChangeState]):
 
     Attributes:
         comparison (ComparisonType): The type of comparison to perform.
-        value (ChangeState | List[ChangeState]): The state(s) to compare against.
+        value (Union[ChangeState, List[ChangeState]]): The state(s) to compare against.
         name (ClassVar[ConditionName]): The name of the Component.
     """
 
     comparison: ComparisonType
-    value: ChangeState | List[ChangeState]
+    value: Union[ChangeState, List[ChangeState]]
 
     name: ClassVar[ConditionName] = ConditionName.CHANGE_STATE
 
@@ -52,12 +50,12 @@ class MergeableStateCondition(ComparisonCondition[str]):
 
     Attributes:
         comparison (ComparisonType): The type of comparison to perform.
-        value (str | List[str]): The state(s) to compare against.
+        value (Union[str, List[str]]): The state(s) to compare against.
         name (ClassVar[ConditionName]): The name of the Component.
     """
 
     comparison: ComparisonType
-    value: str | List[str]
+    value: Union[str, List[str]]
 
     name: ClassVar[ConditionName] = ConditionName.MERGEABLE_STATE
 
@@ -80,12 +78,12 @@ class ReviewStateCondition(ComparisonCondition[ReviewState]):
 
     Attributes:
         comparison (ComparisonType): The type of comparison to perform.
-        value (ReviewState | List[ReviewState]): The state(s) to compare against.
+        value (Union[ReviewState, List[ReviewState]]): The state(s) to compare against.
         name (ClassVar[ConditionName]): The name of the Component.
     """
 
     comparison: ComparisonType
-    value: ReviewState | List[ReviewState]
+    value: Union[ReviewState, List[ReviewState]]
 
     name: ClassVar[ConditionName] = ConditionName.REVIEW_STATE
 
@@ -108,12 +106,12 @@ class TestStateCondition(ComparisonCondition[TestState]):
 
     Attributes:
         comparison (ComparisonType): The type of comparison to perform.
-        value (TestState | List[TestState]): The state(s) to compare against.
+        value (Union[TestState, List[TestState]]): The state(s) to compare against.
         name (ClassVar[ConditionName]): The name of the Component.
     """
 
     comparison: ComparisonType
-    value: TestState | List[TestState]
+    value: Union[TestState, List[TestState]]
 
     name: ClassVar[ConditionName] = ConditionName.TEST_STATE
 

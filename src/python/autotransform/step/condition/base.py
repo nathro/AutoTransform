@@ -9,8 +9,6 @@
 
 """The base class and associated classes for Condition components."""
 
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Any, ClassVar, Dict, Generic, List, Optional, Set, Type, TypeVar
@@ -120,7 +118,7 @@ class ComparisonCondition(Generic[T], Condition):
     @root_validator
     @classmethod
     def check_value_for_comparison(
-        cls: Type[ComparisonCondition], values: Dict[str, Any]
+        cls: Type["ComparisonCondition"], values: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Ensures that the value is provided as either a single value or a list, depending
         on the comparison type.
@@ -149,11 +147,10 @@ class ComparisonCondition(Generic[T], Condition):
 
         return values
 
-    # pylint: disable=invalid-name
     @validator("comparison")
     @classmethod
     def comparison_type_is_valid(
-        cls: Type[ComparisonCondition], v: ComparisonType
+        cls: Type["ComparisonCondition"], v: ComparisonType
     ) -> ComparisonType:
         """Validates the condition can perform the specified comparison.
 
@@ -244,7 +241,7 @@ class ListComparisonCondition(Generic[T], Condition):
     @root_validator
     @classmethod
     def check_value_for_comparison(
-        cls: Type[ListComparisonCondition], values: Dict[str, Any]
+        cls: Type["ListComparisonCondition"], values: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Ensures that the value is provided for contains/not contains checks
         or not provided for empty/not empty checks.
@@ -290,11 +287,10 @@ class ListComparisonCondition(Generic[T], Condition):
             ComparisonType.NOT_EMPTY,
         }
 
-    # pylint: disable=invalid-name
     @validator("comparison")
     @classmethod
     def comparison_type_is_valid(
-        cls: Type[ListComparisonCondition], v: ComparisonType
+        cls: Type["ListComparisonCondition"], v: ComparisonType
     ) -> ComparisonType:
         """Validates the condition can perform the specified comparison.
 

@@ -9,8 +9,6 @@
 
 """The implementation for Conditions based on labels."""
 
-from __future__ import annotations
-
 from typing import ClassVar, List, Optional
 
 from autotransform.change.base import Change
