@@ -2,8 +2,7 @@
     "input": {
         "name": "directory",
         "paths": [
-            "src/python",
-            "tests"
+            "src/python"
         ]
     },
     "filters": [
@@ -89,10 +88,5 @@
         "owners": [
             "@nathro"
         ]
-    },
-    "repo": {
-        "name": "github",
-        "base_branch": "nathro_test",
-        "full_github_name": "nathro/AutoTransform"
     }
 }
