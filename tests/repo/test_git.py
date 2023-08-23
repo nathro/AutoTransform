@@ -9,7 +9,7 @@
 
 """Tests for the GitRepo component."""
 
-import mock
+from unittest import mock
 
 import autotransform
 from autotransform.repo.git import GitRepo

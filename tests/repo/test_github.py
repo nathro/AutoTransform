@@ -9,23 +9,23 @@
 
 """Tests for the GithubRepo component."""
 
-import mock
+from unittest.mock import patch, create_autospec
 
 from autotransform.repo.github import GithubRepo
 from autotransform.util.github import GithubUtils, PullRequest
 
 
-@mock.patch.object(GithubUtils, "get")
+@patch("autotransform.util.github.GithubUtils.get", autospec=True)
 def test_get_outstanding_changes(mock_github_utils):
     """Tests that outstanding changes are fetched correctly."""
 
-    autotransform_pr = mock.create_autospec(PullRequest)
+    autotransform_pr = create_autospec(PullRequest)
     autotransform_pr.owner_id = 1
     autotransform_pr.number = 1
-    human_pr = mock.create_autospec(PullRequest)
+    human_pr = create_autospec(PullRequest)
     human_pr.owner_id = 2
     human_pr.number = 2
-    util = mock.create_autospec(GithubUtils)
+    util = create_autospec(GithubUtils)
     util.get_user_id.return_value = 1
     util.get_open_pull_requests.return_value = [autotransform_pr, human_pr]
     mock_github_utils.return_value = util
