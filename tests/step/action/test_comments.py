@@ -10,12 +10,11 @@
 """Tests that the comments actions works as expected."""
 
 import pytest
-
 from autotransform.step.action.comments import CommentAction
 
 
 def test_empty_body():
-    """Checks that a comment action with an empty body can not be created."""
+    """Checks that a CommentAction with an empty body cannot be created."""
 
     with pytest.raises(ValueError, match="Comment body must be non-empty"):
         CommentAction(body="")

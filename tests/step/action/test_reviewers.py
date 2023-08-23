@@ -20,33 +20,37 @@ def test_no_reviewers_provided():
     AddReviewersAction(reviewers=["nathro"])
     AddReviewersAction(team_reviewers=["slack"])
 
-    with pytest.raises(ValueError, match="Either reviewers or team reviewers must be supplied"):
+    error_message = "Either reviewers or team reviewers must be supplied"
+    with pytest.raises(ValueError, match=error_message):
         AddReviewersAction()
 
-    with pytest.raises(ValueError, match="Either reviewers or team reviewers must be supplied"):
+    with pytest.raises(ValueError, match=error_message):
         AddReviewersAction(reviewers=[])
 
-    with pytest.raises(ValueError, match="Either reviewers or team reviewers must be supplied"):
+    with pytest.raises(ValueError, match=error_message):
         AddReviewersAction(team_reviewers=[])
 
-    with pytest.raises(ValueError, match="Either reviewers or team reviewers must be supplied"):
+    with pytest.raises(ValueError, match=error_message):
         AddReviewersAction(reviewers=[], team_reviewers=[])
 
 
 def test_empty_strings():
     """Checks that actions with empty strings can not be created."""
 
-    with pytest.raises(ValueError, match="Reviewers must be non-empty strings"):
+    reviewers_error_message = "Reviewers must be non-empty strings"
+    team_reviewers_error_message = "Team reviewers must be non-empty strings"
+
+    with pytest.raises(ValueError, match=reviewers_error_message):
         AddReviewersAction(reviewers=[""])
 
-    with pytest.raises(ValueError, match="Reviewers must be non-empty strings"):
+    with pytest.raises(ValueError, match=reviewers_error_message):
         AddReviewersAction(reviewers=["nathro", "", "nathro"])
 
-    with pytest.raises(ValueError, match="Team reviewers must be non-empty strings"):
+    with pytest.raises(ValueError, match=team_reviewers_error_message):
         AddReviewersAction(team_reviewers=["slack", "", "slack"])
 
-    with pytest.raises(ValueError, match="Team reviewers must be non-empty strings"):
+    with pytest.raises(ValueError, match=team_reviewers_error_message):
         AddReviewersAction(reviewers=["nathro"], team_reviewers=[""])
 
-    with pytest.raises(ValueError, match="Reviewers must be non-empty strings"):
+    with pytest.raises(ValueError, match=reviewers_error_message):
         AddReviewersAction(reviewers=[""], team_reviewers=["slack"])
