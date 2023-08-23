@@ -26,7 +26,7 @@ from autotransform.transformer.base import TransformerName
 from autotransform.transformer.single import SingleTransformer
 from autotransform.validator.base import FACTORY as validator_factory
 from autotransform.validator.base import ValidationResultLevel, Validator
-from pydantic import Field
+from pydantic import Field, validator
 
 
 class OpenAITransformer(SingleTransformer):
@@ -61,6 +61,46 @@ class OpenAITransformer(SingleTransformer):
 
     name: ClassVar[TransformerName] = TransformerName.OPEN_AI
 
+    # pylint: disable=invalid-name
+    @validator("max_attempts")
+    @classmethod
+    def max_attempts_must_be_positive(cls, v: int) -> int:
+        """Validates the max_attempts is a positive number.
+
+        Args:
+            v (int): The maximum number of attempts for completion.
+
+        Raises:
+            ValueError: Raises an error when the max_attempts is not positive.
+
+        Returns:
+            int: The unmodified max_attempts.
+        """
+
+        if v < 1:
+            raise ValueError("The max attempts must be at least 1")
+        return v
+
+    # pylint: disable=invalid-name
+    @validator("temperature")
+    @classmethod
+    def temperature_must_be_valid(cls, v: float) -> float:
+        """Validates the temperature is between 0 and 1.
+
+        Args:
+            v (float): The temperature to use for model completion.
+
+        Raises:
+            ValueError: Raises an error when the temperature is not in the valid range.
+
+        Returns:
+            int: The unmodified temperature.
+        """
+
+        if v >= 1.0 or v <= 0.0:
+            raise ValueError("The temperature must be between 0.0 and 1.0")
+        return v
+
     def _transform_item(self, item: Item) -> None:
         """Replaces a file with the completition results from an OpenAI completition.
 
@@ -72,8 +112,13 @@ class OpenAITransformer(SingleTransformer):
             openai.api_key = get_config().open_ai_api_key
 
         assert isinstance(item, FileItem)
-        messages = []
+
+        event_handler = EventHandler.get()
+        original_content = item.get_content()
+        batch: Batch = {"title": "test", "items": [item]}
+
         # Set up messages for prompt
+        messages = []
         if self.system_message:
             messages.append({"role": "system", "content": self.system_message})
         messages.append(
@@ -82,27 +127,46 @@ class OpenAITransformer(SingleTransformer):
                 "content": self._replace_sentinel_values(self.prompt, item),
             }
         )
-        batch: Batch = {"title": "test", "items": [item]}
+
+        completion_success = False
         for _ in range(self.max_attempts):
-            # Get completition
+            # Get completion
             chat_completion = openai.ChatCompletion.create(
                 model=self.model,
                 messages=messages,
                 temperature=self.temperature,
             )
+
+            # Log completion information
+            token_usage = (
+                f"Prompt: {chat_completion.usage.prompt_tokens}"
+                + f" - Completition: {chat_completion.usage.completion_tokens}"
+            )
+            event_handler.handle(VerboseEvent({"message": token_usage}))
             completition_result = chat_completion.choices[0].message.content
             message = f"The completion result for {item.get_path()}:\n\n{completition_result}"
-            EventHandler.get().handle(VerboseEvent({"message": message}))
+            event_handler.handle(VerboseEvent({"message": message}))
+
+            # Update File
             item.write_content(self._extract_code_from_completion(completition_result))
+
+            # Run commands to fix file
             for command in self.commands:
                 command.run(batch, None)
+
+            # Run validators to identify issues with completion
             failures = []
-            for validator in self.validators:
-                validation_result = validator.check(batch, None)
+            for completion_validator in self.validators:
+                validation_result = completion_validator.check(batch, None)
                 if validation_result.level != ValidationResultLevel.NONE:
                     failures.append(str(validation_result.message))
-            if not failures:
+
+            # Check if another completion is required
+            completion_success = not failures
+            if completion_success:
                 break
+
+            # Add messages for handling failures for next completion
             messages.append({"role": "assistant", "content": completition_result})
             failure_message = "\n".join(failures)
             messages.append(
@@ -112,6 +176,13 @@ class OpenAITransformer(SingleTransformer):
                     + "provide the file with fixes for these errors.",
                 },
             )
+
+        # If we had validation failures on our last run, just use the original content
+        if not completion_success:
+            event_handler.handle(
+                VerboseEvent({"message": "Completion failed, using original content"})
+            )
+            item.write_content(original_content)
 
     def _replace_sentinel_values(self, prompt: str, item: FileItem) -> str:
         """Replaces sentinel values in a prompt
@@ -166,15 +237,11 @@ class OpenAITransformer(SingleTransformer):
         """
 
         prompt = data["prompt"]
-        commands = [
-            command_factory.get_instance(command) for command in data.get("commands", [])
-        ]
+        commands = [command_factory.get_instance(c) for c in data.get("commands", [])]
         model = data.get("model", "gpt-3.5-turbo")
         system_message = data.get("system_message", None)
         temperature = data.get("temperature", 0.4)
-        validators = [
-            validator_factory.get_instance(validator) for validator in data.get("validators", [])
-        ]
+        validators = [validator_factory.get_instance(v) for v in data.get("validators", [])]
 
         return cls(
             prompt=prompt,
