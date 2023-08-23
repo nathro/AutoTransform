@@ -9,9 +9,6 @@
 
 """The implementation for the SingleBatcher."""
 
-from __future__ import annotations
-
-from copy import deepcopy
 from typing import Any, ClassVar, Dict, List, Optional, Sequence
 
 from autotransform.batcher.base import Batch, Batcher, BatcherName
@@ -47,7 +44,7 @@ class SingleBatcher(Batcher):
         """
 
         # Skip if empty when setting is enabled
-        if self.skip_empty_batch and len(items) == 0:
+        if self.skip_empty_batch and not items:
             return []
 
         # Create Batch
@@ -56,7 +53,7 @@ class SingleBatcher(Batcher):
             "title": self.title,
         }
 
-        # Deepcopy metadata to ensure mutations don't apply to params
+        # Add metadata to batch if it exists
         if self.metadata is not None:
-            batch["metadata"] = deepcopy(self.metadata)
+            batch["metadata"] = self.metadata.copy()
         return [batch]
