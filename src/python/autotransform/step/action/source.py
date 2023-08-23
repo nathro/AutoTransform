@@ -114,4 +114,7 @@ class UpdateAction(Action):
             bool: Whether the Change was updated successfully.
         """
 
+        if not hasattr(UpdateAction, "_runner"):
+            raise ValueError("Runner is not set for UpdateAction")
+
         return change.update(UpdateAction._runner)

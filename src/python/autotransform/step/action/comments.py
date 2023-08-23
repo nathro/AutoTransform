@@ -45,7 +45,7 @@ class CommentAction(Action):
             str: The unmodified body of the comment.
         """
 
-        if v == "":
+        if not v.strip():
             raise ValueError("Comment body must be non-empty")
         return v
 

@@ -31,43 +31,41 @@ class AddReviewersAction(Action):
 
     name: ClassVar[ActionName] = ActionName.ADD_REVIEWERS
 
-    # pylint: disable=invalid-name
-    @validator("reviewers")
+    @validator("reviewers", each_item=True)
     @classmethod
-    def labels_must_be_non_empty(cls, v: List[str]) -> List[str]:
+    def validate_reviewers(cls, v: str) -> str:
         """Validates the reviewers are not empty strings.
 
         Args:
-            v (List[str]): The reviewers to add to the Change.
+            v (str): The reviewer to add to the Change.
 
         Raises:
             ValueError: Raises an error if a reviewer is an empty string.
 
         Returns:
-            List[str]: The unmodified reviewers to add.
+            str: The unmodified reviewer to add.
         """
 
-        if any(reviewer == "" for reviewer in v):
+        if v == "":
             raise ValueError("Reviewers must be non-empty strings")
         return v
 
-    # pylint: disable=invalid-name
-    @validator("team_reviewers")
+    @validator("team_reviewers", each_item=True)
     @classmethod
-    def team_reviewers_must_be_non_empty(cls, v: List[str]) -> List[str]:
+    def validate_team_reviewers(cls, v: str) -> str:
         """Validates the team reviewers are not empty strings.
 
         Args:
-            v (List[str]): The team reviewers to add to the Change.
+            v (str): The team reviewer to add to the Change.
 
         Raises:
             ValueError: Raises an error if a team reviewer is an empty string.
 
         Returns:
-            List[str]: The unmodified team reviewers to add.
+            str: The unmodified team reviewer to add.
         """
 
-        if any(team_reviewer == "" for team_reviewer in v):
+        if v == "":
             raise ValueError("Team reviewers must be non-empty strings")
         return v
 

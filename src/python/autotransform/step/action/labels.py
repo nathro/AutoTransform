@@ -29,7 +29,6 @@ class AddLabelsAction(Action):
 
     name: ClassVar[ActionName] = ActionName.ADD_LABELS
 
-    # pylint: disable=invalid-name
     @validator("labels")
     @classmethod
     def labels_must_be_non_empty(cls, v: List[str]) -> List[str]:
@@ -47,7 +46,7 @@ class AddLabelsAction(Action):
 
         if not v:
             raise ValueError("At least 1 label must be provided")
-        if any(label == "" for label in v):
+        if any(not label for label in v):
             raise ValueError("Labels must be non-empty strings")
         return v
 
@@ -76,7 +75,6 @@ class RemoveLabelAction(Action):
 
     name: ClassVar[ActionName] = ActionName.REMOVE_LABEL
 
-    # pylint: disable=invalid-name
     @validator("label")
     @classmethod
     def label_must_be_non_empty(cls, v: str) -> str:
@@ -92,7 +90,7 @@ class RemoveLabelAction(Action):
             str: The unmodified label of the comment.
         """
 
-        if v == "":
+        if not v:
             raise ValueError("Label to remove must be non-empty")
         return v
 
