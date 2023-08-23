@@ -9,94 +9,77 @@
 
 """Tests that comparisons for Conditions work as expected."""
 
+import pytest
 from autotransform.step.condition.comparison import ComparisonType, compare
 
 
-def test_equal_comparison():
+@pytest.mark.parametrize("a, b, expected", [(5, 0, False), (0, 0, True), (-5, 0, False)])
+def test_equal_comparison(a, b, expected):
     """Tests equal comparison checking."""
-
-    assert compare(5, 0, ComparisonType.EQUAL) is False
-    assert compare(0, 0, ComparisonType.EQUAL) is True
-    assert compare(-5, 0, ComparisonType.EQUAL) is False
+    assert compare(a, b, ComparisonType.EQUAL) is expected
 
 
-def test_not_equal_comparison():
+@pytest.mark.parametrize("a, b, expected", [(5, 0, True), (0, 0, False), (-5, 0, True)])
+def test_not_equal_comparison(a, b, expected):
     """Tests not equal comparison checking."""
-
-    assert compare(5, 0, ComparisonType.NOT_EQUAL) is True
-    assert compare(0, 0, ComparisonType.NOT_EQUAL) is False
-    assert compare(-5, 0, ComparisonType.NOT_EQUAL) is True
+    assert compare(a, b, ComparisonType.NOT_EQUAL) is expected
 
 
-def test_in_comparison():
+@pytest.mark.parametrize("a, b, expected", [(5, [0, 1], False), (5, [0, 1, 5], True)])
+def test_in_comparison(a, b, expected):
     """Tests in comparison checking."""
-
-    assert compare(5, [0, 1], ComparisonType.IN) is False
-    assert compare(5, [0, 1, 5], ComparisonType.IN) is True
+    assert compare(a, b, ComparisonType.IN) is expected
 
 
-def test_not_in_comparison():
+@pytest.mark.parametrize("a, b, expected", [(5, [0, 1], True), (5, [0, 1, 5], False)])
+def test_not_in_comparison(a, b, expected):
     """Tests not in comparison checking."""
-
-    assert compare(5, [0, 1], ComparisonType.NOT_IN) is True
-    assert compare(5, [0, 1, 5], ComparisonType.NOT_IN) is False
+    assert compare(a, b, ComparisonType.NOT_IN) is expected
 
 
-def test_greater_than_comparison():
+@pytest.mark.parametrize("a, b, expected", [(5, 0, True), (0, 0, False), (-5, 0, False)])
+def test_greater_than_comparison(a, b, expected):
     """Tests greater than comparison checking."""
-
-    assert compare(5, 0, ComparisonType.GREATER_THAN) is True
-    assert compare(0, 0, ComparisonType.GREATER_THAN) is False
-    assert compare(-5, 0, ComparisonType.GREATER_THAN) is False
+    assert compare(a, b, ComparisonType.GREATER_THAN) is expected
 
 
-def test_greater_than_or_equal_comparison():
+@pytest.mark.parametrize("a, b, expected", [(5, 0, True), (0, 0, True), (-5, 0, False)])
+def test_greater_than_or_equal_comparison(a, b, expected):
     """Tests greater than or equal comparison checking."""
-
-    assert compare(5, 0, ComparisonType.GREATER_THAN_OR_EQUAL) is True
-    assert compare(0, 0, ComparisonType.GREATER_THAN_OR_EQUAL) is True
-    assert compare(-5, 0, ComparisonType.GREATER_THAN_OR_EQUAL) is False
+    assert compare(a, b, ComparisonType.GREATER_THAN_OR_EQUAL) is expected
 
 
-def test_less_than_comparison():
+@pytest.mark.parametrize("a, b, expected", [(5, 0, False), (0, 0, False), (-5, 0, True)])
+def test_less_than_comparison(a, b, expected):
     """Tests less than comparison checking."""
-
-    assert compare(5, 0, ComparisonType.LESS_THAN) is False
-    assert compare(0, 0, ComparisonType.LESS_THAN) is False
-    assert compare(-5, 0, ComparisonType.LESS_THAN) is True
+    assert compare(a, b, ComparisonType.LESS_THAN) is expected
 
 
-def test_less_than_or_equal_comparison():
+@pytest.mark.parametrize("a, b, expected", [(5, 0, False), (0, 0, True), (-5, 0, True)])
+def test_less_than_or_equal_comparison(a, b, expected):
     """Tests less than or equal comparison checking."""
-
-    assert compare(5, 0, ComparisonType.LESS_THAN_OR_EQUAL) is False
-    assert compare(0, 0, ComparisonType.LESS_THAN_OR_EQUAL) is True
-    assert compare(-5, 0, ComparisonType.LESS_THAN_OR_EQUAL) is True
+    assert compare(a, b, ComparisonType.LESS_THAN_OR_EQUAL) is expected
 
 
-def test_contains_comparison():
+@pytest.mark.parametrize("a, b, expected", [([1, 2, 3], 0, False), ([1, 2, 3], 3, True)])
+def test_contains_comparison(a, b, expected):
     """Tests contains comparison checking."""
-
-    assert compare([1, 2, 3], 0, ComparisonType.CONTAINS) is False
-    assert compare([1, 2, 3], 3, ComparisonType.CONTAINS) is True
+    assert compare(a, b, ComparisonType.CONTAINS) is expected
 
 
-def test_not_contains_comparison():
+@pytest.mark.parametrize("a, b, expected", [([1, 2, 3], 0, True), ([1, 2, 3], 3, False)])
+def test_not_contains_comparison(a, b, expected):
     """Tests not contains comparison checking."""
-
-    assert compare([1, 2, 3], 0, ComparisonType.NOT_CONTAINS) is True
-    assert compare([1, 2, 3], 3, ComparisonType.NOT_CONTAINS) is False
+    assert compare(a, b, ComparisonType.NOT_CONTAINS) is expected
 
 
-def test_empty_comparison():
+@pytest.mark.parametrize("a, b, expected", [([], None, True), ([1, 2, 3], None, False)])
+def test_empty_comparison(a, b, expected):
     """Tests empty comparison checking."""
-
-    assert compare([], None, ComparisonType.EMPTY) is True
-    assert compare([1, 2, 3], None, ComparisonType.EMPTY) is False
+    assert compare(a, b, ComparisonType.EMPTY) is expected
 
 
-def test_not_empty_comparison():
+@pytest.mark.parametrize("a, b, expected", [([], None, False), ([1, 2, 3], None, True)])
+def test_not_empty_comparison(a, b, expected):
     """Tests not empty comparison checking."""
-
-    assert compare([], None, ComparisonType.NOT_EMPTY) is False
-    assert compare([1, 2, 3], None, ComparisonType.NOT_EMPTY) is True
+    assert compare(a, b, ComparisonType.NOT_EMPTY) is expected
