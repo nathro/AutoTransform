@@ -6,5 +6,10 @@
         "name": "github",
         "run_workflow": "autotransform.run.yml",
         "update_workflow": "autotransform.update.yml"
+    },
+    "repo_override": {
+        "name": "github",
+        "base_branch": "master",
+        "full_github_name": "nathro/AutoTransform"
     }
 }

@@ -55,10 +55,5 @@
         "owners": [
             "@nathro"
         ]
-    },
-    "repo": {
-        "name": "github",
-        "base_branch": "master",
-        "full_github_name": "nathro/AutoTransform"
     }
 }
