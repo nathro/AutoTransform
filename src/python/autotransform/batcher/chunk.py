@@ -64,7 +64,7 @@ class ChunkBatcher(Batcher):
         item_chunks = [items[i : i + chunk_size] for i in range(0, len(items), chunk_size)]
         item_batches: List[Batch] = []
         for idx, item_chunk in enumerate(item_chunks, start=1):
-            title = f"[{idx}/{len(item_chunks)}] " + self.title
+            title = f"[{idx}/{len(item_chunks)}] {self.title}"
             batch: Batch = {"items": item_chunk, "title": title}
             if self.metadata is not None:
                 # Deepcopy metadata to ensure mutations don't apply to all Batches
