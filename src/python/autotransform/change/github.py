@@ -39,6 +39,63 @@ class GithubChange(Change):
     pull_number: int
     name: ClassVar[ChangeName] = ChangeName.GITHUB
 
+    @cached_property
+    def _pull_request(self) -> PullRequest:
+        """Gets the Pull Request.
+
+        Returns:
+            PullRequest: The Pull Request.
+        """
+
+        return GithubUtils.get(self.full_github_name).get_pull_request(self.pull_number)
+
+    @cached_property
+    def _automation_data(self) -> Tuple[AutoTransformSchema, Batch]:
+        """Loads the Schema and Batch data for the GithubChange as a cached property.
+
+        Returns:
+            Tuple[AutoTransformSchema, Batch]: The Schema and Batch contained
+                in the PullRequest's Body.
+        """
+
+        gist_match = re.search("<<<Automation Info Gist: (.*)>>>", self._pull_request.body)
+        if gist_match:
+            gist_ids = gist_match.groups()[0].split("/")
+            gist = GithubUtils.get(self.full_github_name).get_gist(gist_ids[0])
+            schema_data = gist.get_file_content("schema") or ""
+            batch = json.loads(gist.get_file_content("batch") or "")
+            assert isinstance(batch["items"], List)
+            for i in range(1, len(gist_ids)):
+                gist = GithubUtils.get(self.full_github_name).get_gist(gist_ids[i])
+                items = json.loads(gist.get_file_content("items") or "[]")
+                assert isinstance(items, List)
+                batch["items"].extend(items)
+        else:
+            cur_line_placement = None
+            data_lines: Dict[str, List[str]] = {"schema": [], "batch": []}
+            for line in self._pull_request.body.splitlines():
+                if line == GithubUtils.BEGIN_SCHEMA:
+                    cur_line_placement = "schema"
+                elif line == GithubUtils.END_SCHEMA:
+                    cur_line_placement = None
+                elif line == GithubUtils.BEGIN_BATCH:
+                    cur_line_placement = "batch"
+                elif line == GithubUtils.END_BATCH:
+                    cur_line_placement = None
+                elif cur_line_placement is not None:
+                    data_lines[cur_line_placement].append(line)
+            schema_data = "\n".join(data_lines["schema"])
+            batch = json.loads("\n".join(data_lines["batch"]))
+
+        schema = AutoTransformSchema.from_data(json.loads(schema_data))
+        items = [item_factory.get_instance(item) for item in batch["items"]]
+        batch = {
+            "items": items,
+            "metadata": batch["metadata"],
+            "title": str(batch["title"]),
+        }
+        return (schema, batch)
+
     def get_batch(self) -> Batch:
         """Gets the Batch that was used to produce the Change.
 
@@ -95,15 +152,6 @@ class GithubChange(Change):
 
         return self._pull_request.get_mergeable_state()
 
-    def get_review_state(self) -> ReviewState:
-        """Gets the current review state of the Change.
-
-        Returns:
-            ReviewState: The current review state of the Change.
-        """
-
-        return self._review_state
-
     @cached_property
     def _review_state(self) -> ReviewState:
         """The current review state of the Change as a cached property.
@@ -119,14 +167,14 @@ class GithubChange(Change):
             return ReviewState.CHANGES_REQUESTED
         return ReviewState.NEEDS_REVIEW
 
-    def get_test_state(self) -> TestState:
-        """Gets the current test state of the Change.
+    def get_review_state(self) -> ReviewState:
+        """Gets the current review state of the Change.
 
         Returns:
-            TestState: The current test state of the Change.
+            ReviewState: The current review state of the Change.
         """
 
-        return self._test_state
+        return self._review_state
 
     @cached_property
     def _test_state(self) -> TestState:
@@ -142,6 +190,15 @@ class GithubChange(Change):
         if state in ["success", "neutral"]:
             return TestState.SUCCESS
         return TestState.FAILURE
+
+    def get_test_state(self) -> TestState:
+        """Gets the current test state of the Change.
+
+        Returns:
+            TestState: The current test state of the Change.
+        """
+
+        return self._test_state
 
     def get_labels(self) -> List[str]:
         """Gets all labels for a Change.
@@ -195,9 +252,7 @@ class GithubChange(Change):
             bool: Whether the abandon was completed successfully.
         """
 
-        if not self._pull_request.close():
-            return False
-        return self._pull_request.delete_branch()
+        return self._pull_request.close() and self._pull_request.delete_branch()
 
     def add_labels(self, labels: List[str]) -> bool:
         """Adds labels to an outstanding Change.
@@ -246,9 +301,7 @@ class GithubChange(Change):
             bool: Whether the merge was completed successfully.
         """
 
-        if not self._pull_request.merge():
-            return False
-        return self._pull_request.delete_branch()
+        return self._pull_request.merge() and self._pull_request.delete_branch()
 
     def remove_label(self, label: str) -> bool:
         """Removes a label from an outstanding Change.
@@ -262,60 +315,3 @@ class GithubChange(Change):
 
         self._pull_request.remove_label(label)
         return True
-
-    @property
-    def _pull_request(self) -> PullRequest:
-        """Gets the Pull Request.
-
-        Returns:
-            PullRequest: The Pull Request.
-        """
-
-        return GithubUtils.get(self.full_github_name).get_pull_request(self.pull_number)
-
-    @cached_property
-    def _automation_data(self) -> Tuple[AutoTransformSchema, Batch]:
-        """Loads the Schema and Batch data for the GithubChange as a cached property.
-
-        Returns:
-            Tuple[AutoTransformSchema, Batch]: The Schema and Batch contained
-                in the PullRequest's Body.
-        """
-
-        gist_match = re.search("<<<Automation Info Gist: (.*)>>>", self._pull_request.body)
-        if gist_match:
-            gist_ids = gist_match.groups()[0].split("/")
-            gist = GithubUtils.get(self.full_github_name).get_gist(gist_ids[0])
-            schema_data = gist.get_file_content("schema") or ""
-            batch = json.loads(gist.get_file_content("batch") or "")
-            assert isinstance(batch["items"], List)
-            for i in range(1, len(gist_ids)):
-                gist = GithubUtils.get(self.full_github_name).get_gist(gist_ids[i])
-                items = json.loads(gist.get_file_content("items") or "[]")
-                assert isinstance(items, List)
-                batch["items"].extend(items)
-        else:
-            cur_line_placement = None
-            data_lines: Dict[str, List[str]] = {"schema": [], "batch": []}
-            for line in self._pull_request.body.splitlines():
-                if line == GithubUtils.BEGIN_SCHEMA:
-                    cur_line_placement = "schema"
-                elif line == GithubUtils.END_SCHEMA:
-                    cur_line_placement = None
-                elif line == GithubUtils.BEGIN_BATCH:
-                    cur_line_placement = "batch"
-                elif line == GithubUtils.END_BATCH:
-                    cur_line_placement = None
-                elif cur_line_placement is not None:
-                    data_lines[cur_line_placement].append(line)
-            schema_data = "\n".join(data_lines["schema"])
-            batch = json.loads("\n".join(data_lines["batch"]))
-
-        schema = AutoTransformSchema.from_data(json.loads(schema_data))
-        items = [item_factory.get_instance(item) for item in batch["items"]]
-        batch = {
-            "items": items,
-            "metadata": batch["metadata"],
-            "title": str(batch["title"]),
-        }
-        return (schema, batch)
