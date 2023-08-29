@@ -103,9 +103,6 @@ class AIModelTransformer(SingleTransformer):
         assert isinstance(item, FileItem)
 
         event_handler = EventHandler.get()
-        event_handler.handle(
-            VerboseEvent({"message": f"Transforming {item.get_path()}"}),
-        )
         original_content = item.get_content()
         batch: Batch = {"title": "test", "items": [item]}
 
@@ -113,9 +110,6 @@ class AIModelTransformer(SingleTransformer):
         result_data = None
         for i in range(self.max_completion_attempts):
             try:
-                event_handler.handle(
-                    VerboseEvent({"message": f"Result attempt {i}"}),
-                )
                 result, result_data = self.model.get_result_for_item(item)
                 break
             except Exception as e:  # pylint: disable=broad-exception-caught
@@ -160,9 +154,6 @@ class AIModelTransformer(SingleTransformer):
 
             for i in range(self.max_completion_attempts):
                 try:
-                    event_handler.handle(
-                        VerboseEvent({"message": f"Result attempt {i}"}),
-                    )
                     result, result_data = self.model.get_result_with_validation(
                         item,
                         result_data,

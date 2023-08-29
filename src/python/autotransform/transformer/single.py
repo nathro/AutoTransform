@@ -13,8 +13,6 @@
 from abc import abstractmethod
 
 from autotransform.batcher.base import Batch
-from autotransform.event.handler import EventHandler
-from autotransform.event.verbose import VerboseEvent
 from autotransform.item.base import Item
 from autotransform.transformer.base import Transformer
 
@@ -36,8 +34,6 @@ class SingleTransformer(Transformer[None]):
         Args:
             batch (Batch): The Batch being transformed.
         """
-        
-        EventHandler.get().handle(VerboseEvent({"message": "Running transformation"}))
 
         for item in batch["items"]:
             self._transform_item(item)
