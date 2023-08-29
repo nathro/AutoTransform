@@ -53,6 +53,21 @@ def test_encoding_and_decoding() -> None:
     """Tests the encoding and decoding of components."""
 
     test_components: Dict[TransformerName, List[Dict[str, Any]]] = {
+        TransformerName.AI_MODEL: [
+            {"model": {"name": "open_ai", "prompt": "foo"}, "commands": [], "validators": []},
+            {
+                "model": {"name": "open_ai", "prompt": "foo"},
+                "commands": [],
+                "max_completion_attempts": 2,
+                "validators": [],
+            },
+            {
+                "model": {"name": "open_ai", "prompt": "foo"},
+                "commands": [],
+                "max_validation_attempts": 2,
+                "validators": [],
+            },
+        ],
         TransformerName.JSCODESHIFT: [
             {"js_transform": "myTransform.js"},
             {"js_transform": "myTransform.js", "args": ["--foo", "bar"]},
@@ -66,12 +81,6 @@ def test_encoding_and_decoding() -> None:
                 "command_name": "codemod_command",
                 "command_args": {"test": "foo"},
             },
-        ],
-        TransformerName.OPEN_AI: [
-            {"prompt": "foo", "commands": [], "validators": []},
-            {"prompt": "foo", "commands": [], "system_message": "bar", "validators": []},
-            {"prompt": "foo", "commands": [], "temperature": 0.1, "validators": []},
-            {"prompt": "foo", "commands": [], "model": "gpt-4-32k", "validators": []},
         ],
         TransformerName.REGEX: [{"pattern": "foo", "replacement": "bar"}],
         TransformerName.SCRIPT: [

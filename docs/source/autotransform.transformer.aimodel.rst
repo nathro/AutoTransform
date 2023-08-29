@@ -1,7 +1,7 @@
-OpenAITransformer (autotransform.transformer.openai)
+AIModelTransformer (autotransform.transformer.aimodel)
 ==================================================
 
-.. automodule:: autotransform.transformer.openai
+.. automodule:: autotransform.transformer.aimodel
    :members:
    :undoc-members:
    :show-inheritance:

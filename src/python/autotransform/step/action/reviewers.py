@@ -11,10 +11,9 @@
 
 from typing import Any, ClassVar, Dict, List
 
-from pydantic import Field, root_validator, validator
-
 from autotransform.change.base import Change
 from autotransform.step.action.base import Action, ActionName
+from pydantic import Field, root_validator, validator
 
 
 class AddReviewersAction(Action):
@@ -31,7 +30,6 @@ class AddReviewersAction(Action):
 
     name: ClassVar[ActionName] = ActionName.ADD_REVIEWERS
 
-    # pylint: disable=invalid-name
     @validator("reviewers")
     @classmethod
     def labels_must_be_non_empty(cls, v: List[str]) -> List[str]:
@@ -51,7 +49,6 @@ class AddReviewersAction(Action):
             raise ValueError("Reviewers must be non-empty strings")
         return v
 
-    # pylint: disable=invalid-name
     @validator("team_reviewers")
     @classmethod
     def team_reviewers_must_be_non_empty(cls, v: List[str]) -> List[str]:

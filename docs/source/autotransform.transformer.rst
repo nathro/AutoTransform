@@ -8,8 +8,8 @@ Transformer Package (autotransform.transformer)
 
    autotransform.transformer.base
    autotransform.transformer.single
+   autotransform.transformer.aimodel
    autotransform.transformer.jscodeshift
    autotransform.transformer.libcst
-   autotransform.transformer.openai
    autotransform.transformer.regex
    autotransform.transformer.script

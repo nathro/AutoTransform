@@ -181,7 +181,6 @@ class ScheduledSchema(ComponentModel):
 
     max_submissions: Optional[int] = None
 
-    # pylint: disable=invalid-name
     @validator("max_submissions")
     @classmethod
     def max_submissions_is_positive(cls: Type[ScheduledSchema], v: Optional[int]) -> Optional[int]:
