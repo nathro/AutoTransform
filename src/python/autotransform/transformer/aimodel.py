@@ -109,6 +109,7 @@ class AIModelTransformer(SingleTransformer):
         for i in range(self.max_completion_attempts):
             try:
                 result, result_data = self.model.get_result_for_item(item)
+                break
             except Exception as e:  # pylint: disable=broad-exception-caught
                 result = None
                 sleep(min(4 ** (i + 1), 60))
@@ -117,7 +118,7 @@ class AIModelTransformer(SingleTransformer):
                 )
 
         completion_success = False
-        for _ in range(self.max_validation_attempts):
+        for _ in range(1, self.max_validation_attempts):
             if result is None:
                 item.write_content(original_content)
                 return
