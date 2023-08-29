@@ -9,8 +9,6 @@
 
 """The implementation for the LocalRunner."""
 
-from __future__ import annotations
-
 from typing import ClassVar
 
 from autotransform.change.base import Change
@@ -34,7 +32,8 @@ class LocalRunner(Runner):
             schema (AutoTransformSchema): The schema that will be run.
         """
 
-        schema.run()
+        if schema:
+            schema.run()
 
     def update(self, change: Change) -> None:
         """Triggers an update of the Change.
@@ -43,6 +42,8 @@ class LocalRunner(Runner):
             change (Change): The Change to update.
         """
 
-        schema = change.get_schema()
-        batch = change.get_batch()
-        schema.execute_batch(batch, change)
+        if change:
+            schema = change.get_schema()
+            batch = change.get_batch()
+            if schema and batch:
+                schema.execute_batch(batch, change)
