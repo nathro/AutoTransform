@@ -51,8 +51,8 @@ class DirectoryInput(Input):
         if "path" in values:
             if "paths" in values:
                 raise ValueError("Can not supply both path and paths for DirectoryInput")
-            values["paths"] = set([str(values["path"])])
-        values["paths"] = list(set(values["paths"]))
+            values["paths"] = [str(values.pop("path"))]
+        values["paths"] = list(set(values.get("paths", [])))
         return values
 
     @cached_property
@@ -62,9 +62,9 @@ class DirectoryInput(Input):
         files = []
         for directory in self.paths:
             for path, _, dir_files in os.walk(Path(directory)):
-                files.extend([f"{path}/{file}" for file in dir_files])
+                files.extend([os.path.join(path, file) for file in dir_files])
             # Clean up file paths for consistency of use
-            files = [file.replace("\\", "/").removeprefix("./") for file in files]
+            files = [os.path.normpath(file) for file in files]
         return files
 
     def get_items(self) -> Sequence[FileItem]:

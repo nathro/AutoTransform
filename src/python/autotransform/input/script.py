@@ -53,8 +53,7 @@ class ScriptInput(Input):
         event_handler = EventHandler.get()
 
         # Get Command
-        cmd = [self.script]
-        cmd.extend(self.args)
+        cmd = [self.script] + self.args
 
         with NamedTemporaryFile(mode="r+b") as result_file:
             arg_replacements = {"<<RESULT_FILE>>": [result_file.name]}
@@ -71,19 +70,24 @@ class ScriptInput(Input):
                 timeout=self.timeout,
             )
 
-            if proc.stdout.strip() != "" and uses_result_file:
-                event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
+            stdout = proc.stdout.strip()
+            stderr = proc.stderr.strip()
+
+            if stdout and uses_result_file:
+                event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{stdout}"}))
             elif uses_result_file:
                 event_handler.handle(VerboseEvent({"message": "No STDOUT"}))
 
-            if proc.stderr.strip() != "":
-                event_handler.handle(VerboseEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
+            if stderr:
+                event_handler.handle(VerboseEvent({"message": f"STDERR:\n{stderr}"}))
             else:
                 event_handler.handle(VerboseEvent({"message": "No STDERR"}))
+
             proc.check_returncode()
+
             if uses_result_file:
                 with open(result_file.name, encoding="utf-8") as results:
                     item_data = json.loads(results.read())
             else:
-                item_data = json.loads(proc.stdout.strip())
+                item_data = json.loads(stdout)
         return [item_factory.get_instance(item) for item in item_data]

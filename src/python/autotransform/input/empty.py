@@ -9,8 +9,6 @@
 
 """The implementation for the EmptyInput."""
 
-from __future__ import annotations
-
 from typing import ClassVar, Sequence
 
 from autotransform.input.base import Input, InputName
@@ -34,4 +32,4 @@ class EmptyInput(Input):
         Returns:
             Sequence[Item]: An empty list of Items.
         """
-        return []
+        return tuple()  # Return an empty tuple instead of a list to ensure immutability
