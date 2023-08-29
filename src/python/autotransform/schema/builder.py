@@ -133,10 +133,8 @@ class SchemaBuilder(NamedComponent):
             path (str): The path of the file to dump the JSON encoded Schema to.
         """
 
-        # pylint: disable=unspecified-encoding
-
-        with open(path, "w") as file:
-            file.write(json.dumps(self.build().bundle(), indent=4))
+        with open(path, "w", encoding="utf-8") as file:
+            json.dump(self.build().bundle(), file, indent=4)
 
 
 FACTORY = ComponentFactory(
