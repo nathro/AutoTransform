@@ -52,11 +52,7 @@ class RequestHandler(BaseModel):
             Dict[str, Any]: The headers with constant replacers filled in.
         """
 
-        headers = dict(self.headers)
-        for name, replacer in self.constant_replacers.items():
-            headers = self.replace_values(headers, name, replacer)
-
-        return headers
+        return self._replace_values(self.headers)
 
     @cached_property
     def _params(self) -> Dict[str, Any]:
@@ -66,11 +62,7 @@ class RequestHandler(BaseModel):
             Dict[str, Any]: The params with constant replacers filled in.
         """
 
-        params = dict(self.params)
-        for name, replacer in self.constant_replacers.items():
-            params = self.replace_values(params, name, replacer)
-
-        return params
+        return self._replace_values(self.params)
 
     @cached_property
     def _data(self) -> Dict[str, Any]:
@@ -80,11 +72,23 @@ class RequestHandler(BaseModel):
             Dict[str, Any]: The data with constant replacers filled in.
         """
 
-        data = dict(self.data)
-        for name, replacer in self.constant_replacers.items():
-            data = self.replace_values(data, name, replacer)
+        return self._replace_values(self.data)
 
-        return data
+    def _replace_values(self, data: Mapping[str, Any]) -> Dict[str, Any]:
+        """Replaces values in a dictionary with values from a replacing function.
+
+        Args:
+            data (Mapping[str, Any]): The data to replace values for.
+
+        Returns:
+            Dict[str, Any]: The replaced data.
+        """
+
+        replaced_data = dict(data)
+        for name, replacer in self.constant_replacers.items():
+            replaced_data = self.replace_values(replaced_data, name, replacer)
+
+        return replaced_data
 
     @staticmethod
     def replace_values(
@@ -130,13 +134,9 @@ class RequestHandler(BaseModel):
 
         event_handler = EventHandler.get()
 
-        headers = self._headers
-        params = self._params
-        data = self._data
-        for name, replacer in replacers.items():
-            headers = self.replace_values(headers, name, replacer)
-            params = self.replace_values(params, name, replacer)
-            data = self.replace_values(data, name, replacer)
+        headers = self._replace_values_with_replacers(self._headers, replacers)
+        params = self._replace_values_with_replacers(self._params, replacers)
+        data = self._replace_values_with_replacers(self._data, replacers)
 
         if self.post:
             response = requests.post(
@@ -157,3 +157,22 @@ class RequestHandler(BaseModel):
             event_handler.handle(DebugEvent({"message": f"Response:\n{message}"}))
 
         return response
+
+    def _replace_values_with_replacers(
+        self, data: Dict[str, Any], replacers: Dict[str, Callable[[str], str]]
+    ) -> Dict[str, Any]:
+        """Replaces values in a dictionary with values from a replacing function.
+
+        Args:
+            data (Dict[str, Any]): The data to replace values for.
+            replacers (Dict[str, Callable[[str], str]]): The replacers to use for the request.
+
+        Returns:
+            Dict[str, Any]: The replaced data.
+        """
+
+        replaced_data = dict(data)
+        for name, replacer in replacers.items():
+            replaced_data = self.replace_values(replaced_data, name, replacer)
+
+        return replaced_data

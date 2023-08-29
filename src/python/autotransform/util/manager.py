@@ -59,11 +59,7 @@ class Manager(ComponentModel):
             run_local (bool, optional): Whether to use local runners. Defaults to False.
         """
 
-        if run_local:
-            runner = get_config().local_runner
-        else:
-            runner = get_config().remote_runner
-
+        runner = get_config().local_runner if run_local else get_config().remote_runner
         UpdateAction.set_runner(runner or LocalRunner())
 
         changes = self.repo.get_outstanding_changes()
@@ -90,9 +86,8 @@ class Manager(ComponentModel):
         """
 
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, "w+", encoding="UTF-8") as manager_file:
-            manager_file.write(json.dumps(self.bundle(), indent=4))
-            manager_file.flush()
+        with open(file_path, "w", encoding="UTF-8") as manager_file:
+            json.dump(self.bundle(), manager_file, indent=4)
 
     @staticmethod
     def read(file_path: str) -> Manager:
@@ -106,11 +101,11 @@ class Manager(ComponentModel):
         """
 
         with open(file_path, "r", encoding="UTF-8") as manager_file:
-            manager_json = manager_file.read()
+            manager_json = json.load(manager_file)
         EventHandler.get().handle(
             DebugEvent({"message": f"Manager: ({file_path})\n{manager_json}"})
         )
-        return Manager.from_json(manager_json)
+        return Manager.from_data(manager_json)
 
     @staticmethod
     def from_json(manager_json: str) -> Manager:
@@ -199,10 +194,7 @@ class Manager(ComponentModel):
 
         # Update stale changes
         if simple or choose_yes_or_no("Automatically update stale changes?"):
-            if simple:
-                days_stale = 7
-            else:
-                days_stale = input_int("Enter number of days until stale", min_val=1)
+            days_stale = 7 if simple else input_int("Enter number of days until stale", min_val=1)
             steps.append(
                 ConditionalStep(
                     condition=UpdatedAgoCondition(

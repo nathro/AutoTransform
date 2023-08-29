@@ -32,13 +32,10 @@ def get_package_dir() -> pathlib.Path:
         pathlib.Path: The package's directory.
     """
 
-    path = pathlib.Path(__file__)
-    for parent in path.parents:
-        if (parent / "examples").exists() or (parent / "autotransform-examples").exists():
-            return parent
+    path = pathlib.Path(__file__).parent
     while path.name != "autotransform":
         path = path.parent
-    return path.parent
+    return path
 
 
 def get_examples_dir() -> str:
@@ -50,12 +47,11 @@ def get_examples_dir() -> str:
 
     package_dir = get_package_dir()
     examples_dir = package_dir / "examples"
-    if examples_dir.exists():
-        return get_path_as_str(examples_dir)
-    examples_dir = package_dir / "autotransform-examples"
-    if examples_dir.exists():
-        return get_path_as_str(examples_dir)
-    raise FileNotFoundError()
+    if not examples_dir.exists():
+        examples_dir = package_dir / "autotransform-examples"
+    if not examples_dir.exists():
+        raise FileNotFoundError("Examples directory not found.")
+    return get_path_as_str(examples_dir)
 
 
 def get_config_dir() -> str:
@@ -65,8 +61,9 @@ def get_config_dir() -> str:
         str: The directory where configuration is stored.
     """
     package_dir = get_package_dir()
-    if (package_dir / "examples").exists():
-        config_dir = "config"
-    else:
-        config_dir = "autotransform-config"
-    return get_path_as_str(get_package_dir() / config_dir)
+    config_dir = (
+        package_dir / "config"
+        if (package_dir / "examples").exists()
+        else package_dir / "autotransform-config"
+    )
+    return get_path_as_str(config_dir)

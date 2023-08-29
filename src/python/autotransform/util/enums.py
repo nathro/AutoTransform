@@ -12,15 +12,21 @@
 from enum import Enum
 
 
-class AggregatorType(str, Enum):
+class AggregatorType(Enum):
     """A list of possible comparisons."""
 
     ALL = "all"
     ANY = "any"
 
+    def __str__(self):
+        return self.value
 
-class SchemaType(str, Enum):
+
+class SchemaType(Enum):
     """Possible types of Schemas to use."""
 
     BUILDER = "builder"
     FILE = "file"
+
+    def __str__(self):
+        return self.value
