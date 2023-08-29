@@ -106,19 +106,25 @@ class AIModelTransformer(SingleTransformer):
         original_content = item.get_content()
         batch: Batch = {"title": "test", "items": [item]}
 
+        result = None
+        result_data = None
         for i in range(self.max_completion_attempts):
             try:
                 result, result_data = self.model.get_result_for_item(item)
+                break
             except Exception as e:  # pylint: disable=broad-exception-caught
                 result = None
                 sleep(min(4 ** (i + 1), 60))
                 event_handler.handle(
-                    VerboseEvent({"message": f"Model Failure on {item.get_path()}: {e}"}),
+                    VerboseEvent({"message": f"Model failure on {item.get_path()}: {e}"}),
                 )
 
         completion_success = False
-        for _ in range(self.max_validation_attempts):
+        for _ in range(1, self.max_validation_attempts):
             if result is None:
+                event_handler.handle(
+                    VerboseEvent({"message": "Model failed, using original content"})
+                )
                 item.write_content(original_content)
                 return
 
@@ -153,17 +159,18 @@ class AIModelTransformer(SingleTransformer):
                         result_data,
                         failures,
                     )
+                    break
                 except Exception as e:  # pylint: disable=broad-exception-caught
                     result = None
                     sleep(min(4 ** (i + 1), 60))
                     event_handler.handle(
-                        VerboseEvent({"message": f"Model Failure on {item.get_path()}: {e}"}),
+                        VerboseEvent({"message": f"Model failure on {item.get_path()}: {e}"}),
                     )
 
         # If we had validation failures on our last run, just use the original content
         if not completion_success:
             event_handler.handle(
-                VerboseEvent({"message": "Completion failed, using original content"})
+                VerboseEvent({"message": "Model failed, using original content"})
             )
             item.write_content(original_content)
 
