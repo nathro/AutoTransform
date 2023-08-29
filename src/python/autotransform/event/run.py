@@ -31,8 +31,8 @@ class ScriptRunEvent(Event[ScriptRunEventData]):
     of the run.
     """
 
-    @staticmethod
-    def get_type() -> EventType:
+    @classmethod
+    def get_type(cls) -> EventType:
         """Used to represent the type of Event, output to logs.
 
         Returns:
@@ -41,8 +41,8 @@ class ScriptRunEvent(Event[ScriptRunEventData]):
 
         return EventType.SCRIPT_RUN
 
-    @staticmethod
-    def get_logging_level() -> LoggingLevel:
+    @classmethod
+    def get_logging_level(cls) -> LoggingLevel:
         """The logging level for events of this type.
 
         Returns:

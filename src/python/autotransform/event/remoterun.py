@@ -31,8 +31,8 @@ class RemoteRunEvent(Event[RemoteRunEventData]):
     on remote infrastructure.
     """
 
-    @staticmethod
-    def get_type() -> EventType:
+    @classmethod
+    def get_type(cls) -> EventType:
         """Used to represent the type of Event, output to logs.
 
         Returns:
@@ -41,8 +41,8 @@ class RemoteRunEvent(Event[RemoteRunEventData]):
 
         return EventType.REMOTE_RUN
 
-    @staticmethod
-    def get_logging_level() -> LoggingLevel:
+    @classmethod
+    def get_logging_level(cls) -> LoggingLevel:
         """The logging level for events of this type.
 
         Returns:

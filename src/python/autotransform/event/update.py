@@ -56,4 +56,4 @@ class RemoteUpdateEvent(Event[RemoteUpdateEventData]):
             str: The message for the event.
         """
 
-        return f"Remote update of {str(self.data['change'])!r}: {self.data['ref']}"
+        return f"Remote update of {self.data['change']!r}: {self.data['ref']}"

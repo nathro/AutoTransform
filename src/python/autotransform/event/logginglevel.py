@@ -11,15 +11,14 @@
 as if it is written to console.
 """
 
+from enum import Enum, auto
 
-from enum import Enum
 
-
-class LoggingLevel(int, Enum):
+class LoggingLevel(Enum):
     """The level of an Event, used to determine how it is handled."""
 
-    ERROR = 0
-    WARNING = 1
-    INFO = 2
-    VERBOSE = 3
-    DEBUG = 4
+    ERROR = auto()
+    WARNING = auto()
+    INFO = auto()
+    VERBOSE = auto()
+    DEBUG = auto()
