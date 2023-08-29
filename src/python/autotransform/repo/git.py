@@ -9,8 +9,6 @@
 
 """The implementation for the GitRepo."""
 
-from __future__ import annotations
-
 import re
 import subprocess
 from functools import cached_property
@@ -53,11 +51,10 @@ class GitRepo(Repo):
             List[str]: The changed files.
         """
 
-        if status.strip() == "":
-            return []
         return [
             re.sub(r"^(?:\?\?|M|A|D)", "", line.strip()).strip()
             for line in status.strip().split("\n")
+            if line.strip()
         ]
 
     @staticmethod
@@ -74,10 +71,11 @@ class GitRepo(Repo):
         # Handle titles of the format "[1/2] foo" that can come from chunk batching
         fixed_title = re.sub(r"\[(\d+)/(\d+)\]", r"\1_\2", title)
 
-        if autotransform.schema.current is not None:
-            schema_name = f"{autotransform.schema.current.config.schema_name}/"
-        else:
-            schema_name = ""
+        schema_name = (
+            f"{autotransform.schema.current.config.schema_name}/"
+            if autotransform.schema.current
+            else ""
+        )
 
         branch_name = f"{GitRepo.BRANCH_NAME_PREFIX}/{schema_name}{fixed_title}"
         # Replace bad characters
@@ -108,12 +106,12 @@ class GitRepo(Repo):
         """
 
         # Add a blank space before prefixes
-        if not title.startswith("["):
-            title = f" {title}"
-        if autotransform.schema.current is not None:
-            schema_name = f"[{autotransform.schema.current.config.schema_name}]"
-        else:
-            schema_name = ""
+        title = f" {title}" if not title.startswith("[") else title
+        schema_name = (
+            f"[{autotransform.schema.current.config.schema_name}]"
+            if autotransform.schema.current
+            else ""
+        )
         return f"{GitRepo.COMMIT_MESSAGE_PREFIX}{schema_name}{title}"
 
     @cached_property
@@ -195,10 +193,7 @@ class GitRepo(Repo):
             update(bool): Whether to update an existing change.
         """
 
-        if update:
-            self._local_repo.git.checkout("-B", GitRepo.get_branch_name(title))
-        else:
-            self._local_repo.git.checkout("-b", GitRepo.get_branch_name(title))
+        self._local_repo.git.checkout("-B" if update else "-b", GitRepo.get_branch_name(title))
         self._local_repo.git.add(all=True)
         self._local_repo.index.commit(GitRepo.get_commit_message(title))
 
