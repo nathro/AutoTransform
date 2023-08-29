@@ -9,8 +9,6 @@
 
 """The implementation for the RegexTransformer."""
 
-from __future__ import annotations
-
 import re
 from typing import ClassVar
 
@@ -43,9 +41,9 @@ class RegexTransformer(SingleTransformer):
             item (Item): The file that will be transformed.
         """
 
-        # pylint: disable=unspecified-encoding
+        if not isinstance(item, FileItem):
+            raise TypeError(f"Expected instance of type 'FileItem', got '{type(item).__name__}'")
 
-        assert isinstance(item, FileItem)
         content = item.get_content()
         new_content = re.sub(self.pattern, self.replacement, content)
         item.write_content(new_content)

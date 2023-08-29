@@ -88,7 +88,6 @@ class ScriptTransformer(Transformer[None]):
             if "chunk_size" in values and values["chunk_size"] != 1:
                 raise ValueError("Per item can not be specified with a chunk size that is not 1")
             values["chunk_size"] = 1
-            return values
         return values
 
     def transform(self, batch: Batch) -> None:
@@ -121,12 +120,14 @@ class ScriptTransformer(Transformer[None]):
 
             proc = run_cmd_on_items(cmd, chunk_items, metadata, timeout=self.timeout)
 
-            if proc.stdout.strip() != "":
-                event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
-            else:
-                event_handler.handle(VerboseEvent({"message": "No STDOUT"}))
-            if proc.stderr.strip() != "":
-                event_handler.handle(VerboseEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
-            else:
-                event_handler.handle(VerboseEvent({"message": "No STDERR"}))
+            stdout = proc.stdout.strip()
+            stderr = proc.stderr.strip()
+
+            event_handler.handle(
+                VerboseEvent({"message": f"STDOUT:\n{stdout}" if stdout else "No STDOUT"})
+            )
+            event_handler.handle(
+                VerboseEvent({"message": f"STDERR:\n{stderr}" if stderr else "No STDERR"})
+            )
+
             proc.check_returncode()

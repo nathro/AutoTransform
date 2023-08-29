@@ -9,10 +9,10 @@
 
 """The implementation for the JSCodeshiftTransformer. See https://github.com/facebook/jscodeshift"""
 
-from __future__ import annotations
+from typing import ClassVar, List
 
 import subprocess
-from typing import ClassVar, List
+from pydantic import Field
 
 from autotransform.event.handler import EventHandler
 from autotransform.event.verbose import VerboseEvent
@@ -20,7 +20,6 @@ from autotransform.item.base import Item
 from autotransform.item.file import FileItem
 from autotransform.transformer.base import TransformerName
 from autotransform.transformer.single import SingleTransformer
-from pydantic import Field
 
 
 class JSCodeshiftTransformer(SingleTransformer):
@@ -34,10 +33,8 @@ class JSCodeshiftTransformer(SingleTransformer):
     """
 
     js_transform: str
-
     args: List[str] = Field(default_factory=list)
     timeout: int = 600
-
     name: ClassVar[TransformerName] = TransformerName.JSCODESHIFT
 
     def _transform_item(self, item: Item) -> None:
@@ -50,8 +47,7 @@ class JSCodeshiftTransformer(SingleTransformer):
         assert isinstance(item, FileItem)
         event_handler = EventHandler.get()
 
-        cmd = ["jscodeshift", "-t", self.js_transform, item.get_path()]
-        cmd.extend(self.args)
+        cmd = ["jscodeshift", "-t", self.js_transform, item.get_path(), *self.args]
 
         # Run JSCodeshift
         event_handler.handle(VerboseEvent({"message": f"Running command: {cmd}"}))
@@ -62,12 +58,15 @@ class JSCodeshiftTransformer(SingleTransformer):
             check=False,
             timeout=self.timeout,
         )
-        if proc.stdout.strip() != "":
-            event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
-        else:
-            event_handler.handle(VerboseEvent({"message": "No STDOUT"}))
-        if proc.stderr.strip() != "":
-            event_handler.handle(VerboseEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
-        else:
-            event_handler.handle(VerboseEvent({"message": "No STDERR"}))
+
+        stdout = proc.stdout.strip()
+        stderr = proc.stderr.strip()
+
+        event_handler.handle(
+            VerboseEvent({"message": f"STDOUT:\n{stdout}" if stdout else "No STDOUT"})
+        )
+        event_handler.handle(
+            VerboseEvent({"message": f"STDERR:\n{stderr}" if stderr else "No STDERR"})
+        )
+
         proc.check_returncode()
