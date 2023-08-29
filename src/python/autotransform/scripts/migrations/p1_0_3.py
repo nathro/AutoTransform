@@ -44,6 +44,19 @@ def get_arg_parser() -> ArgumentParser:
     return parser
 
 
+def load_json_file(file_path: str) -> Dict[str, Any]:
+    """Load JSON data from a file.
+
+    Args:
+        file_path (str): The path to the JSON file.
+
+    Returns:
+        Dict[str, Any]: The loaded JSON data.
+    """
+    with open(file_path, "r", encoding="UTF-8") as json_file:
+        return json.loads(json_file.read())
+
+
 def main() -> None:
     """Migrate Scheduler and Schema map for 1.0.2 -> 1.0.3."""
 
@@ -51,14 +64,9 @@ def main() -> None:
     args = parser.parse_args()
 
     # Get existing Scheduler data
-    file_path = args.path
-    if file_path is None:
-        file_path = f"{get_repo_config_relative_path()}/scheduler.json"
+    file_path = args.path or f"{get_repo_config_relative_path()}/scheduler.json"
 
-    with open(file_path, "r", encoding="UTF-8") as scheduler_file:
-        scheduler_json = scheduler_file.read()
-
-    scheduler_data = json.loads(scheduler_json)
+    scheduler_data = load_json_file(file_path)
 
     schema_map = SchemaMap.get()
     update_scheduler_data(scheduler_data, schema_map)
@@ -87,8 +95,7 @@ def update_scheduler_data(scheduler_data: Dict[str, Any], schema_map: SchemaMap)
         if schema_type == SchemaType.BUILDER:
             schema = schema_builder_factory.get_instance({"name": schema_target}).build()
         else:
-            with open(schema_target, "r", encoding="UTF-8") as schema_file:
-                schema = AutoTransformSchema.from_data(json.loads(schema_file.read()))
+            schema = AutoTransformSchema.from_data(load_json_file(schema_target))
         schema_name = schema.config.schema_name
         del schema_data["target"]
         del schema_data["type"]
