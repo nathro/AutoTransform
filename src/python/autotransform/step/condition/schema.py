@@ -9,9 +9,7 @@
 
 """The implementation for the SchemaNameCondition."""
 
-from __future__ import annotations
-
-from typing import ClassVar, List
+from typing import ClassVar, List, Union
 
 from autotransform.change.base import Change
 from autotransform.step.condition.base import ComparisonCondition, ConditionName
@@ -24,12 +22,12 @@ class SchemaNameCondition(ComparisonCondition[str]):
 
     Attributes:
         comparison (ComparisonType): The type of comparison to perform.
-        value (str | List[str]): The schema name(s) to compare against.
+        value (Union[str, List[str]]): The schema name(s) to compare against.
         name (ClassVar[ConditionName]): The name of the Component.
     """
 
     comparison: ComparisonType
-    value: str | List[str]
+    value: Union[str, List[str]]
 
     name: ClassVar[ConditionName] = ConditionName.SCHEMA_NAME
 

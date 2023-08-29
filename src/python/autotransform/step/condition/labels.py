@@ -9,8 +9,6 @@
 
 """The implementation for Conditions based on labels."""
 
-from __future__ import annotations
-
 from typing import ClassVar, List, Optional
 
 from autotransform.change.base import Change
@@ -23,7 +21,7 @@ class LabelsCondition(ListComparisonCondition[str]):
 
     Attributes:
         comparison (ComparisonType): The type of comparison to perform.
-        value (optional, Optional[str]): The label to check for. Defaults to None.
+        value (Optional[str], optional): The label to check for. Defaults to None.
         name (ClassVar[ConditionName]): The name of the Component.
     """
 

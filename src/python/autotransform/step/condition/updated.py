@@ -9,14 +9,12 @@
 
 """The implementation for all conditions handling when a Change was updated."""
 
-from __future__ import annotations
-
-import time
-from typing import ClassVar, List
+from typing import ClassVar, List, Union
 
 from autotransform.change.base import Change
 from autotransform.step.condition.base import ConditionName, SortableComparisonCondition
 from autotransform.step.condition.comparison import ComparisonType
+from time import time as current_time
 
 
 class UpdatedAgoCondition(SortableComparisonCondition[int]):
@@ -25,12 +23,12 @@ class UpdatedAgoCondition(SortableComparisonCondition[int]):
 
     Attributes:
         comparison (ComparisonType): The type of comparison to perform.
-        value (int | List[int]): The number of seconds to compare against.
+        value (Union[int, List[int]]): The number of seconds to compare against.
         name (ClassVar[ConditionName]): The name of the Component.
     """
 
     comparison: ComparisonType
-    value: int | List[int]
+    value: Union[int, List[int]]
 
     name: ClassVar[ConditionName] = ConditionName.UPDATED_AGO
 
@@ -44,4 +42,4 @@ class UpdatedAgoCondition(SortableComparisonCondition[int]):
             int: How long ago the Change was updated.
         """
 
-        return int(time.time() - change.get_last_updated_timestamp())
+        return int(current_time() - change.get_last_updated_timestamp())

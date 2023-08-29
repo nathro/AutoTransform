@@ -9,11 +9,9 @@
 
 """The implementation for the CreatedAgoCondition."""
 
-from __future__ import annotations
+from typing import ClassVar, List, Union
 
 import time
-from typing import ClassVar, List
-
 from autotransform.change.base import Change
 from autotransform.step.condition.base import ConditionName, SortableComparisonCondition
 from autotransform.step.condition.comparison import ComparisonType
@@ -25,12 +23,12 @@ class CreatedAgoCondition(SortableComparisonCondition[int]):
 
     Attributes:
         comparison (ComparisonType): The type of comparison to perform.
-        value (int | List[int]): The number of seconds to compare against.
+        value (Union[int, List[int]]): The number of seconds to compare against.
         name (ClassVar[ConditionName]): The name of the Component.
     """
 
     comparison: ComparisonType
-    value: int | List[int]
+    value: Union[int, List[int]]
 
     name: ClassVar[ConditionName] = ConditionName.CREATED_AGO
 
