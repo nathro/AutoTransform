@@ -13,8 +13,6 @@ from __future__ import annotations
 
 from typing import List, Optional, Type
 
-from pydantic import Field, validator
-
 from autotransform.util.component import ComponentModel
 from autotransform.util.console import (
     choose_option,
@@ -24,6 +22,7 @@ from autotransform.util.console import (
     input_int,
 )
 from autotransform.validator.base import ValidationResultLevel
+from pydantic import Field, validator
 
 
 class SchemaConfig(ComponentModel):  # pylint: disable=too-few-public-methods
@@ -44,7 +43,6 @@ class SchemaConfig(ComponentModel):  # pylint: disable=too-few-public-methods
     max_submissions: Optional[int] = None
     owners: List[str] = Field(default_factory=list)
 
-    # pylint: disable=invalid-name
     @validator("max_submissions")
     @classmethod
     def max_submissions_is_positive(cls: Type[SchemaConfig], v: Optional[int]) -> Optional[int]:

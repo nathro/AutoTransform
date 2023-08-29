@@ -21,6 +21,7 @@ Core
    autotransform.step
    autotransform.event
    autotransform.util
+   autotransform.model
 
 Schema Components
 -----------------

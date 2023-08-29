@@ -50,7 +50,6 @@ class ScriptTransformer(Transformer[None]):
 
     name: ClassVar[TransformerName] = TransformerName.SCRIPT
 
-    # pylint: disable=invalid-name
     @validator("chunk_size")
     @classmethod
     def chunk_size_must_be_positive(cls, v: Optional[int]) -> Optional[int]:

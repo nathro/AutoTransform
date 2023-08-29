@@ -15,11 +15,10 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Any, ClassVar, Dict, Generic, List, Optional, Set, Type, TypeVar
 
-from pydantic import root_validator, validator
-
 from autotransform.change.base import Change
 from autotransform.step.condition.comparison import ComparisonType, compare
 from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
+from pydantic import root_validator, validator
 
 
 class ConditionName(str, Enum):
@@ -149,7 +148,6 @@ class ComparisonCondition(Generic[T], Condition):
 
         return values
 
-    # pylint: disable=invalid-name
     @validator("comparison")
     @classmethod
     def comparison_type_is_valid(
@@ -290,7 +288,6 @@ class ListComparisonCondition(Generic[T], Condition):
             ComparisonType.NOT_EMPTY,
         }
 
-    # pylint: disable=invalid-name
     @validator("comparison")
     @classmethod
     def comparison_type_is_valid(

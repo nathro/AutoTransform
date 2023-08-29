@@ -24,9 +24,9 @@ TResult = TypeVar("TResult", bound=Optional[Mapping[str, Any]])
 class TransformerName(str, Enum):
     """A simple enum for mapping."""
 
+    AI_MODEL = "ai_model"
     JSCODESHIFT = "jscodeshift"
     LIBCST = "libcst"
-    OPEN_AI = "open_ai"
     REGEX = "regex"
     SCRIPT = "script"
 
@@ -54,14 +54,14 @@ class Transformer(Generic[TResult], NamedComponent):
 
 FACTORY = ComponentFactory(
     {
+        TransformerName.AI_MODEL: ComponentImport(
+            class_name="AIModelTransformer", module="autotransform.transformer.aimodel"
+        ),
         TransformerName.JSCODESHIFT: ComponentImport(
             class_name="JSCodeshiftTransformer", module="autotransform.transformer.jscodeshift"
         ),
         TransformerName.LIBCST: ComponentImport(
             class_name="LibCSTTransformer", module="autotransform.transformer.libcst"
-        ),
-        TransformerName.OPEN_AI: ComponentImport(
-            class_name="OpenAITransformer", module="autotransform.transformer.openai"
         ),
         TransformerName.REGEX: ComponentImport(
             class_name="RegexTransformer", module="autotransform.transformer.regex"

@@ -11,10 +11,9 @@
 
 from typing import ClassVar, List
 
-from pydantic import validator
-
 from autotransform.change.base import Change
 from autotransform.step.action.base import Action, ActionName
+from pydantic import validator
 
 
 class AddLabelsAction(Action):
@@ -29,7 +28,6 @@ class AddLabelsAction(Action):
 
     name: ClassVar[ActionName] = ActionName.ADD_LABELS
 
-    # pylint: disable=invalid-name
     @validator("labels")
     @classmethod
     def labels_must_be_non_empty(cls, v: List[str]) -> List[str]:
@@ -76,7 +74,6 @@ class RemoveLabelAction(Action):
 
     name: ClassVar[ActionName] = ActionName.REMOVE_LABEL
 
-    # pylint: disable=invalid-name
     @validator("label")
     @classmethod
     def label_must_be_non_empty(cls, v: str) -> str:

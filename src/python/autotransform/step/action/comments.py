@@ -11,10 +11,9 @@
 
 from typing import ClassVar
 
-from pydantic import validator
-
 from autotransform.change.base import Change
 from autotransform.step.action.base import Action, ActionName
+from pydantic import validator
 
 
 class CommentAction(Action):
@@ -29,7 +28,6 @@ class CommentAction(Action):
 
     name: ClassVar[ActionName] = ActionName.COMMENT
 
-    # pylint: disable=invalid-name
     @validator("body")
     @classmethod
     def body_must_be_non_empty(cls, v: str) -> str:
