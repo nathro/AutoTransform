@@ -23,7 +23,7 @@
         "model": {
             "name": "open_ai",
             "prompt": "The file you are looking to improve is\n```python\n<<FILE_CONTENT>>\n```. The results of improvement are\n",
-            "model": "gpt-4",
+            "model_name": "gpt-4",
             "system_message": "You are a world class Python developer looking to improve code you find in the repo. The code is written in Python 3.10. You should avoid changing inheritance. You do not need to improve everything, only issues you are confident about. You don't remove license headers or comments. If no changes are needed, you would return the code as is. You should return the full file in your response, not just the changes. You can only modify the file provided, not other files.",
             "temperature": 0.01
         },
