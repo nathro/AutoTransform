@@ -59,7 +59,7 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
             int: The unmodified temperature.
         """
 
-        if v >= 1.0 or v <= 0.0:
+        if not 0.0 < v < 1.0:
             raise ValueError("The temperature must be between 0.0 and 1.0")
         return v
 
@@ -74,8 +74,7 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
                 messages.
         """
 
-        if openai.api_key is None:
-            openai.api_key = get_config().open_ai_api_key
+        openai.api_key = openai.api_key or get_config().open_ai_api_key
 
         # Set up messages for prompt
         messages = []
@@ -117,8 +116,9 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
                 for future completions.
         """
 
-        failures = [str(validation_result.message) for validation_result in validation_failures]
-        failure_message = "\n".join(failures)
+        failure_message = "\n".join(
+            str(validation_result.message) for validation_result in validation_failures
+        )
         result_data.append(
             {
                 "role": "user",
@@ -149,8 +149,9 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
         Returns:
             str: The prompt with sentinel values replaced.
         """
-        new_prompt = prompt.replace("<<FILE_PATH>>", item.get_path())
-        return new_prompt.replace("<<FILE_CONTENT>>", item.get_content())
+        return prompt.replace("<<FILE_PATH>>", item.get_path()).replace(
+            "<<FILE_CONTENT>>", item.get_content()
+        )
 
     def _extract_code_from_completion(self, result: str) -> str:
         """Extracts code from the result of an OpenAI completition.
