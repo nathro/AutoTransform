@@ -66,20 +66,32 @@ class ScriptCommand(Command):
             _transform_data (Optional[Mapping[str, Any]]): Data from the transformation. Unused.
         """
 
-        if not self.per_item:
-            self._run_batch(batch)
+        items = self._get_items(batch)
+
+        if self.per_item:
+            for item in items:
+                self._run_single(item, batch.get("metadata", None))
             return
+
+        self._run_batch(batch, items)
+
+    def _get_items(self, batch: Batch) -> Sequence[Item]:
+        """Get items based on the run_on_changes flag.
+
+        Args:
+            batch (Batch): The transformed Batch to run against.
+
+        Returns:
+            Sequence[Item]: The sequence of items to be processed.
+        """
         if self.run_on_changes:
             current_schema = autotransform.schema.current
             assert current_schema is not None
             repo = current_schema.repo
             assert repo is not None
-            items: Sequence[Item] = [FileItem(key=file) for file in repo.get_changed_files(batch)]
-        else:
-            items = batch["items"]
+            return [FileItem(key=file) for file in repo.get_changed_files(batch)]
 
-        for item in items:
-            self._run_single(item, batch.get("metadata", None))
+        return batch["items"]
 
     def _run_single(self, item: Item, batch_metadata: Optional[Mapping[str, Any]]) -> None:
         """Executes a simple script to run a command on a single Item.
@@ -89,52 +101,31 @@ class ScriptCommand(Command):
             batch_metadata (Optional[Mapping[str, Any]]): The metadata of the Batch containing the
                 Item.
         """
+        self._run_script([item], batch_metadata or {})
 
-        event_handler = EventHandler.get()
-
-        # Get Command
-        cmd = [self.script]
-        cmd.extend(self.args)
-
-        proc = run_cmd_on_items(cmd, [item], batch_metadata or {})
-
-        # Handle output
-        if proc.stdout.strip() != "":
-            event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
-        else:
-            event_handler.handle(VerboseEvent({"message": "No STDOUT"}))
-        if proc.stderr.strip() != "":
-            event_handler.handle(VerboseEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
-        else:
-            event_handler.handle(VerboseEvent({"message": "No STDERR"}))
-        proc.check_returncode()
-
-    def _run_batch(self, batch: Batch) -> None:
+    def _run_batch(self, batch: Batch, items: Sequence[Item]) -> None:
         """Executes a simple script against the given Batch.
 
         Args:
             batch (Batch): The batch that will be run against.
+            items (Sequence[Item]): The sequence of items to be processed.
         """
+        self._run_script(items, batch.get("metadata", {}))
 
+    def _run_script(self, items: Sequence[Item], metadata: Mapping[str, Any]) -> None:
+        """Executes a simple script against the given items.
+
+        Args:
+            items (Sequence[Item]): The sequence of items to be processed.
+            metadata (Mapping[str, Any]): The metadata of the Batch containing the items.
+        """
         event_handler = EventHandler.get()
-
-        # Get items
-        if self.run_on_changes:
-            current_schema = autotransform.schema.current
-            assert current_schema is not None
-            repo = current_schema.repo
-            assert repo is not None
-            items: Sequence[Item] = [FileItem(key=file) for file in repo.get_changed_files(batch)]
-            if len(items) == 0:
-                return
-        else:
-            items = batch["items"]
 
         # Get Command
         cmd = [self.script]
         cmd.extend(self.args)
 
-        proc = run_cmd_on_items(cmd, items, batch.get("metadata", {}))
+        proc = run_cmd_on_items(cmd, items, metadata)
 
         # Handle output
         if proc.stdout.strip() != "":
