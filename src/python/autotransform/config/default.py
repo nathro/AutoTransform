@@ -34,14 +34,10 @@ class DefaultConfigFetcher(ConfigFetcher):
             Config: The Config for AutoTransform.
         """
 
-        potential_paths = [
-            get_config_dir(),
-            get_repo_config_dir(),
-            get_cwd_config_dir(),
-        ]
-        config_paths = [
-            f"{path}/{CONFIG_FILE_NAME}" for path in potential_paths if path is not None
-        ]
+        potential_paths = filter(
+            None, [get_config_dir(), get_repo_config_dir(), get_cwd_config_dir()]
+        )
+        config_paths = [f"{path}/{CONFIG_FILE_NAME}" for path in potential_paths]
         config = Config()
         for path in config_paths:
             config = config.merge(Config.read(path))

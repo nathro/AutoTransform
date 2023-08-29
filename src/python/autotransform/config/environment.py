@@ -15,7 +15,6 @@ import os
 from autotransform.config.config import Config
 from autotransform.config.default import DefaultConfigFetcher
 from autotransform.config.fetcher import ConfigFetcher
-from autotransform.repo.base import FACTORY as repo_factory
 from autotransform.runner.base import FACTORY as runner_factory
 
 
@@ -34,23 +33,9 @@ class EnvironmentConfigFetcher(ConfigFetcher):  # pylint: disable=too-few-public
             Config: The Config for AutoTransform.
         """
 
-        local_runner_json = os.getenv("AUTO_TRANSFORM_LOCAL_RUNNER")
-        if local_runner_json is not None:
-            local_runner = runner_factory.get_instance(json.loads(local_runner_json))
-        else:
-            local_runner = None
-
-        remote_runner_json = os.getenv("AUTO_TRANSFORM_REMOTE_RUNNER")
-        if remote_runner_json is not None:
-            remote_runner = runner_factory.get_instance(json.loads(remote_runner_json))
-        else:
-            remote_runner = None
-
-        repo_override_json = os.getenv("AUTO_TRANSFORM_REPO_OVERRIDE")
-        if repo_override_json is not None:
-            repo_override = repo_factory.get_instance(json.loads(repo_override_json))
-        else:
-            repo_override = None
+        local_runner = self._get_instance_from_env("AUTO_TRANSFORM_LOCAL_RUNNER")
+        remote_runner = self._get_instance_from_env("AUTO_TRANSFORM_REMOTE_RUNNER")
+        repo_override = self._get_instance_from_env("AUTO_TRANSFORM_REPO_OVERRIDE")
 
         config = Config(
             github_token=os.getenv("AUTO_TRANSFORM_GITHUB_TOKEN"),
@@ -69,3 +54,18 @@ class EnvironmentConfigFetcher(ConfigFetcher):  # pylint: disable=too-few-public
             config = DefaultConfigFetcher().get_config().merge(config)
 
         return config
+
+    @staticmethod
+    def _get_instance_from_env(env_var: str):
+        """Fetch the instance from environment variable.
+
+        Args:
+            env_var (str): The environment variable.
+
+        Returns:
+            Instance or None: The instance or None if the environment variable is not set.
+        """
+        instance_json = os.getenv(env_var)
+        if instance_json is not None:
+            return runner_factory.get_instance(json.loads(instance_json))
+        return None

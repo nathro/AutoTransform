@@ -51,8 +51,8 @@ def get_repo_config_dir() -> Optional[str]:
     try:
         dir_cmd = ["git", "rev-parse", "--show-toplevel"]
         repo_dir = subprocess.check_output(dir_cmd, encoding="UTF-8").replace("\\", "/").strip()
-        return f"{repo_dir}/{get_repo_config_relative_path()}"
-    except Exception:  # pylint: disable=broad-except
+        return os.path.join(repo_dir, get_repo_config_relative_path())
+    except subprocess.CalledProcessError:
         return None
 
 
@@ -66,8 +66,7 @@ def get_cwd_config_dir() -> str:
     """
 
     relative_path = os.getenv("AUTO_TRANSFORM_CWD_CONFIG_PATH", "autotransform")
-    cwd = os.getcwd().replace("\\", "/")
-    return f"{cwd}/{relative_path}"
+    return os.path.join(os.getcwd(), relative_path)
 
 
 @cache
@@ -83,27 +82,24 @@ def get_config() -> Config:
     from autotransform.config.environment import EnvironmentConfigFetcher
     from autotransform.config.fetcher import ConfigFetcher, ConfigFetcherName
 
-    fetcher_to_use = os.getenv("AUTO_TRANSFORM_CONFIG")
+    fetcher_to_use = os.getenv("AUTO_TRANSFORM_CONFIG", "")
 
     fetchers: Dict[str, ConfigFetcher] = {
         ConfigFetcherName.DEFAULT: DefaultConfigFetcher(),
         ConfigFetcherName.ENVIRONMENT: EnvironmentConfigFetcher(),
     }
 
-    if fetcher_to_use is not None:
-        if fetcher_to_use in fetchers:
-            fetcher: ConfigFetcher = fetchers[fetcher_to_use]
-        else:
-            try:
-                fetcher_info = json.loads(fetcher_to_use)
-                module = importlib.import_module(fetcher_info["module"])
-                fetcher = getattr(module, fetcher_info["class_name"]).from_data(
-                    fetcher_info.get("data", {})
-                )
-                assert isinstance(fetcher, ConfigFetcher)
-            except Exception:  # pylint: disable=broad-except
-                fetcher = DefaultConfigFetcher()
-    else:
-        fetcher = DefaultConfigFetcher()
+    fetcher = fetchers.get(fetcher_to_use, DefaultConfigFetcher())
+
+    if fetcher_to_use and fetcher_to_use not in fetchers:
+        try:
+            fetcher_info = json.loads(fetcher_to_use)
+            module = importlib.import_module(fetcher_info["module"])
+            fetcher = getattr(module, fetcher_info["class_name"]).from_data(
+                fetcher_info.get("data", {})
+            )
+            assert isinstance(fetcher, ConfigFetcher)
+        except (json.JSONDecodeError, ImportError, AttributeError, AssertionError):
+            fetcher = DefaultConfigFetcher()
 
     return fetcher.get_config()
