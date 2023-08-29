@@ -9,4 +9,4 @@
 
 """Steps are used by the Manager to determine how to handle outstanding Changes
 from AutoTransform. Merging accepted changes, abandoning rejected ones, updating
-stale one, are all examples of potential steps."""
+stale ones, are all examples of potential steps."""
