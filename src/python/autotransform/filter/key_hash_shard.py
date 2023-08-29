@@ -9,8 +9,6 @@
 
 """The implementation for the KeyHashShardFilter."""
 
-from __future__ import annotations
-
 from hashlib import md5
 from typing import ClassVar
 
@@ -38,4 +36,9 @@ class KeyHashShardFilter(ShardFilter):
             int: The shard number for the Item.
         """
 
-        return int(md5(item.key.encode("UTF-8")).hexdigest(), 16) % self.num_shards
+        # Ensure the key is encoded in UTF-8 before hashing
+        encoded_key = item.key.encode("UTF-8")
+        hashed_key = md5(encoded_key).hexdigest()
+
+        # Convert the hexadecimal hash to an integer and return the shard number
+        return int(hashed_key, 16) % self.num_shards
