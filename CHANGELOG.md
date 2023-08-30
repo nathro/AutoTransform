@@ -14,6 +14,7 @@
 - Fix ScriptCommand to return when run_on_changes is set to true for batch runs and no changes are present.
 - Splits Gists apart to support batches with large numbers of items that can't be read from a single Gist in API requests
 - Fix ScriptTransformer when run with no items
+- Fix GithubRunner when using repo_override rather than schema repos
 
 ## Release 1.1.0
 
