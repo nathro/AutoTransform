@@ -9,8 +9,6 @@
 
 """The implementation for the AggregateCondition."""
 
-from __future__ import annotations
-
 from typing import Any, ClassVar, Dict, List, Type
 
 from autotransform.change.base import Change
@@ -44,16 +42,11 @@ class AggregateCondition(Condition):
             bool: Whether the Change passes the Condition.
         """
 
-        if self.aggregator == AggregatorType.ALL:
-            return all(condition.check(change) for condition in self.conditions)
-
-        if self.aggregator == AggregatorType.ANY:
-            return any(condition.check(change) for condition in self.conditions)
-
-        raise ValueError(f"Unknown aggregator type {self.aggregator}")
+        aggregator_check = all if self.aggregator == AggregatorType.ALL else any
+        return aggregator_check(condition.check(change) for condition in self.conditions)
 
     @classmethod
-    def from_data(cls: Type[AggregateCondition], data: Dict[str, Any]) -> AggregateCondition:
+    def from_data(cls: Type["AggregateCondition"], data: Dict[str, Any]) -> "AggregateCondition":
         """Produces an instance of the component from decoded data.
 
         Args:
@@ -64,9 +57,9 @@ class AggregateCondition(Condition):
         """
 
         aggregator = (
-            data["aggregator"]
-            if isinstance(data["aggregator"], AggregatorType)
-            else AggregatorType(data["aggregator"])
+            AggregatorType(data["aggregator"])
+            if isinstance(data["aggregator"], str)
+            else data["aggregator"]
         )
         conditions = [condition_factory.get_instance(condition) for condition in data["conditions"]]
         return cls(aggregator=aggregator, conditions=conditions)

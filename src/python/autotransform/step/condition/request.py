@@ -72,7 +72,7 @@ class RequestStrCondition(ComparisonCondition[str]):
             params=self.params,
             log_response=self.log_response,
             post=self.post,
-            constant_replacers={"env": lambda var: str(os.getenv(var) or "")},
+            constant_replacers={"env": lambda var: os.getenv(var, "")},
         )
 
     def get_val_from_change(self, change: Change) -> str:
@@ -85,15 +85,13 @@ class RequestStrCondition(ComparisonCondition[str]):
             str: The value from the Change to compare against.
         """
 
-        response = self._handler.get_response(
-            ({"change": lambda name: str(getattr(change, name) or "")})
-        )
+        response = self._handler.get_response(({"change": lambda name: getattr(change, name, "")}))
 
         if not self.response_field:
             return response.text
 
         result = response.json()
         for field_name in self.response_field.split("//"):
-            result = result[field_name]
+            result = result.get(field_name)
 
         return str(result)
