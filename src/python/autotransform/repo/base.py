@@ -9,8 +9,6 @@
 
 """The base class and associated classes for Repo components."""
 
-from __future__ import annotations
-
 from abc import abstractmethod
 from enum import Enum
 from typing import Any, ClassVar, List, Mapping, Optional, Sequence
@@ -58,7 +56,7 @@ class Repo(NamedComponent):
             bool: Returns True if there are any changes to the codebase.
         """
 
-        return len(self.get_changed_files(batch)) > 0
+        return bool(self.get_changed_files(batch))
 
     @abstractmethod
     def has_outstanding_change(self, batch: Batch) -> bool:
