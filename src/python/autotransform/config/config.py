@@ -552,7 +552,8 @@ class Config(ComponentModel):
                     prev_config=prev_config, simple=simple
                 ),
                 open_ai_api_key=Config.get_open_ai_api_key_from_console(
-                    prev_config=prev_config, simple=simple,
+                    prev_config=prev_config,
+                    simple=simple,
                 ),
                 remote_runner=Config.get_remote_runner_from_console(
                     prev_config=prev_config, use_github=github, use_jenkins=jenkins, simple=simple

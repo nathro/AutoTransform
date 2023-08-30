@@ -169,9 +169,7 @@ class AIModelTransformer(SingleTransformer):
 
         # If we had validation failures on our last run, just use the original content
         if not completion_success:
-            event_handler.handle(
-                VerboseEvent({"message": "Model failed, using original content"})
-            )
+            event_handler.handle(VerboseEvent({"message": "Model failed, using original content"}))
             item.write_content(original_content)
 
     @classmethod
