@@ -9,8 +9,6 @@
 
 """The implementation for regex based filters, including RegexFilter and FileContentRegexFilter."""
 
-from __future__ import annotations
-
 import re
 from typing import ClassVar
 
@@ -29,7 +27,6 @@ class RegexFilter(Filter):
     """
 
     pattern: str
-
     name: ClassVar[FilterName] = FilterName.REGEX
 
     def _is_valid(self, item: Item) -> bool:
@@ -42,7 +39,7 @@ class RegexFilter(Filter):
             bool: Returns True if the pattern is found within the key.
         """
 
-        return re.search(self.pattern, item.key) is not None
+        return bool(re.search(self.pattern, item.key))
 
 
 class RegexFileContentFilter(Filter):
@@ -55,7 +52,6 @@ class RegexFileContentFilter(Filter):
     """
 
     pattern: str
-
     name: ClassVar[FilterName] = FilterName.REGEX_FILE_CONTENT
 
     def _is_valid(self, item: Item) -> bool:
@@ -68,5 +64,6 @@ class RegexFileContentFilter(Filter):
             bool: Returns True if the pattern is found within the file's content.
         """
 
-        assert isinstance(item, FileItem)
-        return re.search(self.pattern, item.get_content()) is not None
+        if not isinstance(item, FileItem):
+            return False
+        return bool(re.search(self.pattern, item.get_content()))

@@ -89,16 +89,19 @@ class ScriptFilter(BulkFilter):
                     timeout=self.timeout,
                 )
 
-                if proc.stdout.strip() != "" and uses_result_file:
+                stdout = proc.stdout.strip()
+                stderr = proc.stderr.strip()
+
+                if stdout and uses_result_file:
                     event_handler.handle(
-                        VerboseEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}),
+                        VerboseEvent({"message": f"STDOUT:\n{stdout}"}),
                     )
                 elif uses_result_file:
                     event_handler.handle(VerboseEvent({"message": "No STDOUT"}))
 
-                if proc.stderr.strip() != "":
+                if stderr:
                     event_handler.handle(
-                        VerboseEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}),
+                        VerboseEvent({"message": f"STDERR:\n{stderr}"}),
                     )
                 else:
                     event_handler.handle(VerboseEvent({"message": "No STDERR"}))
@@ -107,6 +110,6 @@ class ScriptFilter(BulkFilter):
                     with open(res_file.name, encoding="utf-8") as results:
                         key_data = json.loads(results.read())
                 else:
-                    key_data = json.loads(proc.stdout.strip())
+                    key_data = json.loads(stdout)
                 valid_keys = valid_keys.union(set(key_data))
         return valid_keys
