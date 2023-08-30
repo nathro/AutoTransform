@@ -9,6 +9,7 @@
 
 """The implementation for the OpenAIModel."""
 
+from copy import deepcopy
 from typing import Any, ClassVar, Dict, List, Optional, Sequence, Tuple
 
 import openai  # pylint: disable=import-error
@@ -116,10 +117,11 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
                 for future completions.
         """
 
+        messages = deepcopy(result_data)
         failure_message = "\n".join(
             str(validation_result.message) for validation_result in validation_failures
         )
-        result_data.append(
+        messages.append(
             {
                 "role": "user",
                 "content": f"The following errors were found\n{failure_message}\n\n"
@@ -129,15 +131,15 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
 
         chat_completion = openai.ChatCompletion.create(
             model=self.model_name,
-            messages=result_data,
+            messages=messages,
             temperature=self.temperature,
         )
 
         completion_result = chat_completion.choices[0].message.content
-        result_data.append({"role": "assistant", "content": completion_result})
+        messages.append({"role": "assistant", "content": completion_result})
 
         self._log_info(item, chat_completion)
-        return (self._extract_code_from_completion(completion_result), result_data)
+        return (self._extract_code_from_completion(completion_result), messages)
 
     def _replace_sentinel_values(self, prompt: str, item: FileItem) -> str:
         """Replaces sentinel values in a prompt.
