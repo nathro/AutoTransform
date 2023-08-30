@@ -101,7 +101,6 @@ class BulkFilter(Filter):
         if self._valid_keys is None:
             self._valid_keys = self._get_valid_keys(items)
 
-
     def _is_valid(self, item: Item) -> bool:
         """Check whether an Item is valid based on the Filter. Does not handle inversion.
 
