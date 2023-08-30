@@ -32,7 +32,7 @@ class AddReviewersAction(Action):
 
     @validator("reviewers")
     @classmethod
-    def labels_must_be_non_empty(cls, v: List[str]) -> List[str]:
+    def reviewers_must_be_non_empty(cls, v: List[str]) -> List[str]:
         """Validates the reviewers are not empty strings.
 
         Args:
