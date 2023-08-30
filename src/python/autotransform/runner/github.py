@@ -15,6 +15,7 @@ import json
 from typing import Any, ClassVar, Dict, Optional
 
 from autotransform.change.base import Change
+from autotransform.config import get_config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.remoterun import RemoteRunEvent
@@ -142,7 +143,7 @@ class GithubRunner(Runner):
         if self.repo_name is not None:
             repo_name = self.repo_name
         else:
-            repo = schema.repo
+            repo = get_config().repo_override or schema.repo
             assert isinstance(
                 repo, GithubRepo
             ), "GithubRunner can only run using schemas that have Github repos"
