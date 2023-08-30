@@ -11,7 +11,7 @@
 
 import json
 from argparse import ArgumentParser
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from autotransform.config import get_repo_config_relative_path
 from autotransform.step.condition.base import ConditionName
@@ -46,14 +46,11 @@ def main():
 
     parser = get_arg_parser()
     args = parser.parse_args()
-    file_path = args.path
-    if file_path is None:
-        file_path = f"{get_repo_config_relative_path()}/manager.json"
+    file_path = args.path or f"{get_repo_config_relative_path()}/manager.json"
 
     with open(file_path, "r", encoding="UTF-8") as manager_file:
-        manager_json = manager_file.read()
+        manager_data = json.load(manager_file)
 
-    manager_data = json.loads(manager_json)
     update_manager_data(manager_data)
     manager = Manager.from_data(manager_data)
     manager.write(file_path)
@@ -66,7 +63,7 @@ def update_manager_data(manager_data: Dict[str, Any]) -> None:
         manager_data (Dict[str, Any]): The Manager data to update
     """
 
-    for step in manager_data["steps"]:
+    for step in manager_data.get("steps", []):
         update_step_data(step)
 
 
@@ -77,8 +74,8 @@ def update_step_data(step_data: Dict[str, Any]) -> None:
         step_data (Dict[str, Any]): The Step data to update.
     """
 
-    if step_data["name"] == "conditional":
-        update_condition_data(step_data["condition"])
+    if step_data.get("name") == "conditional":
+        update_condition_data(step_data.get("condition", {}))
 
 
 def update_condition_data(condition_data: Dict[str, Any]) -> None:
@@ -88,17 +85,17 @@ def update_condition_data(condition_data: Dict[str, Any]) -> None:
         condition_data (Dict[str, Any]): The Condition data to update.
     """
 
-    if condition_data["name"] != ConditionName.CHANGE_STATE:
+    if condition_data.get("name") != ConditionName.CHANGE_STATE:
         return
 
-    if isinstance(condition_data["value"], str) and condition_data["value"] in [
+    if isinstance(condition_data.get("value"), str) and condition_data["value"] in [
         "approved",
         "changes_requested",
     ]:
         condition_data["name"] = ConditionName.REVIEW_STATE
         return
 
-    if isinstance(condition_data["value"], List):
+    if isinstance(condition_data.get("value"), list):
         print("Can not migrate in/not_in comparisons for conditions")
 
 
