@@ -25,8 +25,10 @@ class ScriptTransformer(Transformer[None]):
     """A Transformer that makes changes using an invoked script. Sentinel values can be
     used in args to provide custom arguments for a run.
     The available sentinel values for args are:
-        <<KEY>>: A json encoded list of the Items for a Batch. If the per_item flag is set
-            this will simply be the key of an Item.
+        <<KEY>>: A list of the Items for a Batch. If the per_item flag is set this will simply
+            be the key of an Item.
+        <<TARGET_PATH>>: A list of target_path extra_data field for a Batch. If the per_item flag
+            is set this will simply be the target_path of an Item.
         <<EXTRA_DATA>>: A JSON encoded mapping from Item key to that Item's extra_data. If the
             per_item flag is set, this will simply be a JSON encoding of the Item's extra_data.
             If extra_data is not present for an item, it is treated as an empty Dict.
