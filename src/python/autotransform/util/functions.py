@@ -41,17 +41,30 @@ def run_cmd_on_items(
     event_handler = EventHandler.get()
     item_keys = [item.key for item in items]
     extra_data = {item.key: item.extra_data for item in items if item.extra_data is not None}
+    target_paths = [
+        str(data.get("target_path"))
+        for data in extra_data.values()
+        if data.get("target_path") is not None
+    ]
     arg_replacements = {
         "<<KEY>>": item_keys,
+        "<<TARGET_PATH>>": target_paths,
         "<<EXTRA_DATA>>": [json.dumps(extra_data)],
         "<<METADATA>>": [json.dumps(batch_metadata)],
     }
 
-    with TmpFile(mode="w+") as inp, TmpFile(mode="w+") as meta, TmpFile(mode="w+") as extra:
+    with TmpFile(mode="w+") as inp, TmpFile(mode="w+") as tar, TmpFile(mode="w+") as meta, TmpFile(
+        mode="w+"
+    ) as extra:
         # Make key file
         json.dump(item_keys, inp)
         inp.flush()
         arg_replacements["<<KEY_FILE>>"] = [inp.name]
+
+        # Make target path file
+        json.dump(target_paths, tar)
+        tar.flush()
+        arg_replacements["<<TARGET_PATH>>"] = [tar.name]
 
         # Make extra_data file
         json.dump(extra_data, extra)
