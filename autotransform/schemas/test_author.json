@@ -49,8 +49,7 @@
                 "name": "script",
                 "script": "mypy",
                 "args": [
-                    "src/python",
-                    "tests"
+                    "<<TARGET_PATH>>"
                 ],
                 "per_item": true
             },
@@ -60,8 +59,7 @@
                 "args": [
                     "--enable=W0611,R0902,R0903,R0913,R1732",
                     "--disable=C0103,C0411,R0401,R0801,R0914,R0915,W0212",
-                    "src/python/autotransform",
-                    "tests"
+                    "<<TARGET_PATH>>"
                 ],
                 "per_item": true
             },
@@ -71,7 +69,7 @@
                 "args": [
                     "-W",
                     "ignore::DeprecationWarning",
-                    "tests/"
+                    "<<TARGET_PATH>>"
                 ]
             }
         ]
