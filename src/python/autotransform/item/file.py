@@ -49,5 +49,5 @@ class FileItem(Item):
         Args:
             content (str): The new content for the File.
         """
-
-        CachedFile(self.get_path()).write_content(content)
+        path = (self.extra_data or {}).get("target_path", self.get_path())
+        CachedFile(path).write_content(content)
