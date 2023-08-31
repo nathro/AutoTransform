@@ -64,7 +64,7 @@ def run_cmd_on_items(
         # Make target path file
         json.dump(target_paths, tar)
         tar.flush()
-        arg_replacements["<<TARGET_PATH>>"] = [tar.name]
+        arg_replacements["<<TARGET_PATH_FILE>>"] = [tar.name]
 
         # Make extra_data file
         json.dump(extra_data, extra)
