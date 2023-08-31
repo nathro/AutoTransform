@@ -2,6 +2,9 @@
 
 ## Release 1.1.1
 
+### Features
+- Updated FileItem to leverage a target_path in extra_data to allow writing to a separate path from the Item's original path.
+
 ### New Components
 - ScriptInput that uses a script to generate a list of Items
 - BulkFilter a new type of filter that does pre-processing with the list of Items for filters that need to handle all of the Items at once for efficiency purposes
@@ -9,6 +12,7 @@
 - AIModelTransformer that uses AI Models to replace file content
 - Model component type that allows AutoTransform to interact with AI models
 - OpenAIModel that interacts with OpenAI's API
+- Add TargetInput which returns FileItems with target_path set to enable writing to a separate path from the Item's path.
 
 ### Bugs
 - Fix ScriptCommand to return when run_on_changes is set to true for batch runs and no changes are present.
