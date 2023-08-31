@@ -12,9 +12,11 @@ reduce excessive file reads and speed up processing. The FILE_CACHE variable sto
 file contents, while a CachedFile object is used to interact with the cache. All writes
 should go through the CachedFile object to ensure the cache is properly updated."""
 
-from typing import Dict
+from pathlib import Path
+from typing import Dict, Optional
 
 FILE_CACHE: Dict[str, str] = {}
+ORIGINAL_FILE_CACHE: Dict[str, Optional[str]] = {}
 
 
 class CachedFile:
@@ -93,5 +95,19 @@ class CachedFile:
 
         # pylint: disable=unspecified-encoding
 
+        if self.path not in ORIGINAL_FILE_CACHE:
+            ORIGINAL_FILE_CACHE[self.path] = (
+                self._read(self.path) if Path(self.path).exists() else None
+            )
         self._write(self.path, new_content)
         FILE_CACHE[self.path] = new_content
+
+    def revert(self) -> None:
+        """Reverts the content of a file to its original content."""
+
+        if self.path in ORIGINAL_FILE_CACHE:
+            original_content = ORIGINAL_FILE_CACHE[self.path]
+            if original_content is None:
+                Path(self.path).unlink(missing_ok=True)
+            else:
+                self.write_content(original_content)
