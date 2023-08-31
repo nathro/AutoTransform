@@ -1,0 +1,85 @@
+{
+    "input": {
+        "input": {
+            "name": "inline_file",
+            "files": [
+                "src/python/autotransform/filter/codeowners.py"
+            ]
+        },
+        "pattern": "src\/python\/autotransform(.*)\\.py",
+        "replacement": "tests\\1.py"
+    },
+    "filters": [
+        {
+            "name": "regex",
+            "pattern": ".*\\.py$"
+        }
+    ],
+    "batcher": {
+        "name": "directory",
+        "prefix": "Create pytests for Python files",
+        "metadata": {
+            "body": "Use OpenAI model to create pytests"
+        }
+    },
+    "transformer": {
+        "name": "ai_model",
+        "model": {
+            "name": "open_ai",
+            "prompt": "The file you are looking to create tests for is\n```python\n<<FILE_CONTENT>>\n```. The file with the tests is\n",
+            "model_name": "gpt-4",
+            "system_message": "You are a world class Python developer looking to create tests for a Python file. You should return a full file that uses pytest to create unit tests for the content of the file you are provided, including all imports and the license header of the original file.",
+            "temperature": 0.01
+        },
+        "commands": [
+            {
+                "name": "script",
+                "script": "black",
+                "args": [
+                    "-l",
+                    "100",
+                    "<<KEY>>"
+                ],
+                "per_item": true
+            }
+        ],
+        "validators": [
+            {
+                "name": "script",
+                "script": "mypy",
+                "args": [
+                    "src/python",
+                    "tests"
+                ],
+                "per_item": true
+            },
+            {
+                "name": "script",
+                "script": "pylint",
+                "args": [
+                    "--enable=W0611,R0902,R0903,R0913,R1732",
+                    "--disable=C0103,C0411,R0401,R0801,R0914,R0915",
+                    "src/python/autotransform",
+                    "tests"
+                ],
+                "per_item": true
+            },
+            {
+                "name": "script",
+                "script": "pytest",
+                "args": [
+                    "-W",
+                    "ignore::DeprecationWarning",
+                    "tests/"
+                ]
+            }
+        ]
+    },
+    "config": {
+        "schema_name": "Test Author",
+        "allowed_validation_level": "warning",
+        "owners": [
+            "@nathro"
+        ]
+    }
+}
