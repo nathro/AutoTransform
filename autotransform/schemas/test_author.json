@@ -39,7 +39,7 @@
                 "args": [
                     "-l",
                     "100",
-                    "<<KEY>>"
+                    "<<TARGET_PATH>>"
                 ],
                 "per_item": true
             }
@@ -59,7 +59,7 @@
                 "script": "pylint",
                 "args": [
                     "--enable=W0611,R0902,R0903,R0913,R1732",
-                    "--disable=C0103,C0411,R0401,R0801,R0914,R0915",
+                    "--disable=C0103,C0411,R0401,R0801,R0914,R0915,W0212",
                     "src/python/autotransform",
                     "tests"
                 ],
