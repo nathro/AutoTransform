@@ -34,7 +34,7 @@ class TargetInput(Input):
     pattern: str
     replacement: str
 
-    name: ClassVar[InputName] = InputName.DIRECTORY
+    name: ClassVar[InputName] = InputName.TARGET
 
     def get_items(self) -> Sequence[FileItem]:
         """Gets a list of files recursively contained within the path.

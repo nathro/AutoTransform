@@ -29,6 +29,7 @@ class InputName(str, Enum):
     INLINE_FILE = "inline_file"
     INLINE_GENERIC = "inline_generic"
     SCRIPT = "script"
+    TARGET = "target"
 
 
 class Input(NamedComponent):
@@ -74,6 +75,9 @@ FACTORY = ComponentFactory(
         ),
         InputName.SCRIPT: ComponentImport(
             class_name="ScriptInput", module="autotransform.input.script"
+        ),
+        InputName.TARGET: ComponentImport(
+            class_name="TargetInput", module="autotransform.input.target"
         ),
     },
     Input,  # type: ignore [type-abstract]
