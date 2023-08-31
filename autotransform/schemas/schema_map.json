@@ -6,5 +6,9 @@
     "Crawler": {
         "type": "file",
         "target": "crawler.json"
+    },
+    "Test Author": {
+        "type": "file",
+        "target": "test_author.json"
     }
 }
