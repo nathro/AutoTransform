@@ -1,5 +1,6 @@
 {
     "input": {
+        "name": "target",
         "input": {
             "name": "inline_file",
             "files": [
