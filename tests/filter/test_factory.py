@@ -69,10 +69,10 @@ def test_encoding_and_decoding() -> None:
             },
         ],
         FilterName.CODEOWNERS: [
-            {"codeowners_location": "CODEOWNERS"},
-            {"codeowners_location": "CODEOWNERS", "inverted": True},
-            {"codeowners_location": "CODEOWNERS", "owner": "nathro"},
-            {"codeowners_location": "CODEOWNERS", "owner": "nathro", "inverted": True},
+            {"codeowners_file_path": "CODEOWNERS"},
+            {"codeowners_file_path": "CODEOWNERS", "inverted": True},
+            {"codeowners_file_path": "CODEOWNERS", "owner": "nathro"},
+            {"codeowners_file_path": "CODEOWNERS", "owner": "nathro", "inverted": True},
         ],
         FilterName.FILE_EXISTS: [
             {},

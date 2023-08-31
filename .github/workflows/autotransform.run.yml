@@ -64,5 +64,5 @@ jobs:
         PYTHONPATH: /home/runner/work/AutoTransform/AutoTransform/src/python
         AUTO_TRANSFORM_CONFIG: environment
         AUTO_TRANSFORM_GITHUB_TOKEN: ${{ secrets.AUTO_TRANSFORM_BOT_GITHUB_TOKEN }}
-        AUTO_TRANSFORM_OPEN_AI_API_KEY: ${{ secrets.PERSONAL_OPEN_AI_API_KEY }}
+        AUTO_TRANSFORM_OPEN_AI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         FILTER: ${{ github.event.inputs.filter }}
