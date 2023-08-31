@@ -103,7 +103,6 @@ class AIModelTransformer(SingleTransformer):
         assert isinstance(item, FileItem)
 
         event_handler = EventHandler.get()
-        original_content = item.get_content()
         batch: Batch = {"title": "test", "items": [item]}
 
         result = None
@@ -125,7 +124,7 @@ class AIModelTransformer(SingleTransformer):
                 event_handler.handle(
                     VerboseEvent({"message": "Model failed, using original content"})
                 )
-                item.write_content(original_content)
+                item.write_content(item.get_content())
                 return
 
             # Update File
@@ -170,7 +169,7 @@ class AIModelTransformer(SingleTransformer):
         # If we had validation failures on our last run, just use the original content
         if not completion_success:
             event_handler.handle(VerboseEvent({"message": "Model failed, using original content"}))
-            item.write_content(original_content)
+            item.revert()
 
     @classmethod
     def from_data(cls: Type[AIModelTransformer], data: Dict[str, Any]) -> AIModelTransformer:

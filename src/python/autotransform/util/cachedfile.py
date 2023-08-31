@@ -15,6 +15,7 @@ should go through the CachedFile object to ensure the cache is properly updated.
 from typing import Dict
 
 FILE_CACHE: Dict[str, str] = {}
+ORIGINAL_FILE_CACHE: Dict[str, str] = {}
 
 
 class CachedFile:
@@ -93,5 +94,13 @@ class CachedFile:
 
         # pylint: disable=unspecified-encoding
 
+        if self.path not in ORIGINAL_FILE_CACHE:
+            ORIGINAL_FILE_CACHE[self.path] = self._read(self.path)
         self._write(self.path, new_content)
         FILE_CACHE[self.path] = new_content
+
+    def revert(self) -> None:
+        """Reverts the content of a file to its original content."""
+
+        if self.path in ORIGINAL_FILE_CACHE:
+            self.write_content(ORIGINAL_FILE_CACHE[self.path])
