@@ -12,7 +12,7 @@
 from __future__ import annotations
 
 from time import sleep
-from typing import Any, ClassVar, Dict, List, Type
+from typing import Any, ClassVar, Dict, List, Optional, Sequence, Tuple, Type
 
 from autotransform.batcher.base import Batch
 from autotransform.command.base import FACTORY as command_factory
@@ -26,7 +26,7 @@ from autotransform.model.base import Model
 from autotransform.transformer.base import TransformerName
 from autotransform.transformer.single import SingleTransformer
 from autotransform.validator.base import FACTORY as validator_factory
-from autotransform.validator.base import ValidationResultLevel, Validator
+from autotransform.validator.base import ValidationResult, ValidationResultLevel, Validator
 from pydantic import Field, validator
 
 
@@ -105,18 +105,7 @@ class AIModelTransformer(SingleTransformer):
         event_handler = EventHandler.get()
         batch: Batch = {"title": "test", "items": [item]}
 
-        result = None
-        result_data = None
-        for i in range(self.max_completion_attempts):
-            try:
-                result, result_data = self.model.get_result_for_item(item)
-                break
-            except Exception as e:  # pylint: disable=broad-exception-caught
-                result = None
-                sleep(min(4 ** (i + 1), 60))
-                event_handler.handle(
-                    VerboseEvent({"message": f"Model failure on {item.get_path()}: {e}"}),
-                )
+        result, result_data = self._get_result(item, None, None)
 
         if result is None:
             event_handler.handle(VerboseEvent({"message": "Model failed, using original content"}))
@@ -148,20 +137,7 @@ class AIModelTransformer(SingleTransformer):
             if completion_success or i == self.max_validation_attempts:
                 break
 
-            for j in range(self.max_completion_attempts):
-                try:
-                    result, result_data = self.model.get_result_with_validation(
-                        item,
-                        result_data,
-                        failures,
-                    )
-                    break
-                except Exception as e:  # pylint: disable=broad-exception-caught
-                    result = None
-                    sleep(min(4 ** (j + 1), 60))
-                    event_handler.handle(
-                        VerboseEvent({"message": f"Model failure on {item.get_path()}: {e}"}),
-                    )
+            result, result_data = self._get_result(item, result_data, failures)
 
             if result is None:
                 event_handler.handle(
@@ -177,6 +153,43 @@ class AIModelTransformer(SingleTransformer):
         if not completion_success:
             event_handler.handle(VerboseEvent({"message": "Model failed, using original content"}))
             item.revert()
+
+    def _get_result(
+        self,
+        item: FileItem,
+        result_data: Any,
+        validation_failures: Optional[Sequence[ValidationResult]],
+    ) -> Tuple[Optional[str], Any]:
+        """_summary_
+
+        Args:
+            item (FileItem): The FileItem to get a result for.
+            result_data (Any): The result data to use.
+            validation_failures (Optional[Sequence[ValidationResult]]): The failures
+                from running validation on the result.
+
+        Returns:
+            Tuple[Optional[str], Any]: The result with result data from running the model.
+        """
+
+        event_handler = EventHandler.get()
+
+        for i in range(self.max_completion_attempts):
+            try:
+                return (
+                    self.model.get_result_for_item(item)
+                    if not validation_failures
+                    else self.model.get_result_with_validation(
+                        item, result_data, validation_failures
+                    )
+                )
+            except Exception as e:  # pylint: disable=broad-exception-caught
+                sleep(min(4 ** (i + 1), 60))
+                event_handler.handle(
+                    VerboseEvent({"message": f"Model failure on {item.get_path()}: {e}"}),
+                )
+
+        return (None, None)
 
     @classmethod
     def from_data(cls: Type[AIModelTransformer], data: Dict[str, Any]) -> AIModelTransformer:
