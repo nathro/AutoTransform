@@ -140,10 +140,11 @@ class GithubRunner(Runner):
             str: The URL for the workflow run.
         """
 
+        repo = get_config().repo_override or schema.repo
+
         if self.repo_name is not None:
             repo_name = self.repo_name
         else:
-            repo = get_config().repo_override or schema.repo
             assert isinstance(
                 repo, GithubRepo
             ), "GithubRunner can only run using schemas that have Github repos"
@@ -152,7 +153,6 @@ class GithubRunner(Runner):
         if self.repo_ref is not None:
             repo_ref = self.repo_ref
         else:
-            repo = schema.repo
             assert isinstance(
                 repo, GithubRepo
             ), "GithubRunner can only run using schemas that have Github repos"

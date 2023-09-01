@@ -12,7 +12,6 @@
 import json
 
 import mock
-
 from autotransform.batcher.single import SingleBatcher
 from autotransform.change.github import GithubChange
 from autotransform.input.empty import EmptyInput
@@ -33,7 +32,7 @@ def test_run(mock_create_dispatch):
         batcher=SingleBatcher(title="test"),
         transformer=RegexTransformer(pattern="foo", replacement="bar"),
         config=SchemaConfig(schema_name="test"),
-        repo=GithubRepo(base_branch="foo", full_github_name="at/test"),
+        repo=GithubRepo(base_branch="master", full_github_name="at/test"),
     )
     mock_create_dispatch.return_value = "test"
 
@@ -56,11 +55,11 @@ def test_update(mock_get_schema, mock_create_dispatch):
         batcher=SingleBatcher(title="test"),
         transformer=RegexTransformer(pattern="foo", replacement="bar"),
         config=SchemaConfig(schema_name="test"),
-        repo=GithubRepo(base_branch="foo", full_github_name="at/test"),
+        repo=GithubRepo(base_branch="master", full_github_name="at/test"),
     )
     mock_get_schema.return_value = schema
 
-    change = GithubChange(full_github_name="foo", pull_number=1)
+    change = GithubChange(full_github_name="at/test", pull_number=1)
     mock_create_dispatch.return_value = "test"
 
     runner = GithubRunner(run_workflow="test.run.yml", update_workflow="test.update.yml")
