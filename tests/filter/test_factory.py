@@ -74,6 +74,10 @@ def test_encoding_and_decoding() -> None:
             {"codeowners_location": "CODEOWNERS", "owner": "nathro"},
             {"codeowners_location": "CODEOWNERS", "owner": "nathro", "inverted": True},
         ],
+        FilterName.FILE_EXISTS: [
+            {},
+            {"check_target_path": True},
+        ],
         FilterName.REGEX: [
             {"pattern": "foo"},
             {"pattern": "foo", "inverted": True},

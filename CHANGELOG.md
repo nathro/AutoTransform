@@ -14,6 +14,7 @@
 - Model component type that allows AutoTransform to interact with AI models
 - OpenAIModel that interacts with OpenAI's API
 - Add TargetInput which returns FileItems with target_path set to enable writing to a separate path from the Item's path.
+- FileExistsFilter added to check whether a file exists in the file system.
 
 ### Bugs
 - Fix ScriptCommand to return when run_on_changes is set to true for batch runs and no changes are present.
