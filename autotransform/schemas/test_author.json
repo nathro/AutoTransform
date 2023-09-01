@@ -14,6 +14,11 @@
         {
             "name": "regex",
             "pattern": ".*\\.py$"
+        },
+        {
+            "name": "file_exists",
+            "check_target_path": true,
+            "inverted": true
         }
     ],
     "batcher": {
@@ -39,7 +44,7 @@
                 "args": [
                     "-l",
                     "100",
-                    "<<TARGET_PATH>>"
+                    "<<EXTRA_DATA/target_path>>"
                 ],
                 "per_item": true
             }
