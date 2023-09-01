@@ -118,18 +118,15 @@ class AIModelTransformer(SingleTransformer):
                     VerboseEvent({"message": f"Model failure on {item.get_path()}: {e}"}),
                 )
 
+        if result is None:
+            event_handler.handle(VerboseEvent({"message": "Model failed, using original content"}))
+            return
+
+        # Update File
+        item.write_content(result)
+
         completion_success = False
         for i in range(self.max_validation_attempts):
-            if result is None:
-                event_handler.handle(
-                    VerboseEvent({"message": "Model failed, using original content"})
-                )
-                item.revert()
-                return
-
-            # Update File
-            item.write_content(result)
-
             # Run commands to fix file
             for command in self.commands:
                 try:
@@ -165,6 +162,16 @@ class AIModelTransformer(SingleTransformer):
                     event_handler.handle(
                         VerboseEvent({"message": f"Model failure on {item.get_path()}: {e}"}),
                     )
+
+            if result is None:
+                event_handler.handle(
+                    VerboseEvent({"message": "Model failed, using original content"})
+                )
+                item.revert()
+                return
+
+            # Update File
+            item.write_content(result)
 
         # If we had validation failures on our last run, just use the original content
         if not completion_success:
