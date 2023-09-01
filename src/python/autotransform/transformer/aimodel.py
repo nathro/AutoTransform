@@ -119,12 +119,12 @@ class AIModelTransformer(SingleTransformer):
                 )
 
         completion_success = False
-        for _ in range(1, self.max_validation_attempts):
+        for i in range(self.max_validation_attempts):
             if result is None:
                 event_handler.handle(
                     VerboseEvent({"message": "Model failed, using original content"})
                 )
-                item.write_content(item.get_content())
+                item.revert()
                 return
 
             # Update File
@@ -148,10 +148,10 @@ class AIModelTransformer(SingleTransformer):
 
             # Check if another completion is required
             completion_success = not failures
-            if completion_success:
+            if completion_success or i == self.max_validation_attempts:
                 break
 
-            for i in range(self.max_completion_attempts):
+            for j in range(self.max_completion_attempts):
                 try:
                     result, result_data = self.model.get_result_with_validation(
                         item,
@@ -161,7 +161,7 @@ class AIModelTransformer(SingleTransformer):
                     break
                 except Exception as e:  # pylint: disable=broad-exception-caught
                     result = None
-                    sleep(min(4 ** (i + 1), 60))
+                    sleep(min(4 ** (j + 1), 60))
                     event_handler.handle(
                         VerboseEvent({"message": f"Model failure on {item.get_path()}: {e}"}),
                     )
