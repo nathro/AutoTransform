@@ -31,14 +31,16 @@ class ScriptCommand(Command):
     The available sentinel values for args are:
         <<KEY>>: A list of the Items for a Batch. If the per_item flag is set this will simply
             be the key of an Item.
-        <<TARGET_PATH>>: A list of target_path extra_data field for a Batch. If the per_item flag
-            is set this will simply be the target_path of an Item.
         <<EXTRA_DATA>>: A JSON encoded mapping from Item key to that Item's extra_data. If the
             per_item flag is set, this will simply be a JSON encoding of the Item's extra_data.
             If extra_data is not present for an item, it is treated as an empty Dict.
         <<METADATA>>: A JSON encoded version of the Batch's metadata.
     _FILE can be appended to any of these (i.e. <<KEY_FILE>>) and the arg will instead be replaced
      with a path to a file containing the value.
+
+    Additionally, <<EXTRA_DATA/some_key>> can be used as a sentinel value to get a list of all the
+    values from extra_data for each item with that key. Values will be converted to strings and
+    returned as a list.
 
     Attributes:
         args (List[str]): The arguments to supply to the script.
