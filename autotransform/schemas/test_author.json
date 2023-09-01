@@ -2,9 +2,9 @@
     "input": {
         "name": "target",
         "input": {
-            "name": "inline_file",
-            "files": [
-                "src/python/autotransform/filter/codeowners.py"
+            "name": "directory",
+            "paths": [
+                "src/python/autotransform/filter"
             ]
         },
         "pattern": "src\/python\/autotransform(.*)\\.py",
