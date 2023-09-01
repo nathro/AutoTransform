@@ -35,6 +35,7 @@
     },
     "transformer": {
         "name": "ai_model",
+        "max_validation_attempts": 5,
         "model": {
             "name": "open_ai",
             "prompt": "The file you are looking to create tests for is\n```python\n<<FILE_CONTENT>>\n```. The file with the tests is\n",
