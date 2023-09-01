@@ -134,7 +134,7 @@ class AIModelTransformer(SingleTransformer):
 
             # Check if another completion is required
             completion_success = not failures
-            if completion_success or i == self.max_validation_attempts:
+            if completion_success or i == self.max_validation_attempts - 1:
                 break
 
             result, result_data = self._get_result(item, result_data, failures)
