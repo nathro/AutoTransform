@@ -24,6 +24,7 @@ class FilterName(str, Enum):
 
     AGGREGATE = "aggregate"
     CODEOWNERS = "codeowners"
+    FILE_EXISTS = "file_exists"
     REGEX = "regex"
     REGEX_FILE_CONTENT = "regex_file_content"
     SCRIPT = "script"
@@ -121,6 +122,9 @@ FACTORY = ComponentFactory(
         ),
         FilterName.CODEOWNERS: ComponentImport(
             class_name="CodeownersFilter", module="autotransform.filter.codeowners"
+        ),
+        FilterName.FILE_EXISTS: ComponentImport(
+            class_name="FileExistsFilter", module="autotransform.filter.file"
         ),
         FilterName.REGEX: ComponentImport(
             class_name="RegexFilter", module="autotransform.filter.regex"
