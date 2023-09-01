@@ -7,13 +7,18 @@
                 "src/python/autotransform/filter"
             ]
         },
-        "pattern": "src\/python\/autotransform(.*)\\.py",
-        "replacement": "tests\\1.py"
+        "pattern": "src\/python\/autotransform\/(.*)\/([^\/]*)\\.py",
+        "replacement": "tests\/\\1\/test_\\2.py"
     },
     "filters": [
         {
             "name": "regex",
             "pattern": ".*\\.py$"
+        },
+        {
+            "name": "regex",
+            "pattern": "__init__\\.py$",
+            "inverted": true
         },
         {
             "name": "file_exists",
