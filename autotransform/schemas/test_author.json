@@ -38,8 +38,8 @@
         "model": {
             "name": "open_ai",
             "prompt": "The file you are looking to create tests for is\n```python\n<<FILE_CONTENT>>\n```. The file with the tests is\n",
-            "model_name": "gpt-4",
-            "system_message": "You are a world class Python developer looking to create tests for a Python file. You should return a full file that uses pytest to create unit tests for the content of the file you are provided, including all imports and the license header of the original file.",
+            "model_name": "gpt-4-32k",
+            "system_message": "You are a world class Python developer looking to create tests for a Python file. You should return a full file that uses pytest to create unit tests for the content of the file you are provided, including all imports and the license header of the original file. Modifying other files is not possible, only the test file returned can be modified.",
             "temperature": 0.01
         },
         "commands": [
