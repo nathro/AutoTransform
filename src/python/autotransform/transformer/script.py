@@ -36,6 +36,10 @@ class ScriptTransformer(Transformer[None]):
     _FILE can be appended to any of these (i.e. <<KEY_FILE>>) and the arg will instead be replaced
      with a path to a file containing the value.
 
+    Additionally, <<EXTRA_DATA/some_key>> can be used as a sentinel value to get a list of all the
+    values from extra_data for each item with that key. Values will be converted to strings and
+    returned as a list.
+
     Attributes:
         args (List[str]): The arguments to supply to the script.
         script (str): The script to run.
