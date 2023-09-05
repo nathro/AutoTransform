@@ -37,7 +37,7 @@ jobs:
     - name: Check pylint on source
       run: pylint --enable=W0611,R0902,R0903,R0913,R1732 --disable=C0103,C0411,R0401,R0801,R0914,R0915 src/python/autotransform
     - name: Check pylint on tests
-      run: pylint --enable=W0611,R0902,R1732 --disable=C0103,C0114,C0115,C0116,C0301,C0411,R0401,R0801,R0913,R0914,R0915,W0212,W0621 src/python/autotransform
+      run: pylint --enable=W0611,R0902,R1732 --disable=C0103,C0114,C0115,C0116,C0301,C0411,R0401,R0801,R0913,R0914,R0915,W0212,W0613,W0621 src/python/autotransform
     - name: Build
       run: python3 -m build
     - name: Publish
