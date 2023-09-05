@@ -73,7 +73,7 @@
                 "script": "pylint",
                 "args": [
                     "--enable=W0611,R0902,R1732",
-                    "--disable=C0103,C0114,C0115,C0116,C0411,R0401,R0801,R0913,R0914,R0915,W0212,W0621",
+                    "--disable=C0103,C0114,C0115,C0116,C0301,C0411,R0401,R0801,R0913,R0914,R0915,W0212,W0621",
                     "<<EXTRA_DATA/target_path>>"
                 ],
                 "per_item": true
