@@ -35,13 +35,14 @@
     },
     "transformer": {
         "name": "ai_model",
-        "max_validation_attempts": 5,
         "model": {
             "name": "open_ai",
             "prompts": [
-                "The file you are looking to create tests for is\n```python\n<<FILE_CONTENT>>\n```. The file with the tests is\n"
+                "Provide a brief description for what <<FILE_PATH>> is doing. The content of the file is\n```python\n<<FILE_CONTENT>>\n```.",
+                "Based on the description, list possible test cases that should be implemented as a bulleted list.",
+                "Create a file including all needed imports that uses PyTest to implement the test cases suggested. The file contents are:\n"
             ],
-            "model_name": "gpt-4",
+            "model_name": "gpt-4-32k",
             "system_message": "You are a world class Python developer looking to create tests for a Python file. You should return a full file that uses pytest to create unit tests for the content of the file you are provided, including all imports and the license header of the original file. Modifying other files is not possible, only the test file returned can be modified.",
             "temperature": 0.01
         },
