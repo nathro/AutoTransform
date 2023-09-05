@@ -5,6 +5,7 @@
 ### Features
 - Updated FileItem to leverage a target_path in extra_data to allow writing to a separate path from the Item's original path.
 - Updated Script components to allow for using a sentinel value to extract values from the extra_data of Items when using ScriptTransformer, ScriptValidator, or ScriptCommand.
+- Switched CodeownersFilter to use codeowners_file_path instead of codeowners_location.
 
 ### New Components
 - ScriptInput that uses a script to generate a list of Items
