@@ -50,10 +50,10 @@ def test_encoding_and_decoding() -> None:
 
     test_components: Dict[ModelName, List[Dict[str, Any]]] = {
         ModelName.OPEN_AI: [
-            {"prompt": "foo"},
-            {"prompt": "foo", "model_name": "gpt-4"},
-            {"prompt": "foo", "system_message": "bar"},
-            {"prompt": "foo", "temperature": 0.1},
+            {"prompts": ["foo"]},
+            {"prompts": ["foo"], "model_name": "gpt-4"},
+            {"prompts": ["foo"], "system_message": "bar"},
+            {"prompts": ["foo"], "temperature": 0.1},
         ],
     }
 

@@ -54,15 +54,15 @@ def test_encoding_and_decoding() -> None:
 
     test_components: Dict[TransformerName, List[Dict[str, Any]]] = {
         TransformerName.AI_MODEL: [
-            {"model": {"name": "open_ai", "prompt": "foo"}, "commands": [], "validators": []},
+            {"model": {"name": "open_ai", "prompts": ["foo"]}, "commands": [], "validators": []},
             {
-                "model": {"name": "open_ai", "prompt": "foo"},
+                "model": {"name": "open_ai", "prompts": ["foo"]},
                 "commands": [],
                 "max_completion_attempts": 2,
                 "validators": [],
             },
             {
-                "model": {"name": "open_ai", "prompt": "foo"},
+                "model": {"name": "open_ai", "prompts": ["foo"]},
                 "commands": [],
                 "max_validation_attempts": 2,
                 "validators": [],

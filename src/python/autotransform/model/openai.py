@@ -27,10 +27,13 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
     such as LLMs.
 
     Attributes:
-        prompt (str): The prompt to use for completition. Uses sentry values to replace
-            values in the prompt.
-            <<FILE_PATH>> - Replaced with the path of the file being transformed.
-            <<FILE_CONTENT>> - Replaced with the content of the file being transformed.
+        prompts (List[str]): The prompts to use for completition. Only the response from the last
+            prompt in the list will be used for code extraction. Previous prompts can be leveraged
+            to provide a path for the model to produce better results, i.e. for test generation.
+            Uses sentry values to replace values in the prompt.
+                <<FILE_PATH>> - Replaced with the path of the file being transformed.
+                <<FILE_CONTENT>> - Replaced with the content of the file being transformed.
+
         model_name (optional, str): The model to use for completition. Defaults to gpt-3.5-turbo.
         system_message (optional, Optional[str]): The system message to use. Defaults to None.
         temperature (optional, float): The temperature to use to control the quality of outputs.
@@ -38,12 +41,31 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
         name (ClassVar[ModelName]): The name of the Component.
     """
 
-    prompt: str
+    prompts: List[str]
     model_name: str = "gpt-3.5-turbo"
     system_message: Optional[str] = None
     temperature: float = 0.4
 
     name: ClassVar[ModelName] = ModelName.OPEN_AI
+
+    @validator("prompts")
+    @classmethod
+    def prompts_must_contain_at_least_one_item(cls, v: List[str]) -> List[str]:
+        """Validates there is at least one prompt in the list.
+
+        Args:
+            v (List[str]): The prompts to send to the model.
+
+        Raises:
+            ValueError: Raises an error when the prompts contains no items.
+
+        Returns:
+            int: The unmodified temperature.
+        """
+
+        if not v:
+            raise ValueError("At least one prompt must be included in the list")
+        return v
 
     @validator("temperature")
     @classmethod
@@ -77,26 +99,29 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
 
         openai.api_key = openai.api_key or get_config().open_ai_api_key
 
-        # Set up messages for prompt
+        # Set up messages for prompts
         messages = []
         if self.system_message:
             messages.append({"role": "system", "content": self.system_message})
-        messages.append(
-            {
-                "role": "user",
-                "content": self._replace_sentinel_values(self.prompt, item),
-            }
-        )
+        completion_result = ""
 
-        chat_completion = openai.ChatCompletion.create(
-            model=self.model_name,
-            messages=messages,
-            temperature=self.temperature,
-        )
-        completion_result = chat_completion.choices[0].message.content
-        messages.append({"role": "assistant", "content": completion_result})
+        for prompt in self.prompts:
+            messages.append(
+                {
+                    "role": "user",
+                    "content": self._replace_sentinel_values(prompt, item),
+                }
+            )
+            chat_completion = openai.ChatCompletion.create(
+                model=self.model_name,
+                messages=messages,
+                temperature=self.temperature,
+            )
+            completion_result = chat_completion.choices[0].message.content
+            messages.append({"role": "assistant", "content": completion_result})
 
-        self._log_info(item, chat_completion)
+            self._log_info(item, chat_completion)
+
         return (self._extract_code_from_completion(completion_result), messages)
 
     def get_result_with_validation(
@@ -195,7 +220,7 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
 
         token_usage = (
             f"Tokens Used\nPrompt: {chat_completion.usage.prompt_tokens}\n"
-            + f"Completition: {chat_completion.usage.completion_tokens}"
+            + f"Completion: {chat_completion.usage.completion_tokens}"
         )
         event_handler.handle(VerboseEvent({"message": token_usage}))
         completition_result = chat_completion.choices[0].message.content
