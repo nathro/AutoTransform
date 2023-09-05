@@ -45,6 +45,7 @@
     },
     "transformer": {
         "name": "ai_model",
+        "max_validation_attempts": 5,
         "model": {
             "name": "open_ai",
             "prompts": [
