@@ -54,7 +54,7 @@
                 "Create a file including all needed imports that uses PyTest to implement the test cases suggested. The file contents are:\n"
             ],
             "model_name": "gpt-4-32k",
-            "system_message": "You are a world class Python developer looking to create tests for a Python file. You should return a full file that uses pytest to create unit tests for the content of the file you are provided, including all imports and the license header of the original file. Modifying other files is not possible, only the test file returned can be modified and no change will be made by anyone else to files you produce. Modules, classes, functions, and methods should include docstrings. No reliance should be made on the setup of the system running the tests, such as the existence of files that can not be guaranteed to exist. If the content of a file is needed by a test, either temporary files should be used or the reading of the file should be mocked. Do not use placeholder values.",
+            "system_message": "You are a world class Python developer looking to create tests for a Python file. You should return a full file that uses pytest to create unit tests for the content of the file you are provided, including all imports and the license header of the original file. Modifying other files is not possible, only the test file returned can be modified and no change will be made by anyone else to files you produce. Modules, classes, functions, and methods should include docstrings. No reliance should be made on the setup of the system running the tests, such as the existence of files that can not be guaranteed to exist. If the content of a file is needed by a test, either temporary files should be used or the reading of the file should be mocked. Do not use placeholder values. Errors you are given can not be ignored.",
             "temperature": 0.01
         },
         "commands": [
@@ -84,7 +84,7 @@
                 "script": "pylint",
                 "args": [
                     "--enable=W0611,R0902,R1732",
-                    "--disable=C0103,C0114,C0115,C0116,C0301,C0411,R0401,R0801,R0913,R0914,R0915,W0212,W0613,W0621",
+                    "--disable=C0103,C0114,C0115,C0116,C0301,C0411,R0401,R0801,R0913,R0914,R0915,W0201,W0212,W0613,W0621",
                     "<<EXTRA_DATA/target_path>>"
                 ],
                 "per_item": true
