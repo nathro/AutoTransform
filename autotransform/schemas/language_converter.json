@@ -1,0 +1,43 @@
+{
+    "input": {
+        "name": "target",
+        "input": {
+            "name": "directory",
+            "paths": [
+                "src/python/autotransform/filter"
+            ]
+        },
+        "pattern": "src\/python\/autotransform\/(.*)\/([^\/]*)\\.py",
+        "replacement": "src\/ruby\/autotransform\/\\1\/\\2.rb"
+    },
+    "filters": [
+        {
+            "name": "regex",
+            "pattern": ".*\\.py$"
+        }
+    ],
+    "batcher": {
+        "name": "directory",
+        "prefix": "Rewrite python to ruby",
+        "metadata": {
+            "body": "Use OpenAI model to create ruby files from python"
+        }
+    },
+    "transformer": {
+        "name": "ai_model",
+        "model": {
+            "name": "open_ai",
+            "prompt": "The file you are looking to convert is\n```python\n<<FILE_CONTENT>>\n```. The results of conversion are\n",
+            "model_name": "gpt-4",
+            "system_message": "You are a world class developer looking to convert code you find in the repo from Python to Ruby. The original code is written in Python 3.10. You should maintain license headers.",
+            "temperature": 0.01
+        }
+    },
+    "config": {
+        "schema_name": "Language Converter",
+        "allowed_validation_level": "warning",
+        "owners": [
+            "@nathro"
+        ]
+    }
+}

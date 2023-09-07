@@ -7,6 +7,10 @@
         "type": "file",
         "target": "crawler.json"
     },
+    "Language Converter": {
+        "type": "file",
+        "target": "language_converter.json"
+    },
     "Test Author": {
         "type": "file",
         "target": "test_author.json"
