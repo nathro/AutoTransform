@@ -9,7 +9,7 @@
     },
     "repo_override": {
         "name": "github",
-        "base_branch": "nathro_test",
+        "base_branch": "nathro_test_language_rewrite",
         "full_github_name": "nathro/AutoTransform"
     }
 }
