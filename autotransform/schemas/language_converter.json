@@ -8,19 +8,24 @@
             ]
         },
         "pattern": "src\/python\/autotransform\/(.*)\/([^\/]*)\\.py",
-        "replacement": "src\/ruby\/autotransform\/\\1\/\\2.rb"
+        "replacement": "src\/js\/autotransform\/\\1\/\\2.rb"
     },
     "filters": [
         {
             "name": "regex",
             "pattern": ".*\\.py$"
+        },
+        {
+            "name": "regex",
+            "pattern": "__init__\\.py$",
+            "inverted": true
         }
     ],
     "batcher": {
         "name": "directory",
-        "prefix": "Rewrite python to ruby",
+        "prefix": "Rewrite python to javascript",
         "metadata": {
-            "body": "Use OpenAI model to create ruby files from python"
+            "body": "Use OpenAI model to create javascript files from python"
         }
     },
     "transformer": {
@@ -29,7 +34,7 @@
             "name": "open_ai",
             "prompt": "The file you are looking to convert is\n```python\n<<FILE_CONTENT>>\n```. The results of conversion are\n",
             "model_name": "gpt-4",
-            "system_message": "You are a world class developer looking to convert code you find in the repo from Python to Ruby. The original code is written in Python 3.10. You should maintain license headers.",
+            "system_message": "You are a world class developer looking to convert code you find in the repo from Python to Javascript. The original code is written in Python 3.10. You should maintain license headers.",
             "temperature": 0.01
         }
     },
