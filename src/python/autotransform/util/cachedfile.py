@@ -99,6 +99,7 @@ class CachedFile:
             ORIGINAL_FILE_CACHE[self.path] = (
                 self._read(self.path) if Path(self.path).exists() else None
             )
+            Path(self.path).parent.mkdir(parents=True, exist_ok=True)
         self._write(self.path, new_content)
         FILE_CACHE[self.path] = new_content
 
