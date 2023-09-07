@@ -32,7 +32,9 @@
         "name": "ai_model",
         "model": {
             "name": "open_ai",
-            "prompt": "The file you are looking to convert is\n```python\n<<FILE_CONTENT>>\n```. The results of conversion are\n",
+            "prompts": [
+                "The file you are looking to convert is\n```python\n<<FILE_CONTENT>>\n```. The results of conversion are\n"
+            ],
             "model_name": "gpt-4",
             "system_message": "You are a world class developer looking to convert code you find in the repo from Python to Javascript. The original code is written in Python 3.10. You should maintain license headers.",
             "temperature": 0.01
