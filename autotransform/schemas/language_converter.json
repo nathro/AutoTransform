@@ -8,7 +8,7 @@
             ]
         },
         "pattern": "src\/python\/autotransform\/(.*)\/([^\/]*)\\.py",
-        "replacement": "src\/js\/autotransform\/\\1\/\\2.rb"
+        "replacement": "src\/js\/autotransform\/\\1\/\\2.js"
     },
     "filters": [
         {
