@@ -51,9 +51,7 @@ class ConditionalStep(Step):
             List[Action]: The Actions the Step wants to take.
         """
 
-        if self.condition.check(change):
-            return self.actions
-        return []
+        return self.actions if self.condition.check(change) else []
 
     def continue_management(self, change: Change) -> bool:
         """Checks if management should be continued after this Step when Actions were provided.
@@ -77,18 +75,23 @@ class ConditionalStep(Step):
             ConditionalStep: An instance of the component.
         """
 
-        if "action" in data:
-            action_name = (
+        action_name = (
+            (
                 data["action"]
-                if isinstance(data["action"], ActionName)
+                if "action" in data and isinstance(data["action"], ActionName)
                 else ActionName(data["action"])
             )
-            actions = [action_factory.get_instance({"name": action_name})]
-        else:
-            actions = [action_factory.get_instance(action) for action in data["actions"]]
+            if "action" in data
+            else None
+        )
+
+        actions = (
+            [action_factory.get_instance({"name": action_name})]
+            if action_name
+            else [action_factory.get_instance(action) for action in data.get("actions", [])]
+        )
+
         condition = condition_factory.get_instance(data["condition"])
-        if "continue_if_passed" in data:
-            continue_if_passed = bool(data["continue_if_passed"])
-        else:
-            continue_if_passed = False
+        continue_if_passed = bool(data.get("continue_if_passed", False))
+
         return cls(actions=actions, condition=condition, continue_if_passed=continue_if_passed)
