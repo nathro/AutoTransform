@@ -28,7 +28,6 @@ class ChangeStateCondition(ComparisonCondition[ChangeState]):
 
     comparison: ComparisonType
     value: Union[ChangeState, List[ChangeState]]
-
     name: ClassVar[ConditionName] = ConditionName.CHANGE_STATE
 
     def get_val_from_change(self, change: Change) -> ChangeState:
@@ -56,7 +55,6 @@ class MergeableStateCondition(ComparisonCondition[str]):
 
     comparison: ComparisonType
     value: Union[str, List[str]]
-
     name: ClassVar[ConditionName] = ConditionName.MERGEABLE_STATE
 
     def get_val_from_change(self, change: Change) -> str:
@@ -84,7 +82,6 @@ class ReviewStateCondition(ComparisonCondition[ReviewState]):
 
     comparison: ComparisonType
     value: Union[ReviewState, List[ReviewState]]
-
     name: ClassVar[ConditionName] = ConditionName.REVIEW_STATE
 
     def get_val_from_change(self, change: Change) -> ReviewState:
@@ -112,7 +109,6 @@ class TestStateCondition(ComparisonCondition[TestState]):
 
     comparison: ComparisonType
     value: Union[TestState, List[TestState]]
-
     name: ClassVar[ConditionName] = ConditionName.TEST_STATE
 
     def get_val_from_change(self, change: Change) -> TestState:

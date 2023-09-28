@@ -28,7 +28,6 @@ class SchemaNameCondition(ComparisonCondition[str]):
 
     comparison: ComparisonType
     value: Union[str, List[str]]
-
     name: ClassVar[ConditionName] = ConditionName.SCHEMA_NAME
 
     def get_val_from_change(self, change: Change) -> str:
@@ -40,5 +39,4 @@ class SchemaNameCondition(ComparisonCondition[str]):
         Returns:
             str: The name of the Schema that produced the change.
         """
-
         return change.get_schema_name()

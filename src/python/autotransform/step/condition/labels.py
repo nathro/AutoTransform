@@ -27,7 +27,6 @@ class LabelsCondition(ListComparisonCondition[str]):
 
     comparison: ComparisonType
     value: Optional[str] = None
-
     name: ClassVar[ConditionName] = ConditionName.LABELS
 
     def get_val_from_change(self, change: Change) -> List[str]:
@@ -39,5 +38,7 @@ class LabelsCondition(ListComparisonCondition[str]):
         Returns:
             List[str]: The labels of the Change.
         """
+        if not isinstance(change, Change):
+            raise TypeError(f"Expected instance of Change, got {type(change).__name__}")
 
         return change.get_labels()

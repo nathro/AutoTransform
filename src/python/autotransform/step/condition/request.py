@@ -94,4 +94,4 @@ class RequestStrCondition(ComparisonCondition[str]):
         for field_name in self.response_field.split("//"):
             result = result.get(field_name)
 
-        return str(result)
+        return str(result) if result else ""

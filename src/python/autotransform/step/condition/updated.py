@@ -29,7 +29,6 @@ class UpdatedAgoCondition(SortableComparisonCondition[int]):
 
     comparison: ComparisonType
     value: Union[int, List[int]]
-
     name: ClassVar[ConditionName] = ConditionName.UPDATED_AGO
 
     def get_val_from_change(self, change: Change) -> int:
@@ -41,5 +40,5 @@ class UpdatedAgoCondition(SortableComparisonCondition[int]):
         Returns:
             int: How long ago the Change was updated.
         """
-
-        return int(current_time() - change.get_last_updated_timestamp())
+        # Ensuring the returned value is always positive
+        return max(0, int(current_time() - change.get_last_updated_timestamp()))

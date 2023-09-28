@@ -61,5 +61,7 @@ class AggregateCondition(Condition):
             if isinstance(data["aggregator"], str)
             else data["aggregator"]
         )
-        conditions = [condition_factory.get_instance(condition) for condition in data["conditions"]]
+        conditions = [
+            condition_factory.get_instance(condition) for condition in data.get("conditions", [])
+        ]
         return cls(aggregator=aggregator, conditions=conditions)

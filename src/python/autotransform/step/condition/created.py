@@ -29,7 +29,6 @@ class CreatedAgoCondition(SortableComparisonCondition[int]):
 
     comparison: ComparisonType
     value: Union[int, List[int]]
-
     name: ClassVar[ConditionName] = ConditionName.CREATED_AGO
 
     def get_val_from_change(self, change: Change) -> int:
@@ -41,5 +40,5 @@ class CreatedAgoCondition(SortableComparisonCondition[int]):
         Returns:
             int: How long ago the Change was created.
         """
-
-        return int(time.time() - change.get_created_timestamp())
+        # Ensuring the return value is always a positive integer
+        return max(0, int(time.time() - change.get_created_timestamp()))
