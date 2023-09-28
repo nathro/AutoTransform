@@ -23,7 +23,7 @@ def get_arg_parser() -> ArgumentParser:
     """
 
     parser = ArgumentParser(
-        description="AutoTransform is a tool for structured, automated code modifcation",
+        description="AutoTransform is a tool for structured, automated code modification",
         prog="AutoTransform",
     )
     subparsers = parser.add_subparsers()
@@ -50,10 +50,13 @@ def main():
     parser = get_arg_parser()
     args = parser.parse_args()
 
-    if hasattr(args, "func"):
-        args.func(args)
-    else:
+    # Check if 'func' attribute exists in args
+    # If not, print help and exit
+    if not hasattr(args, "func"):
         parser.print_help()
+        return
+
+    args.func(args)
 
 
 if __name__ == "__main__":
