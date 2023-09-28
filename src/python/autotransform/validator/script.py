@@ -9,8 +9,6 @@
 
 """The implementation for the ScriptValidator."""
 
-from __future__ import annotations
-
 from typing import Any, ClassVar, List, Mapping, Optional, Sequence
 
 import autotransform.schema
@@ -80,22 +78,24 @@ class ScriptValidator(Validator):
             ValidationResult: The result of the validation check indicating the severity of any
                 validation failures as well as an associated message
         """
+        items = self._get_items(batch)
         if not self.per_item:
-            return self._check_batch(batch)
-        if self.run_on_changes:
-            current_schema = autotransform.schema.current
-            assert current_schema is not None
-            repo = current_schema.repo
-            assert repo is not None
-            items: Sequence[Item] = [FileItem(key=file) for file in repo.get_changed_files(batch)]
-        else:
-            items = batch["items"]
+            return self._check_batch(items, batch.get("metadata", {}))
 
         for item in items:
             result = self._check_single(item, batch.get("metadata", None))
             if result.level != ValidationResultLevel.NONE:
                 return result
         return ValidationResult(level=ValidationResultLevel.NONE, validator=self)
+
+    def _get_items(self, batch: Batch) -> Sequence[Item]:
+        if self.run_on_changes:
+            current_schema = autotransform.schema.current
+            assert current_schema is not None
+            repo = current_schema.repo
+            assert repo is not None
+            return [FileItem(key=file) for file in repo.get_changed_files(batch)]
+        return batch["items"]
 
     def _check_single(
         self, item: Item, batch_metadata: Optional[Mapping[str, Any]]
@@ -107,68 +107,43 @@ class ScriptValidator(Validator):
             batch_metadata (Optional[Mapping[str, Any]]): The metadata of the Batch containing the
                 Item.
         """
+        return self._run_script([item], batch_metadata or {})
 
-        event_handler = EventHandler.get()
-
-        # Get Command
-        cmd = [self.script]
-        cmd.extend(self.args)
-
-        proc = run_cmd_on_items(cmd, [item], batch_metadata or {})
-
-        # Handle output
-        level = self.failure_level if proc.returncode != 0 else ValidationResultLevel.NONE
-        if proc.stdout.strip() != "":
-            event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
-        else:
-            event_handler.handle(VerboseEvent({"message": "No STDOUT"}))
-        if proc.stderr.strip() != "":
-            event_handler.handle(VerboseEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
-        else:
-            event_handler.handle(VerboseEvent({"message": "No STDERR"}))
-        return ValidationResult(
-            level=level,
-            message=f"[{cmd}]\nSTDOUT:\n{proc.stdout.strip()}\nSTDERR:\n{proc.stderr.strip()}",
-            validator=self,
-        )
-
-    def _check_batch(self, batch: Batch) -> ValidationResult:
+    def _check_batch(
+        self, items: Sequence[Item], batch_metadata: Mapping[str, Any]
+    ) -> ValidationResult:
         """Executes a simple script to validate the given Batch.
 
         Args:
-            batch (Batch): The batch that will be validated.
+            items (Sequence[Item]): The items that will be validated.
+            batch_metadata (Mapping[str, Any]): The metadata of the Batch containing the
+                items.
         """
+        return self._run_script(items, batch_metadata)
 
+    def _run_script(
+        self, items: Sequence[Item], batch_metadata: Mapping[str, Any]
+    ) -> ValidationResult:
+        """Executes a simple script to validate the given items.
+
+        Args:
+            items (Sequence[Item]): The items that will be validated.
+            batch_metadata (Mapping[str, Any]): The metadata of the Batch containing the
+                items.
+        """
         event_handler = EventHandler.get()
 
         cmd = [self.script]
-
-        # Get items
-        if self.run_on_changes:
-            current_schema = autotransform.schema.current
-            assert current_schema is not None
-            repo = current_schema.repo
-            assert repo is not None
-            items: Sequence[Item] = [FileItem(key=file) for file in repo.get_changed_files(batch)]
-        else:
-            items = batch["items"]
-
-        # Get Command
-        cmd = [self.script]
         cmd.extend(self.args)
 
-        proc = run_cmd_on_items(cmd, items, batch.get("metadata", {}))
+        proc = run_cmd_on_items(cmd, items, batch_metadata)
 
         # Handle output
         level = self.failure_level if proc.returncode != 0 else ValidationResultLevel.NONE
         if proc.stdout.strip() != "":
             event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
-        else:
-            event_handler.handle(VerboseEvent({"message": "No STDOUT"}))
         if proc.stderr.strip() != "":
             event_handler.handle(VerboseEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
-        else:
-            event_handler.handle(VerboseEvent({"message": "No STDERR"}))
         return ValidationResult(
             level=level,
             message=f"[{cmd}]\nSTDOUT:\n{proc.stdout.strip()}\nSTDERR:\n{proc.stderr.strip()}",
