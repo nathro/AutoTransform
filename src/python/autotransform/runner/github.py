@@ -19,9 +19,9 @@ from autotransform.config import get_config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.remoterun import RemoteRunEvent
-from autotransform.event.update import RemoteUpdateEvent
 from autotransform.event.verbose import VerboseEvent
 from autotransform.filter.shard import ShardFilter
+from autotransform.repo.base import Repo
 from autotransform.repo.github import GithubRepo
 from autotransform.runner.base import Runner, RunnerName
 from autotransform.schema.schema import AutoTransformSchema
@@ -69,15 +69,62 @@ class GithubRunner(Runner):
         event_handler = EventHandler.get()
 
         # Set up inputs
+        workflow_inputs = self._setup_workflow_inputs(schema)
+
+        # Dispatch a Workflow run
+        self._dispatch_workflow_run(self.run_workflow, schema, workflow_inputs, event_handler)
+
+    def update(self, change: Change) -> None:
+        """Triggers an update of the Change by submitting a workflow run to the
+        Github repo in the Schema associated with the change.
+
+        Args:
+            change (Change): The Change to update.
+        """
+
+        event_handler = EventHandler.get()
+
+        # Dispatch a Workflow run
+        self._dispatch_workflow_run(
+            self.update_workflow,
+            change.get_schema(),
+            {"change": json.dumps(change.bundle())},
+            event_handler,
+        )
+
+    def _setup_workflow_inputs(self, schema: AutoTransformSchema) -> Dict[str, Any]:
+        """Set up workflow inputs
+
+        Args:
+            schema (AutoTransformSchema): The schema that will be run.
+
+        Returns:
+            Dict[str, Any]: The inputs for the dispatch.
+        """
         workflow_inputs = {"schema": schema.config.schema_name}
         if schema.config.max_submissions:
             workflow_inputs["max_submissions"] = str(schema.config.max_submissions)
         shard_filter = [filt for filt in schema.filters if isinstance(filt, ShardFilter)]
         if shard_filter:
             workflow_inputs["filter"] = json.dumps(shard_filter[0].bundle())
+        return workflow_inputs
 
-        # Dispatch a Workflow run
-        workflow_url = self._create_workflow_dispatch(self.run_workflow, schema, workflow_inputs)
+    def _dispatch_workflow_run(
+        self,
+        workflow_name: str,
+        schema: AutoTransformSchema,
+        inputs: Dict[str, Any],
+        event_handler: EventHandler,
+    ) -> None:
+        """Dispatch a Workflow run
+
+        Args:
+            workflow_name (str): The name of the workflow to dispatch.
+            schema (AutoTransformSchema): The Schema that is involved with the dispatch.
+            inputs (Dict[str, Any]): The inputs for the dispatch.
+            event_handler (EventHandler): The event handler.
+        """
+        workflow_url = self._create_workflow_dispatch(workflow_name, schema, inputs)
         assert workflow_url is not None, "Failed to dispatch workflow request"
 
         event_handler.handle(VerboseEvent({"message": "Successfully dispatched workflow run"}))
@@ -96,36 +143,6 @@ class GithubRunner(Runner):
             RemoteRunEvent({"schema_name": schema.config.schema_name, "ref": workflow_url})
         )
 
-    def update(self, change: Change) -> None:
-        """Triggers an update of the Change by submitting a workflow run to the
-        Github repo in the Schema associated with the change.
-
-        Args:
-            change (Change): The Change to update.
-        """
-
-        event_handler = EventHandler.get()
-
-        # Dispatch a Workflow run
-        workflow_url = self._create_workflow_dispatch(
-            self.update_workflow, change.get_schema(), {"change": json.dumps(change.bundle())}
-        )
-        assert workflow_url is not None, "Failed to dispatch workflow request"
-
-        event_handler.handle(VerboseEvent({"message": "Successfully dispatched workflow run"}))
-        if workflow_url == "":
-            event_handler.handle(DebugEvent({"message": "No guess for workflow run URL."}))
-            return
-        event_handler.handle(
-            DebugEvent(
-                {
-                    "message": "Because Github REST API does not provide IDs in response, "
-                    + "taking best guess at workflow URL"
-                }
-            )
-        )
-        event_handler.handle(RemoteUpdateEvent({"change": change, "ref": workflow_url}))
-
     def _create_workflow_dispatch(
         self, workflow_name: str, schema: AutoTransformSchema, inputs: Dict[str, Any]
     ) -> str:
@@ -142,21 +159,8 @@ class GithubRunner(Runner):
 
         repo = get_config().repo_override or schema.repo
 
-        if self.repo_name is not None:
-            repo_name = self.repo_name
-        else:
-            assert isinstance(
-                repo, GithubRepo
-            ), "GithubRunner can only run using schemas that have Github repos"
-            repo_name = repo.full_github_name
-
-        if self.repo_ref is not None:
-            repo_ref = self.repo_ref
-        else:
-            assert isinstance(
-                repo, GithubRepo
-            ), "GithubRunner can only run using schemas that have Github repos"
-            repo_ref = repo.base_branch
+        repo_name = self.repo_name if self.repo_name is not None else self._get_repo_name(repo)
+        repo_ref = self.repo_ref if self.repo_ref is not None else self._get_repo_ref(repo)
 
         # Allow controlling the target repo with the Runner
         if self.target_repo_name is not None:
@@ -172,3 +176,33 @@ class GithubRunner(Runner):
         )
         assert workflow_url is not None, "Failed to dispatch workflow request"
         return workflow_url
+
+    @staticmethod
+    def _get_repo_name(repo: Optional[Repo]) -> str:
+        """Get repo name
+
+        Args:
+            repo (Optional[Repo]): The Github repo.
+
+        Returns:
+            str: The full github name of the repo.
+        """
+        assert isinstance(
+            repo, GithubRepo
+        ), "GithubRunner can only run using schemas that have Github repos"
+        return repo.full_github_name
+
+    @staticmethod
+    def _get_repo_ref(repo: Optional[Repo]) -> str:
+        """Get repo ref
+
+        Args:
+            repo (Optional[Repo]): The Github repo.
+
+        Returns:
+            str: The base branch of the repo.
+        """
+        assert isinstance(
+            repo, GithubRepo
+        ), "GithubRunner can only run using schemas that have Github repos"
+        return repo.base_branch

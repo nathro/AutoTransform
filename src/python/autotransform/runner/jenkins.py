@@ -45,13 +45,7 @@ class JenkinsAPIRunner(Runner):
             schema (AutoTransformSchema): The schema that will be run.
         """
 
-        job_params = {"COMMAND": "run", "SCHEMA_NAME": schema.config.schema_name}
-        if schema.config.max_submissions:
-            job_params["MAX_SUBMISSIONS"] = str(schema.config.max_submissions)
-        shard_filter = [filt for filt in schema.filters if isinstance(filt, ShardFilter)]
-        if shard_filter:
-            job_params["FILTER"] = json.dumps(shard_filter[0].bundle())
-
+        job_params = self._prepare_job_params(schema)
         self._run_jenkins_job(self.job_name, job_params)
 
     def update(self, change: Change) -> None:
@@ -64,6 +58,26 @@ class JenkinsAPIRunner(Runner):
         self._run_jenkins_job(
             self.job_name, {"COMMAND": "update", "CHANGE": json.dumps(change.bundle())}
         )
+
+    @staticmethod
+    def _prepare_job_params(schema: AutoTransformSchema) -> Dict[str, Any]:
+        """Prepares the job parameters for the Jenkins API request.
+
+        Args:
+            schema (AutoTransformSchema): The schema that will be run.
+
+        Returns:
+            Dict[str, Any]: The prepared job parameters.
+        """
+
+        job_params = {"COMMAND": "run", "SCHEMA_NAME": schema.config.schema_name}
+        if schema.config.max_submissions:
+            job_params["MAX_SUBMISSIONS"] = str(schema.config.max_submissions)
+        shard_filter = [filt for filt in schema.filters if isinstance(filt, ShardFilter)]
+        if shard_filter:
+            job_params["FILTER"] = json.dumps(shard_filter[0].bundle())
+
+        return job_params
 
     @staticmethod
     def _run_jenkins_job(job_name: str, params: Dict[str, Any]) -> None:
@@ -92,7 +106,7 @@ class JenkinsAPIRunner(Runner):
                 headers={"content-type": "application/json"},
                 timeout=120,
             )
-            if str(crumb_data.status_code) == "200":
+            if crumb_data.status_code == 200:
                 data = requests.get(
                     f"{config.jenkins_base_url}/job/{job_name}/buildWithParameters",
                     auth=auth,
@@ -104,7 +118,7 @@ class JenkinsAPIRunner(Runner):
                     timeout=120,
                 )
 
-                if str(data.status_code) == "201":
+                if data.status_code == 201:
                     event_handler.handle(VerboseEvent({"message": "Jenkins job is triggered"}))
                 else:
                     event_handler.handle(
@@ -139,13 +153,7 @@ class JenkinsFileRunner(Runner):
             schema (AutoTransformSchema): The schema that will be run.
         """
 
-        job_params = {"COMMAND": "run", "SCHEMA_NAME": schema.config.schema_name}
-        if schema.config.max_submissions:
-            job_params["MAX_SUBMISSIONS"] = str(schema.config.max_submissions)
-        shard_filter = [filt for filt in schema.filters if isinstance(filt, ShardFilter)]
-        if shard_filter:
-            job_params["FILTER"] = json.dumps(shard_filter[0].bundle())
-
+        job_params = self._prepare_job_params(schema)
         self._create_file(job_params)
 
     def update(self, change: Change) -> None:
@@ -156,6 +164,26 @@ class JenkinsFileRunner(Runner):
         """
 
         self._create_file({"COMMAND": "update", "CHANGE": json.dumps(change.bundle())})
+
+    @staticmethod
+    def _prepare_job_params(schema: AutoTransformSchema) -> Dict[str, Any]:
+        """Prepares the job parameters for the Jenkins API request.
+
+        Args:
+            schema (AutoTransformSchema): The schema that will be run.
+
+        Returns:
+            Dict[str, Any]: The prepared job parameters.
+        """
+
+        job_params = {"COMMAND": "run", "SCHEMA_NAME": schema.config.schema_name}
+        if schema.config.max_submissions:
+            job_params["MAX_SUBMISSIONS"] = str(schema.config.max_submissions)
+        shard_filter = [filt for filt in schema.filters if isinstance(filt, ShardFilter)]
+        if shard_filter:
+            job_params["FILTER"] = json.dumps(shard_filter[0].bundle())
+
+        return job_params
 
     def _create_file(self, props: Dict[str, str]) -> None:
         """Creates the file for the Jenkins job.
