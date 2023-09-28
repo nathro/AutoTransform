@@ -35,7 +35,7 @@ from autotransform.schema.config import SchemaConfig
 from autotransform.transformer.base import FACTORY as transformer_factory
 from autotransform.transformer.base import Transformer
 from autotransform.util.component import ComponentModel
-from autotransform.util.console import choose_options_from_list, choose_yes_or_no
+from autotransform.util.console import choose_yes_or_no
 from autotransform.validator.base import FACTORY as validator_factory
 from autotransform.validator.base import ValidationError, Validator
 from pydantic import Field
@@ -58,8 +58,6 @@ class AutoTransformSchema(ComponentModel):
         repo (Optional[Repo], optional): A Repo to control submission of changes to version
             control or code review systems. Defaults to None.
     """
-
-    # pylint: disable=too-many-instance-attributes
 
     input: Input
     batcher: Batcher
@@ -97,15 +95,14 @@ class AutoTransformSchema(ComponentModel):
             if isinstance(filt, BulkFilter):
                 filt.pre_process(all_items)
         for item in all_items:
-            is_valid = True
             for cur_filter in self.filters:
                 if not cur_filter.is_valid(item):
-                    is_valid = False
                     event = DebugEvent({"message": f"[{cur_filter}] Invalid Item: {item!r}"})
                     event_handler.handle(event)
                     break
-            if is_valid:
+            else:
                 valid_items.append(item)
+
         if valid_items:
             valid_item_str = "\n".join([f"{item!r}," for item in valid_items])
             event_handler.handle(VerboseEvent({"message": f"Num Valid Items: {len(valid_items)}"}))
@@ -273,7 +270,6 @@ class AutoTransformSchema(ComponentModel):
             config=config,
         )
 
-    # pylint: disable=too-many-branches
     @staticmethod
     def from_console(prev_schema: Optional[AutoTransformSchema] = None) -> AutoTransformSchema:
         """Gets a AutoTransformSchema using console inputs.
@@ -297,15 +293,7 @@ class AutoTransformSchema(ComponentModel):
         assert inp is not None
 
         # Get Filters
-        if prev_schema is not None and prev_schema.filters:
-            filters = choose_options_from_list(
-                "Choose filters to keep",
-                [(filt, f"{filt!r}") for filt in prev_schema.filters],
-                min_choices=0,
-                max_choices=len(prev_schema.filters),
-            )
-        else:
-            filters = []
+        filters = prev_schema.filters if prev_schema and prev_schema.filters else []
         while choose_yes_or_no("Would you like to add a filter?"):
             filt = filter_factory.from_console("filter", allow_none=False)
             assert filt is not None
@@ -326,30 +314,14 @@ class AutoTransformSchema(ComponentModel):
         assert transformer is not None
 
         # Get Validators
-        if prev_schema is not None and prev_schema.validators:
-            validators = choose_options_from_list(
-                "Choose validators to keep",
-                [(validator, f"{validator!r}") for validator in prev_schema.validators],
-                min_choices=0,
-                max_choices=len(prev_schema.validators),
-            )
-        else:
-            validators = []
+        validators = prev_schema.validators if prev_schema and prev_schema.validators else []
         while choose_yes_or_no("Would you like to add a validator?"):
             validator = validator_factory.from_console("validator", allow_none=False)
             assert validator is not None
             validators.append(validator)
 
         # Get Commands
-        if prev_schema is not None and prev_schema.commands:
-            commands = choose_options_from_list(
-                "Choose commands to keep",
-                [(command, f"{command!r}") for command in prev_schema.commands],
-                min_choices=0,
-                max_choices=len(prev_schema.commands),
-            )
-        else:
-            commands = []
+        commands = prev_schema.commands if prev_schema and prev_schema.commands else []
         while choose_yes_or_no("Would you like to add a command?"):
             command = command_factory.from_console("command", allow_none=False)
             assert command is not None
