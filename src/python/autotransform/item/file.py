@@ -50,11 +50,20 @@ class FileItem(Item):
             content (str): The new content for the File.
         """
 
-        path = (self.extra_data or {}).get("target_path", self.get_path())
+        path = self._get_target_path()
         CachedFile(path).write_content(content)
 
     def revert(self) -> None:
         """Reverts all changes to the file."""
 
-        path = (self.extra_data or {}).get("target_path", self.get_path())
+        path = self._get_target_path()
         CachedFile(path).revert()
+
+    def _get_target_path(self) -> str:
+        """Gets the target path of the file.
+
+        Returns:
+            str: The file's target path.
+        """
+
+        return (self.extra_data or {}).get("target_path", self.get_path())
