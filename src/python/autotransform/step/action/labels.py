@@ -25,7 +25,6 @@ class AddLabelsAction(Action):
     """
 
     labels: List[str]
-
     name: ClassVar[ActionName] = ActionName.ADD_LABELS
 
     @validator("labels")
@@ -71,7 +70,6 @@ class RemoveLabelAction(Action):
     """
 
     label: str
-
     name: ClassVar[ActionName] = ActionName.REMOVE_LABEL
 
     @validator("label")

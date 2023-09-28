@@ -25,12 +25,11 @@ class CommentAction(Action):
     """
 
     body: str
-
     name: ClassVar[ActionName] = ActionName.COMMENT
 
     @validator("body")
     @classmethod
-    def body_must_be_non_empty(cls, v: str) -> str:
+    def validate_body(cls, v: str) -> str:
         """Validates the body is not empty.
 
         Args:
