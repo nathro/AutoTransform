@@ -11,7 +11,7 @@
 
 import json
 from argparse import ArgumentParser
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from autotransform.config import get_repo_config_relative_path
 from autotransform.step.condition.base import ConditionName
@@ -26,7 +26,7 @@ def get_arg_parser() -> ArgumentParser:
     """
 
     parser = ArgumentParser(
-        description="Upgrade Manager JSON files for 1.0.0 -> 1.0.1",
+        description="Upgrade Manager JSON files for 1.0.3 -> 1.0.5",
         prog="AutoTransform",
     )
 
@@ -88,14 +88,10 @@ def update_condition_data(condition_data: Dict[str, Any]) -> None:
     if condition_data.get("name") != ConditionName.CHANGE_STATE:
         return
 
-    if isinstance(condition_data.get("value"), str) and condition_data["value"] in [
-        "approved",
-        "changes_requested",
-    ]:
+    condition_value: Optional[Any] = condition_data.get("value")
+    if isinstance(condition_value, str) and condition_value in ["approved", "changes_requested"]:
         condition_data["name"] = ConditionName.REVIEW_STATE
-        return
-
-    if isinstance(condition_data.get("value"), list):
+    elif isinstance(condition_value, list):
         print("Can not migrate in/not_in comparisons for conditions")
 
 

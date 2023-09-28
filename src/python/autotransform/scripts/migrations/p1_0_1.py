@@ -64,7 +64,7 @@ def update_manager_data(manager_data: Dict[str, Any]) -> None:
         manager_data (Dict[str, Any]): The Manager data to update
     """
 
-    for step in manager_data["steps"]:
+    for step in manager_data.get("steps", []):
         update_step_data(step)
 
 
@@ -75,10 +75,10 @@ def update_step_data(step_data: Dict[str, Any]) -> None:
         step_data (Dict[str, Any]): The Step data to update.
     """
 
-    if step_data["name"] == "conditional":
+    if step_data.get("name") == "conditional":
         if "actions" not in step_data:
             step_data["actions"] = [{"name": step_data.pop("action")}]
-        update_condition_data(step_data["condition"])
+        update_condition_data(step_data.get("condition", {}))
 
 
 def update_condition_data(condition_data: Dict[str, Any]) -> None:
@@ -88,8 +88,8 @@ def update_condition_data(condition_data: Dict[str, Any]) -> None:
         condition_data (Dict[str, Any]): The Condition data to update.
     """
 
-    if condition_data["name"] == ConditionName.AGGREGATE:
-        for sub_condition in condition_data["conditions"]:
+    if condition_data.get("name") == ConditionName.AGGREGATE:
+        for sub_condition in condition_data.get("conditions", []):
             update_condition_data(sub_condition)
 
     condition_value_mapping = {
@@ -99,7 +99,7 @@ def update_condition_data(condition_data: Dict[str, Any]) -> None:
         ConditionName.UPDATED_AGO: "time",
     }
 
-    if condition_data["name"] in condition_value_mapping and "value" not in condition_data:
+    if condition_data.get("name") in condition_value_mapping and "value" not in condition_data:
         condition_data["value"] = condition_data.pop(
             condition_value_mapping[condition_data["name"]]
         )

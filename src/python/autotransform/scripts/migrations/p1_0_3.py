@@ -54,7 +54,7 @@ def load_json_file(file_path: str) -> Dict[str, Any]:
         Dict[str, Any]: The loaded JSON data.
     """
     with open(file_path, "r", encoding="UTF-8") as json_file:
-        return json.loads(json_file.read())
+        return json.load(json_file)
 
 
 def main() -> None:
@@ -97,8 +97,8 @@ def update_scheduler_data(scheduler_data: Dict[str, Any], schema_map: SchemaMap)
         else:
             schema = AutoTransformSchema.from_data(load_json_file(schema_target))
         schema_name = schema.config.schema_name
-        del schema_data["target"]
-        del schema_data["type"]
+        schema_data.pop("target")
+        schema_data.pop("type")
         schema_data["schema_name"] = schema_name
         if schema_name not in schema_map:
             schema_map.add_schema(schema_name, schema_type, schema_target)
