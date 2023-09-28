@@ -9,8 +9,6 @@
 
 """The implementation for the ScriptCommand."""
 
-from __future__ import annotations
-
 from typing import Any, ClassVar, List, Mapping, Optional, Sequence
 
 import autotransform.schema
@@ -74,7 +72,7 @@ class ScriptCommand(Command):
 
         if self.per_item:
             for item in items:
-                self._run_single(item, batch.get("metadata", None))
+                self._run_single(item, batch.get("metadata", {}))
             return
 
         self._run_batch(batch, items)
@@ -97,15 +95,15 @@ class ScriptCommand(Command):
 
         return batch["items"]
 
-    def _run_single(self, item: Item, batch_metadata: Optional[Mapping[str, Any]]) -> None:
+    def _run_single(self, item: Item, batch_metadata: Mapping[str, Any]) -> None:
         """Executes a simple script to run a command on a single Item.
 
         Args:
             item (Item): The Item that will be validated.
-            batch_metadata (Optional[Mapping[str, Any]]): The metadata of the Batch containing the
+            batch_metadata (Mapping[str, Any]): The metadata of the Batch containing the
                 Item.
         """
-        self._run_script([item], batch_metadata or {})
+        self._run_script([item], batch_metadata)
 
     def _run_batch(self, batch: Batch, items: Sequence[Item]) -> None:
         """Executes a simple script against the given Batch.
@@ -126,18 +124,19 @@ class ScriptCommand(Command):
         event_handler = EventHandler.get()
 
         # Get Command
-        cmd = [self.script]
-        cmd.extend(self.args)
+        cmd = [self.script, *self.args]
 
         proc = run_cmd_on_items(cmd, items, metadata)
 
         # Handle output
-        if proc.stdout.strip() != "":
-            event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
-        else:
-            event_handler.handle(VerboseEvent({"message": "No STDOUT"}))
-        if proc.stderr.strip() != "":
-            event_handler.handle(VerboseEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
-        else:
-            event_handler.handle(VerboseEvent({"message": "No STDERR"}))
+        stdout = proc.stdout.strip()
+        stderr = proc.stderr.strip()
+
+        event_handler.handle(
+            VerboseEvent({"message": f"STDOUT:\n{stdout}" if stdout else "No STDOUT"})
+        )
+        event_handler.handle(
+            VerboseEvent({"message": f"STDERR:\n{stderr}" if stderr else "No STDERR"})
+        )
+
         proc.check_returncode()
