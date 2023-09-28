@@ -9,8 +9,6 @@
 
 """The base class and associated classes for Filter components."""
 
-from __future__ import annotations
-
 from abc import abstractmethod
 from enum import Enum
 from typing import ClassVar, Optional, Sequence, Set
@@ -56,7 +54,7 @@ class Filter(NamedComponent):
             bool: Returns True if the Item is eligible for transformation.
         """
 
-        return self.inverted != self._is_valid(item)
+        return not self.inverted if self._is_valid(item) else self.inverted
 
     @abstractmethod
     def _is_valid(self, item: Item) -> bool:
@@ -74,7 +72,7 @@ class BulkFilter(Filter):
     """The base for BulkFilter components. Handles validation in bulk to determine valid Items.
 
     Attributes:
-        _valid_keys (Optional[List[str]], optional): Whether to invert the results of the filter.
+        _valid_keys (Optional[Set[str]], optional): Whether to invert the results of the filter.
             Defaults to an None.
         name (ClassVar[FilterName]): The name of the component.
     """
@@ -99,8 +97,7 @@ class BulkFilter(Filter):
             items (Sequence[Item]): The Items to validate.
         """
 
-        if self._valid_keys is None:
-            self._valid_keys = self._get_valid_keys(items)
+        self._valid_keys = self._valid_keys or self._get_valid_keys(items)
 
     def _is_valid(self, item: Item) -> bool:
         """Check whether an Item is valid based on the Filter. Does not handle inversion.
@@ -112,7 +109,7 @@ class BulkFilter(Filter):
             bool: Returns True if the Item is eligible for transformation.
         """
 
-        return self._valid_keys is not None and item.key in self._valid_keys
+        return item.key in self._valid_keys if self._valid_keys else False
 
 
 FACTORY = ComponentFactory(

@@ -9,8 +9,6 @@
 
 """The implementation for the AggregateFilter."""
 
-from __future__ import annotations
-
 from typing import Any, ClassVar, Dict, Sequence, Type
 
 from autotransform.filter.base import FACTORY as filter_factory
@@ -44,16 +42,11 @@ class AggregateFilter(Filter):
             bool: Whether the Item passes the Filter.
         """
 
-        if self.aggregator == AggregatorType.ALL:
-            return all(filter.is_valid(item) for filter in self.filters)
-
-        if self.aggregator == AggregatorType.ANY:
-            return any(filter.is_valid(item) for filter in self.filters)
-
-        raise ValueError(f"Unknown aggregator type {self.aggregator}")
+        aggregator_func = all if self.aggregator == AggregatorType.ALL else any
+        return aggregator_func(filter.is_valid(item) for filter in self.filters)
 
     @classmethod
-    def from_data(cls: Type[AggregateFilter], data: Dict[str, Any]) -> AggregateFilter:
+    def from_data(cls: Type["AggregateFilter"], data: Dict[str, Any]) -> "AggregateFilter":
         """Produces an instance of the component from decoded data.
 
         Args:
@@ -63,10 +56,6 @@ class AggregateFilter(Filter):
             AggregateFilter: An instance of the component.
         """
 
-        aggregator = (
-            data["aggregator"]
-            if isinstance(data["aggregator"], AggregatorType)
-            else AggregatorType(data["aggregator"])
-        )
+        aggregator = AggregatorType(data["aggregator"])
         filters = [filter_factory.get_instance(filter) for filter in data["filters"]]
         return cls(aggregator=aggregator, filters=filters)

@@ -61,8 +61,7 @@ class ScriptFilter(BulkFilter):
         event_handler = EventHandler.get()
 
         # Get Command
-        cmd = [self.script]
-        cmd.extend(self.args)
+        cmd = [self.script] + self.args
 
         chunk_size = self.chunk_size or len(items)
         item_chunks = [items[i : i + chunk_size] for i in range(0, len(items), chunk_size)]
@@ -111,5 +110,5 @@ class ScriptFilter(BulkFilter):
                         key_data = json.loads(results.read())
                 else:
                     key_data = json.loads(stdout)
-                valid_keys = valid_keys.union(set(key_data))
+                valid_keys.update(key_data)
         return valid_keys

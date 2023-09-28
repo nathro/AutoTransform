@@ -43,8 +43,8 @@ class FileExistsFilter(Filter):
             return False
 
         path_to_check = (
-            (item.extra_data or {}).get("target_path")
-            if self.check_target_path
+            item.extra_data.get("target_path")
+            if self.check_target_path and item.extra_data
             else item.get_path()
         )
 

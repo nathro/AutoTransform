@@ -37,8 +37,7 @@ class KeyHashShardFilter(ShardFilter):
         """
 
         # Ensure the key is encoded in UTF-8 before hashing
-        encoded_key = item.key.encode("UTF-8")
-        hashed_key = md5(encoded_key).hexdigest()
+        hashed_key = md5(item.key.encode()).hexdigest()
 
         # Convert the hexadecimal hash to an integer and return the shard number
         return int(hashed_key, 16) % self.num_shards
