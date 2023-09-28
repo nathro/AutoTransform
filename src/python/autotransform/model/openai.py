@@ -60,7 +60,7 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
             ValueError: Raises an error when the prompts contains no items.
 
         Returns:
-            int: The unmodified temperature.
+            List[str]: The unmodified prompts.
         """
 
         if not v:
@@ -79,10 +79,10 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
             ValueError: Raises an error when the temperature is not in the valid range.
 
         Returns:
-            int: The unmodified temperature.
+            float: The unmodified temperature.
         """
 
-        if not 0.0 < v < 1.0:
+        if not 0.0 <= v <= 1.0:
             raise ValueError("The temperature must be between 0.0 and 1.0")
         return v
 
