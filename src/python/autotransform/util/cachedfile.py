@@ -29,8 +29,6 @@ class CachedFile:
         path (str): The path of the file being cached.
     """
 
-    path: str
-
     def __init__(self, path: str):
         """A simple constructor.
 
@@ -52,9 +50,7 @@ class CachedFile:
             str: The content of the file.
         """
 
-        # pylint: disable=unspecified-encoding
-
-        with open(path, "r") as file:
+        with open(path, "r", encoding="utf-8") as file:
             content = file.read()
         return content
 
@@ -80,9 +76,7 @@ class CachedFile:
             content (str): The content to write to the file.
         """
 
-        # pylint: disable=unspecified-encoding
-
-        with open(path, "w") as file:
+        with open(path, "w", encoding="utf-8") as file:
             file.write(content)
             file.flush()
 
@@ -92,8 +86,6 @@ class CachedFile:
         Args:
             new_content (str): The content to put in the file.
         """
-
-        # pylint: disable=unspecified-encoding
 
         if self.path not in ORIGINAL_FILE_CACHE:
             ORIGINAL_FILE_CACHE[self.path] = (

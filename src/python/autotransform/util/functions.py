@@ -95,17 +95,9 @@ def replace_script_args(args: List[str], replacements: Dict[str, List[str]]) -> 
     """
 
     script_replacements = os.getenv("AUTO_TRANSFORM_SCRIPT_REPLACEMENTS")
-    if script_replacements:
-        env_replacements: Dict[str, List[str]] = json.loads(script_replacements)
-    else:
-        env_replacements = {}
+    env_replacements = json.loads(script_replacements) if script_replacements else {}
 
     replaced_args = []
     for arg in args:
-        if arg in replacements:
-            replaced_args.extend(replacements[arg])
-        elif arg in env_replacements:
-            replaced_args.extend(env_replacements[arg])
-        else:
-            replaced_args.append(arg)
+        replaced_args.extend(replacements.get(arg, env_replacements.get(arg, [arg])))
     return replaced_args

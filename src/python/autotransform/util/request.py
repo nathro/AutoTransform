@@ -51,12 +51,7 @@ class RequestHandler(BaseModel):
         Returns:
             Dict[str, Any]: The headers with constant replacers filled in.
         """
-
-        headers = dict(self.headers)
-        for name, replacer in self.constant_replacers.items():
-            headers = self.replace_values(headers, name, replacer)
-
-        return headers
+        return self._replace_values(self.headers)
 
     @cached_property
     def _params(self) -> Dict[str, Any]:
@@ -65,12 +60,7 @@ class RequestHandler(BaseModel):
         Returns:
             Dict[str, Any]: The params with constant replacers filled in.
         """
-
-        params = dict(self.params)
-        for name, replacer in self.constant_replacers.items():
-            params = self.replace_values(params, name, replacer)
-
-        return params
+        return self._replace_values(self.params)
 
     @cached_property
     def _data(self) -> Dict[str, Any]:
@@ -79,12 +69,21 @@ class RequestHandler(BaseModel):
         Returns:
             Dict[str, Any]: The data with constant replacers filled in.
         """
+        return self._replace_values(self.data)
 
-        data = dict(self.data)
+    def _replace_values(self, data: Mapping[str, Any]) -> Dict[str, Any]:
+        """Replaces values in a dictionary with values from a replacing function.
+
+        Args:
+            data (Mapping[str, Any]): The data to replace values for.
+
+        Returns:
+            Dict[str, Any]: The replaced data.
+        """
+        replaced_data = dict(data)
         for name, replacer in self.constant_replacers.items():
-            data = self.replace_values(data, name, replacer)
-
-        return data
+            replaced_data = self.replace_values(replaced_data, name, replacer)
+        return replaced_data
 
     @staticmethod
     def replace_values(
@@ -130,9 +129,9 @@ class RequestHandler(BaseModel):
 
         event_handler = EventHandler.get()
 
-        headers = self._headers
-        params = self._params
-        data = self._data
+        headers = self._replace_values(self._headers)
+        params = self._replace_values(self._params)
+        data = self._replace_values(self._data)
         for name, replacer in replacers.items():
             headers = self.replace_values(headers, name, replacer)
             params = self.replace_values(params, name, replacer)

@@ -81,8 +81,7 @@ class GithubUtils:
             GithubUtils: A util class with a cached API object for requests.
         """
         if fully_qualified_repo not in GithubUtils.__instances:
-            util = GithubUtils(fully_qualified_repo)
-            GithubUtils.__instances[fully_qualified_repo] = util
+            GithubUtils.__instances[fully_qualified_repo] = GithubUtils(fully_qualified_repo)
         return GithubUtils.__instances[fully_qualified_repo]
 
     def get_user_id(self) -> int:
@@ -179,8 +178,8 @@ class GithubUtils:
                 q=query, sort="created", order="desc", per_page=num_per_page, page=page
             )
             fetch_more = len(prs["items"]) == num_per_page
-            page = page + 1
-            all_pulls = all_pulls.union([pr.number for pr in prs["items"]])
+            page += 1
+            all_pulls = all_pulls.union({pr.number for pr in prs["items"]})
 
         pulls = [self.get_pull_request(pull_number) for pull_number in all_pulls]
 
@@ -401,6 +400,7 @@ class PullRequest:
             )
             user_reviewers.extend(review["user"]["login"] for review in reviews)
             more_reviewers = len(reviews) == per_page
+            page += 1
         return (list(set(user_reviewers)), list(set(team_reviewers)))
 
     def get_created_at(self) -> int:
