@@ -44,29 +44,31 @@ class JSCodeshiftTransformer(SingleTransformer):
             item (Item): The file that will be transformed.
         """
 
-        assert isinstance(item, FileItem)
+        if not isinstance(item, FileItem):
+            raise TypeError(f"Expected instance of type 'FileItem', got '{type(item).__name__}'")
+
         event_handler = EventHandler.get()
 
         cmd = ["jscodeshift", "-t", self.js_transform, item.get_path(), *self.args]
 
         # Run JSCodeshift
         event_handler.handle(VerboseEvent({"message": f"Running command: {cmd}"}))
-        proc = subprocess.run(
-            cmd,
-            capture_output=True,
-            encoding="utf-8",
-            check=False,
-            timeout=self.timeout,
-        )
+        try:
+            proc = subprocess.run(
+                cmd,
+                capture_output=True,
+                encoding="utf-8",
+                check=True,
+                timeout=self.timeout,
+            )
+        except subprocess.CalledProcessError as e:
+            event_handler.handle(VerboseEvent({"message": f"Error occurred: {str(e)}"}))
+            return
 
         stdout = proc.stdout.strip()
         stderr = proc.stderr.strip()
 
-        event_handler.handle(
-            VerboseEvent({"message": f"STDOUT:\n{stdout}" if stdout else "No STDOUT"})
-        )
-        event_handler.handle(
-            VerboseEvent({"message": f"STDERR:\n{stderr}" if stderr else "No STDERR"})
-        )
-
-        proc.check_returncode()
+        if stdout:
+            event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{stdout}"}))
+        if stderr:
+            event_handler.handle(VerboseEvent({"message": f"STDERR:\n{stderr}"}))

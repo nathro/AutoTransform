@@ -121,19 +121,16 @@ class ScriptTransformer(Transformer[None]):
         # Get Command
         for i in range(0, num_items, chunk_size):
             chunk_items = items[i : i + chunk_size]
-            cmd = [self.script]
-            cmd.extend(self.args)
+            cmd = [self.script] + self.args
 
             proc = run_cmd_on_items(cmd, chunk_items, metadata, timeout=self.timeout)
 
             stdout = proc.stdout.strip()
             stderr = proc.stderr.strip()
 
-            event_handler.handle(
-                VerboseEvent({"message": f"STDOUT:\n{stdout}" if stdout else "No STDOUT"})
-            )
-            event_handler.handle(
-                VerboseEvent({"message": f"STDERR:\n{stderr}" if stderr else "No STDERR"})
-            )
+            if stdout:
+                event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{stdout}"}))
+            if stderr:
+                event_handler.handle(VerboseEvent({"message": f"STDERR:\n{stderr}"}))
 
             proc.check_returncode()
