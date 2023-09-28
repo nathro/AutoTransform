@@ -42,55 +42,29 @@ def add_args(parser: ArgumentParser) -> None:
     """
 
     setting_type_group = parser.add_mutually_exclusive_group(required=True)
-    setting_type_group.add_argument(
-        "--user-config",
-        dest="setting_type",
-        action="store_const",
-        const="user_config",
-        help="Update or view the user configuration for AutoTransform",
-    )
-    setting_type_group.add_argument(
-        "--repo-config",
-        dest="setting_type",
-        action="store_const",
-        const="repo_config",
-        help="Update or view the repo configuration for AutoTransform",
-    )
-    setting_type_group.add_argument(
-        "--cwd-config",
-        dest="setting_type",
-        action="store_const",
-        const="cwd_config",
-        help="Update or view the current working directory configuration for AutoTransform",
-    )
-    setting_type_group.add_argument(
-        "--custom-components",
-        dest="setting_type",
-        action="store_const",
-        const="custom_components",
-        help="Update or view custom components",
-    )
-    setting_type_group.add_argument(
-        "--manager",
-        dest="setting_type",
-        action="store_const",
-        const="manager",
-        help="Update or view manager settings",
-    )
-    setting_type_group.add_argument(
-        "--scheduler",
-        dest="setting_type",
-        action="store_const",
-        const="scheduler",
-        help="Update or view scheduler settings",
-    )
-    setting_type_group.add_argument(
-        "--schema-map",
-        dest="setting_type",
-        action="store_const",
-        const="schema_map",
-        help="Update or view schema map settings",
-    )
+    setting_types = [
+        ("--user-config", "user_config", "Update or view the user configuration for AutoTransform"),
+        ("--repo-config", "repo_config", "Update or view the repo configuration for AutoTransform"),
+        (
+            "--cwd-config",
+            "cwd_config",
+            "Update or view the current working directory configuration for AutoTransform",
+        ),
+        ("--custom-components", "custom_components", "Update or view custom components"),
+        ("--manager", "manager", "Update or view manager settings"),
+        ("--scheduler", "scheduler", "Update or view scheduler settings"),
+        ("--schema-map", "schema_map", "Update or view schema map settings"),
+    ]
+
+    for setting_type in setting_types:
+        setting_type_group.add_argument(
+            setting_type[0],
+            dest="setting_type",
+            action="store_const",
+            const=setting_type[1],
+            help=setting_type[2],
+        )
+
     setting_type_group.add_argument(
         "--schema",
         type=str,
@@ -115,15 +89,16 @@ def settings_command_main(args: Namespace) -> None:
         args (Namespace): The arguments supplied to the settings command.
     """
 
-    if args.setting_type == "user_config":
-        path = f"{get_config_dir()}/{CONFIG_FILE_NAME}"
-        handle_config(path, "User", args.update_settings)
-    elif args.setting_type == "repo_config":
-        path = f"{get_repo_config_dir()}/{CONFIG_FILE_NAME}"
-        handle_config(path, "Repo", args.update_settings)
-    elif args.setting_type == "cwd_config":
-        path = f"{get_cwd_config_dir()}/{CONFIG_FILE_NAME}"
-        handle_config(path, "CWD", args.update_settings)
+    config_paths = {
+        "user_config": f"{get_config_dir()}/{CONFIG_FILE_NAME}",
+        "repo_config": f"{get_repo_config_dir()}/{CONFIG_FILE_NAME}",
+        "cwd_config": f"{get_cwd_config_dir()}/{CONFIG_FILE_NAME}",
+    }
+
+    if args.setting_type in config_paths:
+        handle_config(
+            config_paths[args.setting_type], args.setting_type.capitalize(), args.update_settings
+        )
     elif args.setting_type == "custom_components":
         handle_custom_components(args.update_settings)
     elif args.setting_type == "manager":
