@@ -31,9 +31,6 @@ class Event(Generic[TData], ABC):
         create_time (float): The current timestamp when the event is created.
     """
 
-    data: TData
-    create_time: float
-
     def __init__(self, data: TData):
         """A simple constructor.
 
@@ -89,7 +86,7 @@ class Event(Generic[TData], ABC):
             str: The loggable message.
         """
 
-        type_str = "".join([w.capitalize() for w in self.get_type().split("_")])
+        type_str = " ".join([w.capitalize() for w in self.get_type().split("_")])
         message = self._get_message()
         if message.startswith("["):
             return f"[{type_str}]{message}"

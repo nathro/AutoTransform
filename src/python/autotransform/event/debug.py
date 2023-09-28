@@ -30,8 +30,8 @@ class DebugEventData(TypedDict):
 class DebugEvent(Event[DebugEventData]):
     """A simple, generic debugging event used to log debug information to the console."""
 
-    @staticmethod
-    def get_type() -> EventType:
+    @classmethod
+    def get_type(cls) -> EventType:
         """Used to represent the type of Event, output to logs.
 
         Returns:
@@ -40,8 +40,8 @@ class DebugEvent(Event[DebugEventData]):
 
         return EventType.DEBUG
 
-    @staticmethod
-    def get_logging_level() -> LoggingLevel:
+    @classmethod
+    def get_logging_level(cls) -> LoggingLevel:
         """The logging level for events of this type.
 
         Returns:

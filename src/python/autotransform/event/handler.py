@@ -29,6 +29,10 @@ from autotransform.event.logginglevel import LoggingLevel
 from colorama import Fore
 
 
+class SingletonError(Exception):
+    """Exception raised when trying to instantiate a singleton class more than once."""
+
+
 class EventHandler:
     """The handler that all Events are dispatched to that logs these events.
 
@@ -51,32 +55,31 @@ class EventHandler:
 
     def __init__(self):
         if EventHandler.__instance is not None:
-            # pylint: disable=broad-exception-raised
-            raise Exception("Trying to instantiate new EventHandler when one already present")
+            raise SingletonError("Trying to instantiate new EventHandler when one already present")
         self._logging_level = LoggingLevel.INFO
 
-    @staticmethod
-    def get() -> EventHandler:
+    @classmethod
+    def get(cls) -> EventHandler:
         """Singleton method for getting the event handler.
 
         Returns:
             EventHandler: The singleton instance of the EventHandler.
         """
 
-        if EventHandler.__instance is None:
+        if cls.__instance is None:
             event_handler_to_use = os.getenv("AUTO_TRANSFORM_EVENT_HANDLER")
             if event_handler_to_use is not None:
                 try:
                     event_handler_info = json.loads(event_handler_to_use)
                     module = importlib.import_module(event_handler_info["module"])
                     event_handler = getattr(module, event_handler_info["class_name"])()
-                    assert isinstance(event_handler, EventHandler)
-                    EventHandler.__instance = event_handler
+                    assert isinstance(event_handler, cls)
+                    cls.__instance = event_handler
                 except Exception:  # pylint: disable=broad-except
-                    EventHandler.__instance = EventHandler()
+                    cls.__instance = cls()
             else:
-                EventHandler.__instance = EventHandler()
-        return EventHandler.__instance
+                cls.__instance = cls()
+        return cls.__instance
 
     def set_logging_level(self, logging_level: LoggingLevel) -> None:
         """Sets the level of logs to include in console outputs.

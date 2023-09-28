@@ -30,8 +30,8 @@ class WarningEventData(TypedDict):
 class WarningEvent(Event[WarningEventData]):
     """A simple, generic warning event used to log warning information to the console."""
 
-    @staticmethod
-    def get_type() -> EventType:
+    @classmethod
+    def get_type(cls) -> EventType:
         """Used to represent the type of Event, output to logs.
 
         Returns:
@@ -40,8 +40,8 @@ class WarningEvent(Event[WarningEventData]):
 
         return EventType.WARNING
 
-    @staticmethod
-    def get_logging_level() -> LoggingLevel:
+    @classmethod
+    def get_logging_level(cls) -> LoggingLevel:
         """The logging level for events of this type.
 
         Returns:
