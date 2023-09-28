@@ -48,7 +48,8 @@ class DirectoryBatcher(Batcher):
         # Get a mapping from directory to items within that directory
         item_map: Dict[str, List[FileItem]] = defaultdict(list)
         for item in items:
-            assert isinstance(item, FileItem)
+            if not isinstance(item, FileItem):
+                continue
             directory = str(pathlib.Path(item.get_path()).parent).replace("\\", "/")
             item_map[directory].append(item)
 

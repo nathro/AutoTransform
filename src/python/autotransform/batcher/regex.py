@@ -9,8 +9,6 @@
 
 """The implementation for the RegexBatcher."""
 
-from __future__ import annotations
-
 import re
 from collections import defaultdict
 from typing import Any, ClassVar, Dict, List, Sequence
@@ -49,9 +47,11 @@ class FileRegexBatcher(Batcher):
 
         groups: Dict[str, List[FileItem]] = defaultdict(list)
         for item in items:
-            assert isinstance(item, FileItem)
+            if not isinstance(item, FileItem):
+                continue
             match = re.match(self.group_by, item.get_content())
-            assert match is not None, "Must have value to use for grouping"
+            if match is None:
+                continue
             group_by_val = match.group(1)
             groups[group_by_val].append(item)
 

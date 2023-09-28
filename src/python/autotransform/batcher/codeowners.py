@@ -9,8 +9,6 @@
 
 """The implementation for the CodeownersBatcher."""
 
-from __future__ import annotations
-
 import math
 from copy import deepcopy
 from typing import Any, ClassVar, Dict, List, Optional, Sequence

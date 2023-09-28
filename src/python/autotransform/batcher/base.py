@@ -9,8 +9,6 @@
 
 """The base class and associated classes for Batcher components."""
 
-from __future__ import annotations
-
 from abc import abstractmethod
 from enum import Enum
 from typing import Any, ClassVar, List, Mapping, Sequence, TypedDict

@@ -47,9 +47,9 @@ class ExtraDataBatcher(Batcher):
         groups: Dict[str, List[Item]] = defaultdict(list)
         for item in items:
             extra_data = item.extra_data or {}
-            group_by_val = extra_data[self.group_by]
-            assert isinstance(group_by_val, str), "Group by values must be strings"
-            groups[group_by_val].append(item)
+            group_by_val = extra_data.get(self.group_by)
+            if group_by_val is not None and isinstance(group_by_val, str):
+                groups[group_by_val].append(item)
 
         batches: List[Batch] = []
         for group_title, group_items in groups.items():
