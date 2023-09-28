@@ -51,8 +51,8 @@ def get_repo_config_dir() -> Optional[str]:
     try:
         dir_cmd = ["git", "rev-parse", "--show-toplevel"]
         repo_dir = subprocess.check_output(dir_cmd, encoding="UTF-8").replace("\\", "/").strip()
-        return f"{repo_dir}/{get_repo_config_relative_path()}"
-    except Exception:  # pylint: disable=broad-except
+        return os.path.join(repo_dir, get_repo_config_relative_path())
+    except subprocess.CalledProcessError:
         return None
 
 
@@ -66,8 +66,7 @@ def get_cwd_config_dir() -> str:
     """
 
     relative_path = os.getenv("AUTO_TRANSFORM_CWD_CONFIG_PATH", "autotransform")
-    cwd = os.getcwd().replace("\\", "/")
-    return f"{cwd}/{relative_path}"
+    return os.path.join(os.getcwd(), relative_path)
 
 
 @cache
@@ -101,7 +100,7 @@ def get_config() -> Config:
                     fetcher_info.get("data", {})
                 )
                 assert isinstance(fetcher, ConfigFetcher)
-            except Exception:  # pylint: disable=broad-except
+            except (json.JSONDecodeError, ImportError, AttributeError, AssertionError):
                 fetcher = DefaultConfigFetcher()
     else:
         fetcher = DefaultConfigFetcher()

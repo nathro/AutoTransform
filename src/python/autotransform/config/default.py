@@ -39,10 +39,11 @@ class DefaultConfigFetcher(ConfigFetcher):
             get_repo_config_dir(),
             get_cwd_config_dir(),
         ]
-        config_paths = [
-            f"{path}/{CONFIG_FILE_NAME}" for path in potential_paths if path is not None
-        ]
+        config_paths = [f"{path}/{CONFIG_FILE_NAME}" for path in potential_paths if path]
         config = Config()
         for path in config_paths:
-            config = config.merge(Config.read(path))
+            try:
+                config = config.merge(Config.read(path))
+            except FileNotFoundError:
+                continue
         return config
