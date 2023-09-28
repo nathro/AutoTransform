@@ -9,8 +9,6 @@
 
 """The implementation for the TargetInput."""
 
-from __future__ import annotations
-
 import re
 from typing import Any, ClassVar, Dict, Sequence, Type
 
@@ -45,14 +43,13 @@ class TargetInput(Input):
 
         items = [item for item in self.input.get_items() if isinstance(item, FileItem)]
         for item in items:
-            if item.extra_data is None:
-                item.extra_data = {}
+            item.extra_data = item.extra_data or {}
             item.extra_data["target_path"] = re.sub(self.pattern, self.replacement, item.get_path())
 
         return items
 
     @classmethod
-    def from_data(cls: Type[TargetInput], data: Dict[str, Any]) -> TargetInput:
+    def from_data(cls: Type["TargetInput"], data: Dict[str, Any]) -> "TargetInput":
         """Produces an instance of the component from decoded data.
 
         Args:
@@ -62,12 +59,8 @@ class TargetInput(Input):
             TargetInput: An instance of the component.
         """
 
-        input_object = input_factory.get_instance(data["input"])
-        pattern = data["pattern"]
-        replacement = data["replacement"]
-
         return cls(
-            input=input_object,
-            pattern=pattern,
-            replacement=replacement,
+            input=input_factory.get_instance(data["input"]),
+            pattern=data["pattern"],
+            replacement=data["replacement"],
         )

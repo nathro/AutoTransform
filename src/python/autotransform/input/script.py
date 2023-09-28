@@ -9,8 +9,6 @@
 
 """The implementation for script based Inputs."""
 
-from __future__ import annotations
-
 import json
 import subprocess
 from tempfile import NamedTemporaryFile
@@ -53,8 +51,7 @@ class ScriptInput(Input):
         event_handler = EventHandler.get()
 
         # Get Command
-        cmd = [self.script]
-        cmd.extend(self.args)
+        cmd = [self.script] + self.args
 
         with NamedTemporaryFile(mode="r+b") as result_file:
             arg_replacements = {"<<RESULT_FILE>>": [result_file.name]}
@@ -71,12 +68,12 @@ class ScriptInput(Input):
                 timeout=self.timeout,
             )
 
-            if proc.stdout.strip() != "" and uses_result_file:
+            if proc.stdout.strip() and uses_result_file:
                 event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
             elif uses_result_file:
                 event_handler.handle(VerboseEvent({"message": "No STDOUT"}))
 
-            if proc.stderr.strip() != "":
+            if proc.stderr.strip():
                 event_handler.handle(VerboseEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
             else:
                 event_handler.handle(VerboseEvent({"message": "No STDERR"}))
