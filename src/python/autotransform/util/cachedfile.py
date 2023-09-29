@@ -81,7 +81,9 @@ class CachedFile:
         """
 
         # pylint: disable=unspecified-encoding
-
+        directory = Path(path).parent
+        if not directory.exists():
+            directory.mkdir(parents=True)
         with open(path, "w") as file:
             file.write(content)
             file.flush()
