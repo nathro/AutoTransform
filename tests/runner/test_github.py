@@ -32,7 +32,7 @@ def test_run(mock_create_dispatch):
         batcher=SingleBatcher(title="test"),
         transformer=RegexTransformer(pattern="foo", replacement="bar"),
         config=SchemaConfig(schema_name="test"),
-        repo=GithubRepo(base_branch="nathro_test", full_github_name="at/test"),
+        repo=GithubRepo(base_branch="master", full_github_name="at/test"),
     )
     mock_create_dispatch.return_value = "test"
 
@@ -55,7 +55,7 @@ def test_update(mock_get_schema, mock_create_dispatch):
         batcher=SingleBatcher(title="test"),
         transformer=RegexTransformer(pattern="foo", replacement="bar"),
         config=SchemaConfig(schema_name="test"),
-        repo=GithubRepo(base_branch="nathro_test", full_github_name="at/test"),
+        repo=GithubRepo(base_branch="master", full_github_name="at/test"),
     )
     mock_get_schema.return_value = schema
 

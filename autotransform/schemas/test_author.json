@@ -4,7 +4,7 @@
         "input": {
             "name": "directory",
             "paths": [
-                "src/python/autotransform/step/condition"
+                "src/python"
             ]
         },
         "pattern": "src\/python\/autotransform\/(.*)\/([^\/]*)\\.py",
