@@ -10,5 +10,9 @@
     "Test Author": {
         "type": "file",
         "target": "test_author.json"
+    },
+    "new_schema": {
+        "type": "builder",
+        "target": "target"
     }
 }
