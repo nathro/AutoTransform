@@ -10,12 +10,13 @@
 """The implementation for the CodeownersFilter."""
 
 from functools import cached_property
-from typing import ClassVar, Optional
+from typing import Any, ClassVar, Dict, Optional
 
 from autotransform.filter.base import Filter, FilterName
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
 from codeowners import CodeOwners
+from pydantic import root_validator
 
 
 class CodeownersFilter(Filter):
@@ -23,16 +24,43 @@ class CodeownersFilter(Filter):
     be of the form 'prefix <owner>'
 
     Attributes:
-        codeowners_location (str): The location of the CODEOWNERS file.
+        codeowners_file_path (str): The path of the CODEOWNERS file.
         owner (Optional[str]): The owner to allow files for. If None is provided, checks
             for unowned.
         name (ClassVar[FilterName]): The name of the Component.
     """
 
-    codeowners_location: str
+    codeowners_file_path: str
     owner: Optional[str]
 
     name: ClassVar[FilterName] = FilterName.CODEOWNERS
+
+    @root_validator(pre=True)
+    @classmethod
+    def path_legacy_setting_validator(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        """Validates codeowners_file_path using legacy codeowners_location setting.
+
+        Args:
+            values (Dict[str, Any]): The values used to configure the CodeownersFilter.
+
+        Raises:
+            ValueError: Raised if both codeowners_file_path and codeowners_location are supplied.
+
+        Returns:
+            Mapping[str, Any]: The fixed values.
+        """
+
+        if "codeowners_location" in values:
+            if (
+                "codeowners_file_path" in values
+                and values["codeowners_file_path"] != values["codeowners_location"]
+            ):
+                raise ValueError(
+                    "Can not supply both codeowners_location and codeowners_file_path "
+                    + "for DirectoryInput"
+                )
+            values["codeowners_file_path"] = values["codeowners_location"]
+        return values
 
     @cached_property
     def _owners(self) -> CodeOwners:
@@ -42,7 +70,7 @@ class CodeownersFilter(Filter):
             CodeOwners: The parsed CodeOwners.
         """
 
-        with open(self.codeowners_location, mode="r", encoding="UTF-8") as codeowners_file:
+        with open(self.codeowners_file_path, mode="r", encoding="UTF-8") as codeowners_file:
             return CodeOwners(codeowners_file.read())
 
     @cached_property
