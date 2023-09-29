@@ -1,17 +1,5 @@
 {
-    "base_time": 1650870000,
-    "excluded_days": [
-        5,
-        6
-    ],
-    "schemas": [
-        {
-            "schema_name": "Black Format",
-            "max_submissions": 3,
-            "schedule": {
-                "repeats": "daily",
-                "hour_of_day": 17
-            }
-        }
-    ]
+    "base_time": 0,
+    "excluded_days": [],
+    "schemas": []
 }
