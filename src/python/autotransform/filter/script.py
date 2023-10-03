@@ -12,15 +12,12 @@
 from __future__ import annotations
 
 import json
-import subprocess
 from tempfile import NamedTemporaryFile as TmpFile
 from typing import ClassVar, List, Optional, Sequence, Set
 
-from autotransform.event.handler import EventHandler
-from autotransform.event.verbose import VerboseEvent
 from autotransform.filter.base import BulkFilter, FilterName
 from autotransform.item.base import Item
-from autotransform.util.functions import replace_script_args
+from autotransform.util.functions import replace_script_args, run_cmd
 
 
 class ScriptFilter(BulkFilter):
@@ -58,8 +55,6 @@ class ScriptFilter(BulkFilter):
             Set[str]: The keys of the valid Items.
         """
 
-        event_handler = EventHandler.get()
-
         # Get Command
         cmd = [self.script]
         cmd.extend(self.args)
@@ -80,36 +75,13 @@ class ScriptFilter(BulkFilter):
                 replaced_cmd = replace_script_args(cmd, arg_replacements)
 
                 # Run script
-                event_handler.handle(VerboseEvent({"message": f"Running command: {replaced_cmd}"}))
-                proc = subprocess.run(
-                    replaced_cmd,
-                    capture_output=True,
-                    encoding="utf-8",
-                    check=False,
-                    timeout=self.timeout,
-                )
-
-                stdout = proc.stdout.strip()
-                stderr = proc.stderr.strip()
-
-                if stdout and uses_result_file:
-                    event_handler.handle(
-                        VerboseEvent({"message": f"STDOUT:\n{stdout}"}),
-                    )
-                elif uses_result_file:
-                    event_handler.handle(VerboseEvent({"message": "No STDOUT"}))
-
-                if stderr:
-                    event_handler.handle(
-                        VerboseEvent({"message": f"STDERR:\n{stderr}"}),
-                    )
-                else:
-                    event_handler.handle(VerboseEvent({"message": "No STDERR"}))
+                proc = run_cmd(replaced_cmd, self.timeout)
                 proc.check_returncode()
+
                 if uses_result_file:
                     with open(res_file.name, encoding="utf-8") as results:
                         key_data = json.loads(results.read())
                 else:
-                    key_data = json.loads(stdout)
+                    key_data = json.loads(proc.stdout.strip())
                 valid_keys = valid_keys.union(set(key_data))
         return valid_keys

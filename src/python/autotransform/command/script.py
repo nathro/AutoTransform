@@ -16,8 +16,6 @@ from typing import Any, ClassVar, List, Mapping, Optional, Sequence
 import autotransform.schema
 from autotransform.batcher.base import Batch
 from autotransform.command.base import Command, CommandName
-from autotransform.event.handler import EventHandler
-from autotransform.event.verbose import VerboseEvent
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
 from autotransform.util.functions import run_cmd_on_items
@@ -123,21 +121,10 @@ class ScriptCommand(Command):
             items (Sequence[Item]): The sequence of items to be processed.
             metadata (Mapping[str, Any]): The metadata of the Batch containing the items.
         """
-        event_handler = EventHandler.get()
 
         # Get Command
         cmd = [self.script]
         cmd.extend(self.args)
 
         proc = run_cmd_on_items(cmd, items, metadata)
-
-        # Handle output
-        if proc.stdout.strip() != "":
-            event_handler.handle(VerboseEvent({"message": f"STDOUT:\n{proc.stdout.strip()}"}))
-        else:
-            event_handler.handle(VerboseEvent({"message": "No STDOUT"}))
-        if proc.stderr.strip() != "":
-            event_handler.handle(VerboseEvent({"message": f"STDERR:\n{proc.stderr.strip()}"}))
-        else:
-            event_handler.handle(VerboseEvent({"message": "No STDERR"}))
         proc.check_returncode()

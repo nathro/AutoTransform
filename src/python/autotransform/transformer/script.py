@@ -14,8 +14,6 @@ from __future__ import annotations
 from typing import Any, ClassVar, Dict, List, Optional
 
 from autotransform.batcher.base import Batch
-from autotransform.event.handler import EventHandler
-from autotransform.event.verbose import VerboseEvent
 from autotransform.transformer.base import Transformer, TransformerName
 from autotransform.util.functions import run_cmd_on_items
 from pydantic import root_validator, validator
@@ -111,8 +109,6 @@ class ScriptTransformer(Transformer[None]):
             batch (Batch): The batch that will be transformed.
         """
 
-        event_handler = EventHandler.get()
-
         metadata = batch.get("metadata", {})
         items = batch["items"]
         num_items = max(len(items), 1)
@@ -125,15 +121,4 @@ class ScriptTransformer(Transformer[None]):
             cmd.extend(self.args)
 
             proc = run_cmd_on_items(cmd, chunk_items, metadata, timeout=self.timeout)
-
-            stdout = proc.stdout.strip()
-            stderr = proc.stderr.strip()
-
-            event_handler.handle(
-                VerboseEvent({"message": f"STDOUT:\n{stdout}" if stdout else "No STDOUT"})
-            )
-            event_handler.handle(
-                VerboseEvent({"message": f"STDERR:\n{stderr}" if stderr else "No STDERR"})
-            )
-
             proc.check_returncode()

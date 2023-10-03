@@ -7,7 +7,7 @@
 
 # @black_format
 
-"""The ScriptRunEvent is triggered whenever an AutoTransform script is run and provides
+"""The RunEvent is triggered whenever an AutoTransform script is run and provides
 information on the run.
 """
 
@@ -18,16 +18,16 @@ from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.type import EventType
 
 
-class ScriptRunEventData(TypedDict):
-    """The data for a ScriptRunEvent. Contains the information that will be
+class RunEventData(TypedDict):
+    """The data for a RunEvent. Contains the information that will be
     logged when the event is triggered."""
 
     args: Dict[str, str]
-    script: str
+    mode: str
 
 
-class ScriptRunEvent(Event[ScriptRunEventData]):
-    """A ScriptRunEvent is triggered whenever an AutoTransform script is run. Logs details
+class RunEvent(Event[RunEventData]):
+    """A RunEvent is triggered whenever the AutoTransform script is run. Logs details
     of the run.
     """
 
@@ -39,7 +39,7 @@ class ScriptRunEvent(Event[ScriptRunEventData]):
             EventType: The unique type associated with this Event.
         """
 
-        return EventType.SCRIPT_RUN
+        return EventType.RUN
 
     @staticmethod
     def get_logging_level() -> LoggingLevel:
@@ -58,4 +58,4 @@ class ScriptRunEvent(Event[ScriptRunEventData]):
             str: The message for the event.
         """
 
-        return f"Running script command {self.data['script']}"
+        return f"{self.data['mode']}"

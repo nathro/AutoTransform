@@ -14,7 +14,7 @@ from argparse import ArgumentParser, Namespace
 from autotransform.config import get_repo_config_relative_path
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
-from autotransform.event.run import ScriptRunEvent
+from autotransform.event.run import RunEvent
 from autotransform.event.verbose import VerboseEvent
 from autotransform.util.manager import Manager
 
@@ -94,7 +94,7 @@ def manage_command_main(args: Namespace) -> None:
     event_args = {"manager_file": manager_file}
     manager = Manager.read(manager_file)
     event_args["manager"] = manager
-    event_handler.handle(ScriptRunEvent({"script": "manage", "args": event_args}))
+    event_handler.handle(RunEvent({"mode": "manage", "args": event_args}))
 
     event_handler.handle(VerboseEvent({"message": f"Running manager: {manager!r}"}))
     manager.run(args.run_local)
