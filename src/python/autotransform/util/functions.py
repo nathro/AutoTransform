@@ -39,7 +39,6 @@ def run_cmd_on_items(
         subprocess.CompletedProcess: The completed process run.
     """
 
-    event_handler = EventHandler.get()
     item_keys = [item.key for item in items]
     extra_data = {item.key: item.extra_data for item in items if item.extra_data is not None}
 
@@ -75,21 +74,7 @@ def run_cmd_on_items(
         # Create command
         replaced_cmd = replace_script_args(cmd, arg_replacements)
 
-        # Run script
-        event_handler.handle(ScriptRunEvent({"command": replaced_cmd}))
-        proc = subprocess.run(
-            replaced_cmd, capture_output=True, encoding="utf-8", check=False, timeout=timeout
-        )
-
-        stdout = proc.stdout.strip()
-        if stdout:
-            event_handler.handle(ScriptOutEvent({"stdout": f"STDOUT:\n{stdout}"}))
-
-        stderr = proc.stderr.strip()
-        if stderr:
-            event_handler.handle(ScriptErrEvent({"stderr": f"STDERR:\n{stderr}"}))
-
-        return proc
+        return run_cmd(replaced_cmd, timeout)
 
 
 def replace_script_args(args: List[str], replacements: Dict[str, List[str]]) -> List[str]:
@@ -119,3 +104,30 @@ def replace_script_args(args: List[str], replacements: Dict[str, List[str]]) -> 
         else:
             replaced_args.append(arg)
     return replaced_args
+
+
+def run_cmd(cmd: List[str], timeout: Optional[int] = None) -> subprocess.CompletedProcess:
+    """Run a script
+
+    Args:
+        cmd (List[str]): The command to run.
+        timeout (optional, Optional[int]): A timeout for the subprocess run. Defaults to None.
+
+    Returns:
+        subprocess.CompletedProcess: The completed process run.
+    """
+
+    event_handler = EventHandler.get()
+
+    event_handler.handle(ScriptRunEvent({"command": cmd}))
+    proc = subprocess.run(cmd, capture_output=True, encoding="utf-8", check=False, timeout=timeout)
+
+    stdout = proc.stdout.strip()
+    if stdout:
+        event_handler.handle(ScriptOutEvent({"stdout": f"STDOUT:\n{stdout}"}))
+
+    stderr = proc.stderr.strip()
+    if stderr:
+        event_handler.handle(ScriptErrEvent({"stderr": f"STDERR:\n{stderr}"}))
+
+    return proc

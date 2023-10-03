@@ -135,4 +135,4 @@ class ScriptRunEvent(Event[ScriptRunEventData]):
             str: The message for the event.
         """
 
-        return " ".join(self.data["command"])
+        return f"{self.data['command']}"

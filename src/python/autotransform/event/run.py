@@ -23,7 +23,7 @@ class RunEventData(TypedDict):
     logged when the event is triggered."""
 
     args: Dict[str, str]
-    command: str
+    mode: str
 
 
 class RunEvent(Event[RunEventData]):
@@ -58,4 +58,4 @@ class RunEvent(Event[RunEventData]):
             str: The message for the event.
         """
 
-        return f"Running command {self.data['command']}"
+        return f"{self.data['mode']}"

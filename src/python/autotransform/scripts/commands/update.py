@@ -156,5 +156,5 @@ def run_command_main(args: Namespace) -> None:
         runner = config_runner
 
     event_args["runner"] = json.dumps(runner.bundle())
-    event_handler.handle(RunEvent({"command": "update", "args": event_args}))
+    event_handler.handle(RunEvent({"mode": "update", "args": event_args}))
     runner.update(change)

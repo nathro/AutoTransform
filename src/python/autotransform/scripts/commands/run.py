@@ -211,5 +211,5 @@ def run_command_main(args: Namespace) -> None:
         runner = config_runner
 
     event_args["runner"] = runner
-    event_handler.handle(RunEvent({"command": "run", "args": event_args}))
+    event_handler.handle(RunEvent({"mode": "run", "args": event_args}))
     runner.run(schema)

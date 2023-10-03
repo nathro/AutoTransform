@@ -108,7 +108,7 @@ def schedule_command_main(args: Namespace) -> None:
     event_args = {"scheduler_file": schedule_file}
     scheduler = Scheduler.read(schedule_file)
     event_args["scheduler"] = scheduler
-    event_handler.handle(RunEvent({"command": "schedule", "args": event_args}))
+    event_handler.handle(RunEvent({"mode": "schedule", "args": event_args}))
 
     event_handler.get().handle(VerboseEvent({"message": f"Running scheduler: {scheduler!r}"}))
     if args.run_local:
