@@ -18,7 +18,7 @@ from autotransform.config import get_config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
-from autotransform.event.run import ScriptRunEvent
+from autotransform.event.run import RunEvent
 from autotransform.event.verbose import VerboseEvent
 from autotransform.runner.base import Runner
 from autotransform.runner.local import LocalRunner
@@ -156,5 +156,5 @@ def run_command_main(args: Namespace) -> None:
         runner = config_runner
 
     event_args["runner"] = json.dumps(runner.bundle())
-    event_handler.handle(ScriptRunEvent({"script": "update", "args": event_args}))
+    event_handler.handle(RunEvent({"command": "update", "args": event_args}))
     runner.update(change)

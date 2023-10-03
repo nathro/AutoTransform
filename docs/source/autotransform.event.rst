@@ -15,6 +15,7 @@ Event Package (autotransform.event)
    autotransform.event.remoterun
    autotransform.event.run
    autotransform.event.schedulerun
+   autotransform.event.script
    autotransform.event.update
    autotransform.event.verbose
    autotransform.event.warning

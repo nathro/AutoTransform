@@ -15,7 +15,7 @@ from argparse import ArgumentParser, Namespace
 from autotransform.config import get_config, get_repo_config_relative_path
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
-from autotransform.event.run import ScriptRunEvent
+from autotransform.event.run import RunEvent
 from autotransform.event.verbose import VerboseEvent
 from autotransform.runner.local import LocalRunner
 from autotransform.util.scheduler import Scheduler
@@ -108,7 +108,7 @@ def schedule_command_main(args: Namespace) -> None:
     event_args = {"scheduler_file": schedule_file}
     scheduler = Scheduler.read(schedule_file)
     event_args["scheduler"] = scheduler
-    event_handler.handle(ScriptRunEvent({"script": "schedule", "args": event_args}))
+    event_handler.handle(RunEvent({"command": "schedule", "args": event_args}))
 
     event_handler.get().handle(VerboseEvent({"message": f"Running scheduler: {scheduler!r}"}))
     if args.run_local:

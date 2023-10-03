@@ -1,7 +1,7 @@
-RunEvent (autotransform.event.run)
+Script Related Events (autotransform.event.script)
 ========================================
 
-.. automodule:: autotransform.event.run
+.. automodule:: autotransform.event.script
    :members:
    :undoc-members:
    :show-inheritance:

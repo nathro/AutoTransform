@@ -17,7 +17,7 @@ from tempfile import NamedTemporaryFile as TmpFile
 from typing import Any, Dict, List, Mapping, Optional, Sequence
 
 from autotransform.event.handler import EventHandler
-from autotransform.event.verbose import VerboseEvent
+from autotransform.event.script import ScriptErrEvent, ScriptOutEvent, ScriptRunEvent
 from autotransform.item.base import Item
 
 
@@ -76,10 +76,20 @@ def run_cmd_on_items(
         replaced_cmd = replace_script_args(cmd, arg_replacements)
 
         # Run script
-        event_handler.handle(VerboseEvent({"message": f"Running command: {replaced_cmd}"}))
-        return subprocess.run(
+        event_handler.handle(ScriptRunEvent({"command": replaced_cmd}))
+        proc = subprocess.run(
             replaced_cmd, capture_output=True, encoding="utf-8", check=False, timeout=timeout
         )
+
+        stdout = proc.stdout.strip()
+        if stdout:
+            event_handler.handle(ScriptOutEvent({"stdout": f"STDOUT:\n{stdout}"}))
+
+        stderr = proc.stderr.strip()
+        if stderr:
+            event_handler.handle(ScriptErrEvent({"stderr": f"STDERR:\n{stderr}"}))
+
+        return proc
 
 
 def replace_script_args(args: List[str], replacements: Dict[str, List[str]]) -> List[str]:
