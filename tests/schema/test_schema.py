@@ -117,24 +117,21 @@ def mock_repo(
 
 # patches are in reverse order
 @patch.object(Head, "checkout")
-@patch.object(SingleBatcher, "batch")
 @patch.object(RegexFilter, "_is_valid")
 @patch.object(DirectoryInput, "get_items")
-def test_get_batches(
+def test_get_items(
     mocked_get_items,
     mocked_is_valid,
-    mocked_batch,
     _mocked_checkout,
 ):
     """Checks that get_batches properly calls and uses components."""
     # Set up mocks
     mock_input(mocked_get_items)
     mock_filter(mocked_is_valid)
-    mock_batcher(mocked_batch)
 
     # Run test
     schema = get_sample_schema()
-    actual_batch = schema.get_batches()[0]
+    actual_items = schema.get_items()
 
     # Check Input called
     mocked_get_items.assert_called_once()
@@ -143,6 +140,26 @@ def test_get_batches(
     assert mocked_is_valid.call_count == 2
     filtered_keys = [mock_call.args[0].key for mock_call in mocked_is_valid.call_args_list]
     assert filtered_keys == [item.key for item in ALL_ITEMS]
+
+    # Check end result
+    actual_keys = [item.key for item in actual_items]
+    assert actual_keys == [item.key for item in ALLOWED_ITEMS]
+
+
+# patches are in reverse order
+@patch.object(Head, "checkout")
+@patch.object(SingleBatcher, "batch")
+def test_get_batches(
+    mocked_batch,
+    _mocked_checkout,
+):
+    """Checks that get_batches properly calls and uses components."""
+    # Set up mocks
+    mock_batcher(mocked_batch)
+
+    # Run test
+    schema = get_sample_schema()
+    actual_batch = schema.get_batches(ALLOWED_ITEMS)[0]
 
     # Check batcher called
     mocked_batch.assert_called_once()

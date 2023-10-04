@@ -45,4 +45,7 @@ class LocalRunner(Runner):
 
         schema = change.get_schema()
         batch = change.get_batch()
+        new_items = schema.get_items()
+        batch_keys = {item.key for item in batch["items"]}
+        batch["items"] = [item for item in new_items if item.key in batch_keys]
         schema.execute_batch(batch, change)

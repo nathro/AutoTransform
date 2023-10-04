@@ -24,6 +24,7 @@
 - Splits Gists apart to support batches with large numbers of items that can't be read from a single Gist in API requests
 - Fix ScriptTransformer when run with no items
 - Fix GithubRunner when using repo_override rather than schema repos
+- Fix an issue where updates could fail when run with files that are no longer present by filtering using only the new Items the schema would pick up that match the keys of the batch Items. This ensures if an Item becomes invalid, it won't be used in an update (and any associated data will be the most recent data, rather than older data).
 
 ## Release 1.1.0
 
