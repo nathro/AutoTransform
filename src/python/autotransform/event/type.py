@@ -15,6 +15,9 @@ from enum import Enum
 class EventType(str, Enum):
     """A simple enum for Event naming"""
 
+    AI_MODEL_COMMAND_FAILURE = "ai_model_command_failure"
+    AI_MODEL_COMPLETION = "ai_model_completion"
+    AI_MODEL_COMPLETION_FAILURE = "ai_model_completion_failure"
     DEBUG = "debug"
     MANAGE_ACTION = "manage_action"
     REMOTE_RUN = "remote_run"

@@ -18,6 +18,7 @@ from autotransform.batcher.base import Batch
 from autotransform.command.base import FACTORY as command_factory
 from autotransform.command.base import Command
 from autotransform.event.handler import EventHandler
+from autotransform.event.model import AIModelCommandFailureEvent, AIModelCompletionFailureEvent
 from autotransform.event.verbose import VerboseEvent
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
@@ -120,9 +121,11 @@ class AIModelTransformer(SingleTransformer):
             for command in self.commands:
                 try:
                     command.run(batch, None)
-                except Exception:  # pylint: disable=broad-exception-caught
+                except Exception as e:  # pylint: disable=broad-exception-caught
                     event_handler.handle(
-                        VerboseEvent({"message": f"Failed to run command {command}"})
+                        AIModelCommandFailureEvent(
+                            {"item": item, "command": command, "exception": e}
+                        )
                     )
 
             # Run validators to identify issues with completion
@@ -185,9 +188,7 @@ class AIModelTransformer(SingleTransformer):
                 )
             except Exception as e:  # pylint: disable=broad-exception-caught
                 sleep(min(4 ** (i + 1), 60))
-                event_handler.handle(
-                    VerboseEvent({"message": f"Model failure on {item.get_path()}: {e}"}),
-                )
+                event_handler.handle(AIModelCompletionFailureEvent({"item": item, "exception": e}))
 
         return (None, None)
 
