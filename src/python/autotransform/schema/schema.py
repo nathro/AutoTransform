@@ -71,17 +71,16 @@ class AutoTransformSchema(ComponentModel):
     commands: List[Command] = Field(default_factory=list)
     repo: Optional[Repo] = None
 
-    def get_batches(self) -> List[Batch]:
-        """Runs the Input to get eligible Items, filters them, then batches them.
+    def get_items(self) -> List[Item]:
+        """Runs the Input to get eligible Items and filters them.
         Note: this function is not thread safe.
 
         Returns:
-            List[Batch]: The Batches for the change
+            List[Item]: The valid Items for the Schema.
         """
 
         autotransform.schema.current = self
         event_handler = EventHandler.get()
-        event_handler.handle(VerboseEvent({"message": "Begin get_batches"}))
 
         # Get Items
         event_handler.handle(VerboseEvent({"message": "Begin get_items"}))
@@ -113,9 +112,27 @@ class AutoTransformSchema(ComponentModel):
         else:
             event_handler.handle(VerboseEvent({"message": "No valid items."}))
 
+        autotransform.schema.current = None
+        return valid_items
+
+    def get_batches(self, items: List[Item]) -> List[Batch]:
+        """Runs the Input to get eligible Items, filters them, then batches them.
+        Note: this function is not thread safe.
+
+        Args:
+            items (List[Item]): The Items to batch.
+
+        Returns:
+            List[Batch]: The Batches for the change
+        """
+
+        autotransform.schema.current = self
+        event_handler = EventHandler.get()
+        event_handler.handle(VerboseEvent({"message": "Begin get_batches"}))
+
         # Batch Items
         event_handler.handle(VerboseEvent({"message": "Begin batching"}))
-        batches = self.batcher.batch(valid_items)
+        batches = self.batcher.batch(items)
         encodable_batches = [
             {"items": [item.bundle() for item in batch["items"]], "metadata": batch["metadata"]}
             for batch in batches
@@ -223,7 +240,8 @@ class AutoTransformSchema(ComponentModel):
         Note: this function is not thread safe."""
 
         autotransform.schema.current = self
-        batches = self.get_batches()
+        items = self.get_items()
+        batches = self.get_batches(items)
         num_submissions = 0
         for batch in batches:
             if (
