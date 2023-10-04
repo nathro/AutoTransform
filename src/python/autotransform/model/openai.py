@@ -10,12 +10,12 @@
 """The implementation for the OpenAIModel."""
 
 from copy import deepcopy
-from typing import Any, ClassVar, Dict, List, Optional, Sequence, Tuple
+from typing import ClassVar, Dict, List, Optional, Sequence, Tuple
 
 import openai  # pylint: disable=import-error
 from autotransform.config import get_config
 from autotransform.event.handler import EventHandler
-from autotransform.event.verbose import VerboseEvent
+from autotransform.event.model import AIModelCompletionEvent
 from autotransform.item.file import FileItem
 from autotransform.model.base import Model, ModelName
 from autotransform.validator.base import ValidationResult
@@ -120,7 +120,15 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
             completion_result = chat_completion.choices[0].message.content
             messages.append({"role": "assistant", "content": completion_result})
 
-            self._log_info(item, chat_completion)
+            EventHandler.get().handle(
+                AIModelCompletionEvent(
+                    {
+                        "input_tokens": chat_completion.usage.prompt_tokens,
+                        "output_tokens": chat_completion.usage.completion_tokens,
+                        "completion": chat_completion.choices[0].message.content,
+                    }
+                )
+            )
 
         return (self._extract_code_from_completion(completion_result), messages)
 
@@ -163,7 +171,15 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
         completion_result = chat_completion.choices[0].message.content
         messages.append({"role": "assistant", "content": completion_result})
 
-        self._log_info(item, chat_completion)
+        EventHandler.get().handle(
+            AIModelCompletionEvent(
+                {
+                    "input_tokens": chat_completion.usage.prompt_tokens,
+                    "output_tokens": chat_completion.usage.completion_tokens,
+                    "completion": chat_completion.choices[0].message.content,
+                }
+            )
+        )
         return (self._extract_code_from_completion(completion_result), messages)
 
     def _replace_sentinel_values(self, prompt: str, item: FileItem) -> str:
@@ -207,22 +223,3 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
         else:
             code = "\n".join(code_lines)
         return code
-
-    def _log_info(self, item: FileItem, chat_completion: Any) -> None:
-        """Logs information about a completion.
-
-        Args:
-            item (FileItem): The FileItem that is having the completion done for it.
-            chat_completion (Any): The chat completion.
-        """
-
-        event_handler = EventHandler.get()
-
-        token_usage = (
-            f"Tokens Used\nPrompt: {chat_completion.usage.prompt_tokens}\n"
-            + f"Completion: {chat_completion.usage.completion_tokens}"
-        )
-        event_handler.handle(VerboseEvent({"message": token_usage}))
-        completition_result = chat_completion.choices[0].message.content
-        message = f"The completion result for {item.get_path()}:\n\n{completition_result}"
-        event_handler.handle(VerboseEvent({"message": message}))

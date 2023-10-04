@@ -7,25 +7,29 @@
 
 # @black_format
 
-"""The Script events are used to handle events related to running a script in AutoTransform.
+"""The AIModel events are used to handle events related to usage of AI Models in AutoTransform.
 """
 
-from typing import List, TypedDict
+from typing import TypedDict
 
+from autotransform.command.base import Command
 from autotransform.event.base import Event
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.type import EventType
+from autotransform.item.base import Item
 
 
-class ScriptErrEventData(TypedDict):
-    """The data for a ScriptErrEvent. Contains the information that will be
+class AIModelCommandFailureEventData(TypedDict):
+    """The data for a AIModelCommandFailureEvent. Contains the information that will be
     logged when the event is triggered."""
 
-    stderr: str
+    item: Item
+    command: Command
+    exception: Exception
 
 
-class ScriptErrEvent(Event[ScriptErrEventData]):
-    """A simple, generic event used to log script STDERR information to the console."""
+class AIModelCommandFailureEvent(Event[AIModelCommandFailureEventData]):
+    """A simple event to log AIModel command run failures."""
 
     @staticmethod
     def get_type() -> EventType:
@@ -35,7 +39,7 @@ class ScriptErrEvent(Event[ScriptErrEventData]):
             EventType: The unique type associated with this Event.
         """
 
-        return EventType.SCRIPT_ERR
+        return EventType.AI_MODEL_COMMAND_FAILURE
 
     @staticmethod
     def get_logging_level() -> LoggingLevel:
@@ -54,18 +58,24 @@ class ScriptErrEvent(Event[ScriptErrEventData]):
             str: The message for the event.
         """
 
-        return self.data["stderr"]
+        return (
+            f"Item: {self.data['item'].key}\n"
+            + f"Command: {self.data['command']}\n"
+            + f"Error: {self.data['exception']}"
+        )
 
 
-class ScriptOutEventData(TypedDict):
-    """The data for a ScriptOutEvent. Contains the information that will be
+class AIModelCompletionEventData(TypedDict):
+    """The data for a AIModelCompletionEvent. Contains the information that will be
     logged when the event is triggered."""
 
-    stdout: str
+    completion: str
+    input_tokens: int
+    output_tokens: int
 
 
-class ScriptOutEvent(Event[ScriptOutEventData]):
-    """A simple, generic event used to log script STDOUT information to the console."""
+class AIModelCompletionEvent(Event[AIModelCompletionEventData]):
+    """A simple event to log AIModel completions."""
 
     @staticmethod
     def get_type() -> EventType:
@@ -75,7 +85,7 @@ class ScriptOutEvent(Event[ScriptOutEventData]):
             EventType: The unique type associated with this Event.
         """
 
-        return EventType.SCRIPT_OUT
+        return EventType.AI_MODEL_COMPLETION
 
     @staticmethod
     def get_logging_level() -> LoggingLevel:
@@ -94,18 +104,23 @@ class ScriptOutEvent(Event[ScriptOutEventData]):
             str: The message for the event.
         """
 
-        return self.data["stdout"]
+        return (
+            f"Input Tokens: {self.data['input_tokens']}\n"
+            + f"Output Tokens: {self.data['output_tokens']}\n"
+            + f"Completion:\n{self.data['completion']}"
+        )
 
 
-class ScriptRunEventData(TypedDict):
-    """The data for a ScriptRunEvent. Contains the information that will be
+class AIModelCompletionFailureEventData(TypedDict):
+    """The data for a AIModelCompletionFailureEvent. Contains the information that will be
     logged when the event is triggered."""
 
-    command: List[str]
+    item: Item
+    exception: Exception
 
 
-class ScriptRunEvent(Event[ScriptRunEventData]):
-    """A simple, generic event used to log when a script is run to the console."""
+class AIModelCompletionFailureEvent(Event[AIModelCompletionFailureEventData]):
+    """A simple event to log AIModel completion failures."""
 
     @staticmethod
     def get_type() -> EventType:
@@ -115,7 +130,7 @@ class ScriptRunEvent(Event[ScriptRunEventData]):
             EventType: The unique type associated with this Event.
         """
 
-        return EventType.SCRIPT_RUN
+        return EventType.AI_MODEL_COMPLETION_FAILURE
 
     @staticmethod
     def get_logging_level() -> LoggingLevel:
@@ -125,7 +140,7 @@ class ScriptRunEvent(Event[ScriptRunEventData]):
             LoggingLevel: The logging detail required to log this event.
         """
 
-        return LoggingLevel.VERBOSE
+        return LoggingLevel.ERROR
 
     def _get_message(self) -> str:
         """Gets a message representing the details of the event.
@@ -134,4 +149,4 @@ class ScriptRunEvent(Event[ScriptRunEventData]):
             str: The message for the event.
         """
 
-        return f"{self.data['command']}"
+        return f"Failed on Item: {self.data['item'].key}\nError: {self.data['exception']}"
