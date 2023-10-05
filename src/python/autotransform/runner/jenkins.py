@@ -115,9 +115,10 @@ class JenkinsAPIRunner(Runner):
                 event_handler.handle(WarningEvent({"message": "Couldn't fetch Jenkins-Crumb"}))
 
         # pylint: disable=broad-except
-        except Exception as ex:
-            event_handler.handle(WarningEvent({"message": "Failed triggering the Jenkins job"}))
-            event_handler.handle(WarningEvent({"message": f"Error: {str(ex)}"}))
+        except Exception as e:
+            event_handler.handle(
+                WarningEvent({"message": f"Failed triggering the Jenkins job\nError: {e}"})
+            )
 
 
 class JenkinsFileRunner(Runner):
