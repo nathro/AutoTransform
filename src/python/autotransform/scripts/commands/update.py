@@ -18,6 +18,7 @@ from autotransform.config import get_config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
+from autotransform.event.remote import RunnerFailedEvent
 from autotransform.event.run import RunEvent
 from autotransform.event.verbose import VerboseEvent
 from autotransform.runner.base import Runner
@@ -157,4 +158,7 @@ def run_command_main(args: Namespace) -> None:
 
     event_args["runner"] = json.dumps(runner.bundle())
     event_handler.handle(RunEvent({"mode": "update", "args": event_args}))
-    runner.update(change)
+    try:
+        runner.update(change)
+    except Exception as e:  # pylint: disable=broad-except
+        event_handler.handle(RunnerFailedEvent({"message": f"Failed run: {e}", "runner": runner}))

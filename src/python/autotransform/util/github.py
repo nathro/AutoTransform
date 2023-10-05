@@ -200,29 +200,23 @@ class GithubUtils:
             Optional[str]: The best guess URL of the workflow run. None if failed.
         """
 
-        try:
-            current_time = datetime.now().replace(microsecond=0)
-            check_time = current_time - timedelta(days=1)
-            self._api.actions.create_workflow_dispatch(workflow_id=workflow, ref=ref, inputs=inputs)
-            # We wait a bit to make sure Github's API is updated before printing a best guess of the
-            # Workflow run's URL
-            time.sleep(2)
-            EventHandler.get().handle(DebugEvent({"message": "Checking for workflow run URL"}))
-            res = self._api.actions.list_workflow_runs(
-                workflow_id=workflow,
-                actor=self._api.users.get_authenticated().login,
-                branch=ref,
-                event="workflow_dispatch",
-                created=f">={check_time.isoformat()}",
-            )
-            if not res.workflow_runs:
-                return ""
-            return res.workflow_runs[0].html_url
-        except HTTPError as err:
-            EventHandler.get().handle(
-                WarningEvent({"message": f"Failed dispatch workflow {workflow}: {err}"})
-            )
-            return None
+        current_time = datetime.now().replace(microsecond=0)
+        check_time = current_time - timedelta(days=1)
+        self._api.actions.create_workflow_dispatch(workflow_id=workflow, ref=ref, inputs=inputs)
+        # We wait a bit to make sure Github's API is updated before printing a best guess of the
+        # Workflow run's URL
+        time.sleep(2)
+        EventHandler.get().handle(DebugEvent({"message": "Checking for workflow run URL"}))
+        res = self._api.actions.list_workflow_runs(
+            workflow_id=workflow,
+            actor=self._api.users.get_authenticated().login,
+            branch=ref,
+            event="workflow_dispatch",
+            created=f">={check_time.isoformat()}",
+        )
+        if not res.workflow_runs:
+            return ""
+        return res.workflow_runs[0].html_url
 
 
 # pylint: disable=too-many-public-methods

@@ -16,11 +16,11 @@ import os
 from typing import Any, ClassVar, Dict
 
 import requests
+from autotransform.change.base import FACTORY as change_factory
 from autotransform.change.base import Change
 from autotransform.config import get_config
 from autotransform.event.handler import EventHandler
-from autotransform.event.verbose import VerboseEvent
-from autotransform.event.warning import WarningEvent
+from autotransform.event.remote import RunnerFailedEvent, RunnerRunEvent, RunnerUpdateEvent
 from autotransform.filter.shard import ShardFilter
 from autotransform.runner.base import Runner, RunnerName
 from autotransform.schema.schema import AutoTransformSchema
@@ -65,8 +65,7 @@ class JenkinsAPIRunner(Runner):
             self.job_name, {"COMMAND": "update", "CHANGE": json.dumps(change.bundle())}
         )
 
-    @staticmethod
-    def _run_jenkins_job(job_name: str, params: Dict[str, Any]) -> None:
+    def _run_jenkins_job(self, job_name: str, params: Dict[str, Any]) -> None:
         """Runs a Jenkins job to handle a run/update of AutoTransform.
 
         Args:
@@ -78,46 +77,68 @@ class JenkinsAPIRunner(Runner):
         event_handler = EventHandler.get()
         jenkins_user = config.jenkins_user
         jenkins_token = config.jenkins_token
-        if jenkins_user is None or jenkins_token is None:
+        if jenkins_user is None:
             event_handler.handle(
-                WarningEvent({"message": "User and token must be provided to use Jenkins"})
+                RunnerFailedEvent({"message": "No Jenkins user provided", "runner": self})
+            )
+            return
+        if jenkins_token is None:
+            event_handler.handle(
+                RunnerFailedEvent({"message": "No Jenkins token provided", "runner": self})
             )
             return
 
-        try:
-            auth = (jenkins_user, jenkins_token)
-            crumb_data = requests.get(
-                f"{config.jenkins_base_url}/crumbIssuer/api/json",
+        auth = (jenkins_user, jenkins_token)
+        crumb_data = requests.get(
+            f"{config.jenkins_base_url}/crumbIssuer/api/json",
+            auth=auth,
+            headers={"content-type": "application/json"},
+            timeout=120,
+        )
+        if str(crumb_data.status_code) == "200":
+            data = requests.get(
+                f"{config.jenkins_base_url}/job/{job_name}/buildWithParameters",
                 auth=auth,
-                headers={"content-type": "application/json"},
+                params=params,
+                headers={
+                    "content-type": "application/json",
+                    "Jenkins-Crumb": crumb_data.json()["crumb"],
+                },
                 timeout=120,
             )
-            if str(crumb_data.status_code) == "200":
-                data = requests.get(
-                    f"{config.jenkins_base_url}/job/{job_name}/buildWithParameters",
-                    auth=auth,
-                    params=params,
-                    headers={
-                        "content-type": "application/json",
-                        "Jenkins-Crumb": crumb_data.json()["crumb"],
-                    },
-                    timeout=120,
-                )
 
-                if str(data.status_code) == "201":
-                    event_handler.handle(VerboseEvent({"message": "Jenkins job is triggered"}))
+            if str(data.status_code) == "201":
+                if params["COMMAND"] == "run":
+                    event_handler.handle(
+                        RunnerRunEvent(
+                            {"schema_name": params["SCHEMA_NAME"], "ref": None, "runner": self}
+                        )
+                    )
                 else:
                     event_handler.handle(
-                        WarningEvent({"message": "Failed to trigger the Jenkins job"})
+                        RunnerUpdateEvent(
+                            {
+                                "change": change_factory.get_instance(json.loads(params["CHANGE"])),
+                                "ref": None,
+                                "runner": self,
+                            }
+                        )
                     )
-
             else:
-                event_handler.handle(WarningEvent({"message": "Couldn't fetch Jenkins-Crumb"}))
+                event_handler.handle(
+                    RunnerFailedEvent(
+                        {"message": f"Jenkins job failed: {data.status_code}", "runner": self}
+                    )
+                )
 
-        # pylint: disable=broad-except
-        except Exception as e:
+        else:
             event_handler.handle(
-                WarningEvent({"message": f"Failed triggering the Jenkins job\nError: {e}"})
+                RunnerFailedEvent(
+                    {
+                        "message": f"Couldn't fetch Jenkins-Crumb: {crumb_data.status_code}",
+                        "runner": self,
+                    }
+                )
             )
 
 

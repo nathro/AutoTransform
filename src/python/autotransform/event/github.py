@@ -10,12 +10,16 @@
 """The Github events are used to handle events related to usage of Github in AutoTransform.
 """
 
-from typing import TypedDict
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, TypedDict
 
 from autotransform.event.base import Event
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.type import EventType
-from autotransform.util.github import PullRequest
+
+if TYPE_CHECKING:
+    from autotransform.util.github import PullRequest
 
 
 class GithubPullRequestCreatedEventData(TypedDict):

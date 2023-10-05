@@ -16,10 +16,8 @@ from typing import Any, ClassVar, Dict, Optional
 
 from autotransform.change.base import Change
 from autotransform.config import get_config
-from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
-from autotransform.event.remote import RemoteRunEvent, RemoteUpdateEvent
-from autotransform.event.verbose import VerboseEvent
+from autotransform.event.remote import RunnerFailedEvent, RunnerRunEvent, RunnerUpdateEvent
 from autotransform.filter.shard import ShardFilter
 from autotransform.repo.github import GithubRepo
 from autotransform.runner.base import Runner, RunnerName
@@ -77,23 +75,16 @@ class GithubRunner(Runner):
 
         # Dispatch a Workflow run
         workflow_url = self._create_workflow_dispatch(self.run_workflow, schema, workflow_inputs)
-        assert workflow_url is not None, "Failed to dispatch workflow request"
-
-        event_handler.handle(VerboseEvent({"message": "Successfully dispatched workflow run"}))
-        if workflow_url == "":
-            event_handler.handle(DebugEvent({"message": "No guess for workflow run URL."}))
-            return
-        event_handler.handle(
-            DebugEvent(
-                {
-                    "message": "Because Github REST API does not provide IDs in response, "
-                    + "taking best guess at workflow URL"
-                }
+        if workflow_url is not None:
+            event_handler.handle(
+                RunnerRunEvent(
+                    {
+                        "schema_name": schema.config.schema_name,
+                        "ref": workflow_url if workflow_url else None,
+                        "runner": self,
+                    }
+                )
             )
-        )
-        event_handler.handle(
-            RemoteRunEvent({"schema_name": schema.config.schema_name, "ref": workflow_url})
-        )
 
     def update(self, change: Change) -> None:
         """Triggers an update of the Change by submitting a workflow run to the
@@ -109,25 +100,20 @@ class GithubRunner(Runner):
         workflow_url = self._create_workflow_dispatch(
             self.update_workflow, change.get_schema(), {"change": json.dumps(change.bundle())}
         )
-        assert workflow_url is not None, "Failed to dispatch workflow request"
-
-        event_handler.handle(VerboseEvent({"message": "Successfully dispatched workflow run"}))
-        if workflow_url == "":
-            event_handler.handle(DebugEvent({"message": "No guess for workflow run URL."}))
-            return
-        event_handler.handle(
-            DebugEvent(
-                {
-                    "message": "Because Github REST API does not provide IDs in response, "
-                    + "taking best guess at workflow URL"
-                }
+        if workflow_url is not None:
+            event_handler.handle(
+                RunnerUpdateEvent(
+                    {
+                        "change": change,
+                        "ref": workflow_url if workflow_url else None,
+                        "runner": self,
+                    }
+                )
             )
-        )
-        event_handler.handle(RemoteUpdateEvent({"change": change, "ref": workflow_url}))
 
     def _create_workflow_dispatch(
         self, workflow_name: str, schema: AutoTransformSchema, inputs: Dict[str, Any]
-    ) -> str:
+    ) -> Optional[str]:
         """Creates a workflow dispatch
 
         Args:
@@ -136,26 +122,32 @@ class GithubRunner(Runner):
             inputs (Dict[str, Any]): The inputs for the dispatch.
 
         Returns:
-            str: The URL for the workflow run.
+            Optional[str]: The URL for the workflow run. None is returned if no dispatch happened.
         """
 
+        event_handler = EventHandler.get()
         repo = get_config().repo_override or schema.repo
+        repo_name = None
+        repo_ref = None
+        if isinstance(repo, GithubRepo):
+            repo_name = repo.full_github_name
+            repo_ref = repo.base_branch
 
         if self.repo_name is not None:
             repo_name = self.repo_name
-        else:
-            assert isinstance(
-                repo, GithubRepo
-            ), "GithubRunner can only run using schemas that have Github repos"
-            repo_name = repo.full_github_name
-
         if self.repo_ref is not None:
             repo_ref = self.repo_ref
-        else:
-            assert isinstance(
-                repo, GithubRepo
-            ), "GithubRunner can only run using schemas that have Github repos"
-            repo_ref = repo.base_branch
+
+        if repo_name is None:
+            event_handler.handle(
+                RunnerFailedEvent({"message": "No repo name provided", "runner": self})
+            )
+            return None
+        if repo_ref is None:
+            event_handler.handle(
+                RunnerFailedEvent({"message": "No repo ref provided", "runner": self})
+            )
+            return None
 
         # Allow controlling the target repo with the Runner
         if self.target_repo_name is not None:
@@ -169,5 +161,8 @@ class GithubRunner(Runner):
             repo_ref,
             inputs,
         )
-        assert workflow_url is not None, "Failed to dispatch workflow request"
+        if workflow_url is None:
+            event_handler.handle(
+                RunnerFailedEvent({"message": "Failed to dispatch Workflow", "runner": self})
+            )
         return workflow_url
