@@ -8,6 +8,7 @@
 - Switched CodeownersFilter to use codeowners_file_path instead of codeowners_location.
 - Updated Event handling for script related events
 - Updated Event handling for AIModel related events
+- Updated Event handling for Github related events
 
 ### New Components
 - ScriptInput that uses a script to generate a list of Items

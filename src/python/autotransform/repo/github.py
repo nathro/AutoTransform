@@ -19,8 +19,8 @@ import autotransform.schema
 from autotransform.batcher.base import Batch
 from autotransform.change.base import Change
 from autotransform.change.github import GithubChange
+from autotransform.event.github import GithubPullRequestCreatedEvent
 from autotransform.event.handler import EventHandler
-from autotransform.event.verbose import VerboseEvent
 from autotransform.repo.base import RepoName
 from autotransform.repo.git import GitRepo
 from autotransform.util.github import GithubUtils
@@ -144,9 +144,7 @@ class GithubRepo(GitRepo):
             f"{head}{commit_branch}",
         )
 
-        EventHandler.get().handle(
-            VerboseEvent({"message": f"Pull request created: {pull_request.number}"})
-        )
+        EventHandler.get().handle(GithubPullRequestCreatedEvent({"pull": pull_request}))
 
         # Add labels
         labels = deepcopy(batch_metadata.labels)
