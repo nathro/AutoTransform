@@ -18,8 +18,7 @@ from autotransform.change.base import Change
 from autotransform.config import get_config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
-from autotransform.event.remoterun import RemoteRunEvent
-from autotransform.event.update import RemoteUpdateEvent
+from autotransform.event.remote import RemoteRunEvent, RemoteUpdateEvent
 from autotransform.event.verbose import VerboseEvent
 from autotransform.filter.shard import ShardFilter
 from autotransform.repo.github import GithubRepo

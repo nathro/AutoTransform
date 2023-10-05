@@ -1,7 +1,7 @@
-RemoteRunEvent (autotransform.event.remoterun)
+Remote Events (autotransform.event.remote)
 ==============================================
 
-.. automodule:: autotransform.event.remoterun
+.. automodule:: autotransform.event.remote
    :members:
    :undoc-members:
    :show-inheritance:
