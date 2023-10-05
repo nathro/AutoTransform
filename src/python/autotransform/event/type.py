@@ -19,6 +19,7 @@ class EventType(str, Enum):
     AI_MODEL_COMPLETION = "ai_model_completion"
     AI_MODEL_COMPLETION_FAILURE = "ai_model_completion_failure"
     DEBUG = "debug"
+    GITHUB_PULL_REQUEST_CREATED = "github_pull_request_created"
     MANAGE_ACTION = "manage_action"
     REMOTE_RUN = "remote_run"
     REMOTE_UPDATE = "remote_update"

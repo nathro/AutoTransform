@@ -12,6 +12,7 @@ Event Package (autotransform.event)
    autotransform.event.type
    autotransform.event.action
    autotransform.event.debug
+   autotransform.event.github
    autotransform.event.model
    autotransform.event.remoterun
    autotransform.event.run
