@@ -14,11 +14,10 @@ Event Package (autotransform.event)
    autotransform.event.debug
    autotransform.event.github
    autotransform.event.model
-   autotransform.event.remoterun
+   autotransform.event.remote
    autotransform.event.run
    autotransform.event.schedulerun
    autotransform.event.script
-   autotransform.event.update
    autotransform.event.verbose
    autotransform.event.warning
 
