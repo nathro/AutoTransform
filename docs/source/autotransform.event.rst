@@ -10,9 +10,9 @@ Event Package (autotransform.event)
    autotransform.event.base
    autotransform.event.logginglevel
    autotransform.event.type
-   autotransform.event.action
    autotransform.event.debug
    autotransform.event.github
+   autotransform.event.manage
    autotransform.event.model
    autotransform.event.remote
    autotransform.event.run

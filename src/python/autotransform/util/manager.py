@@ -17,9 +17,9 @@ from typing import Any, Dict, List, Optional
 
 from autotransform.change.base import ReviewState
 from autotransform.config import get_config
-from autotransform.event.action import ManageActionEvent
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
+from autotransform.event.manage import ManageActionEvent
 from autotransform.repo.base import FACTORY as repo_factory
 from autotransform.repo.base import Repo, RepoName
 from autotransform.repo.git import GitRepo
@@ -59,6 +59,8 @@ class Manager(ComponentModel):
             run_local (bool, optional): Whether to use local runners. Defaults to False.
         """
 
+        event_handler = EventHandler.get()
+
         if run_local:
             runner = get_config().local_runner
         else:
@@ -68,18 +70,20 @@ class Manager(ComponentModel):
 
         changes = self.repo.get_outstanding_changes()
         for change in changes:
-            EventHandler.get().handle(DebugEvent({"message": f"Checking steps for {change!r}"}))
+            event_handler.handle(DebugEvent({"message": f"Checking steps for {change!r}"}))
             for step in self.steps:
-                EventHandler.get().handle(DebugEvent({"message": f"Checking step {step!r}"}))
+                event_handler.handle(DebugEvent({"message": f"Checking step {step!r}"}))
                 actions = step.get_actions(change)
                 for action in actions:
-                    EventHandler.get().handle(
-                        ManageActionEvent({"action": action, "change": change, "step": step})
+                    event_handler.handle(
+                        ManageActionEvent.get_event(
+                            {"action": action, "change": change, "step": step}
+                        )
                     )
                     action.run(change)
 
                 if actions and not step.continue_management(change):
-                    EventHandler.get().handle(DebugEvent({"message": "Steps ended"}))
+                    event_handler.handle(DebugEvent({"message": "Steps ended"}))
                     break
 
     def write(self, file_path: str) -> None:

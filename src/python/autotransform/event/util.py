@@ -35,7 +35,7 @@ class RevertFileEvent(Event[RevertFileEventData]):
             EventType: The unique type associated with this Event.
         """
 
-        return EventType.REVERT_FILE
+        return EventType.UTIL_REVERT_FILE
 
     @staticmethod
     def get_logging_level() -> LoggingLevel:
