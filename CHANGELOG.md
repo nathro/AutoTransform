@@ -10,6 +10,7 @@
 - Updated Event handling for AIModel related events
 - Updated Event handling for Github related events
 - Updated Event handling for Util related events
+- Updated Event handling for Management related events
 
 ### New Components
 - ScriptInput that uses a script to generate a list of Items
