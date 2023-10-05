@@ -15,6 +15,9 @@ should go through the CachedFile object to ensure the cache is properly updated.
 from pathlib import Path
 from typing import Dict, Optional
 
+from autotransform.event.handler import EventHandler
+from autotransform.event.util import RevertFileEvent
+
 FILE_CACHE: Dict[str, str] = {}
 ORIGINAL_FILE_CACHE: Dict[str, Optional[str]] = {}
 
@@ -107,6 +110,7 @@ class CachedFile:
     def revert(self) -> None:
         """Reverts the content of a file to its original content."""
 
+        EventHandler.get().handle(RevertFileEvent({"file_path": self.path}))
         if self.path in ORIGINAL_FILE_CACHE:
             original_content = ORIGINAL_FILE_CACHE[self.path]
             if original_content is None:

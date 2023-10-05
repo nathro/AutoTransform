@@ -143,9 +143,6 @@ class AIModelTransformer(SingleTransformer):
             result, result_data = self._get_result(item, result_data, failures)
 
             if result is None:
-                event_handler.handle(
-                    VerboseEvent({"message": "Model failed, using original content"})
-                )
                 item.revert()
                 return
 
@@ -154,7 +151,6 @@ class AIModelTransformer(SingleTransformer):
 
         # If we had validation failures on our last run, just use the original content
         if not completion_success:
-            event_handler.handle(VerboseEvent({"message": "Model failed, using original content"}))
             item.revert()
 
     def _get_result(
