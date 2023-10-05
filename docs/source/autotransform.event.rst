@@ -18,6 +18,7 @@ Event Package (autotransform.event)
    autotransform.event.run
    autotransform.event.schedulerun
    autotransform.event.script
+   autotransform.event.util
    autotransform.event.verbose
    autotransform.event.warning
 

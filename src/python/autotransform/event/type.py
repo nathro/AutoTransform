@@ -23,6 +23,7 @@ class EventType(str, Enum):
     MANAGE_ACTION = "manage_action"
     REMOTE_RUN = "remote_run"
     REMOTE_UPDATE = "remote_update"
+    REVERT_FILE = "revert_file"
     RUN = "run"
     SCHEDULE_RUN = "schedule_run"
     SCRIPT_ERR = "script_err"
