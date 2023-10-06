@@ -18,8 +18,8 @@ from autotransform.config import get_config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
-from autotransform.event.remote import RunnerFailedEvent
 from autotransform.event.run import RunEvent
+from autotransform.event.runner import RunnerFailedEvent
 from autotransform.event.verbose import VerboseEvent
 from autotransform.filter.base import FACTORY as filter_factory
 from autotransform.runner.base import Runner

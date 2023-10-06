@@ -19,7 +19,7 @@ from typing import Any, Dict, List, Optional, Type
 
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
-from autotransform.event.remote import RunnerFailedEvent
+from autotransform.event.runner import RunnerFailedEvent
 from autotransform.event.schedulerun import ScheduleRunEvent
 from autotransform.filter.base import FACTORY as filter_factory
 from autotransform.filter.key_hash_shard import KeyHashShardFilter

@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING, ClassVar, List
 
 from autotransform.batcher.base import Batch
 from autotransform.event.handler import EventHandler
-from autotransform.event.remote import RunnerFailedEvent
+from autotransform.event.runner import RunnerFailedEvent
 from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 if TYPE_CHECKING:

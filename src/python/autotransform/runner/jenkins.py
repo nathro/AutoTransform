@@ -20,7 +20,7 @@ from autotransform.change.base import FACTORY as change_factory
 from autotransform.change.base import Change
 from autotransform.config import get_config
 from autotransform.event.handler import EventHandler
-from autotransform.event.remote import RunnerFailedEvent, RunnerRunEvent, RunnerUpdateEvent
+from autotransform.event.runner import RunnerFailedEvent, RunnerRunEvent, RunnerUpdateEvent
 from autotransform.filter.shard import ShardFilter
 from autotransform.runner.base import Runner, RunnerName
 from autotransform.schema.schema import AutoTransformSchema
