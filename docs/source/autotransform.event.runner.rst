@@ -1,7 +1,7 @@
-Remote Events (autotransform.event.remote)
+Runner Related Events (autotransform.event.runner)
 ==============================================
 
-.. automodule:: autotransform.event.remote
+.. automodule:: autotransform.event.runner
    :members:
    :undoc-members:
    :show-inheritance:

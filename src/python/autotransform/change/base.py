@@ -16,6 +16,8 @@ from enum import Enum
 from typing import TYPE_CHECKING, ClassVar, List
 
 from autotransform.batcher.base import Batch
+from autotransform.event.handler import EventHandler
+from autotransform.event.runner import RunnerFailedEvent
 from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
 
 if TYPE_CHECKING:
@@ -235,7 +237,12 @@ class Change(NamedComponent):
             bool: Whether the update was completed successfully.
         """
 
-        runner.update(self)
+        try:
+            runner.update(self)
+        except Exception as e:  # pylint: disable=broad-except
+            EventHandler.get().handle(
+                RunnerFailedEvent({"message": f"Failed run: {e}", "runner": runner})
+            )
         return True
 
 

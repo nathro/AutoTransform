@@ -19,6 +19,7 @@ from typing import Any, Dict, List, Optional, Type
 
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
+from autotransform.event.runner import RunnerFailedEvent
 from autotransform.event.schedulerun import ScheduleRunEvent
 from autotransform.filter.base import FACTORY as filter_factory
 from autotransform.filter.key_hash_shard import KeyHashShardFilter
@@ -265,21 +266,23 @@ class Scheduler(ComponentModel):
             start_time (int): The time that the schedule is run on.
         """
 
+        event_handler = EventHandler.get()
+
         elapsed_time = start_time - self.base_time
 
         elapsed_hours = int(elapsed_time / 60 / 60)
         elapsed_days, hour_of_day = divmod(elapsed_hours, 24)
         elapsed_weeks, day_of_week = divmod(elapsed_days, 7)
 
-        EventHandler.get().handle(
+        event_handler.handle(
             DebugEvent({"message": f"Running for hour {hour_of_day}, day {day_of_week}"})
         )
-        EventHandler.get().handle(
+        event_handler.handle(
             DebugEvent({"message": f"Elapsed days {elapsed_days}, weeks {elapsed_weeks}"})
         )
 
         if day_of_week in self.excluded_days:
-            EventHandler.get().handle(
+            event_handler.handle(
                 DebugEvent({"message": f"Day {day_of_week} is excluded, skipping run"})
             )
             return
@@ -287,7 +290,7 @@ class Scheduler(ComponentModel):
         for scheduled_schema in self.schemas:
             # Check if should run
             if not scheduled_schema.schedule.should_run(hour_of_day, day_of_week):
-                EventHandler.get().handle(
+                event_handler.handle(
                     DebugEvent(
                         {"message": f"Skipping run of schema: {scheduled_schema.schema_name}"}
                     )
@@ -300,12 +303,17 @@ class Scheduler(ComponentModel):
                     shard_filter.valid_shard = elapsed_days % shard_filter.num_shards
                 else:
                     shard_filter.valid_shard = (elapsed_days // 7) % shard_filter.num_shards
-                EventHandler.get().handle(DebugEvent({"message": f"Sharding: {shard_filter!r}"}))
+                event_handler.handle(DebugEvent({"message": f"Sharding: {shard_filter!r}"}))
                 schema.filters.append(shard_filter)
             if scheduled_schema.max_submissions is not None:
                 schema.config.max_submissions = scheduled_schema.max_submissions
-            EventHandler.get().handle(ScheduleRunEvent({"schema_name": schema.config.schema_name}))
-            runner.run(schema)
+            event_handler.handle(ScheduleRunEvent({"schema_name": schema.config.schema_name}))
+            try:
+                runner.run(schema)
+            except Exception as e:  # pylint: disable=broad-except
+                event_handler.handle(
+                    RunnerFailedEvent({"message": f"Failed run: {e}", "runner": runner})
+                )
 
     def write(self, file_path: str) -> None:
         """Writes the Scheduler to a file as JSON.

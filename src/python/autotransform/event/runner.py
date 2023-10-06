@@ -7,33 +7,32 @@
 
 # @black_format
 
-"""The AIModel events are used to handle events related to usage of AI Models in AutoTransform.
+"""The Runner events are used to handle events related to Runners in AutoTransform.
 """
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, TypedDict
+from typing import TYPE_CHECKING, Optional, TypedDict
 
 from autotransform.event.base import Event
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.type import EventType
 
 if TYPE_CHECKING:
-    from autotransform.command.base import Command
-    from autotransform.item.base import Item
+    from autotransform.change.base import Change
+    from autotransform.runner.base import Runner
 
 
-class AIModelCommandFailureEventData(TypedDict):
-    """The data for a AIModelCommandFailureEvent. Contains the information that will be
+class RunnerFailedEventData(TypedDict):
+    """The data for a RunnerFailedEvent. Contains the information that will be
     logged when the event is triggered."""
 
-    item: Item
-    command: Command
-    exception: Exception
+    message: str
+    runner: Runner
 
 
-class AIModelCommandFailureEvent(Event[AIModelCommandFailureEventData]):
-    """A simple event to log AIModel command run failures."""
+class RunnerFailedEvent(Event[RunnerFailedEventData]):
+    """A RunnerFailedEvent is triggered whenever a Runner fails."""
 
     @staticmethod
     def get_type() -> EventType:
@@ -43,98 +42,7 @@ class AIModelCommandFailureEvent(Event[AIModelCommandFailureEventData]):
             EventType: The unique type associated with this Event.
         """
 
-        return EventType.AI_MODEL_COMMAND_FAILURE
-
-    @staticmethod
-    def get_logging_level() -> LoggingLevel:
-        """The logging level for events of this type.
-
-        Returns:
-            LoggingLevel: The logging detail required to log this event.
-        """
-
-        return LoggingLevel.WARNING
-
-    def _get_message(self) -> str:
-        """Gets a message representing the details of the event.
-
-        Returns:
-            str: The message for the event.
-        """
-
-        return (
-            f"Item: {self.data['item'].key}\n"
-            + f"Command: {self.data['command']}\n"
-            + f"Error: {self.data['exception']}"
-        )
-
-
-class AIModelCompletionEventData(TypedDict):
-    """The data for a AIModelCompletionEvent. Contains the information that will be
-    logged when the event is triggered."""
-
-    completion: str
-    input_tokens: int
-    output_tokens: int
-
-
-class AIModelCompletionEvent(Event[AIModelCompletionEventData]):
-    """A simple event to log AIModel completions."""
-
-    @staticmethod
-    def get_type() -> EventType:
-        """Used to represent the type of Event, output to logs.
-
-        Returns:
-            EventType: The unique type associated with this Event.
-        """
-
-        return EventType.AI_MODEL_COMPLETION
-
-    @staticmethod
-    def get_logging_level() -> LoggingLevel:
-        """The logging level for events of this type.
-
-        Returns:
-            LoggingLevel: The logging detail required to log this event.
-        """
-
-        return LoggingLevel.VERBOSE
-
-    def _get_message(self) -> str:
-        """Gets a message representing the details of the event.
-
-        Returns:
-            str: The message for the event.
-        """
-
-        return (
-            f"Input Tokens: {self.data['input_tokens']}\n"
-            + f"Output Tokens: {self.data['output_tokens']}\n"
-            + f"Completion:\n{self.data['completion']}"
-        )
-
-
-class AIModelCompletionFailureEventData(TypedDict):
-    """The data for a AIModelCompletionFailureEvent. Contains the information that will be
-    logged when the event is triggered."""
-
-    item: Item
-    exception: Exception
-
-
-class AIModelCompletionFailureEvent(Event[AIModelCompletionFailureEventData]):
-    """A simple event to log AIModel completion failures."""
-
-    @staticmethod
-    def get_type() -> EventType:
-        """Used to represent the type of Event, output to logs.
-
-        Returns:
-            EventType: The unique type associated with this Event.
-        """
-
-        return EventType.AI_MODEL_COMPLETION_FAILURE
+        return EventType.RUNNER_FAILED
 
     @staticmethod
     def get_logging_level() -> LoggingLevel:
@@ -153,4 +61,94 @@ class AIModelCompletionFailureEvent(Event[AIModelCompletionFailureEventData]):
             str: The message for the event.
         """
 
-        return f"Failed on Item: {self.data['item'].key}\nError: {self.data['exception']}"
+        return f"{self.data['message']}\n{self.data['runner']}"
+
+
+class RunnerRunEventData(TypedDict):
+    """The data for a RunnerRunEvent. Contains the information that will be
+    logged when the event is triggered."""
+
+    schema_name: str
+    ref: Optional[str]
+    runner: Runner
+
+
+class RunnerRunEvent(Event[RunnerRunEventData]):
+    """A RunnerRunEvent is triggered whenever a Runner successfully triggers a run."""
+
+    @staticmethod
+    def get_type() -> EventType:
+        """Used to represent the type of Event, output to logs.
+
+        Returns:
+            EventType: The unique type associated with this Event.
+        """
+
+        return EventType.RUNNER_RUN
+
+    @staticmethod
+    def get_logging_level() -> LoggingLevel:
+        """The logging level for events of this type.
+
+        Returns:
+            LoggingLevel: The logging detail required to log this event.
+        """
+
+        return LoggingLevel.INFO
+
+    def _get_message(self) -> str:
+        """Gets a message representing the details of the event.
+
+        Returns:
+            str: The message for the event.
+        """
+
+        return (
+            f"{self.data['schema_name']} run with ref: {self.data['ref']}\n"
+            + f"{self.data['runner']}"
+        )
+
+
+class RunnerUpdateEventData(TypedDict):
+    """The data for a RunnerUpdateEvent. Contains the information that will be
+    logged when the event is triggered."""
+
+    change: Change
+    ref: Optional[str]
+    runner: Runner
+
+
+class RunnerUpdateEvent(Event[RunnerUpdateEventData]):
+    """A RunnerRunEvent is triggered whenever a Runner successfully triggers an update."""
+
+    @staticmethod
+    def get_type() -> EventType:
+        """Used to represent the type of Event, output to logs.
+
+        Returns:
+            EventType: The unique type associated with this Event.
+        """
+
+        return EventType.RUNNER_UPDATE
+
+    @staticmethod
+    def get_logging_level() -> LoggingLevel:
+        """The logging level for events of this type.
+
+        Returns:
+            LoggingLevel: The logging detail required to log this event.
+        """
+
+        return LoggingLevel.INFO
+
+    def _get_message(self) -> str:
+        """Gets a message representing the details of the event.
+
+        Returns:
+            str: The message for the event.
+        """
+
+        return (
+            f"{str(self.data['change'])!r} updated with ref: {self.data['ref']}\n"
+            + f"{self.data['runner']}"
+        )

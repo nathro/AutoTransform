@@ -13,14 +13,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, TypedDict
 
-from autotransform.change.base import Change
 from autotransform.event.base import Event
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.type import EventType
-from autotransform.step.action.base import Action, ActionName
-from autotransform.step.base import Step
+from autotransform.step.action.base import ActionName
 
 if TYPE_CHECKING:
+    from autotransform.change.base import Change
+    from autotransform.step.action.base import Action
+    from autotransform.step.base import Step
     from autotransform.util.manager import Manager
 
 

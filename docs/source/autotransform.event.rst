@@ -14,8 +14,8 @@ Event Package (autotransform.event)
    autotransform.event.github
    autotransform.event.manage
    autotransform.event.model
-   autotransform.event.remote
    autotransform.event.run
+   autotransform.event.runner
    autotransform.event.schedulerun
    autotransform.event.script
    autotransform.event.util
