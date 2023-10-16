@@ -13,11 +13,10 @@ import os
 from functools import cached_property
 from typing import Any, ClassVar, Mapping
 
-from pydantic import Field
-
 from autotransform.change.base import Change
 from autotransform.step.action.base import Action, ActionName
 from autotransform.util.request import RequestHandler
+from pydantic import Field
 
 
 class RequestAction(Action):
@@ -72,6 +71,8 @@ class RequestAction(Action):
             bool: Whether the request returned a non-error response.
         """
 
-        response = self._handler.get_response({"change": lambda name: getattr(change, name, "")})
+        response = self._handler.get_response(
+            {"change": lambda name: str(getattr(change, name, ""))}
+        )
 
         return response.ok

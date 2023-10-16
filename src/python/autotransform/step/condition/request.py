@@ -13,12 +13,11 @@ import os
 from functools import cached_property
 from typing import Any, ClassVar, List, Mapping, Optional, TypeVar
 
-from pydantic import Field
-
 from autotransform.change.base import Change
 from autotransform.step.condition.base import ComparisonCondition, ConditionName
 from autotransform.step.condition.comparison import ComparisonType
 from autotransform.util.request import RequestHandler
+from pydantic import Field
 
 T = TypeVar("T")
 
@@ -85,7 +84,9 @@ class RequestStrCondition(ComparisonCondition[str]):
             str: The value from the Change to compare against.
         """
 
-        response = self._handler.get_response(({"change": lambda name: getattr(change, name, "")}))
+        response = self._handler.get_response(
+            ({"change": lambda name: str(getattr(change, name, ""))})
+        )
 
         if not self.response_field:
             return response.text
