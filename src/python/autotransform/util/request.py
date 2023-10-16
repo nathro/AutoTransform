@@ -95,7 +95,7 @@ class RequestHandler(BaseModel):
         Args:
             data (Mapping[str, Any]): The data to replace values for.
             identifier (str): The identifier of the type of value.
-            replacer (Callable[[str], Any]): The replacing function.
+            replacer (Callable[[str], str]): The replacing function.
 
         Returns:
             Dict[str, Any]: The replaced data.
