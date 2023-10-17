@@ -126,7 +126,6 @@ def run_command_main(args: Namespace) -> None:
         event_handler.set_logging_level(LoggingLevel.DEBUG)
     change = args.change
     event_handler.handle(DebugEvent({"message": f"Change: ({args.change_type}) {args.change}"}))
-    event_args = {"change": args.change, "change_type": args.change_type}
     if args.change_type == "file":
         with open(change, "r") as change_file:
             change = change_factory.get_instance(json.loads(change_file.read()))
@@ -141,7 +140,6 @@ def run_command_main(args: Namespace) -> None:
     try:
         if args.run_local:
             event_handler.handle(VerboseEvent({"message": "Running locally"}))
-            event_args["remote"] = False
             config_runner = get_config().local_runner
             if config_runner is None:
                 event_handler.handle(DebugEvent({"message": "No runner defined, using default"}))
@@ -150,12 +148,10 @@ def run_command_main(args: Namespace) -> None:
                 runner = config_runner
         else:
             event_handler.handle(VerboseEvent({"message": "Running remote"}))
-            event_args["remote"] = True
             config_runner = get_config().remote_runner
             assert config_runner is not None
             runner = config_runner
 
-        event_args["runner"] = json.dumps(runner.bundle())
         event_handler.handle(RunUpdateEvent({"change": change}))
         try:
             runner.update(change)
