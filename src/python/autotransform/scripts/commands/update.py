@@ -166,3 +166,4 @@ def run_command_main(args: Namespace) -> None:
             raise e
     except Exception as e:  # pylint: disable=broad-except
         event_handler.handle(RunUpdateFailedEvent({"change": change, "error": e}))
+        raise e
