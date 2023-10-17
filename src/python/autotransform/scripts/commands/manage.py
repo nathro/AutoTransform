@@ -14,8 +14,7 @@ from argparse import ArgumentParser, Namespace
 from autotransform.config import get_repo_config_relative_path
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
-from autotransform.event.manage import ManageEvent
-from autotransform.event.run import RunEvent
+from autotransform.event.run import RunManagerEvent, RunManagerFailedEvent
 from autotransform.util.manager import Manager
 
 
@@ -91,11 +90,12 @@ def manage_command_main(args: Namespace) -> None:
     manager_file = args.path
     if manager_file is None:
         manager_file = f"{get_repo_config_relative_path()}/manager.json"
-    event_args = {"manager_file": manager_file}
     manager = Manager.read(manager_file)
-    event_args["manager"] = manager
 
-    event_handler.handle(RunEvent({"mode": "manage", "args": event_args}))
-    event_handler.handle(ManageEvent({"manager": manager}))
+    event_handler.handle(RunManagerEvent({"manager": manager}))
 
-    manager.run(args.run_local)
+    try:
+        manager.run(args.run_local)
+    except Exception as e:  # pylint: disable=broad-except
+        event_handler.handle(RunManagerFailedEvent({"manager": manager, "error": e}))
+        raise e

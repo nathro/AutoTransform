@@ -18,7 +18,7 @@ from autotransform.config import get_config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
-from autotransform.event.run import RunEvent
+from autotransform.event.run import RunUpdateEvent, RunUpdateFailedEvent
 from autotransform.event.runner import RunnerFailedEvent
 from autotransform.event.verbose import VerboseEvent
 from autotransform.runner.base import Runner
@@ -126,7 +126,6 @@ def run_command_main(args: Namespace) -> None:
         event_handler.set_logging_level(LoggingLevel.DEBUG)
     change = args.change
     event_handler.handle(DebugEvent({"message": f"Change: ({args.change_type}) {args.change}"}))
-    event_args = {"change": args.change, "change_type": args.change_type}
     if args.change_type == "file":
         with open(change, "r") as change_file:
             change = change_factory.get_instance(json.loads(change_file.read()))
@@ -137,29 +136,30 @@ def run_command_main(args: Namespace) -> None:
     else:
         change = change_factory.get_instance(json.loads(change))
 
-    if args.change_type != "string":
-        event_handler.handle(VerboseEvent({"message": f"Change: {change!r}"}))
-
-    if args.run_local:
-        event_handler.handle(VerboseEvent({"message": "Running locally"}))
-        event_args["remote"] = False
-        config_runner = get_config().local_runner
-        if config_runner is None:
-            event_handler.handle(DebugEvent({"message": "No runner defined, using default"}))
-            runner: Runner = LocalRunner()
-        else:
-            runner = config_runner
-    else:
-        event_handler.handle(VerboseEvent({"message": "Running remote"}))
-        event_args["remote"] = True
-        config_runner = get_config().remote_runner
-        assert config_runner is not None
-        runner = config_runner
-
-    event_args["runner"] = json.dumps(runner.bundle())
-    event_handler.handle(RunEvent({"mode": "update", "args": event_args}))
+    event_handler.handle(RunUpdateEvent({"change": change}))
     try:
-        runner.update(change)
+        if args.run_local:
+            event_handler.handle(VerboseEvent({"message": "Running locally"}))
+            config_runner = get_config().local_runner
+            if config_runner is None:
+                event_handler.handle(DebugEvent({"message": "No runner defined, using default"}))
+                runner: Runner = LocalRunner()
+            else:
+                runner = config_runner
+        else:
+            event_handler.handle(VerboseEvent({"message": "Running remote"}))
+            config_runner = get_config().remote_runner
+            assert config_runner is not None
+            runner = config_runner
+
+        event_handler.handle(RunUpdateEvent({"change": change}))
+        try:
+            runner.update(change)
+        except Exception as e:  # pylint: disable=broad-except
+            event_handler.handle(
+                RunnerFailedEvent({"message": f"Failed run: {e}", "runner": runner})
+            )
+            raise e
     except Exception as e:  # pylint: disable=broad-except
-        event_handler.handle(RunnerFailedEvent({"message": f"Failed run: {e}", "runner": runner}))
+        event_handler.handle(RunUpdateFailedEvent({"change": change, "error": e}))
         raise e

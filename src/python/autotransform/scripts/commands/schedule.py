@@ -15,8 +15,7 @@ from argparse import ArgumentParser, Namespace
 from autotransform.config import get_config, get_repo_config_relative_path
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
-from autotransform.event.run import RunEvent
-from autotransform.event.verbose import VerboseEvent
+from autotransform.event.run import RunSchedulerEvent, RunSchedulerFailedEvent
 from autotransform.runner.local import LocalRunner
 from autotransform.util.scheduler import Scheduler
 
@@ -94,7 +93,6 @@ def schedule_command_main(args: Namespace) -> None:
 
     # pylint: disable=unspecified-encoding
 
-    start_time = int(args.time) if args.time is not None else int(time.time())
     event_handler = EventHandler.get()
     if args.verbose:
         event_handler.set_logging_level(LoggingLevel.VERBOSE)
@@ -105,14 +103,16 @@ def schedule_command_main(args: Namespace) -> None:
     schedule_file = args.path
     if schedule_file is None:
         schedule_file = f"{get_repo_config_relative_path()}/scheduler.json"
-    event_args = {"scheduler_file": schedule_file}
     scheduler = Scheduler.read(schedule_file)
-    event_args["scheduler"] = scheduler
-    event_handler.handle(RunEvent({"mode": "schedule", "args": event_args}))
+    event_handler.handle(RunSchedulerEvent({"scheduler": scheduler}))
 
-    event_handler.get().handle(VerboseEvent({"message": f"Running scheduler: {scheduler!r}"}))
-    if args.run_local:
-        runner = get_config().local_runner
-    else:
-        runner = get_config().remote_runner
-    scheduler.run(start_time, runner or LocalRunner())
+    try:
+        start_time = int(args.time) if args.time is not None else int(time.time())
+        if args.run_local:
+            runner = get_config().local_runner
+        else:
+            runner = get_config().remote_runner
+        scheduler.run(start_time, runner or LocalRunner())
+    except Exception as e:  # pylint: disable=broad-except
+        event_handler.handle(RunSchedulerFailedEvent({"scheduler": scheduler, "error": e}))
+        raise e

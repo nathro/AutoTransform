@@ -18,7 +18,7 @@ from autotransform.config import get_config
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.logginglevel import LoggingLevel
-from autotransform.event.run import RunEvent
+from autotransform.event.run import RunEvent, RunFailedEvent
 from autotransform.event.runner import RunnerFailedEvent
 from autotransform.event.verbose import VerboseEvent
 from autotransform.filter.base import FACTORY as filter_factory
@@ -162,8 +162,6 @@ def run_command_main(args: Namespace) -> None:
     if args.debug:
         event_handler.set_logging_level(LoggingLevel.DEBUG)
     schema = args.schema
-    event_handler.handle(DebugEvent({"message": f"Schema: ({args.schema_type}) {args.schema}"}))
-    event_args = {"schema": args.schema, "schema_type": args.schema_type}
     if args.schema_type == "builder":
         try:
             schema = json.loads(schema)
@@ -182,7 +180,6 @@ def run_command_main(args: Namespace) -> None:
         assert args.schema == schema.config.schema_name
     else:
         schema = AutoTransformSchema.from_data(json.loads(schema))
-
     repo_override = get_config().repo_override
     if repo_override is not None:
         schema.repo = repo_override
@@ -195,25 +192,29 @@ def run_command_main(args: Namespace) -> None:
 
     event_handler.handle(VerboseEvent({"message": f"Decoded Schema: {schema!r}"}))
 
-    if args.run_local:
-        event_handler.handle(VerboseEvent({"message": "Running locally"}))
-        event_args["remote"] = False
-        config_runner = get_config().local_runner
-        if config_runner is None:
-            event_handler.handle(DebugEvent({"message": "No runner defined, using default"}))
-            runner: Runner = LocalRunner()
-        else:
-            runner = config_runner
-    else:
-        event_handler.handle(VerboseEvent({"message": "Running remote"}))
-        event_args["remote"] = True
-        config_runner = get_config().remote_runner
-        assert config_runner is not None
-        runner = config_runner
-
-    event_args["runner"] = runner
-    event_handler.handle(RunEvent({"mode": "run", "args": event_args}))
+    event_handler.handle(RunEvent({"schema": schema}))
     try:
-        runner.run(schema)
+        if args.run_local:
+            event_handler.handle(VerboseEvent({"message": "Running locally"}))
+            config_runner = get_config().local_runner
+            if config_runner is None:
+                event_handler.handle(DebugEvent({"message": "No runner defined, using default"}))
+                runner: Runner = LocalRunner()
+            else:
+                runner = config_runner
+        else:
+            event_handler.handle(VerboseEvent({"message": "Running remote"}))
+            config_runner = get_config().remote_runner
+            assert config_runner is not None
+            runner = config_runner
+
+        try:
+            runner.run(schema)
+        except Exception as e:  # pylint: disable=broad-except
+            event_handler.handle(
+                RunnerFailedEvent({"message": f"Failed run: {e}", "runner": runner})
+            )
+            raise e
     except Exception as e:  # pylint: disable=broad-except
-        event_handler.handle(RunnerFailedEvent({"message": f"Failed run: {e}", "runner": runner}))
+        event_handler.handle(RunFailedEvent({"schema": schema, "error": e}))
+        raise e

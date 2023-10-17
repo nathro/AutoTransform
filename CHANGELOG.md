@@ -13,6 +13,7 @@
 - Updated Event handling for Management related events
 - Updated Event handling for Runner related events
 - Updated Event handling for Batch related events
+- Updated Event handling for running the AutoTransform script
 
 ### New Components
 - ScriptInput that uses a script to generate a list of Items

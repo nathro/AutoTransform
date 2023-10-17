@@ -25,45 +25,6 @@ if TYPE_CHECKING:
     from autotransform.util.manager import Manager
 
 
-class ManageEventData(TypedDict):
-    """The data for a ManageEvent. Contains the information that will be
-    logged when the event is triggered."""
-
-    manager: Manager
-
-
-class ManageEvent(Event[ManageEventData]):
-    """An event triggered whenever a Step attempts to take an action against a Change."""
-
-    @staticmethod
-    def get_type() -> EventType:
-        """Used to represent the type of Event, output to logs.
-
-        Returns:
-            EventType: The unique type associated with this Event.
-        """
-        return EventType.MANAGE
-
-    @staticmethod
-    def get_logging_level() -> LoggingLevel:
-        """The logging level for events of this type.
-
-        Returns:
-            LoggingLevel: The logging detail required to log this event.
-        """
-
-        return LoggingLevel.INFO
-
-    def _get_message(self) -> str:
-        """Gets a message representing the details of the event.
-
-        Returns:
-            str: The message for the event.
-        """
-
-        return f"Managing repo: {self.data['manager'].repo}"
-
-
 class ManageActionEventData(TypedDict):
     """The data for a ManageActionEventData. Contains the information that will be
     logged when the event is triggered."""
