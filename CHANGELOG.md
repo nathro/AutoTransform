@@ -12,6 +12,7 @@
 - Updated Event handling for Util related events
 - Updated Event handling for Management related events
 - Updated Event handling for Runner related events
+- Updated Event handling for Batch related events
 
 ### New Components
 - ScriptInput that uses a script to generate a list of Items
@@ -29,6 +30,7 @@
 - Fix ScriptTransformer when run with no items
 - Fix GithubRunner when using repo_override rather than schema repos
 - Fix an issue where updates could fail when run with files that are no longer present by filtering using only the new Items the schema would pick up that match the keys of the batch Items. This ensures if an Item becomes invalid, it won't be used in an update (and any associated data will be the most recent data, rather than older data).
+- Ensure replacers for RequestHandler return strings
 
 ## Release 1.1.0
 

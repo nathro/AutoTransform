@@ -14,6 +14,8 @@ from __future__ import annotations
 from typing import ClassVar
 
 from autotransform.change.base import Change
+from autotransform.event.batch import BatchExecutionFailedEvent
+from autotransform.event.handler import EventHandler
 from autotransform.runner.base import Runner, RunnerName
 from autotransform.schema.schema import AutoTransformSchema
 
@@ -48,4 +50,8 @@ class LocalRunner(Runner):
         new_items = schema.get_items()
         batch_keys = {item.key for item in batch["items"]}
         batch["items"] = [item for item in new_items if item.key in batch_keys]
-        schema.execute_batch(batch, change)
+        try:
+            schema.execute_batch(batch, change)
+        except Exception as e:  # pylint: disable=broad-except
+            EventHandler.get().handle(BatchExecutionFailedEvent({"batch": batch, "error": e}))
+            raise e
