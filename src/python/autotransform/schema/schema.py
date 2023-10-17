@@ -21,6 +21,13 @@ from autotransform.batcher.base import Batch, Batcher
 from autotransform.change.base import Change
 from autotransform.command.base import FACTORY as command_factory
 from autotransform.command.base import Command
+from autotransform.event.batch import (
+    BatchExecutionFailedEvent,
+    BatchNoChangesEvent,
+    BatchSkipEvent,
+    BatchSubmitEvent,
+    BatchValidationFailedEvent,
+)
 from autotransform.event.debug import DebugEvent
 from autotransform.event.handler import EventHandler
 from autotransform.event.verbose import VerboseEvent
@@ -177,9 +184,7 @@ class AutoTransformSchema(ComponentModel):
             event_handler.handle(VerboseEvent({"message": "Clean repo"}))
             self.repo.rewind(batch)
             if change is None and self.repo.has_outstanding_change(batch):
-                event_handler.handle(
-                    VerboseEvent({"message": "Skipping batch with outstanding change"})
-                )
+                event_handler.handle(BatchSkipEvent({"batch": batch}))
                 return False
 
         # Execute transformation
@@ -201,7 +206,9 @@ class AutoTransformSchema(ComponentModel):
             )
 
             if validation_result.level > self.config.allowed_validation_level:
-                event_handler.handle(VerboseEvent({"message": "Validation Failed"}))
+                event_handler.handle(
+                    BatchValidationFailedEvent({"batch": batch, "result": validation_result})
+                )
                 raise ValidationError(issue=validation_result, message=validation_result.message)
 
         # Run post-validation commands
@@ -218,7 +225,7 @@ class AutoTransformSchema(ComponentModel):
             event_handler.handle(VerboseEvent({"message": "Checking for changes"}))
             if self.repo.has_changes(batch):
                 event_handler.handle(VerboseEvent({"message": "Changes found"}))
-                event_handler.handle(VerboseEvent({"message": "Submitting changes"}))
+                event_handler.handle(BatchSubmitEvent({"batch": batch}))
                 self.repo.submit(batch, result, change=change)
                 event_handler.handle(VerboseEvent({"message": "Rewinding repo"}))
                 self.repo.rewind(batch)
@@ -230,7 +237,7 @@ class AutoTransformSchema(ComponentModel):
                     )
 
                     change.abandon()
-                event_handler.handle(VerboseEvent({"message": "No changes found"}))
+                event_handler.handle(BatchNoChangesEvent({"batch": batch}))
         event_handler.handle(VerboseEvent({"message": "Finish batch"}))
         autotransform.schema.current = None
         return submitted
@@ -240,6 +247,7 @@ class AutoTransformSchema(ComponentModel):
         Note: this function is not thread safe."""
 
         autotransform.schema.current = self
+        event_handler = EventHandler.get()
         items = self.get_items()
         batches = self.get_batches(items)
         num_submissions = 0
@@ -248,12 +256,15 @@ class AutoTransformSchema(ComponentModel):
                 self.config.max_submissions is not None
                 and num_submissions >= self.config.max_submissions
             ):
-                EventHandler.get().handle(
+                event_handler.handle(
                     VerboseEvent({"message": f"Max submissions reached: {num_submissions}"})
                 )
                 break
-            if self.execute_batch(batch):
-                num_submissions += 1
+            try:
+                if self.execute_batch(batch):
+                    num_submissions += 1
+            except Exception as e:  # pylint: disable=broad-except
+                event_handler.handle(BatchExecutionFailedEvent({"batch": batch, "error": e}))
         autotransform.schema.current = None
 
     @staticmethod
