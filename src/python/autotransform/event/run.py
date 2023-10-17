@@ -21,6 +21,7 @@ from autotransform.event.type import EventType
 
 if TYPE_CHECKING:
     from autotransform.change.base import Change
+    from autotransform.schema.schema import AutoTransformSchema
     from autotransform.util.manager import Manager
     from autotransform.util.scheduler import Scheduler
 
@@ -29,7 +30,7 @@ class RunEventData(TypedDict):
     """The data for a RunEvent. Contains the information that will be
     logged when the event is triggered."""
 
-    schema: str
+    schema: AutoTransformSchema
 
 
 class RunEvent(Event[RunEventData]):
@@ -62,14 +63,14 @@ class RunEvent(Event[RunEventData]):
             str: The message for the event.
         """
 
-        return f"{self.data['schema']}"
+        return f"{self.data['schema'].config.schema_name}"
 
 
 class RunFailedEventData(TypedDict):
     """The data for a RunFailedEvent. Contains the information that will be
     logged when the event is triggered."""
 
-    schema: str
+    schema: AutoTransformSchema
     error: Exception
 
 
@@ -103,7 +104,7 @@ class RunFailedEvent(Event[RunFailedEventData]):
             str: The message for the event.
         """
 
-        return f"{self.data['schema']}: {self.data['error']}"
+        return f"{self.data['schema'].config.schema_name}: {self.data['error']}"
 
 
 class RunCommandFailedEventData(TypedDict):

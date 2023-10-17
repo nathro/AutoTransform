@@ -161,41 +161,39 @@ def run_command_main(args: Namespace) -> None:
         event_handler.set_logging_level(LoggingLevel.VERBOSE)
     if args.debug:
         event_handler.set_logging_level(LoggingLevel.DEBUG)
-    event_handler.handle(RunEvent({"schema": args.schema}))
     schema = args.schema
-    event_handler.handle(DebugEvent({"message": f"Schema: ({args.schema_type}) {args.schema}"}))
+    if args.schema_type == "builder":
+        try:
+            schema = json.loads(schema)
+        except json.JSONDecodeError:
+            schema = {"name": schema}
+        schema = schema_builder_factory.get_instance(schema).build()
+    elif args.schema_type == "file":
+        with open(schema, "r") as schema_file:
+            schema = AutoTransformSchema.from_data(json.loads(schema_file.read()))
+    elif args.schema_type == "environment":
+        schema = os.getenv(schema)
+        assert isinstance(schema, str)
+        schema = AutoTransformSchema.from_data(json.loads(schema))
+    elif args.schema_type == "name":
+        schema = SchemaMap.get().get_schema(args.schema)
+        assert args.schema == schema.config.schema_name
+    else:
+        schema = AutoTransformSchema.from_data(json.loads(schema))
+    repo_override = get_config().repo_override
+    if repo_override is not None:
+        schema.repo = repo_override
+
+    if args.filter:
+        schema.filters.append(filter_factory.get_instance(json.loads(args.filter)))
+
+    if args.max_submissions:
+        schema.config.max_submissions = args.max_submissions
+
+    event_handler.handle(VerboseEvent({"message": f"Decoded Schema: {schema!r}"}))
+
+    event_handler.handle(RunEvent({"schema": schema}))
     try:
-        if args.schema_type == "builder":
-            try:
-                schema = json.loads(schema)
-            except json.JSONDecodeError:
-                schema = {"name": schema}
-            schema = schema_builder_factory.get_instance(schema).build()
-        elif args.schema_type == "file":
-            with open(schema, "r") as schema_file:
-                schema = AutoTransformSchema.from_data(json.loads(schema_file.read()))
-        elif args.schema_type == "environment":
-            schema = os.getenv(schema)
-            assert isinstance(schema, str)
-            schema = AutoTransformSchema.from_data(json.loads(schema))
-        elif args.schema_type == "name":
-            schema = SchemaMap.get().get_schema(args.schema)
-            assert args.schema == schema.config.schema_name
-        else:
-            schema = AutoTransformSchema.from_data(json.loads(schema))
-
-        repo_override = get_config().repo_override
-        if repo_override is not None:
-            schema.repo = repo_override
-
-        if args.filter:
-            schema.filters.append(filter_factory.get_instance(json.loads(args.filter)))
-
-        if args.max_submissions:
-            schema.config.max_submissions = args.max_submissions
-
-        event_handler.handle(VerboseEvent({"message": f"Decoded Schema: {schema!r}"}))
-
         if args.run_local:
             event_handler.handle(VerboseEvent({"message": "Running locally"}))
             config_runner = get_config().local_runner
@@ -218,5 +216,5 @@ def run_command_main(args: Namespace) -> None:
             )
             raise e
     except Exception as e:  # pylint: disable=broad-except
-        event_handler.handle(RunFailedEvent({"schema": args.schema, "error": e}))
+        event_handler.handle(RunFailedEvent({"schema": schema, "error": e}))
         raise e
