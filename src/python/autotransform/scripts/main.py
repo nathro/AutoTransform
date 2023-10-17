@@ -12,6 +12,8 @@ Different CLI commands are handled as subparsers."""
 
 from argparse import ArgumentParser
 
+from autotransform.event.handler import EventHandler
+from autotransform.event.run import RunCommandFailedEvent
 from autotransform.scripts.commands import initialize, manage, run, schedule, settings, update
 
 
@@ -51,7 +53,11 @@ def main():
     args = parser.parse_args()
 
     if hasattr(args, "func"):
-        args.func(args)
+        try:
+            args.func(args)
+        except Exception as e:  # pylint: disable=broad-except
+            EventHandler.get().handle(RunCommandFailedEvent({"error": e}))
+            raise e
     else:
         parser.print_help()
 

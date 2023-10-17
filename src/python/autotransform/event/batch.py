@@ -10,13 +10,17 @@
 """The Batch events are used to handle events related to running a Batch in AutoTransform.
 """
 
-from typing import TypedDict
+from __future__ import annotations
 
-from autotransform.batcher.base import Batch
+from typing import TYPE_CHECKING, TypedDict
+
 from autotransform.event.base import Event
 from autotransform.event.logginglevel import LoggingLevel
 from autotransform.event.type import EventType
-from autotransform.validator.base import ValidationResult
+
+if TYPE_CHECKING:
+    from autotransform.batcher.base import Batch
+    from autotransform.validator.base import ValidationResult
 
 
 class BatchExecutionFailedEventData(TypedDict):
