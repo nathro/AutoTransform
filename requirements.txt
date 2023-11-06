@@ -9,6 +9,7 @@ libcst==0.4.9
 codeowners==0.6.0
 requests==2.31.0
 openai==0.27.8
+anthropic==0.5.0
 
 
 # Requirements for Schemas

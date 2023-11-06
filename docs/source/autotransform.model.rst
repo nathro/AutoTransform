@@ -7,4 +7,5 @@ Model Package (autotransform.model)
    :maxdepth: 4
 
    autotransform.model.base
+   autotransform.model.anthropic
    autotransform.model.openai

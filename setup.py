@@ -78,6 +78,7 @@ setuptools.setup(
         "requests==2.31.0",
         "codeowners==0.6.0",
         "openai==0.27.8",
+        "anthropic==0.5.0",
     ],
     python_requires=">=3.10",
     data_files=generate_datafiles(),
