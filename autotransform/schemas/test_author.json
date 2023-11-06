@@ -49,7 +49,7 @@
         "model": {
             "name": "open_ai",
             "prompts": [
-                "Provide a brief description for what <<FILE_PATH>> is doing. This should focus on the functionality of methods and functions. The content of the file is\n```python\n<<FILE_CONTENT>>\n```.",
+                "Provide a brief description for what <<FILE_PATH>> is doing. This should focus on the functionality of methods and functions. The content of the file is\n<<FILE_CONTENT>>",
                 "Based on the description, list possible test cases that should be implemented as a bulleted list. These possible test cases should focus on edge cases as well as normal usage, but should not include things like initialization. Focus on functionality and business logic.",
                 "Create a file including all needed imports that uses PyTest to implement the test cases suggested. The file contents are:\n"
             ],
