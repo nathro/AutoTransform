@@ -191,7 +191,7 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
             str: The prompt with sentinel values replaced.
         """
         return prompt.replace("<<FILE_PATH>>", item.get_path()).replace(
-            "<<FILE_CONTENT>>", item.get_content()
+            "<<FILE_CONTENT>>", f"```\n{item.get_content()}\n```"
         )
 
     def _extract_code_from_completion(self, result: str) -> str:
