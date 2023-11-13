@@ -13,8 +13,11 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
+from autotransform.event.notifier.base import FACTORY as notifier_factory
+from autotransform.event.notifier.base import EventNotifier, EventNotifierName
+from autotransform.event.notifier.console import ConsoleEventNotifier
 from autotransform.repo.base import FACTORY as repo_factory
 from autotransform.repo.base import Repo
 from autotransform.runner.base import FACTORY as runner_factory
@@ -52,6 +55,8 @@ class Config(ComponentModel):
             Defaults to None.
         repo_override (Optional[Repo], optional): A repo to use in place of any schema repos.
             Defaults to None.
+        event_notifiers (List[EventNotifier], optional): The EventNotifiers to use. Defaults to
+            a list containing just the ConsoleEventNotifier.
     """
 
     component_directory: Optional[str] = None
@@ -64,6 +69,7 @@ class Config(ComponentModel):
     open_ai_api_key: Optional[str] = None
     remote_runner: Optional[Runner] = None
     repo_override: Optional[Repo] = None
+    event_notifiers: List[EventNotifier] = Field(default=[ConsoleEventNotifier()])
 
     def write(self, file_path: str) -> None:
         """Writes the Config to a file as JSON.
@@ -159,6 +165,14 @@ class Config(ComponentModel):
         if repo_override is not None:
             repo_override = repo_factory.get_instance(repo_override)
 
+        event_notifiers = data.get("event_notifiers", None)
+        if event_notifiers is None:
+            event_notifiers = [ConsoleEventNotifier()]
+        else:
+            event_notifiers = [
+                notifier_factory.get_instance(notifier) for notifier in event_notifiers
+            ]
+
         return Config(
             github_token=github_token,
             github_base_url=github_base_url,
@@ -170,6 +184,7 @@ class Config(ComponentModel):
             open_ai_api_key=open_ai_api_key,
             remote_runner=remote_runner,
             repo_override=repo_override,
+            event_notifiers=event_notifiers,
         )
 
     @staticmethod
@@ -577,6 +592,14 @@ class Config(ComponentModel):
             Config: The merged Config.
         """
 
+        if (
+            len(other.event_notifiers) == 1
+            and other.event_notifiers[0].name == EventNotifierName.CONSOLE
+        ):
+            event_notifiers = self.event_notifiers
+        else:
+            event_notifiers = other.event_notifiers
+
         return Config(
             github_token=other.github_token or self.github_token,
             github_base_url=other.github_base_url or self.github_base_url,
@@ -588,4 +611,5 @@ class Config(ComponentModel):
             open_ai_api_key=other.open_ai_api_key or self.open_ai_api_key,
             remote_runner=other.remote_runner or self.remote_runner,
             repo_override=other.repo_override or self.repo_override,
+            event_notifiers=event_notifiers,
         )

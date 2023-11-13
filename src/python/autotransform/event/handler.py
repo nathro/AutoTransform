@@ -18,15 +18,14 @@ as JSON to override the default event handling.
 
 from __future__ import annotations
 
-import importlib
-import json
-import os
-from datetime import datetime
-from typing import Dict, Optional
+from typing import TYPE_CHECKING, List, Optional
 
+from autotransform.config import get_config
 from autotransform.event.base import Event
 from autotransform.event.logginglevel import LoggingLevel
-from colorama import Fore
+
+if TYPE_CHECKING:
+    from autotransform.event.notifier.base import EventNotifier
 
 
 class EventHandler:
@@ -40,19 +39,14 @@ class EventHandler:
     """
 
     _logging_level: LoggingLevel
+    _notifiers: List[EventNotifier]
     __instance: Optional[EventHandler] = None
-    __color_map: Dict[LoggingLevel, str] = {
-        LoggingLevel.ERROR: Fore.RED,
-        LoggingLevel.WARNING: Fore.YELLOW,
-        LoggingLevel.INFO: Fore.WHITE,
-        LoggingLevel.VERBOSE: Fore.GREEN,
-        LoggingLevel.DEBUG: Fore.CYAN,
-    }
 
     def __init__(self):
         if EventHandler.__instance is not None:
             # pylint: disable=broad-exception-raised
             raise Exception("Trying to instantiate new EventHandler when one already present")
+        self._notifiers = get_config().event_notifiers
         self._logging_level = LoggingLevel.INFO
 
     @staticmethod
@@ -64,18 +58,7 @@ class EventHandler:
         """
 
         if EventHandler.__instance is None:
-            event_handler_to_use = os.getenv("AUTO_TRANSFORM_EVENT_HANDLER")
-            if event_handler_to_use is not None:
-                try:
-                    event_handler_info = json.loads(event_handler_to_use)
-                    module = importlib.import_module(event_handler_info["module"])
-                    event_handler = getattr(module, event_handler_info["class_name"])()
-                    assert isinstance(event_handler, EventHandler)
-                    EventHandler.__instance = event_handler
-                except Exception:  # pylint: disable=broad-except
-                    EventHandler.__instance = EventHandler()
-            else:
-                EventHandler.__instance = EventHandler()
+            EventHandler.__instance = EventHandler()
         return EventHandler.__instance
 
     def set_logging_level(self, logging_level: LoggingLevel) -> None:
@@ -95,17 +78,5 @@ class EventHandler:
         """
 
         if self._logging_level.value >= event.get_logging_level().value:
-            self.output_to_cli(event)
-
-    @staticmethod
-    def output_to_cli(event: Event) -> None:
-        """Outputs the event to CLI with appropriate coloring.
-
-        Args:
-            event (Event): The event being logged.
-        """
-        color = event.get_color_override()
-        if color is None:
-            color = EventHandler.__color_map[event.get_logging_level()]
-        creation_string = datetime.fromtimestamp(event.create_time).strftime("%Y-%m-%d %H:%M:%S")
-        print(f"{color}[{creation_string}]{event.get_message()}{Fore.RESET}")
+            for notifier in self._notifiers:
+                notifier.notify(event)

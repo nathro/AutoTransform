@@ -7,5 +7,4 @@
 
 # @black_format
 
-"""Events are used by AutoTransform for the purposes of logging.
-"""
+"""Tests for Event components."""
