@@ -55,8 +55,8 @@ class Config(ComponentModel):
             Defaults to None.
         repo_override (Optional[Repo], optional): A repo to use in place of any schema repos.
             Defaults to None.
-        event_notifiers (List[EventNotifier], optional): The EventNotifiers to use. Defaults to
-            a list containing just the ConsoleEventNotifier.
+        event_notifiers (List[Dict[str, Any]], optional): The EventNotifiers to use. Defaults to
+            a list containing just the ConsoleEventNotifier bundle.
     """
 
     component_directory: Optional[str] = None
@@ -69,7 +69,7 @@ class Config(ComponentModel):
     open_ai_api_key: Optional[str] = None
     remote_runner: Optional[Runner] = None
     repo_override: Optional[Repo] = None
-    event_notifiers: List[EventNotifier] = Field(default=[ConsoleEventNotifier()])
+    event_notifiers: List[Dict[str, Any]] = Field(default=[ConsoleEventNotifier().bundle()])
 
     def write(self, file_path: str) -> None:
         """Writes the Config to a file as JSON.
@@ -167,11 +167,7 @@ class Config(ComponentModel):
 
         event_notifiers = data.get("event_notifiers", None)
         if event_notifiers is None:
-            event_notifiers = [ConsoleEventNotifier()]
-        else:
-            event_notifiers = [
-                notifier_factory.get_instance(notifier) for notifier in event_notifiers
-            ]
+            event_notifiers = [ConsoleEventNotifier().bundle()]
 
         return Config(
             github_token=github_token,
@@ -186,6 +182,15 @@ class Config(ComponentModel):
             repo_override=repo_override,
             event_notifiers=event_notifiers,
         )
+
+    def get_event_notifiers(self) -> List[EventNotifier]:
+        """Gets the EventNotifier objects.
+
+        Returns:
+            List[EventNotifier]: The list of EventNotifier objects.
+        """
+
+        return [notifier_factory.get_instance(notifier) for notifier in self.event_notifiers]
 
     @staticmethod
     def get_github_token_from_console(
@@ -594,7 +599,7 @@ class Config(ComponentModel):
 
         if (
             len(other.event_notifiers) == 1
-            and other.event_notifiers[0].name == EventNotifierName.CONSOLE
+            and other.event_notifiers[0].get("name") == EventNotifierName.CONSOLE
         ):
             event_notifiers = self.event_notifiers
         else:
