@@ -124,10 +124,10 @@ def run_cmd(cmd: List[str], timeout: Optional[int] = None) -> subprocess.Complet
 
     stdout = proc.stdout.strip()
     if stdout:
-        event_handler.handle(ScriptOutEvent({"stdout": f"STDOUT:\n{stdout}"}))
+        event_handler.handle(ScriptOutEvent({"proc": proc}))
 
     stderr = proc.stderr.strip()
     if stderr:
-        event_handler.handle(ScriptErrEvent({"stderr": f"STDERR:\n{stderr}"}))
+        event_handler.handle(ScriptErrEvent({"proc": proc}))
 
     return proc

@@ -10,6 +10,7 @@
 """The Script events are used to handle events related to running a script in AutoTransform.
 """
 
+from subprocess import CompletedProcess
 from typing import List, TypedDict
 
 from autotransform.event.base import Event
@@ -21,7 +22,7 @@ class ScriptErrEventData(TypedDict):
     """The data for a ScriptErrEvent. Contains the information that will be
     logged when the event is triggered."""
 
-    stderr: str
+    proc: CompletedProcess
 
 
 class ScriptErrEvent(Event[ScriptErrEventData]):
@@ -54,14 +55,14 @@ class ScriptErrEvent(Event[ScriptErrEventData]):
             str: The message for the event.
         """
 
-        return self.data["stderr"]
+        return f"STDERR: {self.data['proc'].stderr}"
 
 
 class ScriptOutEventData(TypedDict):
     """The data for a ScriptOutEvent. Contains the information that will be
     logged when the event is triggered."""
 
-    stdout: str
+    proc: CompletedProcess
 
 
 class ScriptOutEvent(Event[ScriptOutEventData]):
@@ -94,7 +95,7 @@ class ScriptOutEvent(Event[ScriptOutEventData]):
             str: The message for the event.
         """
 
-        return self.data["stdout"]
+        return f"STDOUT: {self.data['proc'].stdout}"
 
 
 class ScriptRunEventData(TypedDict):
