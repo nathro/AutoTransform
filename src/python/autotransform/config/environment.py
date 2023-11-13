@@ -11,10 +11,14 @@
 
 import json
 import os
+from typing import List
 
 from autotransform.config.config import Config
 from autotransform.config.default import DefaultConfigFetcher
 from autotransform.config.fetcher import ConfigFetcher
+from autotransform.event.notifier.base import FACTORY as notifier_factory
+from autotransform.event.notifier.base import EventNotifier
+from autotransform.event.notifier.console import ConsoleEventNotifier
 from autotransform.repo.base import FACTORY as repo_factory
 from autotransform.runner.base import FACTORY as runner_factory
 
@@ -52,6 +56,15 @@ class EnvironmentConfigFetcher(ConfigFetcher):  # pylint: disable=too-few-public
         else:
             repo_override = None
 
+        event_notifiers_json = os.getenv("AUTO_TRANSFORM_EVENT_NOTIFIERS")
+        if event_notifiers_json is None:
+            event_notifiers: List[EventNotifier] = [ConsoleEventNotifier()]
+        else:
+            event_notifiers = [
+                notifier_factory.get_instance(notifier)
+                for notifier in json.loads(event_notifiers_json)
+            ]
+
         config = Config(
             github_token=os.getenv("AUTO_TRANSFORM_GITHUB_TOKEN"),
             github_base_url=os.getenv("AUTO_TRANSFORM_GITHUB_BASE_URL"),
@@ -63,6 +76,7 @@ class EnvironmentConfigFetcher(ConfigFetcher):  # pylint: disable=too-few-public
             open_ai_api_key=os.getenv("AUTO_TRANSFORM_OPEN_AI_API_KEY"),
             remote_runner=remote_runner,
             repo_override=repo_override,
+            event_notifiers=event_notifiers,
         )
 
         if os.getenv("AUTO_TRANSFORM_CONFIG_USE_FALLBACK", "true").lower() != "false":

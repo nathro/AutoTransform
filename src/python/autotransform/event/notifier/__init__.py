@@ -7,5 +7,7 @@
 
 # @black_format
 
-"""Events are used by AutoTransform for the purposes of logging.
+"""EventNotifiers are used by AutoTransform to notify the user when events are triggered.
+This is the main form of adding custom logging to AutoTransform, by creating custom
+EventNotifiers that can be leveraged to log to various locations.
 """

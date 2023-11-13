@@ -7,6 +7,8 @@ Event Package (autotransform.event)
    :maxdepth: 4
 
    autotransform.event.handler
+   autotransform.event.notifier.base
+   autotransform.event.notifier.console
    autotransform.event.base
    autotransform.event.logginglevel
    autotransform.event.type
