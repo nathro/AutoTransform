@@ -1,7 +1,7 @@
-EventNotifier (autotransform.event.notifier.base)
+ConsoleEventNotifier (autotransform.event.notifier.console)
 ================================
 
-.. automodule:: autotransform.event.notifier.base
+.. automodule:: autotransform.event.notifier.console
    :members:
    :undoc-members:
    :show-inheritance:
