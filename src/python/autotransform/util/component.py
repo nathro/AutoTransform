@@ -19,9 +19,6 @@ from functools import cached_property
 from typing import Any, ClassVar, Dict, Generic, List, Optional, Tuple, Type, TypeVar
 
 from autotransform.config import get_config
-from autotransform.event.debug import DebugEvent
-from autotransform.event.handler import EventHandler
-from autotransform.event.warning import WarningEvent
 from autotransform.util.console import (
     choose_options_from_list,
     choose_yes_or_no,
@@ -341,20 +338,18 @@ class ComponentFactory(Generic[T], ABC):
 
         custom_components: Dict[str, ComponentImport] = {}
         component_json_path = ComponentFactory.get_custom_components_path(component_file_name)
-        EventHandler.get().handle(
-            DebugEvent({"message": f"Importing custom components from: {component_json_path}"})
-        )
+        info(f"Importing custom components from: {component_json_path}")
         try:
             with open(component_json_path, "r", encoding="UTF-8") as component_file:
                 json_components = json.load(component_file)
         except FileNotFoundError:
-            EventHandler.get().handle(DebugEvent({"message": "No components file."}))
+            info("No components file.")
             json_components = {}
         if not isinstance(json_components, Dict):
             message = f"Malformed custom component file: {component_json_path}"
             if strict:
                 raise ValueError(message)
-            EventHandler.get().handle(WarningEvent({"message": message}))
+            error(message)
             return custom_components
 
         for name, import_info in json_components.items():
@@ -362,14 +357,14 @@ class ComponentFactory(Generic[T], ABC):
                 message = f"Invalid name: {name}"
                 if strict:
                     raise ValueError(message)
-                EventHandler.get().handle(WarningEvent({"message": message}))
+                error(message)
                 continue
             try:
                 custom_components[f"custom/{name}"] = ComponentImport.from_data(import_info)
             except Exception as err:  # pylint: disable=broad-except
                 if strict:
                     raise err
-                EventHandler.get().handle(WarningEvent({"message": str(err)}))
+                error(str(err))
         return custom_components
 
     @staticmethod
