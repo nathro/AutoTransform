@@ -15,9 +15,16 @@ from abc import abstractmethod
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, ClassVar, Dict, Mapping, Optional
+import platform
 
 from autotransform.batcher.base import Batch
 from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
+
+if platform.sys.version_info.minor < 10:
+  kwargs = {}
+else:
+  # kw_only is a py3.10 only feature
+  kwargs = {"kw_only": True}
 
 
 class ValidationResultLevel(str, Enum):
@@ -60,8 +67,7 @@ class ValidationResultLevel(str, Enum):
     def __ge__(self, other: object) -> bool:
         return self.compare(str(other.value) if isinstance(other, Enum) else str(other)) >= 0
 
-
-@dataclass(frozen=True, kw_only=True)
+@dataclass(frozen=True, **kwargs)
 class ValidationResult:
     """Represents the result of an attempt at validation.
 
@@ -77,7 +83,7 @@ class ValidationResult:
     message: Optional[str] = None
 
 
-@dataclass(frozen=True, kw_only=True)
+@dataclass(frozen=True, **kwargs)
 class ValidationError(Exception):
     """An error raised by validation failing on a run.
 
