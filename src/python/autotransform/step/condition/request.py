@@ -11,7 +11,7 @@
 
 import os
 from functools import cached_property
-from typing import Any, ClassVar, List, Mapping, Optional, TypeVar
+from typing import Any, ClassVar, List, Mapping, Optional, TypeVar, Union
 
 from autotransform.change.base import Change
 from autotransform.step.condition.base import ComparisonCondition, ConditionName
@@ -45,7 +45,7 @@ class RequestStrCondition(ComparisonCondition[str]):
 
     comparison: ComparisonType
     url: str
-    value: str | List[str]
+    value: Union[str, List[str]]
 
     data: Mapping[str, Any] = Field(default_factory=dict)
     headers: Mapping[str, Any] = Field(default_factory=dict)

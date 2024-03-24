@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Any, ClassVar, Dict, Generic, List, Optional, Set, Type, TypeVar
+from typing import Any, ClassVar, Dict, Generic, List, Optional, Set, Type, TypeVar, Union
 
 from autotransform.change.base import Change
 from autotransform.step.condition.comparison import ComparisonType, compare
@@ -74,7 +74,7 @@ class ComparisonCondition(Generic[T], Condition):
     """
 
     comparison: ComparisonType
-    value: T | List[T]
+    value: Union[T, List[T]]
 
     name: ClassVar[ConditionName]
 
