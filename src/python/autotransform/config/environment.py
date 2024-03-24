@@ -68,6 +68,7 @@ class EnvironmentConfigFetcher(ConfigFetcher):  # pylint: disable=too-few-public
             jenkins_base_url=os.getenv("AUTO_TRANSFORM_JENKINS_BASE_URL"),
             component_directory=os.getenv("AUTO_TRANSFORM_COMPONENT_DIRECTORY"),
             local_runner=local_runner,
+            anthropic_api_key=os.getenv("AUTO_TRANSFORM_ANTHROPIC_API_KEY"),
             open_ai_api_key=os.getenv("AUTO_TRANSFORM_OPEN_AI_API_KEY"),
             remote_runner=remote_runner,
             repo_override=repo_override,

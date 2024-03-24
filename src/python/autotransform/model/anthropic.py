@@ -9,10 +9,9 @@
 
 """The implementation for the OpenAIModel."""
 
-from copy import deepcopy
-from typing import ClassVar, Dict, List, Optional, Sequence, Tuple
+from typing import ClassVar, List, Optional, Sequence, Tuple
 
-import openai  # pylint: disable=import-error
+import anthropic
 from autotransform.config import get_config
 from autotransform.event.handler import EventHandler
 from autotransform.event.model import AIModelCompletionEvent
@@ -22,8 +21,9 @@ from autotransform.validator.base import ValidationResult
 from pydantic import validator  # pylint: disable=import-error
 
 
-class OpenAIModel(Model[List[Dict[str, str]]]):
-    """A model that interfaces with OpenAI's API.
+class AnthropicAIModel(Model[str]):
+    """The base for Model components. Used by AutoTransform to interact with AI models
+    such as LLMs.
 
     Attributes:
         prompts (List[str]): The prompts to use for completition. Only the response from the last
@@ -32,17 +32,17 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
             Uses sentry values to replace values in the prompt.
                 <<FILE_PATH>> - Replaced with the path of the file being transformed.
                 <<FILE_CONTENT>> - Replaced with the content of the file being transformed.
+        max_tokens_to_sample(optional, int): The maximum tokens to use in the completion.
+            Defaults to 4096.
         model_name (optional, str): The model to use for completition. Defaults to gpt-3.5-turbo.
         system_message (optional, Optional[str]): The system message to use. Defaults to None.
-        temperature (optional, float): The temperature to use to control the quality of outputs.
-            Defaults to 0.4.
         name (ClassVar[ModelName]): The name of the Component.
     """
 
     prompts: List[str]
-    model_name: str = "gpt-3.5-turbo"
+    max_tokens_to_sample: int = 4096
+    model_name: str = "claude-instant-1"
     system_message: Optional[str] = None
-    temperature: float = 0.4
 
     name: ClassVar[ModelName] = ModelName.OPEN_AI
 
@@ -65,120 +65,122 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
             raise ValueError("At least one prompt must be included in the list")
         return v
 
-    @validator("temperature")
+    @validator("max_tokens_to_sample")
     @classmethod
-    def temperature_must_be_valid(cls, v: float) -> float:
-        """Validates the temperature is between 0 and 1.
+    def max_tokens_to_sample_must_be_valid(cls, v: int) -> int:
+        """Validates that max tokens is between 1 and 100,000.
 
         Args:
-            v (float): The temperature to use for model completion.
+            v (int): The maximum number of tokens to sample for the result.
 
         Raises:
-            ValueError: Raises an error when the temperature is not in the valid range.
+            ValueError: Raises an error when the maximum tokens is invalid.
 
         Returns:
-            int: The unmodified temperature.
+            int: The unmodified max_tokens_to_sample.
         """
 
-        if not 0.0 < v < 1.0:
-            raise ValueError("The temperature must be between 0.0 and 1.0")
+        if v < 1:
+            raise ValueError("Max tokens to sample must be positive")
+        if v > 100000:
+            raise ValueError("Max tokens can not be greater than 100,000")
         return v
 
-    def get_result_for_item(self, item: FileItem) -> Tuple[str, List[Dict[str, str]]]:
+    def get_result_for_item(self, item: FileItem) -> Tuple[str, str]:
         """Gets a completion for a FileItem, usually used to find new file content.
 
         Args:
             item (FileItem): The FileItem to get the result for.
 
         Returns:
-            Tuple[str, List[Dict[str, str]]]: The result for the Item along with previous
-                messages.
+            Tuple[str, str]: The result for the Item along with full prompt for follow-ups.
         """
 
-        openai.api_key = openai.api_key or get_config().open_ai_api_key
+        client = anthropic.Anthropic(api_key=get_config().anthropic_api_key)
 
-        # Set up messages for prompts
-        messages = []
-        if self.system_message:
-            messages.append({"role": "system", "content": self.system_message})
-        completion_result = ""
-
+        # Set up prompt
+        current_prompt = self.system_message or ""
+        current_prompt = (
+            "Code should be contained within <code></code> tags. "
+            + "Explanations should be contained within <explanation></explanation> tags. "
+            + current_prompt
+        )
         for prompt in self.prompts:
-            messages.append(
-                {
-                    "role": "user",
-                    "content": self._replace_sentinel_values(prompt, item),
-                }
+            current_prompt = (
+                f"{current_prompt}{anthropic.HUMAN_PROMPT}{prompt}{anthropic.AI_PROMPT}"
             )
-            chat_completion = openai.ChatCompletion.create(
+            completion = client.completions.create(
                 model=self.model_name,
-                messages=messages,
-                temperature=self.temperature,
+                max_tokens_to_sample=self.max_tokens_to_sample,
+                prompt=current_prompt,
             )
-            completion_result = chat_completion.choices[0].message.content
-            messages.append({"role": "assistant", "content": completion_result})
+            completion_result = completion.completion
 
             EventHandler.get().handle(
                 AIModelCompletionEvent(
                     {
-                        "input_tokens": chat_completion.usage.prompt_tokens,
-                        "output_tokens": chat_completion.usage.completion_tokens,
-                        "completion": chat_completion.choices[0].message.content,
+                        "input_tokens": client.count_tokens(current_prompt),
+                        "output_tokens": client.count_tokens(completion_result),
+                        "completion": completion_result,
                     }
                 )
             )
 
-        return (self._extract_code_from_completion(completion_result), messages)
+            current_prompt = f"{current_prompt}{completion_result}"
+
+        return (self._extract_code_from_completion(completion_result), current_prompt)
 
     def get_result_with_validation(
         self,
         item: FileItem,
-        result_data: List[Dict[str, str]],
+        result_data: str,
         validation_failures: Sequence[ValidationResult],
-    ) -> Tuple[str, List[Dict[str, str]]]:
+    ) -> Tuple[str, str]:
         """Gets a new result based on ValidationResult issues.
 
         Args:
             item (FileItem): The FileItem to get the result for.
-            result_data (List[Dict[str, str]]): The previously returned result data.
+            result_data (str): The previously returned result data.
             validation_failures (Sequence[ValidationResult]): The validation failures.
 
         Returns:
-            Tuple[str, List[Dict[str, str]]]: The result for the failures along with any
-                information needed for future completions.
+            Tuple[str, str]: The result for the failures along with any information needed
+                for future completions.
         """
 
-        messages = deepcopy(result_data)
+        current_prompt = result_data
         failure_message = "\n".join(
             str(validation_result.message) for validation_result in validation_failures
         )
-        messages.append(
-            {
-                "role": "user",
-                "content": f"The following errors were found\n{failure_message}\n\n"
-                + "Provide the file with fixes for these errors.",
-            },
+        failure_message = (
+            f"The following errors were found\n{failure_message}\n\n"
+            + "Provide the file with fixes for these errors."
+        )
+        current_prompt = (
+            f"{current_prompt}{anthropic.HUMAN_PROMPT}{failure_message}{anthropic.AI_PROMPT}"
         )
 
-        chat_completion = openai.ChatCompletion.create(
+        client = anthropic.Anthropic(api_key=get_config().anthropic_api_key)
+        completion = client.completions.create(
             model=self.model_name,
-            messages=messages,
-            temperature=self.temperature,
+            prompt=current_prompt,
+            max_tokens_to_sample=self.max_tokens_to_sample,
         )
 
-        completion_result = chat_completion.choices[0].message.content
-        messages.append({"role": "assistant", "content": completion_result})
+        completion_result = completion.completion
 
         EventHandler.get().handle(
             AIModelCompletionEvent(
                 {
-                    "input_tokens": chat_completion.usage.prompt_tokens,
-                    "output_tokens": chat_completion.usage.completion_tokens,
-                    "completion": chat_completion.choices[0].message.content,
+                    "input_tokens": client.count_tokens(current_prompt),
+                    "output_tokens": client.count_tokens(completion_result),
+                    "completion": completion_result,
                 }
             )
         )
-        return (self._extract_code_from_completion(completion_result), messages)
+
+        current_prompt = f"{current_prompt}{completion_result}"
+        return (self._extract_code_from_completion(completion_result), current_prompt)
 
     def _replace_sentinel_values(self, prompt: str, item: FileItem) -> str:
         """Replaces sentinel values in a prompt.
@@ -191,7 +193,7 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
             str: The prompt with sentinel values replaced.
         """
         return prompt.replace("<<FILE_PATH>>", item.get_path()).replace(
-            "<<FILE_CONTENT>>", f"```\n{item.get_content()}\n```"
+            "<<FILE_CONTENT>>", f"<code>\n{item.get_content()}\n</code>"
         )
 
     def _extract_code_from_completion(self, result: str) -> str:
@@ -208,16 +210,11 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
         in_code = False
         # Checks for code inside formatting blocks
         for line in result.split("\n"):
-            if line.startswith("```"):
-                if in_code:
-                    break
+            if line.strip() == "<code>":
                 in_code = True
                 continue
+            if line.strip() == "</code>":
+                break
             if in_code:
                 code_lines.append(line)
-        # Hit when no formatting is present or only trailing backticks
-        if not in_code or not code_lines:
-            code = result.removesuffix("```")
-        else:
-            code = "\n".join(code_lines)
-        return code
+        return "\n".join(code_lines)
