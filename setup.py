@@ -39,7 +39,9 @@ def generate_datafiles() -> List[Tuple[str, List[str]]]:
     ]
 
     for path, _, files in os.walk("examples"):
-        data_files.append((f"autotransform-{path}", [os.path.join(path, file) for file in files]))
+        data_files.append(
+            (f"autotransform-{path}", [os.path.join(path, file) for file in files])
+        )
 
     return data_files
 
@@ -68,17 +70,17 @@ setuptools.setup(
     package_dir={"": "src/python"},
     packages=setuptools.find_packages("src/python"),
     install_requires=[
-        "GitPython==3.1.32",
-        "ghapi==1.0.3",
-        "typing-extensions==4.5.0",
-        "colorama==0.4.6",
-        "pytz==2022.7.1",
-        "pydantic==1.10.4",
-        "libcst==0.4.9",
-        "requests==2.31.0",
-        "codeowners==0.6.0",
-        "openai==0.27.8",
-        "anthropic==0.5.0",
+        "GitPython>=3.1.32",
+        "ghapi>=1.0.3",
+        "typing-extensions>=4.5.0",
+        "colorama>=0.4.6",
+        "pytz>=2022.7.1",
+        "pydantic>=1.10.4",
+        "libcst>=0.4.9",
+        "requests>=2.31.0",
+        "codeowners>=0.6.0",
+        "openai>=0.27.8",
+        "anthropic>=0.5.0",
     ],
     python_requires=">=3.9",
     data_files=generate_datafiles(),
