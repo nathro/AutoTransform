@@ -14,6 +14,8 @@ on:
 
 jobs:
   build:
+    permissions:
+      id-token: write
     runs-on: ubuntu-latest
     name: Validate and publish package
     steps:
@@ -40,9 +42,5 @@ jobs:
       run: pylint --enable=W0611,R0902,R1732 --disable=C0103,C0114,C0115,C0116,C0301,C0411,R0401,R0801,R0913,R0914,R0915,W0201,W0212,W0613,W0621 src/python/autotransform tests
     - name: Build
       run: python3 -m build
-    - name: Publish
-      run: python3 -m twine upload dist/*
-      env:
-        TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.TWINE_TOKEN }}
-        TWINE_REPOSITORY: pypi
+    - name: Publish package distributions to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
