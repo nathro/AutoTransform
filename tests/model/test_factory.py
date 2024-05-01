@@ -19,12 +19,18 @@ def test_all_enum_values_present():
     and only enum values are present."""
 
     missing_values = [
-        model_name for model_name in ModelName if model_name not in FACTORY.get_components()
+        model_name
+        for model_name in ModelName
+        if model_name not in FACTORY.get_components()
     ]
-    assert not missing_values, "Names missing from factory: " + ", ".join(missing_values)
+    assert not missing_values, "Names missing from factory: " + ", ".join(
+        missing_values
+    )
 
     extra_values = [
-        model_name for model_name in FACTORY.get_components() if model_name not in ModelName
+        model_name
+        for model_name in FACTORY.get_components()
+        if model_name not in ModelName
     ]
     assert not extra_values, "Extra names in factory: " + ", ".join(extra_values)
 
@@ -51,7 +57,7 @@ def test_encoding_and_decoding() -> None:
     test_components: Dict[ModelName, List[Dict[str, Any]]] = {
         ModelName.OPEN_AI: [
             {"prompts": ["foo"]},
-            {"prompts": ["foo"], "model_name": "gpt-4"},
+            {"prompts": ["foo"], "openai_model": "gpt-4"},
             {"prompts": ["foo"], "system_message": "bar"},
             {"prompts": ["foo"], "temperature": 0.1},
         ],

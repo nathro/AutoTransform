@@ -99,23 +99,29 @@ class AutoTransformSchema(ComponentModel):
         # Filter Items
         event_handler.handle(VerboseEvent({"message": "Begin filters"}))
         valid_items: List[Item] = []
-        for filt in self.filters:
+        for filt in self.filters:  # pylint: disable=not-an-iterable
             if isinstance(filt, BulkFilter):
                 filt.pre_process(all_items)
         for item in all_items:
             is_valid = True
-            for cur_filter in self.filters:
+            for cur_filter in self.filters:  # pylint: disable=not-an-iterable
                 if not cur_filter.is_valid(item):
                     is_valid = False
-                    event = DebugEvent({"message": f"[{cur_filter}] Invalid Item: {item!r}"})
+                    event = DebugEvent(
+                        {"message": f"[{cur_filter}] Invalid Item: {item!r}"}
+                    )
                     event_handler.handle(event)
                     break
             if is_valid:
                 valid_items.append(item)
         if valid_items:
             valid_item_str = "\n".join([f"{item!r}," for item in valid_items])
-            event_handler.handle(VerboseEvent({"message": f"Num Valid Items: {len(valid_items)}"}))
-            event_handler.handle(DebugEvent({"message": f"Valid items: [\n{valid_item_str}\n]"}))
+            event_handler.handle(
+                VerboseEvent({"message": f"Num Valid Items: {len(valid_items)}"})
+            )
+            event_handler.handle(
+                DebugEvent({"message": f"Valid items: [\n{valid_item_str}\n]"})
+            )
         else:
             event_handler.handle(VerboseEvent({"message": "No valid items."}))
 
@@ -141,11 +147,16 @@ class AutoTransformSchema(ComponentModel):
         event_handler.handle(VerboseEvent({"message": "Begin batching"}))
         batches = self.batcher.batch(items)
         encodable_batches = [
-            {"items": [item.bundle() for item in batch["items"]], "metadata": batch["metadata"]}
+            {
+                "items": [item.bundle() for item in batch["items"]],
+                "metadata": batch["metadata"],
+            }
             for batch in batches
         ]
         event_handler.handle(VerboseEvent({"message": f"Num Batches: {len(batches)}"}))
-        event_handler.handle(DebugEvent({"message": f"Batches: {json.dumps(encodable_batches)}"}))
+        event_handler.handle(
+            DebugEvent({"message": f"Batches: {json.dumps(encodable_batches)}"})
+        )
         autotransform.schema.current = None
 
         return batches
@@ -174,10 +185,14 @@ class AutoTransformSchema(ComponentModel):
         }
         event_handler.handle(
             VerboseEvent(
-                {"message": f"Handling Batch: {batch['title']} with {len(batch['items'])} items"}
+                {
+                    "message": f"Handling Batch: {batch['title']} with {len(batch['items'])} items"
+                }
             )
         )
-        event_handler.handle(DebugEvent({"message": f"Full Batch: {json.dumps(encodable_batch)}"}))
+        event_handler.handle(
+            DebugEvent({"message": f"Full Batch: {json.dumps(encodable_batch)}"})
+        )
 
         # Make sure repo is clean before executing
         if self.repo is not None:
@@ -192,14 +207,18 @@ class AutoTransformSchema(ComponentModel):
 
         # Run pre-validation commands
         pre_validation_commands = [
-            command for command in self.commands if command.run_pre_validation
+            command
+            for command in self.commands  # pylint: disable=not-an-iterable
+            if command.run_pre_validation
         ]
         for command in pre_validation_commands:
-            event_handler.handle(VerboseEvent({"message": f"Running command {command}"}))
+            event_handler.handle(
+                VerboseEvent({"message": f"Running command {command}"})
+            )
             command.run(batch, result)
 
         # Validate the changes
-        for validator in self.validators:
+        for validator in self.validators:  # pylint: disable=not-an-iterable
             validation_result = validator.check(batch, result)
             event_handler.handle(
                 VerboseEvent({"message": f"Validation Result: {validation_result}"})
@@ -207,16 +226,24 @@ class AutoTransformSchema(ComponentModel):
 
             if validation_result.level > self.config.allowed_validation_level:
                 event_handler.handle(
-                    BatchValidationFailedEvent({"batch": batch, "result": validation_result})
+                    BatchValidationFailedEvent(
+                        {"batch": batch, "result": validation_result}
+                    )
                 )
-                raise ValidationError(issue=validation_result, message=validation_result.message)
+                raise ValidationError(
+                    issue=validation_result, message=validation_result.message
+                )
 
         # Run post-validation commands
         post_validation_commands = [
-            command for command in self.commands if not command.run_pre_validation
+            command
+            for command in self.commands  # pylint: disable=not-an-iterable
+            if not command.run_pre_validation
         ]
         for command in post_validation_commands:
-            event_handler.handle(VerboseEvent({"message": f"Running command {command}"}))
+            event_handler.handle(
+                VerboseEvent({"message": f"Running command {command}"})
+            )
             command.run(batch, result)
 
         submitted = False
@@ -257,14 +284,18 @@ class AutoTransformSchema(ComponentModel):
                 and num_submissions >= self.config.max_submissions
             ):
                 event_handler.handle(
-                    VerboseEvent({"message": f"Max submissions reached: {num_submissions}"})
+                    VerboseEvent(
+                        {"message": f"Max submissions reached: {num_submissions}"}
+                    )
                 )
                 break
             try:
                 if self.execute_batch(batch):
                     num_submissions += 1
             except Exception as e:  # pylint: disable=broad-except
-                event_handler.handle(BatchExecutionFailedEvent({"batch": batch, "error": e}))
+                event_handler.handle(
+                    BatchExecutionFailedEvent({"batch": batch, "error": e})
+                )
         autotransform.schema.current = None
 
     @staticmethod
@@ -285,9 +316,13 @@ class AutoTransformSchema(ComponentModel):
 
         filters = [filter_factory.get_instance(f) for f in data.get("filters", [])]
         validators = [
-            validator_factory.get_instance(validator) for validator in data.get("validators", [])
+            validator_factory.get_instance(validator)
+            for validator in data.get("validators", [])
         ]
-        commands = [command_factory.get_instance(command) for command in data.get("commands", [])]
+        commands = [
+            command_factory.get_instance(command)
+            for command in data.get("commands", [])
+        ]
 
         repo = repo_factory.get_instance(data["repo"]) if "repo" in data else None
 
@@ -304,7 +339,9 @@ class AutoTransformSchema(ComponentModel):
 
     # pylint: disable=too-many-branches
     @staticmethod
-    def from_console(prev_schema: Optional[AutoTransformSchema] = None) -> AutoTransformSchema:
+    def from_console(
+        prev_schema: Optional[AutoTransformSchema] = None,
+    ) -> AutoTransformSchema:
         """Gets a AutoTransformSchema using console inputs.
 
         Args:
@@ -316,7 +353,9 @@ class AutoTransformSchema(ComponentModel):
         """
 
         # Get Config
-        config = SchemaConfig.from_console(prev_schema.config if prev_schema is not None else None)
+        config = SchemaConfig.from_console(
+            prev_schema.config if prev_schema is not None else None
+        )
 
         # Get Input
         args: Dict[str, Any] = {"allow_none": False}

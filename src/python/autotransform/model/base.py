@@ -14,7 +14,11 @@ from enum import Enum
 from typing import ClassVar, Generic, Sequence, Tuple, TypeVar
 
 from autotransform.item.file import FileItem
-from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
+from autotransform.util.component import (
+    ComponentFactory,
+    ComponentImport,
+    NamedComponent,
+)
 from autotransform.validator.base import ValidationResult
 
 TResultData = TypeVar("TResultData")
@@ -26,7 +30,7 @@ class ModelName(str, Enum):
     OPEN_AI = "open_ai"
 
 
-class Model(Generic[TResultData], NamedComponent):
+class Model(NamedComponent, Generic[TResultData]):
     """The base for Model components. Used by AutoTransform to interact with AI models
     such as LLMs.
 

@@ -13,12 +13,27 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Any, ClassVar, Dict, Generic, List, Optional, Set, Type, TypeVar, Union
+from typing import (
+    Any,
+    ClassVar,
+    Dict,
+    Generic,
+    List,
+    Optional,
+    Set,
+    Type,
+    TypeVar,
+    Union,
+)
 
 from autotransform.change.base import Change
 from autotransform.step.condition.comparison import ComparisonType, compare
-from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
-from pydantic import root_validator, validator
+from autotransform.util.component import (
+    ComponentFactory,
+    ComponentImport,
+    NamedComponent,
+)
+from pydantic import field_validator, model_validator
 
 
 class ConditionName(str, Enum):
@@ -63,7 +78,7 @@ class Condition(NamedComponent):
 T = TypeVar("T")
 
 
-class ComparisonCondition(Generic[T], Condition):
+class ComparisonCondition(Condition, Generic[T]):
     """The base for comparison Condition components. Uses the ComparisonType enum to perform
     comparisons.
 
@@ -116,7 +131,7 @@ class ComparisonCondition(Generic[T], Condition):
             ComparisonType.NOT_IN,
         }
 
-    @root_validator
+    @model_validator(mode="before")
     @classmethod
     def check_value_for_comparison(
         cls: Type[ComparisonCondition], values: Dict[str, Any]
@@ -139,16 +154,20 @@ class ComparisonCondition(Generic[T], Condition):
         if comparison in [ComparisonType.IN, ComparisonType.NOT_IN] and not isinstance(
             values["value"], List
         ):
-            raise ValueError(f"Can not perform comparison {comparison} when value is not a list.")
+            raise ValueError(
+                f"Can not perform comparison {comparison} when value is not a list."
+            )
 
         if comparison not in [ComparisonType.IN, ComparisonType.NOT_IN] and isinstance(
             values["value"], List
         ):
-            raise ValueError(f"Can not perform comparison {comparison} when value is a list.")
+            raise ValueError(
+                f"Can not perform comparison {comparison} when value is a list."
+            )
 
         return values
 
-    @validator("comparison")
+    @field_validator("comparison")
     @classmethod
     def comparison_type_is_valid(
         cls: Type[ComparisonCondition], v: ComparisonType
@@ -171,7 +190,7 @@ class ComparisonCondition(Generic[T], Condition):
         return v
 
 
-class SortableComparisonCondition(ABC, Generic[T], ComparisonCondition[T]):
+class SortableComparisonCondition(ABC, ComparisonCondition[T]):
     """The base for sortable comparison Condition components. Uses the ComparisonType enum to
     perform comparisons that are sortable.
 
@@ -201,7 +220,7 @@ class SortableComparisonCondition(ABC, Generic[T], ComparisonCondition[T]):
         }
 
 
-class ListComparisonCondition(Generic[T], Condition):
+class ListComparisonCondition(Condition, Generic[T]):
     """The base for sortable comparison Condition components. Uses the ComparisonType enum to
     perform comparisons that are sortable.
 
@@ -239,7 +258,7 @@ class ListComparisonCondition(Generic[T], Condition):
 
         return compare(self.get_val_from_change(change), self.value, self.comparison)
 
-    @root_validator
+    @model_validator(mode="before")
     @classmethod
     def check_value_for_comparison(
         cls: Type[ListComparisonCondition], values: Dict[str, Any]
@@ -264,12 +283,16 @@ class ListComparisonCondition(Generic[T], Condition):
             comparison in [ComparisonType.EMPTY, ComparisonType.NOT_EMPTY]
             and values.get("value") is not None
         ):
-            raise ValueError(f"Can not perform comparison {comparison} when value is not None.")
+            raise ValueError(
+                f"Can not perform comparison {comparison} when value is not None."
+            )
         if (
             comparison in [ComparisonType.CONTAINS, ComparisonType.NOT_CONTAINS]
             and values.get("value") is None
         ):
-            raise ValueError(f"Can not perform comparison {comparison} when value is None.")
+            raise ValueError(
+                f"Can not perform comparison {comparison} when value is None."
+            )
 
         return values
 
@@ -288,7 +311,7 @@ class ListComparisonCondition(Generic[T], Condition):
             ComparisonType.NOT_EMPTY,
         }
 
-    @validator("comparison")
+    @field_validator("comparison")
     @classmethod
     def comparison_type_is_valid(
         cls: Type[ListComparisonCondition], v: ComparisonType
@@ -314,40 +337,50 @@ class ListComparisonCondition(Generic[T], Condition):
 FACTORY = ComponentFactory(
     {
         ConditionName.AGGREGATE: ComponentImport(
-            class_name="AggregateCondition", module="autotransform.step.condition.aggregate"
+            class_name="AggregateCondition",
+            module="autotransform.step.condition.aggregate",
         ),
         ConditionName.CHANGE_STATE: ComponentImport(
-            class_name="ChangeStateCondition", module="autotransform.step.condition.state"
+            class_name="ChangeStateCondition",
+            module="autotransform.step.condition.state",
         ),
         ConditionName.CREATED_AGO: ComponentImport(
-            class_name="CreatedAgoCondition", module="autotransform.step.condition.created"
+            class_name="CreatedAgoCondition",
+            module="autotransform.step.condition.created",
         ),
         ConditionName.LABELS: ComponentImport(
             class_name="LabelsCondition", module="autotransform.step.condition.labels"
         ),
         ConditionName.MERGEABLE_STATE: ComponentImport(
-            class_name="MergeableStateCondition", module="autotransform.step.condition.state"
+            class_name="MergeableStateCondition",
+            module="autotransform.step.condition.state",
         ),
         ConditionName.REQUEST_STR: ComponentImport(
-            class_name="RequestStrCondition", module="autotransform.step.condition.request"
+            class_name="RequestStrCondition",
+            module="autotransform.step.condition.request",
         ),
         ConditionName.REVIEW_STATE: ComponentImport(
-            class_name="ReviewStateCondition", module="autotransform.step.condition.state"
+            class_name="ReviewStateCondition",
+            module="autotransform.step.condition.state",
         ),
         ConditionName.REVIEWERS: ComponentImport(
-            class_name="ReviewersCondition", module="autotransform.step.condition.reviewers"
+            class_name="ReviewersCondition",
+            module="autotransform.step.condition.reviewers",
         ),
         ConditionName.SCHEMA_NAME: ComponentImport(
-            class_name="SchemaNameCondition", module="autotransform.step.condition.schema"
+            class_name="SchemaNameCondition",
+            module="autotransform.step.condition.schema",
         ),
         ConditionName.TEAM_REVIEWERS: ComponentImport(
-            class_name="TeamReviewersCondition", module="autotransform.step.condition.reviewers"
+            class_name="TeamReviewersCondition",
+            module="autotransform.step.condition.reviewers",
         ),
         ConditionName.TEST_STATE: ComponentImport(
             class_name="TestStateCondition", module="autotransform.step.condition.state"
         ),
         ConditionName.UPDATED_AGO: ComponentImport(
-            class_name="UpdatedAgoCondition", module="autotransform.step.condition.updated"
+            class_name="UpdatedAgoCondition",
+            module="autotransform.step.condition.updated",
         ),
     },
     Condition,  # type: ignore [type-abstract]
