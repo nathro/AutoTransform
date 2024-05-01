@@ -16,7 +16,7 @@ from autotransform.filter.base import Filter, FilterName
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
 from codeowners import CodeOwners
-from pydantic import root_validator
+from pydantic import model_validator
 
 
 class CodeownersFilter(Filter):
@@ -31,11 +31,11 @@ class CodeownersFilter(Filter):
     """
 
     codeowners_file_path: str
-    owner: Optional[str]
+    owner: Optional[str] = None
 
     name: ClassVar[FilterName] = FilterName.CODEOWNERS
 
-    @root_validator(pre=True)
+    @model_validator(mode="before")
     @classmethod
     def path_legacy_setting_validator(cls, values: Dict[str, Any]) -> Dict[str, Any]:
         """Validates codeowners_file_path using legacy codeowners_location setting.
@@ -70,7 +70,9 @@ class CodeownersFilter(Filter):
             CodeOwners: The parsed CodeOwners.
         """
 
-        with open(self.codeowners_file_path, mode="r", encoding="UTF-8") as codeowners_file:
+        with open(
+            self.codeowners_file_path, mode="r", encoding="UTF-8"
+        ) as codeowners_file:
             return CodeOwners(codeowners_file.read())
 
     @cached_property
@@ -97,4 +99,6 @@ class CodeownersFilter(Filter):
         if self.owner is None:
             return not owners
 
-        return any(self._formatted_owner == owner[1].removeprefix("@") for owner in owners)
+        return any(
+            self._formatted_owner == owner[1].removeprefix("@") for owner in owners
+        )

@@ -86,7 +86,7 @@ class AnthropicAIModel(Model[str]):
             raise ValueError("Max tokens can not be greater than 100,000")
         return v
 
-    def get_result_for_item(self, item: FileItem) -> Tuple[str, str]:
+    def get_result_for_item(self, _item: FileItem) -> Tuple[str, str]:
         """Gets a completion for a FileItem, usually used to find new file content.
 
         Args:
@@ -132,7 +132,7 @@ class AnthropicAIModel(Model[str]):
 
     def get_result_with_validation(
         self,
-        item: FileItem,
+        _item: FileItem,
         result_data: str,
         validation_failures: Sequence[ValidationResult],
     ) -> Tuple[str, str]:
@@ -157,7 +157,8 @@ class AnthropicAIModel(Model[str]):
             + "Provide the file with fixes for these errors."
         )
         current_prompt = (
-            f"{current_prompt}{anthropic.HUMAN_PROMPT}{failure_message}{anthropic.AI_PROMPT}"
+            f"{current_prompt}{anthropic.HUMAN_PROMPT}{failure_message}"
+            + anthropic.AI_PROMPT
         )
 
         client = anthropic.Anthropic(api_key=get_config().anthropic_api_key)

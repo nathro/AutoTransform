@@ -62,17 +62,19 @@ class Config(ComponentModel):
     """
 
     component_directory: Optional[str] = None
-    github_token: Optional[str] = Field(default=None, redact=True)
+    github_token: Optional[str] = Field(default=None, exclude=True)
     github_base_url: Optional[str] = None
     jenkins_user: Optional[str] = None
-    jenkins_token: Optional[str] = Field(default=None, redact=True)
+    jenkins_token: Optional[str] = Field(default=None, exclude=True)
     jenkins_base_url: Optional[str] = None
     local_runner: Optional[Runner] = None
     anthropic_api_key: Optional[str] = None
     open_ai_api_key: Optional[str] = None
     remote_runner: Optional[Runner] = None
     repo_override: Optional[Repo] = None
-    event_notifiers: List[Dict[str, Any]] = Field(default=[ConsoleEventNotifier().bundle()])
+    event_notifiers: List[Dict[str, Any]] = Field(
+        default=[ConsoleEventNotifier().bundle()]
+    )
 
     def write(self, file_path: str) -> None:
         """Writes the Config to a file as JSON.
@@ -198,7 +200,10 @@ class Config(ComponentModel):
             List[EventNotifier]: The list of EventNotifier objects.
         """
 
-        return [notifier_factory.get_instance(notifier) for notifier in self.event_notifiers]
+        return [
+            notifier_factory.get_instance(notifier)
+            for notifier in self.event_notifiers  # pylint: disable=not-an-iterable
+        ]
 
     @staticmethod
     def get_github_token_from_console(
@@ -220,7 +225,9 @@ class Config(ComponentModel):
 
         if not user_config:
             return None
-        if prev_config is not None and (simple or choose_yes_or_no("Use previous Github Token?")):
+        if prev_config is not None and (
+            simple or choose_yes_or_no("Use previous Github Token?")
+        ):
             return prev_config.github_token
 
         github_token = get_str(
@@ -249,7 +256,9 @@ class Config(ComponentModel):
         # Potentially use previous GHE information
         if prev_config is not None and (
             simple
-            or choose_yes_or_no(f"Use previous Github base url: {prev_config.github_base_url}?")
+            or choose_yes_or_no(
+                f"Use previous Github base url: {prev_config.github_base_url}?"
+            )
         ):
             return prev_config.github_base_url
 
@@ -281,7 +290,10 @@ class Config(ComponentModel):
 
         # Potentially use previous Jenkins information
         if prev_config is not None and (
-            simple or choose_yes_or_no(f"Use previous Jenkins user: {prev_config.jenkins_user}?")
+            simple
+            or choose_yes_or_no(
+                f"Use previous Jenkins user: {prev_config.jenkins_user}?"
+            )
         ):
             return prev_config.jenkins_user
 
@@ -314,7 +326,9 @@ class Config(ComponentModel):
 
         if not user_config:
             return None
-        if prev_config is not None and (simple or choose_yes_or_no("Use previous Jenkins Token?")):
+        if prev_config is not None and (
+            simple or choose_yes_or_no("Use previous Jenkins Token?")
+        ):
             return prev_config.jenkins_token
 
         jenkins_token = get_str(
@@ -343,7 +357,9 @@ class Config(ComponentModel):
         # Potentially use previous Jenkins information
         if prev_config is not None and (
             simple
-            or choose_yes_or_no(f"Use previous Jenkins base url: {prev_config.jenkins_base_url}?")
+            or choose_yes_or_no(
+                f"Use previous Jenkins base url: {prev_config.jenkins_base_url}?"
+            )
         ):
             return prev_config.jenkins_base_url
 
@@ -411,7 +427,9 @@ class Config(ComponentModel):
 
         if not user_config:
             return None
-        if prev_config is not None and (simple or choose_yes_or_no("Use previous OpenAI API Key?")):
+        if prev_config is not None and (
+            simple or choose_yes_or_no("Use previous OpenAI API Key?")
+        ):
             return prev_config.open_ai_api_key
 
         open_ai_api_key = get_str(
@@ -450,7 +468,9 @@ class Config(ComponentModel):
         if simple:
             return None
 
-        component_directory = get_str("Enter the directory with custom component JSON files: ")
+        component_directory = get_str(
+            "Enter the directory with custom component JSON files: "
+        )
         if component_directory in ["", "None"]:
             return None
         return component_directory
@@ -506,7 +526,8 @@ class Config(ComponentModel):
             args["default_value"] = JenkinsAPIRunner(job_name="autotransform")
         elif use_github:
             args["default_value"] = GithubRunner(
-                run_workflow="autotransform.run.yml", update_workflow="autotransform.update.yml"
+                run_workflow="autotransform.run.yml",
+                update_workflow="autotransform.update.yml",
             )
 
         if prev_config is not None:
@@ -621,7 +642,10 @@ class Config(ComponentModel):
                     simple=simple,
                 ),
                 remote_runner=Config.get_remote_runner_from_console(
-                    prev_config=prev_config, use_github=github, use_jenkins=jenkins, simple=simple
+                    prev_config=prev_config,
+                    use_github=github,
+                    use_jenkins=jenkins,
+                    simple=simple,
                 ),
                 repo_override=Config.get_repo_override_from_console(
                     prev_config=prev_config, simple=simple

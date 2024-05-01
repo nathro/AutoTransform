@@ -16,7 +16,11 @@ from enum import Enum
 from typing import Any, ClassVar, Generic, Mapping, Optional, TypeVar
 
 from autotransform.batcher.base import Batch
-from autotransform.util.component import ComponentFactory, ComponentImport, NamedComponent
+from autotransform.util.component import (
+    ComponentFactory,
+    ComponentImport,
+    NamedComponent,
+)
 
 TResult = TypeVar("TResult", bound=Optional[Mapping[str, Any]])
 
@@ -31,7 +35,7 @@ class TransformerName(str, Enum):
     SCRIPT = "script"
 
 
-class Transformer(Generic[TResult], NamedComponent):
+class Transformer(NamedComponent, Generic[TResult]):
     """The base for Transformer components. Transformers are used to execute changes to a codebase.
     A Transformer takes in a Batch and then executes all changes associated with the Batch.
 
@@ -58,7 +62,8 @@ FACTORY = ComponentFactory(
             class_name="AIModelTransformer", module="autotransform.transformer.aimodel"
         ),
         TransformerName.JSCODESHIFT: ComponentImport(
-            class_name="JSCodeshiftTransformer", module="autotransform.transformer.jscodeshift"
+            class_name="JSCodeshiftTransformer",
+            module="autotransform.transformer.jscodeshift",
         ),
         TransformerName.LIBCST: ComponentImport(
             class_name="LibCSTTransformer", module="autotransform.transformer.libcst"

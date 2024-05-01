@@ -46,7 +46,9 @@ class ComponentModel(BaseModel):
             Dict[str, Any]: The encodable bundle.
         """
 
-        bundle = dict(self._iter(to_dict=False, exclude_defaults=True, exclude_unset=True))
+        bundle = dict(
+            self._iter(to_dict=False, exclude_defaults=True, exclude_unset=True)
+        )
         for key, value in bundle.items():
             if isinstance(value, ComponentModel):
                 bundle[key] = value.bundle()
@@ -57,7 +59,9 @@ class ComponentModel(BaseModel):
             elif isinstance(value, Dict) and all(
                 isinstance(item, ComponentModel) for item in value.values()
             ):
-                bundle[key] = {item_key: item.bundle() for item_key, item in value.items()}
+                bundle[key] = {
+                    item_key: item.bundle() for item_key, item in value.items()
+                }
 
         return bundle
 
@@ -73,20 +77,22 @@ class ComponentModel(BaseModel):
             TComponent: An instance of the component.
         """
 
-        return cls.parse_obj(data)
+        return cls.model_validate(data)
 
     def __repr__(self) -> str:
         redacted_fields = ["github_token", "jenkins_token"]
-        if len(self.__fields__) < 2:
+        if len(self.model_fields) < 2:
             return super().__repr__()
         lines = [f"{self.__class__.__name__}("]
-        for name in self.__fields__.keys():
+        for name, _ in self.model_fields.items():
             field_val = getattr(self, name)
             if name in redacted_fields:
                 lines.append(f"\t{name}=********,".replace("\n", "\n\t"))
             elif isinstance(field_val, list) and len(field_val) > 1:
                 lines.append(f"\t{name}=[")
-                lines.extend([f"\t\t{val!r},".replace("\n", "\n\t\t") for val in field_val])
+                lines.extend(
+                    [f"\t\t{val!r},".replace("\n", "\n\t\t") for val in field_val]
+                )
                 lines.append("\t],")
             elif isinstance(field_val, dict) and len(field_val) > 1:
                 lines.append(f"\t{name}=" + "{")
@@ -153,7 +159,10 @@ class ComponentFactory(Generic[T], ABC):
     _type: Type[T]
 
     def __init__(
-        self, components: Dict[str, ComponentImport], component_type: Type[T], component_file: str
+        self,
+        components: Dict[str, ComponentImport],
+        component_type: Type[T],
+        component_file: str,
     ):
         """A simple constructor
 
@@ -235,14 +244,18 @@ class ComponentFactory(Generic[T], ABC):
             Optional[T]: The component or None.
         """
 
-        if (isinstance(previous_value, self._type) or (previous_value is None and allow_none)) and (
-            simple or choose_yes_or_no(f"Use previous {name}: {previous_value!r}?")
-        ):
+        if (
+            isinstance(previous_value, self._type)
+            or (previous_value is None and allow_none)
+        ) and (simple or choose_yes_or_no(f"Use previous {name}: {previous_value!r}?")):
             return previous_value
 
         # pylint: disable=too-many-boolean-expressions
         if (
-            (isinstance(default_value, self._type) or (default_value is None and allow_none))
+            (
+                isinstance(default_value, self._type)
+                or (default_value is None and allow_none)
+            )
             and default_value != previous_value
             and (simple or choose_yes_or_no(f"Use default {name}: {default_value!r}?"))
         ):
@@ -255,15 +268,15 @@ class ComponentFactory(Generic[T], ABC):
         if allow_none and not bool(component_name):
             return None
         component_class = self.get_class(component_name[0])
-        if not bool(component_class.__fields__):
+        if not bool(component_class.model_fields):
             return component_class.from_data({})
         info(f"{component_class.__name__} Fields:")
-        for field_name, field in component_class.__fields__.items():
+        for field_name, field in component_class.model_fields.items():
             # pylint: disable=protected-access
-            if field.required:
-                info(f"\t{field_name}: {field._type_display()}")
+            if field.is_required():
+                info(f"\t{field_name}: {field.annotation}")
             else:
-                info(f"\t{field_name}: {field._type_display()} = {field.get_default()}")
+                info(f"\t{field_name}: {field.annotation} = {field.get_default()}")
 
         while True:
             component_json = get_str(f"Enter JSON encoded {component_class.__name__}: ")
@@ -317,8 +330,12 @@ class ComponentFactory(Generic[T], ABC):
         if component_info is not None:
             return self._get_component_class(component_info)
 
-        names = json.dumps(list(self.get_components().keys() | self.get_custom_components().keys()))
-        raise ValueError(f"No component found with name {component_name}, valid names: {names}")
+        names = json.dumps(
+            list(self.get_components().keys() | self.get_custom_components().keys())
+        )
+        raise ValueError(
+            f"No component found with name {component_name}, valid names: {names}"
+        )
 
     @staticmethod
     def get_custom_components_dict(
@@ -337,7 +354,9 @@ class ComponentFactory(Generic[T], ABC):
         """
 
         custom_components: Dict[str, ComponentImport] = {}
-        component_json_path = ComponentFactory.get_custom_components_path(component_file_name)
+        component_json_path = ComponentFactory.get_custom_components_path(
+            component_file_name
+        )
         info(f"Importing custom components from: {component_json_path}")
         try:
             with open(component_json_path, "r", encoding="UTF-8") as component_file:
@@ -360,7 +379,9 @@ class ComponentFactory(Generic[T], ABC):
                 error(message)
                 continue
             try:
-                custom_components[f"custom/{name}"] = ComponentImport.from_data(import_info)
+                custom_components[f"custom/{name}"] = ComponentImport.from_data(
+                    import_info
+                )
             except Exception as err:  # pylint: disable=broad-except
                 if strict:
                     raise err

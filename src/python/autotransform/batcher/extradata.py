@@ -12,10 +12,9 @@
 from collections import defaultdict
 from typing import Any, ClassVar, Dict, List, Sequence
 
-from pydantic import Field
-
 from autotransform.batcher.base import Batch, Batcher, BatcherName
 from autotransform.item.base import Item
+from pydantic import Field
 
 
 class ExtraDataBatcher(Batcher):
@@ -55,15 +54,20 @@ class ExtraDataBatcher(Batcher):
         for group_title, group_items in groups.items():
             batch: Batch = {"items": group_items, "title": group_title}
             if self.metadata_keys:
-                metadata: Dict[str, List[Any]] = {key: [] for key in self.metadata_keys}
+                metadata: Dict[str, List[Any]] = {
+                    key: []
+                    for key in self.metadata_keys  # pylint: disable=not-an-iterable
+                }
                 for item in group_items:
                     extra_data = item.extra_data or {}
-                    for key in self.metadata_keys:
+                    for key in self.metadata_keys:  # pylint: disable=not-an-iterable
                         val = extra_data.get(key)
                         if isinstance(val, list):
                             metadata[key].extend(val)
                         elif val is not None:
                             metadata[key].append(val)
-                batch["metadata"] = {key: list(set(values)) for key, values in metadata.items()}
+                batch["metadata"] = {
+                    key: list(set(values)) for key, values in metadata.items()
+                }
             batches.append(batch)
         return batches

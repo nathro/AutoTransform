@@ -13,7 +13,7 @@ from typing import Any, ClassVar, Dict, List
 
 from autotransform.change.base import Change
 from autotransform.step.action.base import Action, ActionName
-from pydantic import Field, root_validator, validator
+from pydantic import Field, model_validator, validator
 
 
 class AddReviewersAction(Action):
@@ -68,7 +68,7 @@ class AddReviewersAction(Action):
             raise ValueError("Team reviewers must be non-empty strings")
         return v
 
-    @root_validator
+    @model_validator(mode="before")
     @classmethod
     def some_reviewers_must_be_provided(cls, values: Dict[str, Any]) -> Dict[str, Any]:
         """Checks that either reviewers or team reviewers are supplied.
@@ -83,7 +83,9 @@ class AddReviewersAction(Action):
             Dict[str, Any]: The unmodified values.
         """
 
-        reviewers, team_reviewers = values.get("reviewers"), values.get("team_reviewers")
+        reviewers, team_reviewers = values.get("reviewers"), values.get(
+            "team_reviewers"
+        )
         if not reviewers and not team_reviewers:
             raise ValueError("Either reviewers or team reviewers must be supplied")
         return values

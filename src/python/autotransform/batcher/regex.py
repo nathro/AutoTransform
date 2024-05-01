@@ -15,11 +15,10 @@ import re
 from collections import defaultdict
 from typing import Any, ClassVar, Dict, List, Sequence
 
-from pydantic import Field
-
 from autotransform.batcher.base import Batch, Batcher, BatcherName
 from autotransform.item.base import Item
 from autotransform.item.file import FileItem
+from pydantic import Field
 
 
 class FileRegexBatcher(Batcher):
@@ -62,7 +61,10 @@ class FileRegexBatcher(Batcher):
                 metadata: Dict[str, List[Any]] = defaultdict(list)
                 for item in group_items:
                     file_content = item.get_content()
-                    for key, regex in self.metadata_keys.items():
+                    for (
+                        key,
+                        regex,
+                    ) in self.metadata_keys.items():  # pylint: disable=no-member
                         match = re.match(regex, file_content)
                         if match:
                             metadata[key].append(match.group(1))

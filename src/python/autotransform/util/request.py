@@ -53,7 +53,10 @@ class RequestHandler(BaseModel):
         """
 
         headers = dict(self.headers)
-        for name, replacer in self.constant_replacers.items():
+        for (
+            name,
+            replacer,
+        ) in self.constant_replacers.items():  # pylint: disable=no-member
             headers = self.replace_values(headers, name, replacer)
 
         return headers
@@ -67,7 +70,10 @@ class RequestHandler(BaseModel):
         """
 
         params = dict(self.params)
-        for name, replacer in self.constant_replacers.items():
+        for (
+            name,
+            replacer,
+        ) in self.constant_replacers.items():  # pylint: disable=no-member
             params = self.replace_values(params, name, replacer)
 
         return params
@@ -81,7 +87,10 @@ class RequestHandler(BaseModel):
         """
 
         data = dict(self.data)
-        for name, replacer in self.constant_replacers.items():
+        for (
+            name,
+            replacer,
+        ) in self.constant_replacers.items():  # pylint: disable=no-member
             data = self.replace_values(data, name, replacer)
 
         return data
@@ -108,17 +117,23 @@ class RequestHandler(BaseModel):
                 if match is not None:
                     tmp_val = val
                     for group in match.groups():
-                        tmp_val = re.sub(f"<{identifier}:{group}>", replacer(group), tmp_val)
+                        tmp_val = re.sub(
+                            f"<{identifier}:{group}>", replacer(group), tmp_val
+                        )
                     replaced_data[name] = tmp_val
                     continue
             elif isinstance(val, Mapping):
-                replaced_data[name] = RequestHandler.replace_values(val, identifier, replacer)
+                replaced_data[name] = RequestHandler.replace_values(
+                    val, identifier, replacer
+                )
                 continue
             replaced_data[name] = val
 
         return replaced_data
 
-    def get_response(self, replacers: Dict[str, Callable[[str], str]]) -> requests.Response:
+    def get_response(
+        self, replacers: Dict[str, Callable[[str], str]]
+    ) -> requests.Response:
         """Gets the value from a REST API request.
 
         Args:
@@ -140,11 +155,19 @@ class RequestHandler(BaseModel):
 
         if self.post:
             response = requests.post(
-                self.url, headers=headers, params=params, data=json.dumps(data), timeout=120
+                self.url,
+                headers=headers,
+                params=params,
+                data=json.dumps(data),
+                timeout=120,
             )
         else:
             response = requests.get(
-                self.url, headers=headers, params=params, data=json.dumps(data), timeout=120
+                self.url,
+                headers=headers,
+                params=params,
+                data=json.dumps(data),
+                timeout=120,
             )
 
         if self.log_response:

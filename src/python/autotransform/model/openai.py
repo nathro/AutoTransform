@@ -9,7 +9,6 @@
 
 """The implementation for the OpenAIModel."""
 
-from copy import deepcopy
 from typing import ClassVar, Dict, List, Optional, Sequence, Tuple
 
 import openai  # pylint: disable=import-error
@@ -19,7 +18,13 @@ from autotransform.event.model import AIModelCompletionEvent
 from autotransform.item.file import FileItem
 from autotransform.model.base import Model, ModelName
 from autotransform.validator.base import ValidationResult
-from pydantic import validator  # pylint: disable=import-error
+from openai.types.chat.chat_completion_message_param import (
+    ChatCompletionAssistantMessageParam,
+    ChatCompletionMessageParam,
+    ChatCompletionSystemMessageParam,
+    ChatCompletionUserMessageParam,
+)
+from pydantic import field_validator  # pylint: disable=import-error
 
 
 class OpenAIModel(Model[List[Dict[str, str]]]):
@@ -32,7 +37,7 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
             Uses sentry values to replace values in the prompt.
                 <<FILE_PATH>> - Replaced with the path of the file being transformed.
                 <<FILE_CONTENT>> - Replaced with the content of the file being transformed.
-        model_name (optional, str): The model to use for completition. Defaults to gpt-3.5-turbo.
+        openai_model (optional, str): The model to use for completition. Defaults to gpt-3.5-turbo.
         system_message (optional, Optional[str]): The system message to use. Defaults to None.
         temperature (optional, float): The temperature to use to control the quality of outputs.
             Defaults to 0.4.
@@ -40,13 +45,13 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
     """
 
     prompts: List[str]
-    model_name: str = "gpt-3.5-turbo"
+    openai_model: str = "gpt-3.5-turbo"
     system_message: Optional[str] = None
     temperature: float = 0.4
 
     name: ClassVar[ModelName] = ModelName.OPEN_AI
 
-    @validator("prompts")
+    @field_validator("prompts")
     @classmethod
     def prompts_must_contain_at_least_one_item(cls, v: List[str]) -> List[str]:
         """Validates there is at least one prompt in the list.
@@ -65,7 +70,7 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
             raise ValueError("At least one prompt must be included in the list")
         return v
 
-    @validator("temperature")
+    @field_validator("temperature")
     @classmethod
     def temperature_must_be_valid(cls, v: float) -> float:
         """Validates the temperature is between 0 and 1.
@@ -98,7 +103,7 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
         openai.api_key = openai.api_key or get_config().open_ai_api_key
 
         # Set up messages for prompts
-        messages = []
+        messages: List[ChatCompletionMessageParam] = []
         if self.system_message:
             messages.append({"role": "system", "content": self.system_message})
         completion_result = ""
@@ -110,29 +115,35 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
                     "content": self._replace_sentinel_values(prompt, item),
                 }
             )
-            chat_completion = openai.ChatCompletion.create(
-                model=self.model_name,
+            chat_completion = openai.chat.completions.create(
+                model=self.openai_model,
                 messages=messages,
                 temperature=self.temperature,
             )
-            completion_result = chat_completion.choices[0].message.content
+            completion_result = chat_completion.choices[0].message.content or ""
             messages.append({"role": "assistant", "content": completion_result})
+            usage = chat_completion.usage
 
             EventHandler.get().handle(
                 AIModelCompletionEvent(
                     {
-                        "input_tokens": chat_completion.usage.prompt_tokens,
-                        "output_tokens": chat_completion.usage.completion_tokens,
-                        "completion": chat_completion.choices[0].message.content,
+                        "input_tokens": usage.prompt_tokens if usage is not None else 0,
+                        "output_tokens": (
+                            usage.completion_tokens if usage is not None else 0
+                        ),
+                        "completion": completion_result,
                     }
                 )
             )
 
-        return (self._extract_code_from_completion(completion_result), messages)
+        messages_dict: List[Dict[str, str]] = [
+            {k: str(v) for k, v in message.items()} for message in messages
+        ]
+        return (self._extract_code_from_completion(completion_result), messages_dict)
 
     def get_result_with_validation(
         self,
-        item: FileItem,
+        _item: FileItem,
         result_data: List[Dict[str, str]],
         validation_failures: Sequence[ValidationResult],
     ) -> Tuple[str, List[Dict[str, str]]]:
@@ -148,7 +159,26 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
                 information needed for future completions.
         """
 
-        messages = deepcopy(result_data)
+        messages: List[ChatCompletionMessageParam] = []
+        for message in result_data:
+            if message["role"] == "system":
+                messages.append(
+                    ChatCompletionSystemMessageParam(
+                        role="system", content=message["content"]
+                    )
+                )
+            if message["role"] == "user":
+                messages.append(
+                    ChatCompletionUserMessageParam(
+                        role="user", content=message["content"]
+                    )
+                )
+            if message["role"] == "assistant":
+                messages.append(
+                    ChatCompletionAssistantMessageParam(
+                        role="assistant", content=message["content"]
+                    )
+                )
         failure_message = "\n".join(
             str(validation_result.message) for validation_result in validation_failures
         )
@@ -160,25 +190,31 @@ class OpenAIModel(Model[List[Dict[str, str]]]):
             },
         )
 
-        chat_completion = openai.ChatCompletion.create(
-            model=self.model_name,
+        chat_completion = openai.chat.completions.create(
+            model=self.openai_model,
             messages=messages,
             temperature=self.temperature,
         )
 
-        completion_result = chat_completion.choices[0].message.content
+        completion_result = chat_completion.choices[0].message.content or ""
         messages.append({"role": "assistant", "content": completion_result})
+        usage = chat_completion.usage
 
         EventHandler.get().handle(
             AIModelCompletionEvent(
                 {
-                    "input_tokens": chat_completion.usage.prompt_tokens,
-                    "output_tokens": chat_completion.usage.completion_tokens,
-                    "completion": chat_completion.choices[0].message.content,
+                    "input_tokens": usage.prompt_tokens if usage is not None else 0,
+                    "output_tokens": (
+                        usage.completion_tokens if usage is not None else 0
+                    ),
+                    "completion": completion_result,
                 }
             )
         )
-        return (self._extract_code_from_completion(completion_result), messages)
+        messages_dict: List[Dict[str, str]] = [
+            {k: str(v) for k, v in message.items()} for message in messages
+        ]
+        return (self._extract_code_from_completion(completion_result), messages_dict)
 
     def _replace_sentinel_values(self, prompt: str, item: FileItem) -> str:
         """Replaces sentinel values in a prompt.
