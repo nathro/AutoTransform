@@ -48,7 +48,7 @@ def generate_datafiles() -> List[Tuple[str, List[str]]]:
 
 setuptools.setup(
     name="AutoTransform",
-    version="1.1.1post1",
+    version="1.1.1post2",
     author="Nathan Rockenbach",
     author_email="nathro.software@gmail.com",
     description="A component based framework for designing automated code modification",
@@ -70,6 +70,8 @@ setuptools.setup(
     package_dir={"": "src/python"},
     packages=setuptools.find_packages("src/python"),
     install_requires=[
+        "aiohttp>=3.9.4",
+        "idna>=3.7",
         "certifi>=2024.2.2",
         "urllib3>=2.2.1",
         "GitPython>=3.1.43",
