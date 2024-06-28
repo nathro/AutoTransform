@@ -57,7 +57,9 @@ class CodeownersBatcher(Batcher):
         individual_owners: Dict[str, List[Item]] = {}
         no_owners: List[Item] = []
 
-        with open(self.codeowners_location, mode="r", encoding="UTF-8") as codeowners_file:
+        with open(
+            self.codeowners_location, mode="r", encoding="UTF-8"
+        ) as codeowners_file:
             codeowners = CodeOwners(codeowners_file.read())
 
         # Build Owner Dictionaries
@@ -83,7 +85,8 @@ class CodeownersBatcher(Batcher):
         # Add batches based on individual owners
         batches.extend(self._create_batches(individual_owners, "reviewers"))
         # Add unowned batch
-        batches.extend(self._create_batches({"unowned": no_owners}))
+        if no_owners:
+            batches.extend(self._create_batches({"unowned": no_owners}))
 
         return batches
 
@@ -92,9 +95,15 @@ class CodeownersBatcher(Batcher):
     ) -> List[Batch]:
         batches = []
         for owner, items in owners.items():
-            num_chunks = math.ceil(len(items) / self.max_batch_size) if self.max_batch_size else 1
+            num_chunks = (
+                math.ceil(len(items) / self.max_batch_size)
+                if self.max_batch_size
+                else 1
+            )
             chunk_size = math.ceil(len(items) / num_chunks)
-            item_chunks = [items[i : i + chunk_size] for i in range(0, len(items), chunk_size)]
+            item_chunks = [
+                items[i : i + chunk_size] for i in range(0, len(items), chunk_size)
+            ]
             for i, chunk_items in enumerate(item_chunks, start=1):
                 title = (
                     f"[{i}/{num_chunks}]{self.prefix} {owner}"
